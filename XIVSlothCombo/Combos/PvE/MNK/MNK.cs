@@ -661,8 +661,7 @@ internal partial class MNK
         protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
         {
             if (IsEnabled(CustomComboPreset.MNK_BC_OPOOPO) &&
-                actionID is Bootshine or LeapingOpo &&
-                (HasEffect(Buffs.OpoOpoForm) || HasEffect(Buffs.FormlessFist) || HasEffect(Buffs.PerfectBalance)))
+                actionID is Bootshine or LeapingOpo)
                 return Gauge.OpoOpoFury == 0 && LevelChecked(DragonKick)
                     ? DragonKick
                     : OriginalHook(Bootshine);
@@ -678,8 +677,7 @@ internal partial class MNK
         protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
         {
             if (IsEnabled(CustomComboPreset.MNK_BC_RAPTOR) &&
-                actionID is TrueStrike or RisingRaptor &&
-                (HasEffect(Buffs.RaptorForm) || HasEffect(Buffs.FormlessFist) || HasEffect(Buffs.PerfectBalance)))
+                actionID is TrueStrike or RisingRaptor)
                 return Gauge.RaptorFury == 0 && LevelChecked(TwinSnakes)
                     ? TwinSnakes
                     : OriginalHook(TrueStrike);
@@ -695,8 +693,7 @@ internal partial class MNK
         protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
         {
             if (IsEnabled(CustomComboPreset.MNK_BC_COEURL) &&
-                actionID is SnapPunch or PouncingCoeurl &&
-                (HasEffect(Buffs.CoeurlForm) || HasEffect(Buffs.FormlessFist) || HasEffect(Buffs.PerfectBalance)))
+                actionID is SnapPunch or PouncingCoeurl)
                 return Gauge.CoeurlFury == 0 && LevelChecked(Demolish)
                     ? Demolish
                     : OriginalHook(SnapPunch);

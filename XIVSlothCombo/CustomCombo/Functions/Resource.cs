@@ -24,7 +24,7 @@ namespace XIVSlothCombo.CustomComboNS.Functions
 
         public unsafe static int LimitBreakValue => LimitBreakController.Instance()->CurrentUnits;
 
-        public unsafe static int LimitBreakLevel => LimitBreakValue / LimitBreakController.Instance()->BarUnits;
+        public unsafe static int LimitBreakLevel => LimitBreakController.Instance()->BarUnits == 0 ? 0 : LimitBreakValue / LimitBreakController.Instance()->BarUnits;
 
         public unsafe static bool IsLB1Ready => LimitBreakLevel == 1;
 

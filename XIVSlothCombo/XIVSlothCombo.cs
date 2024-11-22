@@ -193,6 +193,9 @@ namespace XIVSlothCombo
                 new IconPayload(autoOn ? BitmapFontIcon.SwordUnsheathed : BitmapFontIcon.SwordSheathed),
                 new TextPayload($"{(autoOn ? ": On" : ": Off")}")
                 );
+            DtrBarEntry.Tooltip = new SeString(
+                new TextPayload("Click to toggle Auto-Rotation Enabled.\n"),
+                new TextPayload("Disable this icon in /xlsettings -> Server Info Bar"));
         }
 
         private static void KillRedundantIDs()

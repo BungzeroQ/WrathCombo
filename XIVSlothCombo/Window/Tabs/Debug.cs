@@ -221,8 +221,8 @@ namespace XIVSlothCombo.Window.Tabs
                 CustomStyleText("Time in Combat:", CombatEngageDuration().ToString("mm\\:ss"));
                 CustomStyleText("Party Combat Time:", PartyEngageDuration().ToString("mm\\:ss"));
                 CustomStyleText("Limit Break:", LimitBreakValue);
-                CustomStyleText("LBs Ready:", $"{IsLB1Ready} {IsLB2Ready} {IsLB3Ready}");
-                CustomStyleText("LB Units to Bars:", LimitBreakController.Instance()->CurrentUnits / LimitBreakController.Instance()->BarUnits);
+                CustomStyleText("LBs Ready:", $"1.{IsLB1Ready} 2.{IsLB2Ready} 3.{IsLB3Ready}");
+                CustomStyleText("LB Level:", LimitBreakLevel);
                 CustomStyleText("LB Action:", LimitBreakAction.ActionName());
                 ImGui.Spacing();
 
