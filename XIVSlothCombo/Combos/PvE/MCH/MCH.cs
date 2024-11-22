@@ -55,10 +55,10 @@ internal partial class MCH
                     LevelChecked(Hypercharge) && !Gauge.IsOverheated)
                 {
                     // Ensures Hypercharge is double weaved with WF
-                    if (HasEffect(Buffs.Hypercharged) && ((LevelChecked(FullMetalField) && JustUsed(FullMetalField) &&
+                    if ((LevelChecked(FullMetalField) && JustUsed(FullMetalField) &&
                          (GetCooldownRemainingTime(Wildfire) < 1.5 || ActionReady(Wildfire))) ||
                         (!LevelChecked(FullMetalField) && ActionReady(Wildfire)) ||
-                        !LevelChecked(Wildfire)))
+                        !LevelChecked(Wildfire))
                         return Hypercharge;
 
                     // Only Hypercharge when tools are on cooldown
@@ -272,7 +272,7 @@ internal partial class MCH
                 {
                     // Ensures Hypercharge is double weaved with WF
                     if ((LevelChecked(FullMetalField) && JustUsed(FullMetalField) &&
-                         (GetCooldownRemainingTime(Wildfire) < GCD || ActionReady(Wildfire))) ||
+                         (GetCooldownRemainingTime(Wildfire) <= 1.5 || ActionReady(Wildfire))) ||
                         (!LevelChecked(FullMetalField) && ActionReady(Wildfire)) ||
                         !LevelChecked(Wildfire))
                         return Hypercharge;
