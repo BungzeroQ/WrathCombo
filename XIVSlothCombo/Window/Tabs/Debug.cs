@@ -353,7 +353,7 @@ namespace XIVSlothCombo.Window.Tabs
                 ImGui.Text("Party Info");
                 ImGui.Separator();
                 CustomStyleText("Party ID:", Svc.Party.PartyId);
-                CustomStyleText("Party Size:", Svc.Party.Length);
+                CustomStyleText("Party Size:", GetPartyMembers().Count);
                 if (ImGui.CollapsingHeader("Party Members"))
                 {
                     ImGui.Indent();

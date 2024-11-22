@@ -654,7 +654,7 @@ internal partial class MNK
 
     #region Beast Chakras
 
-    internal class MNK_BeastChakra_OpoOpo : CustomCombo
+    internal class MNK_BeastChakras : CustomCombo
     {
         protected internal override CustomComboPreset Preset => CustomComboPreset.MNK_ST_BeastChakras;
 
@@ -666,32 +666,12 @@ internal partial class MNK
                     ? DragonKick
                     : OriginalHook(Bootshine);
 
-            return actionID;
-        }
-    }
-
-    internal class MNK_BeastChakra_Raptor : CustomCombo
-    {
-        protected internal override CustomComboPreset Preset => CustomComboPreset.MNK_ST_BeastChakras;
-
-        protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
-        {
             if (IsEnabled(CustomComboPreset.MNK_BC_RAPTOR) &&
                 actionID is TrueStrike or RisingRaptor)
                 return Gauge.RaptorFury == 0 && LevelChecked(TwinSnakes)
                     ? TwinSnakes
                     : OriginalHook(TrueStrike);
 
-            return actionID;
-        }
-    }
-
-    internal class MNK_BeastChakra_Coeurl : CustomCombo
-    {
-        protected internal override CustomComboPreset Preset => CustomComboPreset.MNK_ST_BeastChakras;
-
-        protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
-        {
             if (IsEnabled(CustomComboPreset.MNK_BC_COEURL) &&
                 actionID is SnapPunch or PouncingCoeurl)
                 return Gauge.CoeurlFury == 0 && LevelChecked(Demolish)
