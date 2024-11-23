@@ -1087,6 +1087,10 @@ namespace XIVSlothCombo.Combos
         [ParentCombo(DNC_ST_AdvancedMode)]
         [CustomComboInfo("Panic Heals Option", "Includes Curing Waltz and Second Wind in the rotation when available and your HP is below the set percentages.", DNC.JobID, 13)]
         DNC_ST_Adv_PanicHeals = 4059,
+
+        [ParentCombo(DNC_ST_AdvancedMode)]
+        [CustomComboInfo("Dance Partner Reminder Option", "Includes Closed Position when out of combat and no dance partner is found.", DNC.JobID)]
+        DNC_ST_Adv_Partner = 4089,
         #endregion
 
         #region Advanced Dancer (AoE)
@@ -1164,6 +1168,10 @@ namespace XIVSlothCombo.Combos
         [ParentCombo(DNC_AoE_AdvancedMode)]
         [CustomComboInfo("Panic Heals Option", "Includes Curing Waltz and Second Wind in the AoE rotation when available and your HP is below the set percentages.", DNC.JobID, 12)]
         DNC_AoE_Adv_PanicHeals = 4079,
+
+        [ParentCombo(DNC_AoE_AdvancedMode)]
+        [CustomComboInfo("Dance Partner Reminder Option", "Includes Closed Position when out of combat and no dance partner is found.", DNC.JobID)]
+        DNC_AoE_Adv_Partner = 4095,
         #endregion
 
         #region Variant
@@ -1180,7 +1188,7 @@ namespace XIVSlothCombo.Combos
 
         #endregion
 
-        // Last value = 4088
+        // Last value = 4090
 
         #endregion
 
