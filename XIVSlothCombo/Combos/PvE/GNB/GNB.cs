@@ -479,7 +479,8 @@ namespace XIVSlothCombo.Combos.PvE
 
                     //Bloodfest - Forced to prevent combo from spazzing out due to next action possibly requiring Ammo
                     if (IsEnabled(CustomComboPreset.GNB_ST_Bloodfest) && //Bloodfest option is enabled
-                        canBF && //able to use Bloodfest
+                        canBF && //able to use
+                        CanWeave(actionID) &&
                         Ammo == 0) //Only when ammo is empty
                         return Bloodfest; //Execute Bloodfest if conditions are met
 

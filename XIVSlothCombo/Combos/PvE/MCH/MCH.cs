@@ -107,7 +107,7 @@ internal partial class MCH
 
             // Full Metal Field
             if (HasEffect(Buffs.FullMetalMachinist) &&
-                (GetCooldownRemainingTime(Wildfire) <= GCD || ActionReady(Wildfire) ||
+                (GetCooldownRemainingTime(Wildfire) < GCD || ActionReady(Wildfire) ||
                  GetBuffRemainingTime(Buffs.FullMetalMachinist) <= 6) &&
                 LevelChecked(FullMetalField))
                 return FullMetalField;
@@ -287,7 +287,7 @@ internal partial class MCH
                 // Queen
                 if (IsEnabled(CustomComboPreset.MCH_Adv_TurretQueen) &&
                     MCHHelper.UseQueen(Gauge) &&
-                    (GetCooldownRemainingTime(Wildfire) > GCD || !LevelChecked(Wildfire)))
+                    (GetCooldownRemainingTime(Wildfire) > 2 || !LevelChecked(Wildfire)))
                     return OriginalHook(RookAutoturret);
 
                 // Gauss Round and Ricochet during HC
@@ -329,7 +329,7 @@ internal partial class MCH
             // Full Metal Field
             if (IsEnabled(CustomComboPreset.MCH_ST_Adv_Stabilizer_FullMetalField) &&
                 HasEffect(Buffs.FullMetalMachinist) &&
-                (GetCooldownRemainingTime(Wildfire) <= GCD || ActionReady(Wildfire) ||
+                (GetCooldownRemainingTime(Wildfire) <= GetCooldownRemainingTime(OriginalHook(SplitShot)) || ActionReady(Wildfire) ||
                  GetBuffRemainingTime(Buffs.FullMetalMachinist) <= 6) &&
                 LevelChecked(FullMetalField))
                 return FullMetalField;
