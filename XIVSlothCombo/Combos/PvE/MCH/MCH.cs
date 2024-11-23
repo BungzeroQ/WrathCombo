@@ -329,7 +329,7 @@ internal partial class MCH
             // Full Metal Field
             if (IsEnabled(CustomComboPreset.MCH_ST_Adv_Stabilizer_FullMetalField) &&
                 HasEffect(Buffs.FullMetalMachinist) &&
-                (GetCooldownRemainingTime(Wildfire) <= GetCooldownRemainingTime(OriginalHook(SplitShot)) || ActionReady(Wildfire) ||
+                (GetCooldownRemainingTime(Wildfire) <= GCD || ActionReady(Wildfire) ||
                  GetBuffRemainingTime(Buffs.FullMetalMachinist) <= 6) &&
                 LevelChecked(FullMetalField))
                 return FullMetalField;
