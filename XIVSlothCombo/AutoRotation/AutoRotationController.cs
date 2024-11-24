@@ -25,6 +25,9 @@ namespace XIVSlothCombo.AutoRotation
         static long LastHealAt = 0;
         static long LastRezAt = 0;
 
+        static bool LockedST = false;
+        static bool LockedAoE = false;
+
         static Func<IBattleChara, bool> RezQuery => x => x.IsDead && CustomComboFunctions.FindEffectOnMember(2648, x) == null && CustomComboFunctions.FindEffectOnMember(148, x) == null && x.IsTargetable() && CustomComboFunctions.TimeSpentDead(x.GameObjectId).TotalSeconds > 2;
 
         internal static void Run()
@@ -36,7 +39,7 @@ namespace XIVSlothCombo.AutoRotation
 
             if (Player.Object.CurrentCastTime > 0) return;
 
-            if (!EzThrottler.Throttle("AutoRotController", 150))
+            if (!EzThrottler.Throttle("AutoRotController", 50))
                 return;
 
             if (cfg.HealerSettings.PreEmptiveHoT && Player.Job is Job.CNJ or Job.WHM or Job.AST)
@@ -84,6 +87,7 @@ namespace XIVSlothCombo.AutoRotation
 
                 var attributes = Presets.Attributes[preset.Key];
                 var action = attributes.AutoAction;
+                if ((action.IsAoE && LockedST) || (!action.IsAoE && LockedAoE)) continue;
                 var gameAct = attributes.ReplaceSkill.ActionIDs.First();
                 var sheetAct = Svc.Data.GetExcelSheet<Action>().GetRow(gameAct);
                 var classToJob = CustomComboFunctions.JobIDs.ClassToJob((byte)Player.Job);
@@ -352,6 +356,11 @@ namespace XIVSlothCombo.AutoRotation
                         if (ret)
                             LastHealAt = Environment.TickCount64 + castTime;
 
+                        if (outAct is NIN.Ten or NIN.Chi or NIN.Jin or NIN.TenCombo or NIN.ChiCombo or NIN.JinCombo && ret)
+                            LockedAoE = true;
+                        else
+                            LockedAoE = false;
+
                         return ret;
                     }
                 }
@@ -412,6 +421,11 @@ namespace XIVSlothCombo.AutoRotation
                     var ret = ActionManager.Instance()->UseAction(ActionType.Action, outAct, canUseTarget ? target.GameObjectId : Player.Object.GameObjectId);
                     if (mode is HealerRotationMode && ret)
                         LastHealAt = Environment.TickCount64 + castTime;
+
+                    if (outAct is NIN.Ten or NIN.Chi or NIN.Jin or NIN.TenCombo or NIN.ChiCombo or NIN.JinCombo && ret)
+                        LockedST = true;
+                    else
+                        LockedST = false;
 
                     return ret;
                 }

@@ -1,5 +1,6 @@
 using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Statuses;
+using ECommons.DalamudServices;
 using XIVSlothCombo.Combos.PvE.Content;
 using XIVSlothCombo.Core;
 using XIVSlothCombo.CustomComboNS;
@@ -189,7 +190,7 @@ namespace XIVSlothCombo.Combos.PvE
                         (IsNotEnabled(CustomComboPreset.NIN_ST_AdvancedMode_Mug) || (IsEnabled(CustomComboPreset.NIN_ST_AdvancedMode_Mug) && IsOnCooldown(Mug))))
                         mudraState.CurrentMudra = MudraCasting.MudraState.CastingHyoshoRanryu;
 
-                    if (NINHelper.InMudra || mudraState.CurrentMudra != MudraCasting.MudraState.None)
+                    if (NINHelper.InMudra && !NINHelper.OriginalJutsu)
                     {
                         if (mudraState.ContinueCurrentMudra(ref actionID))
                             return actionID;
@@ -303,7 +304,7 @@ namespace XIVSlothCombo.Combos.PvE
                             if (IsEnabled(CustomComboPreset.NIN_ST_AdvancedMode_AssassinateDWAD) && IsOffCooldown(OriginalHook(Assassinate)) && Assassinate.LevelChecked())
                                 return OriginalHook(Assassinate);
 
-                            if (IsEnabled(CustomComboPreset.NIN_ST_AdvancedMode_TCJ) && IsOffCooldown(TenChiJin) && !IsMoving && TenChiJin.LevelChecked())
+                            if (IsEnabled(CustomComboPreset.NIN_ST_AdvancedMode_TCJ) && IsOffCooldown(TenChiJin) && TenChiJin.LevelChecked())
                                 return OriginalHook(TenChiJin);
                         }
 
@@ -511,7 +512,7 @@ namespace XIVSlothCombo.Combos.PvE
                     if (IsEnabled(CustomComboPreset.NIN_AoE_AdvancedMode_GokaMekkyaku) && HasEffect(Buffs.Kassatsu))
                         mudraState.CurrentMudra = MudraCasting.MudraState.CastingGokaMekkyaku;
 
-                    if (IsEnabled(CustomComboPreset.NIN_AoE_AdvancedMode_Ninjitsus) && mudraState.CurrentMudra != MudraCasting.MudraState.None)
+                    if (NINHelper.InMudra && !NINHelper.OriginalJutsu)
                     {
                         if (mudraState.ContinueCurrentMudra(ref actionID))
                             return actionID;
@@ -571,7 +572,6 @@ namespace XIVSlothCombo.Combos.PvE
 
                         if (IsEnabled(CustomComboPreset.NIN_AoE_AdvancedMode_TCJ) &&
                             IsOffCooldown(TenChiJin) &&
-                            !IsMoving &&
                             TenChiJin.LevelChecked())
                         {
                             if ((IsEnabled(CustomComboPreset.NIN_AoE_AdvancedMode_Ninjitsus_Doton) && tcjPath == 1 &&
@@ -656,7 +656,7 @@ namespace XIVSlothCombo.Combos.PvE
                         return OriginalHook(Ten);
                     }
 
-                    if (NINHelper.InMudra)
+                    if (NINHelper.InMudra && !NINHelper.OriginalJutsu)
                     {
                         if (mudraState.ContinueCurrentMudra(ref actionID))
                             return actionID;
@@ -816,7 +816,7 @@ namespace XIVSlothCombo.Combos.PvE
                     if (JustUsed(Kassatsu, 0.5f))
                         mudraState.CurrentMudra = MudraCasting.MudraState.None;
 
-                    if (NINHelper.InMudra)
+                    if (NINHelper.InMudra && !NINHelper.OriginalJutsu)
                     {
                         if (mudraState.ContinueCurrentMudra(ref actionID))
                             return actionID;
