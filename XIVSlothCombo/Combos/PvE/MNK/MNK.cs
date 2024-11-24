@@ -172,6 +172,7 @@ internal partial class MNK
             if (IsEnabled(CustomComboPreset.MNK_STUseBuffs) &&
                 IsEnabled(CustomComboPreset.MNK_STUseROF) &&
                 ActionReady(RiddleOfFire) &&
+                ((GetCooldownRemainingTime(Brotherhood) > 40 && LevelChecked(Brotherhood)) || !LevelChecked(Brotherhood)) &&
                 CanDelayedWeave(ActionWatching.LastWeaponskill))
                 return RiddleOfFire;
 
