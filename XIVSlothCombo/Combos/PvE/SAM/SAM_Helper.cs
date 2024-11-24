@@ -10,21 +10,15 @@ namespace XIVSlothCombo.Combos.PvE;
 
 internal partial class SAM
 {
-    public static SAMGauge gauge = GetJobGauge<SAMGauge>();
-    public static SAMOpenerLogic SAMOpener = new();
+    internal static SAMGauge gauge = GetJobGauge<SAMGauge>();
+    internal static SAMOpenerLogic SAMOpener = new();
 
-    public static int MeikyoUsed => ActionWatching.CombatActions.Count(x => x == MeikyoShisui);
+    internal static int MeikyoUsed => ActionWatching.CombatActions.Count(x => x == MeikyoShisui);
 
-    public static bool oneSen => OriginalHook(Iaijutsu) is Higanbana;
+    internal static bool trueNorthReady => TargetNeedsPositionals() && ActionReady(All.TrueNorth) &&
+                                           !HasEffect(All.Buffs.TrueNorth);
 
-    public static bool twoSen => OriginalHook(Iaijutsu) is TenkaGoken or TendoGoken;
-
-    public static bool threeSen => OriginalHook(Iaijutsu) is MidareSetsugekka or TendoSetsugekka;
-
-    public static bool trueNorthReady => TargetNeedsPositionals() && ActionReady(All.TrueNorth) &&
-                                        !HasEffect(All.Buffs.TrueNorth);
-
-    public static float GCD => GetCooldown(Hakaze).CooldownTotal;
+    internal static float GCD => GetCooldown(Hakaze).CooldownTotal;
 
     internal class SAMHelper
     {
@@ -32,7 +26,7 @@ internal partial class SAM
 
         internal static bool ComboStarted => GetComboStarted();
 
-        private static int GetSenCount()
+        internal static int GetSenCount()
         {
             int senCount = 0;
             if (gauge.HasGetsu) senCount++;
@@ -51,40 +45,56 @@ internal partial class SAM
                    comboAction == OriginalHook(Shifu);
         }
 
-        public static bool OptimalMeikyo()
+        internal static bool OptimalMeikyo()
         {
+            int usedMeikyo = MeikyoUsed % 15;
+
             if (ActionReady(MeikyoShisui))
             {
-                int usedMeikyo = MeikyoUsed % 15;
+                //bandaid fix
+                if ((IsNotEnabled(CustomComboPreset.SAM_ST_Opener) || !LevelChecked(TendoSetsugekka)) &&
+                    MeikyoUsed < 2 && GetRemainingCharges(MeikyoShisui) == GetMaxCharges(MeikyoShisui))
+                    return true;
 
                 //NOTE: Opener Meikyos don't count here for some reason per testing. On 6min, Meikyos 6 & 7 are used, so loop resets at 8.
-
-                if (GetCooldownRemainingTime(Ikishoten) is > 49 and < 71) //1min windows
-                    switch (usedMeikyo)
+                if ((IsEnabled(CustomComboPreset.SAM_ST_AdvancedMode) &&
+                     ((IsEnabled(CustomComboPreset.SAM_ST_Opener) && LevelChecked(TendoSetsugekka)) ||
+                      (IsNotEnabled(CustomComboPreset.SAM_ST_Opener) && MeikyoUsed >= 2))) ||
+                    IsEnabled(CustomComboPreset.SAM_ST_SimpleMode))
+                {
+                    if (GetCooldownRemainingTime(Ikishoten) is > 49 and < 71) //1min windows
                     {
-                        case 1 or 8 when
-                            threeSen:
-                        case 3 or 10 when
-                            twoSen:
-                        case 5 or 12 when
-                            oneSen:
+                        if (usedMeikyo is 1 or 8 &&
+                            GetSenCount() is 3)
+                            return true;
+
+                        if (usedMeikyo is 3 or 10 &&
+                            GetSenCount() is 2)
+                            return true;
+
+                        if (usedMeikyo is 5 or 12 &&
+                            GetSenCount() is 1)
                             return true;
                     }
 
-                if (GetCooldownRemainingTime(Ikishoten) > 80) //2min windows
-                    switch (usedMeikyo)
+                    if (GetCooldownRemainingTime(Ikishoten) > 80) //2min windows
                     {
-                        case 2 or 9 when
-                            threeSen:
-                        case 4 or 11 when
-                            twoSen:
-                        case 6 or 13 when
-                            oneSen:
+                        if (usedMeikyo is 2 or 9 &&
+                            GetSenCount() is 3)
+                            return true;
+
+                        if (usedMeikyo is 4 or 11 &&
+                            GetSenCount() is 2)
+                            return true;
+
+                        if (usedMeikyo is 6 or 13 &&
+                            GetSenCount() is 1)
                             return true;
                     }
 
-                if (usedMeikyo is 7 or 14 && !HasEffect(Buffs.MeikyoShisui))
-                    return true;
+                    if (usedMeikyo is 7 or 14 && !HasEffect(Buffs.MeikyoShisui))
+                        return true;
+                }
             }
 
             return false;

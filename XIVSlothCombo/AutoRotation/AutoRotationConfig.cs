@@ -29,6 +29,7 @@
         public bool ManageKardia = false;
         public bool KardiaTanksOnly = false;
         public bool AutoRez = false;
+        public bool AutoRezDPSJobs = false;
         public bool AutoCleanse = false;
         public bool PreEmptiveHoT = false;
 

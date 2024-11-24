@@ -3,6 +3,7 @@ using System;
 using XIVSlothCombo.Combos.PvE.Content;
 using XIVSlothCombo.Core;
 using XIVSlothCombo.CustomComboNS;
+using XIVSlothCombo.Data;
 
 namespace XIVSlothCombo.Combos.PvE
 {
@@ -467,19 +468,21 @@ namespace XIVSlothCombo.Combos.PvE
 
             protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
             {
-                var gauge = GetJobGauge<SMNGauge>();
-                var summonerPrimalChoice = PluginConfiguration.GetCustomIntValue(Config.SMN_PrimalChoice);
-                var SummonerBurstPhase = PluginConfiguration.GetCustomIntValue(Config.SMN_BurstPhase);
-                var lucidThreshold = PluginConfiguration.GetCustomIntValue(Config.SMN_Lucid);
-                var swiftcastPhase = PluginConfiguration.GetCustomIntValue(Config.SMN_SwiftcastPhase);
-                var burstDelay = PluginConfiguration.GetCustomIntValue(Config.SMN_Burst_Delay);
-                var inOpener = CombatEngageDuration().TotalSeconds < 40;
-                var IsGarudaAttuned = OriginalHook(Gemshine) is EmeralRuin1 or EmeralRuin2 or EmeralRuin3 or EmeraldRite;
-                var IsTitanAttuned = OriginalHook(Gemshine) is TopazRuin1 or TopazRuin2 or TopazRuin3 or TopazRite;
-                var IsIfritAttuned = OriginalHook(Gemshine) is RubyRuin1 or RubyRuin2 or RubyRuin3 or RubyRite;
-                var IsBahamutReady = OriginalHook(Aethercharge) is SummonBahamut;
-                var IsPhoenixReady = OriginalHook(Aethercharge) is SummonPhoenix;
-                var IsSolarBahamutReady = OriginalHook(Aethercharge) is SummonSolarBahamut;
+                SMNGauge gauge = GetJobGauge<SMNGauge>();
+                int summonerPrimalChoice = PluginConfiguration.GetCustomIntValue(Config.SMN_PrimalChoice);
+                int SummonerBurstPhase = PluginConfiguration.GetCustomIntValue(Config.SMN_BurstPhase);
+                int lucidThreshold = PluginConfiguration.GetCustomIntValue(Config.SMN_Lucid);
+                int swiftcastPhase = PluginConfiguration.GetCustomIntValue(Config.SMN_SwiftcastPhase);
+                int burstDelay = PluginConfiguration.GetCustomIntValue(Config.SMN_Burst_Delay);
+                bool inOpener = CombatEngageDuration().TotalSeconds < 40;
+
+                bool IsGarudaAttuned =
+                    OriginalHook(Gemshine) is EmeralRuin1 or EmeralRuin2 or EmeralRuin3 or EmeraldRite;
+                bool IsTitanAttuned = OriginalHook(Gemshine) is TopazRuin1 or TopazRuin2 or TopazRuin3 or TopazRite;
+                bool IsIfritAttuned = OriginalHook(Gemshine) is RubyRuin1 or RubyRuin2 or RubyRuin3 or RubyRite;
+                bool IsBahamutReady = OriginalHook(Aethercharge) is SummonBahamut;
+                bool IsPhoenixReady = OriginalHook(Aethercharge) is SummonPhoenix;
+                bool IsSolarBahamutReady = OriginalHook(Aethercharge) is SummonSolarBahamut;
 
                 if (WasLastAction(OriginalHook(Aethercharge))) DemiAttackCount = 0;    // Resets counter
 
@@ -510,7 +513,7 @@ namespace XIVSlothCombo.Combos.PvE
                         CanSpellWeave(actionID))
                         return Variant.VariantRampart;
 
-                    if (CanSpellWeave(actionID))
+                    if (CanWeave(ActionWatching.LastSpell))
                     {
                         // Searing Light
                         if (IsEnabled(CustomComboPreset.SMN_SearingLight) && IsOffCooldown(SearingLight) && LevelChecked(SearingLight))

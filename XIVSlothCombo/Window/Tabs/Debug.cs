@@ -3,7 +3,9 @@ using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility.Raii;
+using Dalamud.Utility;
 using ECommons.DalamudServices;
+using ECommons.ExcelServices;
 using ECommons.GameFunctions;
 using ECommons.GameHelpers;
 using ECommons.ImGuiMethods;
@@ -17,14 +19,12 @@ using System.Linq;
 using XIVSlothCombo.Combos;
 using XIVSlothCombo.CustomComboNS;
 using XIVSlothCombo.Data;
+using XIVSlothCombo.Extensions;
 using XIVSlothCombo.Services;
-using Status = Dalamud.Game.ClientState.Statuses.Status;
 using static XIVSlothCombo.CustomComboNS.Functions.CustomComboFunctions;
 using Action = Lumina.Excel.Sheets.Action;
 using ObjectKind = Dalamud.Game.ClientState.Objects.Enums.ObjectKind;
-using Dalamud.Utility;
-using ECommons.ExcelServices;
-using XIVSlothCombo.Extensions;
+using Status = Dalamud.Game.ClientState.Statuses.Status;
 
 namespace XIVSlothCombo.Window.Tabs
 {
@@ -178,6 +178,7 @@ namespace XIVSlothCombo.Window.Tabs
                         if (debugSpell.Value.UnlockLink.RowId != 0)
                             CustomStyleText($"Quest:", $"{Svc.Data.GetExcelSheet<Quest>().GetRow(debugSpell.Value.UnlockLink.RowId).Name} ({(UIState.Instance()->IsUnlockLinkUnlockedOrQuestCompleted(debugSpell.Value.UnlockLink.RowId) ? "Completed" : "Not Completed")})");
                         CustomStyleText($"Base Recast:", $"{debugSpell.Value.Recast100ms / 10f}s");
+                        CustomStyleText($"Current Cast Time:", ActionManager.GetAdjustedCastTime(ActionType.Action, debugSpell.Value.RowId));
                         CustomStyleText($"Max Charges:", $"{debugSpell.Value.MaxCharges}");
                         CustomStyleText($"Range:", $"{debugSpell.Value.Range}");
                         CustomStyleText($"Effect Range:", $"{debugSpell.Value.EffectRange}");

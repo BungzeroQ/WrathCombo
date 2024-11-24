@@ -53,13 +53,13 @@ namespace XIVSlothCombo.AutoRotation
             var healTarget = Player.Object.GetRole() is CombatRole.Healer ? AutoRotationHelper.GetSingleTarget(cfg.HealerRotationMode) : null;
             var aoeheal = Player.Object.GetRole() is CombatRole.Healer && HealerTargeting.CanAoEHeal();
 
-            if (Player.Object.GetRole() is CombatRole.Healer)
+            if (Player.Object.GetRole() is CombatRole.Healer || (Player.Job is Job.SMN or Job.RDM && cfg.HealerSettings.AutoRezDPSJobs))
             {
-                bool needsHeal = healTarget != null || aoeheal;
+                bool needsHeal = (healTarget != null || aoeheal) && Player.Object.GetRole() is CombatRole.Healer;
 
                 if (!needsHeal)
                 {
-                    if (cfg.HealerSettings.AutoCleanse)
+                    if (cfg.HealerSettings.AutoCleanse && Player.Object.GetRole() is CombatRole.Healer)
                     {
                         CleanseParty();
                         if (CustomComboFunctions.GetPartyMembers().Any((x => CustomComboFunctions.HasCleansableDebuff(x))))
@@ -69,7 +69,9 @@ namespace XIVSlothCombo.AutoRotation
                     if (cfg.HealerSettings.AutoRez)
                     {
                         RezParty();
-                        if (CustomComboFunctions.GetPartyMembers().Any(RezQuery))
+                        bool rdmCheck = Player.Job is Job.RDM && CustomComboFunctions.ActionReady(RDM.Verraise) && ActionManager.GetAdjustedCastTime(ActionType.Action, RDM.Verraise) > 0;
+
+                        if (CustomComboFunctions.GetPartyMembers().Any(RezQuery) && !rdmCheck)
                             return;
                     }
                 }
@@ -168,16 +170,17 @@ namespace XIVSlothCombo.AutoRotation
             uint resSpell = Player.Job switch
             {
                 Job.CNJ or Job.WHM => WHM.Raise,
-                Job.SCH => SCH.Resurrection,
+                Job.SCH or Job.SMN => SCH.Resurrection,
                 Job.AST => AST.Ascend,
                 Job.SGE => SGE.Egeiro,
+                Job.RDM => RDM.Verraise,
                 _ => throw new NotImplementedException(),
             };
 
             if (ActionManager.Instance()->QueuedActionId == resSpell)
                 ActionManager.Instance()->QueuedActionId = 0;
 
-            if (Player.Object.CurrentMp >= CustomComboFunctions.GetResourceCost(resSpell))
+            if (Player.Object.CurrentMp >= CustomComboFunctions.GetResourceCost(resSpell) && CustomComboFunctions.ActionReady(resSpell) && ActionManager.Instance()->GetActionStatus(ActionType.Action, resSpell) == 0)
             {
                 var timeSinceLastRez = TimeSpan.FromMilliseconds(ActionWatching.TimeSinceLastSuccessfulCast(resSpell));
                 if ((ActionWatching.TimeSinceLastSuccessfulCast(resSpell) != -1f && timeSinceLastRez.TotalSeconds < 4) || Player.Object.IsCasting())
@@ -185,15 +188,35 @@ namespace XIVSlothCombo.AutoRotation
 
                 if (CustomComboFunctions.GetPartyMembers().Where(RezQuery).FindFirst(x => x is not null, out var member))
                 {
-                    if (CustomComboFunctions.ActionReady(All.Swiftcast))
+                    if (Player.Job is Job.RDM)
                     {
-                        ActionManager.Instance()->UseAction(ActionType.Action, All.Swiftcast);
-                        return;
-                    }
+                        if (CustomComboFunctions.ActionReady(All.Swiftcast) && !CustomComboFunctions.HasEffect(RDM.Buffs.Dualcast))
+                        {
+                            ActionManager.Instance()->UseAction(ActionType.Action, All.Swiftcast);
+                            return;
+                        }
 
-                    if (!CustomComboFunctions.IsMoving || CustomComboFunctions.HasEffect(All.Buffs.Swiftcast))
+                        if (ActionManager.GetAdjustedCastTime(ActionType.Action, resSpell) == 0)
+                        {
+                            ActionManager.Instance()->UseAction(ActionType.Action, resSpell, member.GameObjectId);
+                        }
+
+                    }
+                    else
                     {
-                        ActionManager.Instance()->UseAction(ActionType.Action, resSpell, member.GameObjectId);
+                        if (CustomComboFunctions.ActionReady(All.Swiftcast))
+                        {
+                            if (ActionManager.Instance()->GetActionStatus(ActionType.Action, All.Swiftcast) == 0)
+                            {
+                                ActionManager.Instance()->UseAction(ActionType.Action, All.Swiftcast);
+                                return;
+                            }
+                        }
+
+                        if (!CustomComboFunctions.IsMoving || CustomComboFunctions.HasEffect(All.Buffs.Swiftcast))
+                        {
+                            ActionManager.Instance()->UseAction(ActionType.Action, resSpell, member.GameObjectId);
+                        }
                     }
                 }
             }
@@ -377,9 +400,9 @@ namespace XIVSlothCombo.AutoRotation
                 if (target is null)
                     return false;
 
-                var inRange = ActionManager.GetActionInRangeOrLoS(outAct, Player.GameObject, target.Struct()) != 562;
                 var canUseTarget = ActionManager.CanUseActionOnTarget(outAct, target.Struct());
                 var canUseSelf = ActionManager.CanUseActionOnTarget(outAct, Player.GameObject);
+                var inRange = CustomComboFunctions.IsInLineOfSight(target) && CustomComboFunctions.InActionRange(outAct, target);
 
                 var canUse = canUseSelf || canUseTarget || areaTargeted;
                 if (canUse && inRange)

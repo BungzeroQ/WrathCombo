@@ -14,12 +14,12 @@ namespace XIVSlothCombo.Combos.PvE
         ///<summary>
         ///    Whether the player has a shield from HOC from themselves.
         ///</summary>
-        private static bool HasOwnHOC => LocalPlayer != null && CustomComboFunctions.FindEffect(Buffs.HeartOfCorundum, LocalPlayer, LocalPlayer.GameObjectId) != null;
+        private static bool HasOwnHOC => LocalPlayer != null && CustomComboFunctions.FindEffect(Buffs.HeartOfCorundum | Buffs.HeartOfStone, LocalPlayer, LocalPlayer.GameObjectId) != null;
 
         ///<summary>
         ///    Whether the player has buff from HOC from anyone.
         ///</summary>
-        private static bool HasAnyHOC => LocalPlayer != null && CustomComboFunctions.FindEffect(Buffs.HeartOfCorundum) != null;
+        private static bool HasAnyHOC => LocalPlayer != null && CustomComboFunctions.FindEffect(Buffs.HeartOfCorundum | Buffs.HeartOfStone) != null;
 
         ///<summary>
         ///    Decides if the player should use HOC on themselves, based on general rules and the player's configuration.

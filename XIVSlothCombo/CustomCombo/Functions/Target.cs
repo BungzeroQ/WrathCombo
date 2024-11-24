@@ -111,6 +111,10 @@ namespace XIVSlothCombo.CustomComboNS.Functions
 
         public static bool HasBattleTarget() => CurrentTarget is IBattleNpc { BattleNpcKind: BattleNpcSubKind.Enemy or (BattleNpcSubKind)1 };
 
+        /// <summary> Checks if the player's current target is also targeting the player. </summary>
+        /// <returns> Bool indicating whether the player's current target is also targeting the player. </returns>
+        public static bool IsPlayerTargeted() => CurrentTarget.TargetObjectId == LocalPlayer.GameObjectId;
+
         public static bool HasFriendlyTarget(IGameObject? OurTarget = null)
         {
             if (OurTarget is null)

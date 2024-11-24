@@ -95,6 +95,12 @@ internal partial class GNB
 
                     break;
 
+                case CustomComboPreset.GNB_AoE_HOC:
+                    UserConfig.DrawSliderInt(5, 50, GNB_AoE_HOCThreshold,
+                        startUsingAtDescription,
+                        itemWidth: bigger, sliderIncrement: SliderIncrements.Fives);
+                    break;
+
                 case CustomComboPreset.GNB_AoE_GreatNebula:
                     UserConfig.DrawSliderInt(5, 55, GNB_AoE_GreatNebulaThreshold,
                         startUsingAtDescription,
@@ -283,6 +289,21 @@ internal partial class GNB
         /// <seealso cref="CustomComboPreset.GNB_ST_Superbolide" />
         public static readonly UserInt GNB_ST_SuperbolideBossRestriction =
             new("GNB_ST_SuperbolideBossRestriction", (int)BossAvoidance.On);
+        #endregion
+
+        #region Advanced Mode - AoE
+
+        /// <summary>
+        ///     Self HP% to use HOC below for AoE.
+        /// </summary>
+        /// <value>
+        ///     <b>Default</b>: 55 <br />
+        ///     <b>Range</b>: 5 - 55 <br />
+        ///     <b>Step</b>: <see cref="SliderIncrements.Fives" />
+        /// </value>
+        /// <seealso cref="CustomComboPreset.GNB_AoE_HOC" />
+        public static readonly UserInt GNB_AoE_HOCThreshold =
+            new("GNB_AoE_HOCThreshold", 55);
 
         /// <summary>
         ///     Self HP% to use Great Nebula below for AoE.

@@ -91,17 +91,22 @@ namespace XIVSlothCombo.Window.Tabs
                 }
                 ImGuiComponents.HelpMarker($"Disabling this will turn off AoE Healing features. Otherwise will require the amount of targets required to be in range of an AoE feature's heal to use.");
                 ImGui.Spacing();
-                changed |= ImGui.Checkbox("Auto-Rez", ref cfg.HealerSettings.AutoRez);
-                ImGuiComponents.HelpMarker("Will attempt to resurrect dead party members.");
+                changed |= ImGui.Checkbox("Auto-Resurrect", ref cfg.HealerSettings.AutoRez);
+                ImGuiComponents.HelpMarker($"Will attempt to resurrect dead party members. Applies to {WHM.ClassID.JobAbbreviation()}, {WHM.JobID.JobAbbreviation()}, {SCH.JobID.JobAbbreviation()}, {AST.JobID.JobAbbreviation()}, {SGE.JobID.JobAbbreviation()}");
+                if (cfg.HealerSettings.AutoRez)
+                {
+                    changed |= ImGui.Checkbox($"Apply to {SMN.JobID.JobAbbreviation()} & {RDM.JobID.JobAbbreviation()}", ref cfg.HealerSettings.AutoRezDPSJobs);
+                    ImGuiComponents.HelpMarker($"When playing as {SMN.JobID.JobAbbreviation()} or {RDM.JobID.JobAbbreviation()}, also attempt to raise a dead party member. {RDM.JobID.JobAbbreviation()} will only resurrect with {All.Buffs.Swiftcast.StatusName()} or {RDM.Buffs.Dualcast.StatusName()} active.");
+                }
                 changed |= ImGui.Checkbox($"Auto-{All.Esuna.ActionName()}", ref cfg.HealerSettings.AutoCleanse);
                 ImGuiComponents.HelpMarker($"Will {All.Esuna.ActionName()} any cleansable debuffs (Healing takes priority).");
 
-                changed |= ImGui.Checkbox($"[{CustomComboFunctions.JobIDs.JobIDToShorthand(SGE.JobID)}] Automatically Manage Kardia", ref cfg.HealerSettings.ManageKardia);
+                changed |= ImGui.Checkbox($"[{SGE.JobID.JobAbbreviation()}] Automatically Manage Kardia", ref cfg.HealerSettings.ManageKardia);
                 ImGuiComponents.HelpMarker($"Switches {SGE.Kardia.ActionName()} to party members currently being targeted by enemies, prioritising tanks if multiple people are being targeted.");
                 if (cfg.HealerSettings.ManageKardia)
                     changed |= ImGui.Checkbox($"Limit {SGE.Kardia.ActionName()} swapping to tanks only", ref cfg.HealerSettings.KardiaTanksOnly);
 
-                changed |= ImGui.Checkbox($"[{CustomComboFunctions.JobIDs.JobIDToShorthand(WHM.JobID)}/{CustomComboFunctions.JobIDs.JobIDToShorthand(AST.JobID)}] Pre-emptively apply heal over time on focus target", ref cfg.HealerSettings.PreEmptiveHoT);
+                changed |= ImGui.Checkbox($"[{WHM.JobID.JobAbbreviation()}/{AST.JobID.JobAbbreviation()}] Pre-emptively apply heal over time on focus target", ref cfg.HealerSettings.PreEmptiveHoT);
                 ImGuiComponents.HelpMarker($"Applies {WHM.Regen.ActionName()}/{AST.AspectedBenefic.ActionName()} to your focus target when out of combat and they are 30y or less away from an enemy. (Bypasses \"Only in Combat\" setting)");
 
             }

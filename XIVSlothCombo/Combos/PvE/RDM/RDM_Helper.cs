@@ -70,6 +70,16 @@ namespace XIVSlothCombo.Combos.PvE
             //Grabs an oGCD to return based on radio options
 
             if (placeOGCD == 0
+                && fleche
+                && ActionReady(Fleche))
+                placeOGCD = Fleche;
+
+            if (placeOGCD == 0
+                && contre
+                && ActionReady(ContreSixte))
+                placeOGCD = ContreSixte;
+            
+            if (placeOGCD == 0
                 && engagement
                 && (GetRemainingCharges(Engagement) > engagementPool
                     || (GetRemainingCharges(Engagement) == 1 && GetCooldownRemainingTime(Engagement) < 3))
@@ -85,16 +95,6 @@ namespace XIVSlothCombo.Combos.PvE
                 && LevelChecked(Corpsacorps)
                 && distance <= corpacorpsRange)
                 placeOGCD = Corpsacorps;
-
-            if (placeOGCD == 0
-                && contre
-                && ActionReady(ContreSixte))
-                placeOGCD = ContreSixte;
-
-            if (placeOGCD == 0
-                && fleche
-                && ActionReady(Fleche))
-                placeOGCD = Fleche;
 
             if (placeOGCD == 0
                 && vice

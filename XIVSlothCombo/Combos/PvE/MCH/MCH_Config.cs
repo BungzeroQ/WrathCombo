@@ -1,5 +1,7 @@
+using XIVSlothCombo.Combos.PvP;
 using XIVSlothCombo.CustomComboNS.Functions;
 using XIVSlothCombo.Data;
+using XIVSlothCombo.Window.Functions;
 using static XIVSlothCombo.Window.Functions.UserConfig;
 
 namespace XIVSlothCombo.Combos.PvE;
@@ -114,6 +116,22 @@ internal partial class MCH
                         "Stop Using When Target HP% is at or Below (Set to 0 to Disable This Check)");
 
                     break;
+
+                //PVP
+                case CustomComboPreset.MCHPvP_BurstMode_MarksmanSpite:
+                    DrawSliderInt(0, 36000, MCHPvP.Config.MCHPVP_MarksmanSpite,
+                        "Use Marksman's Spite when the target is below set HP");
+                    break;
+
+                case CustomComboPreset.MCHPvP_BurstMode_FullMetalField:
+                    UserConfig.DrawHorizontalRadioButton(MCHPvP.Config.MCHPVP_FMFOption, "Full Metal Field Wildfire combo",
+                        "Uses Full Metal Field when Wildfire is ready.", 1);
+
+                    UserConfig.DrawHorizontalRadioButton(MCHPvP.Config.MCHPVP_FMFOption, "Full Metal Field only when Overheated",
+                        "Only uses Full Metal Field while Overheated.", 2);
+
+                    break;
+
             }
         }
     }

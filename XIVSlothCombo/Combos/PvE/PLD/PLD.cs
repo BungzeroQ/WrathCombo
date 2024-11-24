@@ -20,13 +20,19 @@ namespace XIVSlothCombo.Combos.PvE
             FastBlade = 9,
             RiotBlade = 15,
             ShieldBash = 16,
+            Sentinel = 17,
             RageOfHalone = 21,
+            Bulwark = 22,
             CircleOfScorn = 23,
             ShieldLob = 24,
             SpiritsWithin = 29,
+            HallowedGround = 30,
             GoringBlade = 3538,
+            DivineVeil = 3540,
             RoyalAuthority = 3539,
+            Guardian = 36920,
             TotalEclipse = 7381,
+            Intervention = 7382,
             Requiescat = 7383,
             Imperator = 36921,
             HolySpirit = 7384,
@@ -208,16 +214,16 @@ namespace XIVSlothCombo.Combos.PvE
                         // Out of Range
                         if (LevelChecked(ShieldLob) && !InMeleeRange())
                             return ShieldLob;
+                    }
 
-                        // Basic Combo
-                        if (comboTime > 0)
-                        {
-                            if (lastComboActionID is FastBlade && LevelChecked(RiotBlade))
-                                return RiotBlade;
+                    // Basic Combo
+                    if (comboTime > 0)
+                    {
+                        if (lastComboActionID is FastBlade && LevelChecked(RiotBlade))
+                            return RiotBlade;
 
-                            if (lastComboActionID is RiotBlade && LevelChecked(RageOfHalone))
-                                return OriginalHook(RageOfHalone);
-                        }
+                        if (lastComboActionID is RiotBlade && LevelChecked(RageOfHalone))
+                            return OriginalHook(RageOfHalone);
                     }
                 }
 
@@ -330,6 +336,8 @@ namespace XIVSlothCombo.Combos.PvE
                 bool hasDivineMight = HasEffect(Buffs.DivineMight);
                 bool hasFightOrFlight = HasEffect(Buffs.FightOrFlight);
                 bool hasDivineMagicMP = playerMP >= GetResourceCost(HolySpirit);
+                bool hasJustUsedMitigation = JustUsed(OriginalHook(Sheltron), 3f) || JustUsed(OriginalHook(Sentinel), 5f) ||
+                                             JustUsed(All.Rampart, 5f) || JustUsed(HallowedGround, 9f);
                 bool hasRequiescatMP = (IsNotEnabled(CustomComboPreset.PLD_ST_AdvancedMode_MP_Reserve) && playerMP >= GetResourceCost(HolySpirit) * 3.6) ||
                                        (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_MP_Reserve) && playerMP >= (GetResourceCost(HolySpirit) * 3.6) + Config.PLD_ST_MP_Reserve);
                 bool inBurstWindow = JustUsed(FightOrFlight, 30f);
@@ -419,11 +427,33 @@ namespace XIVSlothCombo.Combos.PvE
                             if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_BladeOfHonor) && LevelChecked(BladeOfHonor) && OriginalHook(Requiescat) == BladeOfHonor)
                                 return OriginalHook(Requiescat);
 
-                            // Sheltron Overcap Protection
-                            if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_Sheltron) && LevelChecked(Sheltron) &&
-                                Gauge.OathGauge >= Config.PLD_ST_SheltronOption && PlayerHealthPercentageHp() < 100 &&
-                                InCombat() && !HasEffect(Buffs.Sheltron) && !HasEffect(Buffs.HolySheltron))
-                                return OriginalHook(Sheltron);
+                            // Mitigation
+                            if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_Mitigation) && IsPlayerTargeted() && !hasJustUsedMitigation && InCombat())
+                            {
+                                // Hallowed Ground
+                                if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_HallowedGround) && ActionReady(HallowedGround) &&
+                                    PlayerHealthPercentageHp() < Config.PLD_ST_HallowedGround_Health && (Config.PLD_ST_HallowedGround_SubOption == 1 ||
+                                    (IsBoss(CurrentTarget!) && Config.PLD_ST_HallowedGround_SubOption == 2)))
+                                    return HallowedGround;
+
+                                // Sentinel / Guardian
+                                if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_Sentinel) && ActionReady(OriginalHook(Sentinel)) &&
+                                    PlayerHealthPercentageHp() < Config.PLD_ST_Sentinel_Health && (Config.PLD_ST_Sentinel_SubOption == 1 ||
+                                    (IsBoss(CurrentTarget!) && Config.PLD_ST_Sentinel_SubOption == 2)))
+                                    return OriginalHook(Sentinel);
+
+                                // Rampart
+                                if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_Rampart) && ActionReady(All.Rampart) &&
+                                    PlayerHealthPercentageHp() < Config.PLD_ST_Rampart_Health && (Config.PLD_ST_Rampart_SubOption == 1 ||
+                                    (IsBoss(CurrentTarget!) && Config.PLD_ST_Rampart_SubOption == 2)))
+                                    return All.Rampart;
+
+                                // Sheltron
+                                if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_Sheltron) && LevelChecked(Sheltron) &&
+                                    Gauge.OathGauge >= Config.PLD_ST_SheltronOption && PlayerHealthPercentageHp() < 95 &&
+                                    !HasEffect(Buffs.Sheltron) && !HasEffect(Buffs.HolySheltron))
+                                    return OriginalHook(Sheltron);
+                            }
                         }
 
                         // Requiescat Phase
@@ -476,16 +506,16 @@ namespace XIVSlothCombo.Combos.PvE
                             if (LevelChecked(ShieldLob))
                                 return ShieldLob;
                         }
+                    }
 
-                        // Basic Combo
-                        if (comboTime > 0)
-                        {
-                            if (lastComboActionID is FastBlade && LevelChecked(RiotBlade))
-                                return RiotBlade;
+                    // Basic Combo
+                    if (comboTime > 0)
+                    {
+                        if (lastComboActionID is FastBlade && LevelChecked(RiotBlade))
+                            return RiotBlade;
 
-                            if (lastComboActionID is RiotBlade && LevelChecked(RageOfHalone))
-                                return OriginalHook(RageOfHalone);
-                        }
+                        if (lastComboActionID is RiotBlade && LevelChecked(RageOfHalone))
+                            return OriginalHook(RageOfHalone);
                     }
                 }
 
@@ -508,6 +538,8 @@ namespace XIVSlothCombo.Combos.PvE
                 bool hasRequiescat = HasEffect(Buffs.Requiescat);
                 bool hasDivineMight = HasEffect(Buffs.DivineMight);
                 bool hasDivineMagicMP = playerMP >= GetResourceCost(HolySpirit);
+                bool hasJustUsedMitigation = JustUsed(OriginalHook(Sheltron), 3f) || JustUsed(OriginalHook(Sentinel), 5f) ||
+                                             JustUsed(All.Rampart, 5f) || JustUsed(HallowedGround, 9f);
                 bool hasRequiescatMP = (IsNotEnabled(CustomComboPreset.PLD_AoE_AdvancedMode_MP_Reserve) && playerMP >= GetResourceCost(HolySpirit) * 3.6) ||
                                        (IsEnabled(CustomComboPreset.PLD_AoE_AdvancedMode_MP_Reserve) && playerMP >= (GetResourceCost(HolySpirit) * 3.6) + Config.PLD_AoE_MP_Reserve);
                 bool isAboveMPReserve = IsNotEnabled(CustomComboPreset.PLD_AoE_AdvancedMode_MP_Reserve) ||
@@ -571,11 +603,33 @@ namespace XIVSlothCombo.Combos.PvE
                             if (IsEnabled(CustomComboPreset.PLD_AoE_AdvancedMode_BladeOfHonor) && LevelChecked(BladeOfHonor) && OriginalHook(Requiescat) == BladeOfHonor)
                                 return OriginalHook(Requiescat);
 
-                            // Sheltron Overcap Protection
-                            if (IsEnabled(CustomComboPreset.PLD_AoE_AdvancedMode_Sheltron) && LevelChecked(Sheltron) &&
-                                Gauge.OathGauge >= Config.PLD_AoE_SheltronOption && PlayerHealthPercentageHp() < 100 &&
-                                InCombat() && !HasEffect(Buffs.Sheltron) && !HasEffect(Buffs.HolySheltron))
-                                return OriginalHook(Sheltron);
+                            // Mitigation
+                            if (IsEnabled(CustomComboPreset.PLD_AoE_AdvancedMode_Mitigation) && IsPlayerTargeted() && !hasJustUsedMitigation && InCombat())
+                            {
+                                // Hallowed Ground
+                                if (IsEnabled(CustomComboPreset.PLD_AoE_AdvancedMode_HallowedGround) && ActionReady(HallowedGround) &&
+                                    PlayerHealthPercentageHp() < Config.PLD_AoE_HallowedGround_Health && (Config.PLD_AoE_HallowedGround_SubOption == 1 ||
+                                    (IsBoss(CurrentTarget!) && Config.PLD_AoE_HallowedGround_SubOption == 2)))
+                                    return HallowedGround;
+
+                                // Sentinel / Guardian
+                                if (IsEnabled(CustomComboPreset.PLD_AoE_AdvancedMode_Sentinel) && ActionReady(OriginalHook(Sentinel)) &&
+                                    PlayerHealthPercentageHp() < Config.PLD_AoE_Sentinel_Health && (Config.PLD_AoE_Sentinel_SubOption == 1 ||
+                                    (IsBoss(CurrentTarget!) && Config.PLD_AoE_Sentinel_SubOption == 2)))
+                                    return OriginalHook(Sentinel);
+
+                                // Rampart
+                                if (IsEnabled(CustomComboPreset.PLD_AoE_AdvancedMode_Rampart) && ActionReady(All.Rampart) &&
+                                    PlayerHealthPercentageHp() < Config.PLD_AoE_Rampart_Health && (Config.PLD_AoE_Rampart_SubOption == 1 ||
+                                    (IsBoss(CurrentTarget!) && Config.PLD_AoE_Rampart_SubOption == 2)))
+                                    return All.Rampart;
+
+                                // Sheltron
+                                if (IsEnabled(CustomComboPreset.PLD_AoE_AdvancedMode_Sheltron) && LevelChecked(Sheltron) &&
+                                    Gauge.OathGauge >= Config.PLD_AoE_SheltronOption && PlayerHealthPercentageHp() < 95 &&
+                                    !HasEffect(Buffs.Sheltron) && !HasEffect(Buffs.HolySheltron))
+                                    return OriginalHook(Sheltron);
+                            }
                         }
 
                         // Confiteor & Blades
@@ -604,25 +658,24 @@ namespace XIVSlothCombo.Combos.PvE
 
             protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
             {
-                if (actionID is Requiescat)
+                if (actionID is Requiescat or Imperator)
                 {
-                    int choice = Config.PLD_RequiescatOption;
+                    // Fight or Flight
+                    if (Config.PLD_Requiescat_SubOption == 2 && ((ActionReady(FightOrFlight) && ActionReady(Requiescat)) || !LevelChecked(Requiescat)))
+                        return FightOrFlight;
 
-                    if ((choice is 1 || choice is 3) && HasEffect(Buffs.ConfiteorReady) && Confiteor.LevelChecked() &&
-                        GetResourceCost(Confiteor) <= LocalPlayer.CurrentMp)
+                    // Confiteor & Blades
+                    if (HasEffect(Buffs.ConfiteorReady) || (LevelChecked(BladeOfFaith) && OriginalHook(Confiteor) != Confiteor))
                         return OriginalHook(Confiteor);
 
+                    // Pre-Blades
                     if (HasEffect(Buffs.Requiescat))
                     {
-                        if ((choice is 2 || choice is 3) && OriginalHook(Confiteor) != Confiteor && BladeOfFaith.LevelChecked() &&
-                            GetResourceCost(Confiteor) <= LocalPlayer.CurrentMp)
-                            return OriginalHook(Confiteor);
-
-                        if (choice is 4 && HolySpirit.LevelChecked() && GetResourceCost(HolySpirit) <= LocalPlayer.CurrentMp)
-                            return HolySpirit;
-
-                        if (choice is 5 && HolyCircle.LevelChecked() && GetResourceCost(HolyCircle) <= LocalPlayer.CurrentMp)
+                        // AoE
+                        if (LevelChecked(HolyCircle) && NumberOfEnemiesInRange(HolyCircle, null) > 2)
                             return HolyCircle;
+
+                        else return HolySpirit;
                     }
                 }
 
@@ -636,41 +689,13 @@ namespace XIVSlothCombo.Combos.PvE
 
             protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
             {
-                if ((actionID == SpiritsWithin || actionID == Expiacion) && ActionReady(CircleOfScorn))
+                if (actionID is SpiritsWithin or Expiacion)
                 {
                     if (IsOffCooldown(OriginalHook(SpiritsWithin)))
-                    {
-                        int choice = Config.PLD_SpiritsWithinOption;
+                        return OriginalHook(SpiritsWithin);
 
-                        switch (choice)
-                        {
-                            case 1: return CircleOfScorn;
-                            case 2: return OriginalHook(SpiritsWithin);
-                        }
-                    }
-
-                    return CircleOfScorn;
-                }
-
-                return actionID;
-            }
-        }
-
-        internal class PLD_FoF_Requiescat : CustomCombo
-        {
-            protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.PLD_FoFRequiescat;
-
-            protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
-            {
-                if (actionID is FightOrFlight)
-                {
-                    if (IsOffCooldown(FightOrFlight))
-                        return OriginalHook(FightOrFlight);
-
-                    if (IsOffCooldown(Requiescat) || (LevelChecked(BladeOfHonor) && (HasEffect(Buffs.Requiescat) || HasEffect(Buffs.BladeOfHonor))))
-                        return OriginalHook(Requiescat);
-
-                    return OriginalHook(FightOrFlight);
+                    if (ActionReady(CircleOfScorn) && (Config.PLD_SpiritsWithin_SubOption == 1 || (Config.PLD_SpiritsWithin_SubOption == 2 && JustUsed(OriginalHook(SpiritsWithin), 5f))))
+                        return CircleOfScorn;
                 }
 
                 return actionID;

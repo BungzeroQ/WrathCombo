@@ -1,4 +1,6 @@
-﻿using XIVSlothCombo.CustomComboNS;
+﻿using XIVSlothCombo.Core;
+using XIVSlothCombo.CustomComboNS;
+using static XIVSlothCombo.Combos.PvE.AST;
 
 namespace XIVSlothCombo.Combos.PvP
 {
@@ -16,17 +18,17 @@ namespace XIVSlothCombo.Combos.PvP
             DoubleGravity = 29248,
             Draw = 29249,
             Macrocosmos = 29253,
-            Microcosmos = 29254;
+            Microcosmos = 29254,
+            MinorArcana = 41503,
+            Epicycle = 41506;
 
         internal class Buffs
         {
             internal const ushort
-                BalanceDrawn = 3101,
-                BoleDrawn = 3403,
-                ArrowDrawn = 3404,
-                Arrow = 3402,
-                Balance = 1338,
-                Bole = 1339;
+                    LadyOfCrowns = 4328,
+                    LordOfCrowns = 4329,
+                    RetrogradeReady = 4331;
+
         }
 
         internal class ASTPvP_Burst : CustomCombo
@@ -37,57 +39,72 @@ namespace XIVSlothCombo.Combos.PvP
             {
                 if (actionID is Malefic)
                 {
-                    // Out of combat Draw
-                    if (IsOffCooldown(Draw) && !InCombat() && IsEnabled(CustomComboPreset.ASTPvP_Card))
-                        return Draw;
+                    if (IsEnabled(CustomComboPreset.ASTPvP_Burst_DrawCard) && IsOffCooldown(MinorArcana) && (!HasEffect(Buffs.LadyOfCrowns) && !HasEffect(Buffs.LordOfCrowns)))
+                        return MinorArcana;
 
-                    // Malefic to initiate combat
-                    if (!InCombat() &&
-                        (IsOffCooldown(Draw) || HasEffect(Buffs.BoleDrawn) || HasEffect(Buffs.ArrowDrawn)))
-                        return Malefic;
-
-                    // Post-Draw Malefic
-                    if (lastComboMove == Draw && !CanWeave(actionID))
-                        return Malefic;
-
-                    // Play "The Balance" before a Gravity/Double + Macro burst
-                    if (HasCharges(DoubleCast) && IsOffCooldown(Gravity) && IsOffCooldown(Macrocosmos) && HasEffect(Buffs.BalanceDrawn) && IsEnabled(CustomComboPreset.ASTPvP_Card))
-                        return OriginalHook(Draw);
-
-                    if (!TargetHasEffectAny(PvPCommon.Buffs.Guard))
+                    if (!PvPCommon.IsImmuneToDamage())
                     {
-                        if (lastComboMove == DoubleGravity && IsOffCooldown(Macrocosmos))
+                        var cardPlayOption = PluginConfiguration.GetCustomIntValue(Config.ASTPvP_Burst_PlayCardOption);
+
+                        if (IsEnabled(CustomComboPreset.ASTPvP_Burst_PlayCard) && CanWeave(actionID))
+                        {
+                            bool hasLadyOfCrowns = HasEffect(Buffs.LadyOfCrowns);
+                            bool hasLordOfCrowns = HasEffect(Buffs.LordOfCrowns);
+
+                            if ((cardPlayOption == 1 && (hasLadyOfCrowns || hasLordOfCrowns)) ||
+                                (cardPlayOption == 2 && hasLordOfCrowns) ||
+                                (cardPlayOption == 3 && hasLadyOfCrowns))
+                            {
+                                return OriginalHook(MinorArcana);
+                            }
+                        }
+
+
+                        if (IsEnabled(CustomComboPreset.ASTPvP_Burst_Macrocosmos) && lastComboMove == DoubleGravity && IsOffCooldown(Macrocosmos))
                             return Macrocosmos;
 
-                        if (lastComboMove == Gravity && HasCharges(DoubleCast) && IsEnabled(CustomComboPreset.ASTPvP_DoubleCast))
+                        if (IsEnabled(CustomComboPreset.ASTPvP_DoubleCast) && lastComboMove == Gravity && HasCharges(DoubleCast))
                             return DoubleGravity;
 
-                        if (IsOffCooldown(Gravity))
+                        if (IsEnabled(CustomComboPreset.ASTPvP_Burst_Gravity) && IsOffCooldown(Gravity))
                             return Gravity;
 
-                        if (lastComboMove == Malefic && (GetRemainingCharges(DoubleCast) > 1 ||
-                            GetCooldownRemainingTime(Gravity) > 7.5f) && CanWeave(actionID) && IsEnabled(CustomComboPreset.ASTPvP_DoubleCast))
-                            return DoubleMalefic;
+                        if (IsEnabled(CustomComboPreset.ASTPvP_Burst_DoubleMalefic))
+                        {
+                            if (lastComboMove == Malefic && (GetRemainingCharges(DoubleCast) > 1 ||
+                                GetCooldownRemainingTime(Gravity) > 7.5f) && CanWeave(actionID) && IsEnabled(CustomComboPreset.ASTPvP_DoubleCast))
+                                return DoubleMalefic;
+                        }
+
                     }
 
-                    // Card waste prevention
-                    if (((GetBuffRemainingTime(Buffs.BalanceDrawn) < 3) ||
-                        (GetBuffRemainingTime(Buffs.BoleDrawn) < 3) ||
-                        (GetBuffRemainingTime(Buffs.ArrowDrawn) < 3)) &&
-                        CanWeave(actionID) && IsEnabled(CustomComboPreset.ASTPvP_Card))
-                        return OriginalHook(Draw);
-
-                    // Generic Draw
-                    if (IsOffCooldown(Draw) && CanWeave(actionID) && IsEnabled(CustomComboPreset.ASTPvP_Card))
-                        return Draw;
-
-                    // Generic Play outside of necessary holding
-                    if (CanWeave(actionID) && GetCooldownRemainingTime(Macrocosmos) > 7.5f && (IsOffCooldown(Draw) ||
-                        HasEffect(Buffs.BalanceDrawn) || HasEffect(Buffs.BoleDrawn) || HasEffect(Buffs.ArrowDrawn)) && IsEnabled(CustomComboPreset.ASTPvP_Card))
-                        return OriginalHook(Draw);
                 }
 
                 return actionID;
+            }
+
+            internal class ASTPvP_Epicycle : CustomCombo
+            {
+                protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.ASTPvP_Epicycle;
+
+                protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+                {
+                    if(actionID is Epicycle)
+                    {
+                        if (IsOffCooldown(MinorArcana))
+                            return MinorArcana;
+
+                        if (HasEffect(Buffs.RetrogradeReady))
+                        {
+                            if (HasEffect(Buffs.LordOfCrowns))
+                                return OriginalHook(MinorArcana);
+                            if (IsOffCooldown(Macrocosmos))
+                                return Macrocosmos;
+                        }
+                    }
+
+                    return actionID;
+                }
             }
 
             internal class ASTPvP_Heal : CustomCombo

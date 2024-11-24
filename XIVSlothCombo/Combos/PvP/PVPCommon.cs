@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using XIVSlothCombo.Core;
 using XIVSlothCombo.CustomComboNS;
+using XIVSlothCombo.CustomComboNS.Functions;
 
 namespace XIVSlothCombo.Combos.PvP
 {
@@ -41,6 +42,11 @@ namespace XIVSlothCombo.Combos.PvP
             public const ushort
                 Sprint = 1342,
                 Guard = 3054;
+        }
+
+        public static bool IsImmuneToDamage()
+        {
+            return CustomComboFunctions.TargetHasEffectAny(PvPCommon.Buffs.Guard) || CustomComboFunctions.TargetHasEffectAny(DRKPvP.Buffs.UndeadRedemption) || CustomComboFunctions.TargetHasEffectAny(PLDPvP.Buffs.HallowedGround) || CustomComboFunctions.TargetHasEffectAny(VPRPvP.Buffs.HardenedScales);
         }
 
         // Lists of Excluded skills 

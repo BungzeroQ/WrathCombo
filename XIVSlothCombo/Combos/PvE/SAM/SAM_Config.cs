@@ -20,12 +20,10 @@ internal partial class SAM
             SAM_Mangetsu_KenkiOvercapAmount = new(nameof(SAM_Mangetsu_KenkiOvercapAmount), 50),
             SAM_ST_KenkiOvercapAmount = new(nameof(SAM_ST_KenkiOvercapAmount), 50),
             SAM_AoE_KenkiOvercapAmount = new(nameof(SAM_AoE_KenkiOvercapAmount), 50),
-            SAM_VariantCure = new("SAM_VariantCure");
-
-        public static UserFloat
             SAM_ST_Higanbana_Threshold = new("SAM_ST_Higanbana_Threshold", 1),
-            SAM_ST_ExecuteThreshold = new("SAM_ST_ExecuteThreshold", 1);
-
+            SAM_ST_ExecuteThreshold = new("SAM_ST_ExecuteThreshold", 1),
+            SAM_VariantCure = new("SAM_VariantCure");
+        
         public static UserBool
             SAM_Kasha_KenkiOvercap = new(nameof(SAM_Kasha_KenkiOvercap)),
             SAM_Yukaze_KenkiOvercap = new(nameof(SAM_Yukaze_KenkiOvercap)),

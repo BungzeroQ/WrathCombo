@@ -1,18 +1,20 @@
+#region Dependencies
 using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Statuses;
 using XIVSlothCombo.Combos.PvE.Content;
 using XIVSlothCombo.Core;
 using XIVSlothCombo.CustomComboNS;
 using XIVSlothCombo.Data;
+#endregion
 
 namespace XIVSlothCombo.Combos.PvE
 {
-    internal partial class GNB //Our Job Definitions
+    internal partial class GNB //Job definitions
     {
-        public const byte JobID = 37; //Our JobID
+        public const byte JobID = 37; //JobID value
 
-        public const uint //Our Actions (AIDs)
-            //Offensive
+        public const uint //Job abilities
+        #region Offensive
             KeenEdge = 16137, //Lv1, instant, GCD, range 3, single-target, targets=hostile
             NoMercy = 16138, //Lv2, instant, 60.0s CD (group 10), range 0, single-target, targets=self
             BrutalShell = 16139, //Lv4, instant, GCD, range 3, single-target, targets=hostile
@@ -41,7 +43,9 @@ namespace XIVSlothCombo.Combos.PvE
             NobleBlood = 36938, //Lv100, instant, GCD, range 3, single-target, targets=hostile
             LionHeart = 36939, //Lv100, instant, GCD, range 3, single-target, targets=hostile
 
-            //Utility
+        #endregion
+
+        #region Utility
             Camouflage = 16140, //Lv6, instant, 90.0s CD (group 15), range 0, single-target, targets=self
             RoyalGuard = 16142, //Lv10, instant, 2.0s CD (group 1), range 0, single-target, targets=self
             ReleaseRoyalGuard = 32068, //Lv10, instant, 1.0s CD (group 1), range 0, single-target, targets=self
@@ -53,11 +57,13 @@ namespace XIVSlothCombo.Combos.PvE
             Trajectory = 36934, //Lv56, instant, 30.0s CD (group 9/70) (2? charges), range 20, single-target, targets=hostile
             HeartOfCorundum = 25758, //Lv82, instant, 25.0s CD (group 3), range 30, single-target, targets=self/party
             GreatNebula = 36935, //Lv92, instant, 120.0s CD, range 0, single-target, targeets=self
+        #endregion
 
-            //Limit Break
+        #region Limit Break
             GunmetalSoul = 17105; //LB3, instant, range 0, AOE 50 circle, targets=self, animLock=3.860
+        #endregion
 
-        public static class Buffs //Our Buffs (SIDs)
+        public static class Buffs
         {
             public const ushort
                     BrutalShell = 1898, //applied by Brutal Shell to self
@@ -75,6 +81,7 @@ namespace XIVSlothCombo.Combos.PvE
                     HeartOfLight = 1839, //applied by Heart of Light to self
                     Aurora = 1835, //applied by Aurora to self
                     Superbolide = 1836, //applied by Superbolide to self
+                    HeartOfStone = 1840, // //applied by Heart of Stone to self
                     HeartOfCorundum = 2683, //applied by Heart of Corundum to self
                     ClarityOfCorundum = 2684, //applied by Heart of Corundum to self
                     CatharsisOfCorundum = 2685, //applied by Heart of Corundum to self
@@ -84,17 +91,15 @@ namespace XIVSlothCombo.Combos.PvE
                     ReadyToBreak = 3886, //applied by No mercy to self
                     ReadyToReign = 3840; //applied by Bloodfest to target
         }
-
-        public static class Debuffs //Our Debuffs (target SIDs)
+        public static class Debuffs
         {
             public const ushort
                 BowShock = 1838, //applied by Bow Shock to target
                 SonicBreak = 1837; //applied by Sonic Break to target
         }
+        public static int MaxCartridges(byte level) => level >= 88 ? 3 : 2; //Level Check helper for Maximum Ammo
 
-        public static int MaxCartridges(byte level) => level >= 88 ? 3 : 2; //Level Check for Maximum Ammo
-
-        //Simple Mode - Single Target
+        #region Simple Mode - Single Target
         internal class GNB_ST_SimpleMode : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.GNB_ST_Simple;
@@ -117,7 +122,7 @@ namespace XIVSlothCombo.Combos.PvE
                     var hasBreak = HasEffect(Buffs.ReadyToBreak); //Checks for Ready To Break buff
                     var hasReign = HasEffect(Buffs.ReadyToReign); //Checks for Ready To Reign buff
                     //Mitigations
-                    var hpRemainingNebula = Config.GNB_ST_GreatNebulaThreshold;
+                    var hpRemainingNebula = Config.GNB_ST_GreatNebulaThreshold; 
                     var hpRemainingBolide = Config.GNB_ST_SuperbolideSelfThreshold;
                     var hpRemainingBolideTarget =
                         Config.GNB_ST_SuperbolideTargetThreshold;
@@ -193,7 +198,7 @@ namespace XIVSlothCombo.Combos.PvE
                             && inGreatNebulaContent)
                             return OriginalHook(Nebula);
 
-                        //Living Dead
+                        //Superbolide
                         var inSuperbolideContent =
                             ContentCheck.IsInConfiguredContent(
                                 Config.GNB_ST_SuperbolideDifficulty,
@@ -382,9 +387,10 @@ namespace XIVSlothCombo.Combos.PvE
 
                 return actionID;
             }
-        } 
+        }
+        #endregion
 
-        //Advanced Mode - Single Target
+        #region Advanced Mode - Single Target
         internal class GNB_ST_AdvancedMode : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.GNB_ST_Advanced;
@@ -406,7 +412,14 @@ namespace XIVSlothCombo.Combos.PvE
                     var hasNM = nmCD is >= 40 and <= 60; //Checks if No Mercy is active
                     var hasBreak = HasEffect(Buffs.ReadyToBreak); //Checks for Ready To Break buff
                     var hasReign = HasEffect(Buffs.ReadyToReign); //Checks for Ready To Reign buff
-
+                    //Mitigations
+                    var hpRemainingHOC = Config.GNB_ST_HOCThreshold;
+                    var hpRemainingNebula = Config.GNB_ST_GreatNebulaThreshold;
+                    var hpRemainingBolide = Config.GNB_ST_SuperbolideSelfThreshold;
+                    var hpRemainingBolideTarget =
+                        Config.GNB_ST_SuperbolideTargetThreshold;
+                    var bossRestrictionBolide =
+                        (int)Config.GNB_ST_SuperbolideBossRestriction;
                     //Misc
                     var inOdd = bfCD is < 90 and > 20; //Odd Minute
                     var canLateWeave = GetCooldownRemainingTime(actionID) < 1 && GetCooldownRemainingTime(actionID) > 0.6; //SkS purposes
@@ -453,6 +466,58 @@ namespace XIVSlothCombo.Combos.PvE
                         !InMeleeRange() && //Out of melee range
                         HasBattleTarget()) //Has target
                         return LightningShot; //Execute Lightning Shot if conditions are met
+
+                    //Mitigations - Max Priority
+                    if (IsEnabled(CustomComboPreset.GNB_ST_Mitigation))
+                    {
+                        //HOC
+                        var inHOCContent =
+                            ContentCheck.IsInConfiguredContent(
+                                Config.GNB_ST_HOCDifficulty,
+                                Config.GNB_ST_HOCDifficultyListSet
+                            );
+                        if (IsEnabled(CustomComboPreset.GNB_ST_HOC)
+                            && IsOffCooldown(OriginalHook(HeartOfStone))
+                            && LevelChecked(HeartOfStone)
+                            && PlayerHealthPercentageHp() <= hpRemainingHOC
+                            && inHOCContent)
+                            return OriginalHook(HeartOfStone);
+
+                        //GreatNebula
+                        var inGreatNebulaContent =
+                            ContentCheck.IsInConfiguredContent(
+                                Config.GNB_ST_GreatNebulaDifficulty,
+                                Config.GNB_ST_GreatNebulaDifficultyListSet
+                            );
+                        if (IsEnabled(CustomComboPreset.GNB_ST_GreatNebula)
+                            && IsOffCooldown(OriginalHook(Nebula))
+                            && LevelChecked(Nebula)
+                            && PlayerHealthPercentageHp() <= hpRemainingNebula
+                            && inGreatNebulaContent)
+                            return OriginalHook(Nebula);
+
+                        //Superbolide
+                        var inSuperbolideContent =
+                            ContentCheck.IsInConfiguredContent(
+                                Config.GNB_ST_SuperbolideDifficulty,
+                                Config.GNB_ST_SuperbolideDifficultyListSet
+                            );
+                        if (IsEnabled(CustomComboPreset.GNB_ST_Superbolide)
+                            && IsOffCooldown(Superbolide)
+                            && LevelChecked(Superbolide)
+                            && PlayerHealthPercentageHp() <= hpRemainingBolide
+                            && GetTargetHPPercent() >= hpRemainingBolideTarget
+                            && inSuperbolideContent
+                            //Checking if the target matches the boss avoidance option
+                            && ((bossRestrictionBolide is
+                                     (int)Config.BossAvoidance.On
+                                 && LocalPlayer.TargetObject is not null
+                                 && IsBoss(GNB.LocalPlayer.TargetObject!))
+                                || bossRestrictionBolide is
+                                    (int)Config.BossAvoidance.Off))
+                            return Superbolide;
+                    }
+
 
                     //No Mercy
                     if (IsEnabled(CustomComboPreset.GNB_ST_Advanced_CooldownsGroup) && //Cooldowns option is enabled
@@ -649,8 +714,381 @@ namespace XIVSlothCombo.Combos.PvE
                 return actionID;
             }
         }
+        #endregion
 
-        //Gnashing Fang Features
+        #region Simple Mode - AoE
+        internal class GNB_AoE_SimpleMode : CustomCombo
+        {
+            protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.GNB_AoE_Simple;
+
+            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            {
+                if (actionID == DemonSlice)
+                {
+
+                    #region Variables
+                    //Gauge
+                    var Ammo = GetJobGauge<GNBGauge>().Ammo; //Our cartridge count
+                    var GunStep = GetJobGauge<GNBGauge>().AmmoComboStep; //For Gnashing Fang & Reign combo purposes
+                    //Cooldown-related
+                    var nmCD = GetCooldownRemainingTime(NoMercy); //NoMercy's cooldown; 60s total
+                    var bfCD = GetCooldownRemainingTime(Bloodfest); //Bloodfest's cooldown; 120s total
+                    var hasBreak = HasEffect(Buffs.ReadyToBreak); //Checks for Ready To Break buff
+                    var hasReign = HasEffect(Buffs.ReadyToReign); //Checks for Ready To Reign buff
+                    //Mitigations
+                    var hpRemainingHOC = Config.GNB_AoE_HOCThreshold;
+                    var hpRemainingNebula = Config.GNB_AoE_GreatNebulaThreshold;
+                    var hpRemainingBolide = Config.GNB_AoE_SuperbolideSelfThreshold;
+                    var hpRemainingBolideTarget =
+                        Config.GNB_AoE_SuperbolideTargetThreshold;
+                    //Misc
+                    var nmStop = PluginConfiguration.GetCustomIntValue(Config.GNB_AoE_NoMercyStop);
+                    #region Minimal Requirements
+                    //Ammo-relative
+                    var canFC = LevelChecked(FatedCircle) && //Fated Circle is unlocked
+                                Ammo > 0; //Has Ammo
+                    var canDD = LevelChecked(DoubleDown) && //Double Down is unlocked
+                                GetCooldownRemainingTime(DoubleDown) < 0.6f && //Double Down is off cooldown
+                                Ammo > 0; //Has Ammo
+                    var canBF = LevelChecked(Bloodfest) && //Bloodfest is unlocked
+                                GetCooldownRemainingTime(Bloodfest) < 0.6f; //Bloodfest is off cooldown
+                    //Cooldown-relative
+                    var canZone = LevelChecked(DangerZone) && //Zone is unlocked
+                                GetCooldownRemainingTime(OriginalHook(DangerZone)) < 0.6f; //DangerZone is off cooldown
+                    var canBreak = LevelChecked(SonicBreak) && //Sonic Break is unlocked
+                                hasBreak; //No Mercy or Ready To Break is active
+                    var canBow = LevelChecked(BowShock) && //Bow Shock is unlocked
+                                GetCooldownRemainingTime(BowShock) < 0.6f; //BowShock is off cooldown
+                    var canReign = LevelChecked(ReignOfBeasts) && //Reign of Beasts is unlocked
+                                GunStep == 0 && //Gnashing Fang or Reign combo is not already active
+                                hasReign; //Ready To Reign is active
+                    #endregion
+                    #endregion
+
+                    //Variant Cure
+                    if (IsEnabled(CustomComboPreset.GNB_Variant_Cure) &&
+                        IsEnabled(Variant.VariantCure) &&
+                        PlayerHealthPercentageHp() <= GetOptionValue(Config.GNB_VariantCure))
+                        return Variant.VariantCure;
+
+                    if (InCombat()) //if already in combat
+                    {
+                        if (CanWeave(actionID)) //if we can weave
+                        {
+                            //Variant SpiritDart
+                            Status? sustainedDamage = FindTargetEffect(Variant.Debuffs.SustainedDamage);
+                            if (IsEnabled(CustomComboPreset.GNB_Variant_SpiritDart) &&
+                                IsEnabled(Variant.VariantSpiritDart) &&
+                                (sustainedDamage is null || sustainedDamage?.RemainingTime <= 3))
+                                return Variant.VariantSpiritDart;
+
+                            //Variant Ultimatum
+                            if (IsEnabled(CustomComboPreset.GNB_Variant_Ultimatum) &&
+                                IsEnabled(Variant.VariantUltimatum) &&
+                                ActionReady(Variant.VariantUltimatum))
+                                return Variant.VariantUltimatum;
+
+                            //Mitigations - Max Priority
+                            //HOC
+                            if (IsOffCooldown(OriginalHook(HeartOfStone))
+                                && LevelChecked(HeartOfStone)
+                                && PlayerHealthPercentageHp() <= 50)
+                                return OriginalHook(HeartOfStone);
+
+                            //GreatNebula
+                            if (IsOffCooldown(OriginalHook(Nebula))
+                                && LevelChecked(Nebula)
+                                && PlayerHealthPercentageHp() <= 60)
+                                return OriginalHook(Nebula);
+
+                            //Superbolide
+                            if (IsOffCooldown(Superbolide)
+                                && LevelChecked(Superbolide)
+                                && PlayerHealthPercentageHp() <= 25
+                                && GetTargetHPPercent() >= 33)
+                                return Superbolide;
+
+                            //NoMercy
+                            if (ActionReady(NoMercy) && //if No Mercy is ready
+                                GetTargetHPPercent() > 5) //if target HP is above threshold
+                                return NoMercy; //execute No Mercy
+                            //BowShock
+                            if (canBow && //if Bow Shock is ready
+                                HasEffect(Buffs.NoMercy)) //if No Mercy is active
+                                return BowShock; //execute Bow Shock
+                            //Zone
+                            if (canZone &&
+                                nmCD is < 57.5f and > 17) //use on CD after first usage in NM
+                                return OriginalHook(DangerZone); //execute Zone
+                            //Bloodfest
+                            if (canBF) //if Bloodfest is ready & gauge is empty
+                                return Bloodfest; //execute Bloodfest
+                            //Continuation
+                            if (LevelChecked(FatedBrand) && //if Fated Brand is unlocked
+                                HasEffect(Buffs.ReadyToRaze)) //if Ready To Raze is active
+                                return FatedBrand; //execute Fated Brand
+                        }
+
+                        //SonicBreak
+                        if (canBreak && //if Ready To Break is active & unlocked
+                            !HasEffect(Buffs.ReadyToRaze) && //if Ready To Raze is not active
+                            HasEffect(Buffs.NoMercy)) //if No Mercy is active
+                            return SonicBreak;
+                        //DoubleDown
+                        if (canDD && //if Double Down is ready && gauge is not empty
+                            HasEffect(Buffs.NoMercy)) //if No Mercy is active
+                            return DoubleDown; //execute Double Down
+                        //Reign - because leaving this out anywhere is a waste
+                        if (LevelChecked(ReignOfBeasts)) //if Reign of Beasts is unlocked
+                        {
+                            if (canReign || //can execute Reign of Beasts
+                               (GunStep is 3 or 4)) //can execute Noble Blood or Lion Heart
+                                return OriginalHook(ReignOfBeasts);
+                        }
+                        //FatedCircle - if not LevelChecked, use BurstStrike
+                        if (canFC && //if Fated Circle is unlocked && gauge is not empty
+                                     //Normal
+                            ((HasEffect(Buffs.NoMercy) && //if No Mercy is active
+                            !ActionReady(DoubleDown) && //if Double Down is not ready
+                            GunStep == 0) || //if Gnashing Fang or Reign combo is not active
+                                             //Bloodfest prep
+                            (IsEnabled(CustomComboPreset.GNB_AoE_Bloodfest) && //if Bloodfest option is enabled
+                            bfCD < 6))) //if Bloodfest is about to be ready
+                            return FatedCircle;
+                        if (Ammo > 0 && //if gauge is not empty
+                            !LevelChecked(FatedCircle) && //if Fated Circle is not unlocked
+                            LevelChecked(BurstStrike) && //if Burst Strike is unlocked
+                            (HasEffect(Buffs.NoMercy) && //if No Mercy is active
+                            GunStep == 0)) //if Gnashing Fang or Reign combo is not active
+                            return BurstStrike;
+                    }
+
+                    //1-2
+                    if (comboTime > 0) //if we're in combo
+                    {
+                        if (lastComboMove == DemonSlice && //if last action was Demon Slice
+                            LevelChecked(DemonSlaughter)) //if Demon Slaughter is unlocked
+                        {
+                            if (Ammo == MaxCartridges(level))
+                            {
+                                if (LevelChecked(FatedCircle)) //if Fated Circle is unlocked
+                                    return FatedCircle; //execute Fated Circle
+                                if (!LevelChecked(FatedCircle)) //if Fated Circle is not unlocked
+                                    return BurstStrike; //execute Burst Strike
+                            }
+                            if (Ammo != MaxCartridges(level) || //if gauge is not full
+                                (Ammo == MaxCartridges(level) && //if gauge is full
+                                !LevelChecked(FatedCircle))) //if Fated Circle is not unlocked
+                            {
+                                return DemonSlaughter; //execute Demon Slaughter
+                            }
+                        }
+                    }
+
+                    return DemonSlice; //execute Demon Slice
+                }
+
+                return actionID;
+            }
+        }
+        #endregion
+
+        #region Advanced Mode - AoE
+        internal class GNB_AoE_AdvancedMode : CustomCombo
+        {
+            protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.GNB_AoE_Advanced;
+
+            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            {
+                if (actionID == DemonSlice)
+                {
+
+                    #region Variables
+                    //Gauge
+                    var Ammo = GetJobGauge<GNBGauge>().Ammo; //Our cartridge count
+                    var GunStep = GetJobGauge<GNBGauge>().AmmoComboStep; //For Gnashing Fang & Reign combo purposes
+                    //Cooldown-related
+                    var nmCD = GetCooldownRemainingTime(NoMercy); //NoMercy's cooldown; 60s total
+                    var bfCD = GetCooldownRemainingTime(Bloodfest); //Bloodfest's cooldown; 120s total
+                    var hasBreak = HasEffect(Buffs.ReadyToBreak); //Checks for Ready To Break buff
+                    var hasReign = HasEffect(Buffs.ReadyToReign); //Checks for Ready To Reign buff
+                    //Mitigations
+                    var hpRemainingHOC = Config.GNB_AoE_HOCThreshold;
+                    var hpRemainingNebula = Config.GNB_AoE_GreatNebulaThreshold;
+                    var hpRemainingBolide = Config.GNB_AoE_SuperbolideSelfThreshold;
+                    var hpRemainingBolideTarget =
+                        Config.GNB_AoE_SuperbolideTargetThreshold;
+                    //Misc
+                    var nmStop = PluginConfiguration.GetCustomIntValue(Config.GNB_AoE_NoMercyStop);
+                    #region Minimal Requirements
+                    //Ammo-relative
+                    var canFC = LevelChecked(FatedCircle) && //Fated Circle is unlocked
+                                Ammo > 0; //Has Ammo
+                    var canDD = LevelChecked(DoubleDown) && //Double Down is unlocked
+                                GetCooldownRemainingTime(DoubleDown) < 0.6f && //Double Down is off cooldown
+                                Ammo > 0; //Has Ammo
+                    var canBF = LevelChecked(Bloodfest) && //Bloodfest is unlocked
+                                GetCooldownRemainingTime(Bloodfest) < 0.6f; //Bloodfest is off cooldown
+                    //Cooldown-relative
+                    var canZone = LevelChecked(DangerZone) && //Zone is unlocked
+                                GetCooldownRemainingTime(OriginalHook(DangerZone)) < 0.6f; //DangerZone is off cooldown
+                    var canBreak = LevelChecked(SonicBreak) && //Sonic Break is unlocked
+                                hasBreak; //No Mercy or Ready To Break is active
+                    var canBow = LevelChecked(BowShock) && //Bow Shock is unlocked
+                                GetCooldownRemainingTime(BowShock) < 0.6f; //BowShock is off cooldown
+                    var canReign = LevelChecked(ReignOfBeasts) && //Reign of Beasts is unlocked
+                                GunStep == 0 && //Gnashing Fang or Reign combo is not already active
+                                hasReign; //Ready To Reign is active
+                    #endregion
+                    #endregion
+
+                    //Variant Cure
+                    if (IsEnabled(CustomComboPreset.GNB_Variant_Cure) && 
+                        IsEnabled(Variant.VariantCure) && 
+                        PlayerHealthPercentageHp() <= GetOptionValue(Config.GNB_VariantCure))
+                        return Variant.VariantCure;
+
+                    if (InCombat()) //if already in combat
+                    {
+                        if (CanWeave(actionID)) //if we can weave
+                        {
+                            //Variant SpiritDart
+                            Status? sustainedDamage = FindTargetEffect(Variant.Debuffs.SustainedDamage);
+                            if (IsEnabled(CustomComboPreset.GNB_Variant_SpiritDart) &&
+                                IsEnabled(Variant.VariantSpiritDart) &&
+                                (sustainedDamage is null || sustainedDamage?.RemainingTime <= 3))
+                                return Variant.VariantSpiritDart;
+
+                            //Variant Ultimatum
+                            if (IsEnabled(CustomComboPreset.GNB_Variant_Ultimatum) && 
+                                IsEnabled(Variant.VariantUltimatum) && 
+                                ActionReady(Variant.VariantUltimatum))
+                                return Variant.VariantUltimatum;
+
+                            //Mitigations - Max Priority
+                            if (IsEnabled(CustomComboPreset.GNB_AoE_Mitigation))
+                            {
+                                //HOC
+                                if (IsEnabled(CustomComboPreset.GNB_AoE_HOC)
+                                    && IsOffCooldown(OriginalHook(HeartOfStone))
+                                    && LevelChecked(HeartOfStone)
+                                    && PlayerHealthPercentageHp() <= hpRemainingHOC)
+                                    return OriginalHook(HeartOfStone);
+
+                                //GreatNebula
+                                if (IsEnabled(CustomComboPreset.GNB_AoE_GreatNebula)
+                                    && IsOffCooldown(OriginalHook(Nebula))
+                                    && LevelChecked(Nebula)
+                                    && PlayerHealthPercentageHp() <= hpRemainingNebula)
+                                    return OriginalHook(Nebula);
+
+                                //Superbolide
+                                if (IsEnabled(CustomComboPreset.GNB_AoE_Superbolide)
+                                    && IsOffCooldown(Superbolide)
+                                    && LevelChecked(Superbolide)
+                                    && PlayerHealthPercentageHp() <= hpRemainingBolide
+                                    && GetTargetHPPercent() >= hpRemainingBolideTarget)
+                                    return Superbolide;
+                            }
+
+                            //NoMercy
+                            if (IsEnabled(CustomComboPreset.GNB_AoE_NoMercy) && //if No Mercy option is enabled
+                                ActionReady(NoMercy) && //if No Mercy is ready
+                                GetTargetHPPercent() > nmStop) //if target HP is above threshold
+                                return NoMercy; //execute No Mercy
+                            //BowShock
+                            if (IsEnabled(CustomComboPreset.GNB_AoE_BowShock) && //if Bow Shock option is enabled
+                                canBow && //if Bow Shock is ready
+                                HasEffect(Buffs.NoMercy)) //if No Mercy is active
+                                return BowShock; //execute Bow Shock
+                            //Zone
+                            if (IsEnabled(CustomComboPreset.GNB_AoE_DangerZone) && 
+                                canZone && 
+                                nmCD is < 57.5f and > 17) //use on CD after first usage in NM
+                                return OriginalHook(DangerZone); //execute Zone
+                            //Bloodfest
+                            if (IsEnabled(CustomComboPreset.GNB_AoE_Bloodfest) && //if Bloodfest option is enabled
+                                canBF) //if Bloodfest is ready & gauge is empty
+                                return Bloodfest; //execute Bloodfest
+                            //Continuation
+                            if (LevelChecked(FatedBrand) && //if Fated Brand is unlocked
+                                HasEffect(Buffs.ReadyToRaze)) //if Ready To Raze is active
+                                return FatedBrand; //execute Fated Brand
+                        }
+
+                        //SonicBreak
+                        if (IsEnabled(CustomComboPreset.GNB_AoE_SonicBreak) && //if Sonic Break option is enabled
+                            canBreak && //if Ready To Break is active & unlocked
+                            !HasEffect(Buffs.ReadyToRaze) && //if Ready To Raze is not active
+                            HasEffect(Buffs.NoMercy)) //if No Mercy is active
+                            return SonicBreak;
+                        //DoubleDown
+                        if (IsEnabled(CustomComboPreset.GNB_AoE_DoubleDown) && //if Double Down option is enabled
+                            canDD && //if Double Down is ready && gauge is not empty
+                            HasEffect(Buffs.NoMercy)) //if No Mercy is active
+                            return DoubleDown; //execute Double Down
+                        //Reign - because leaving this out anywhere is a waste
+                        if (IsEnabled(CustomComboPreset.GNB_AoE_Reign) && //if Reign of Beasts option is enabled
+                            LevelChecked(ReignOfBeasts)) //if Reign of Beasts is unlocked
+                        {
+                            if (canReign || //can execute Reign of Beasts
+                               (GunStep is 3 or 4)) //can execute Noble Blood or Lion Heart
+                                return OriginalHook(ReignOfBeasts);
+                        }
+                        //FatedCircle - if not LevelChecked, use BurstStrike
+                        if (IsEnabled(CustomComboPreset.GNB_AoE_FatedCircle) && //if Fated Circle option is enabled
+                            canFC && //if Fated Circle is unlocked && gauge is not empty
+                            //Normal
+                            ((HasEffect(Buffs.NoMercy) && //if No Mercy is active
+                            !ActionReady(DoubleDown) && //if Double Down is not ready
+                            GunStep == 0) || //if Gnashing Fang or Reign combo is not active
+                            //Bloodfest prep
+                            (IsEnabled(CustomComboPreset.GNB_AoE_Bloodfest) && //if Bloodfest option is enabled
+                            bfCD < 6))) //if Bloodfest is about to be ready
+                            return FatedCircle;
+                        if (IsEnabled(CustomComboPreset.GNB_AoE_noFatedCircle) && //if Fated Circle Burst Strike option is disabled
+                            Ammo > 0 && //if gauge is not empty
+                            !LevelChecked(FatedCircle) && //if Fated Circle is not unlocked
+                            LevelChecked(BurstStrike) && //if Burst Strike is unlocked
+                            (HasEffect(Buffs.NoMercy) && //if No Mercy is active
+                            GunStep == 0)) //if Gnashing Fang or Reign combo is not active
+                            return BurstStrike;
+                    }
+
+                    //1-2
+                    if (comboTime > 0) //if we're in combo
+                    {
+                        if (lastComboMove == DemonSlice && //if last action was Demon Slice
+                            LevelChecked(DemonSlaughter)) //if Demon Slaughter is unlocked
+                        {
+                            if (Ammo == MaxCartridges(level))
+                            {
+                                if (IsEnabled(CustomComboPreset.GNB_AoE_Overcap) && //if Overcap option is enabled
+                                    LevelChecked(FatedCircle)) //if Fated Circle is unlocked
+                                    return FatedCircle; //execute Fated Circle
+                                if (IsEnabled(CustomComboPreset.GNB_AoE_BSOvercap) && //if Burst Strike Overcap option is enabled
+                                    !LevelChecked(FatedCircle)) //if Fated Circle is not unlocked
+                                    return BurstStrike; //execute Burst Strike
+                            }
+                            if (Ammo != MaxCartridges(level) || //if gauge is not full
+                                (Ammo == MaxCartridges(level) && //if gauge is full
+                                !LevelChecked(FatedCircle) && //if Fated Circle is not unlocked
+                                !IsEnabled(CustomComboPreset.GNB_AoE_BSOvercap))) //if Burst Strike Overcap option is disabled
+                            {
+                                return DemonSlaughter; //execute Demon Slaughter
+                            }
+                        }
+                    }
+
+                    return DemonSlice; //execute Demon Slice
+                }
+
+                return actionID;
+            }
+        }
+        #endregion
+
+        #region Gnashing Fang Features
         internal class GNB_GF_Features : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.GNB_GF_Features;
@@ -871,211 +1309,9 @@ namespace XIVSlothCombo.Combos.PvE
                 return actionID;
             }
         }
+        #endregion
 
-        //Simple Mode - AoE
-        internal class GNB_AoE_SimpleMode : CustomCombo
-        {
-            protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.GNB_AoE_Simple;
-
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
-            {
-
-                if (actionID == DemonSlice)
-                {
-                    var Ammo = GetJobGauge<GNBGauge>().Ammo; //Our carts
-                    var GunStep = GetJobGauge<GNBGauge>().AmmoComboStep; //For GnashingFang & (possibly) ReignCombo purposes
-                    var bfCD = GetCooldownRemainingTime(Bloodfest); //Bloodfest's cooldown; 120s total
-                    var gfCD = GetCooldownRemainingTime(GnashingFang); //GnashingFang's cooldown; 30s total
-                    float GCD = GetCooldown(KeenEdge).CooldownTotal; //2.5 is base SkS, but can work with 2.4x
-
-                    //Variant Cure
-                    if (IsEnabled(CustomComboPreset.GNB_Variant_Cure) && IsEnabled(Variant.VariantCure) && PlayerHealthPercentageHp() <= GetOptionValue(Config.GNB_VariantCure))
-                        return Variant.VariantCure;
-
-                    if (InCombat())
-                    {
-                        if (CanWeave(actionID))
-                        {
-                            //Variant SpiritDart
-                            Status? sustainedDamage = FindTargetEffect(Variant.Debuffs.SustainedDamage);
-                            if (IsEnabled(CustomComboPreset.GNB_Variant_SpiritDart) &&
-                                IsEnabled(Variant.VariantSpiritDart) &&
-                                (sustainedDamage is null || sustainedDamage?.RemainingTime <= 3))
-                                return Variant.VariantSpiritDart;
-
-                            //Variant Ultimatum
-                            if (IsEnabled(CustomComboPreset.GNB_Variant_Ultimatum) && IsEnabled(Variant.VariantUltimatum) && ActionReady(Variant.VariantUltimatum))
-                                return Variant.VariantUltimatum;
-
-                            //NoMercy
-                            if (ActionReady(NoMercy)) //use on CD
-                                return NoMercy;
-                            //BowShock
-                            if (ActionReady(BowShock) && LevelChecked(BowShock) && HasEffect(Buffs.NoMercy)) //use on CD under NM
-                                return BowShock;
-                            //Zone
-                            if (ActionReady(DangerZone) && (HasEffect(Buffs.NoMercy) || gfCD <= GCD * 7)) //use on CD after first usage in NM
-                                return OriginalHook(DangerZone);
-                            //Bloodfest
-                            if (Ammo == 0 && ActionReady(Bloodfest) && LevelChecked(Bloodfest) && HasEffect(Buffs.NoMercy)) //use when Ammo is 0 in burst
-                                return Bloodfest;
-                            //Continuation
-                            if (LevelChecked(FatedBrand) && HasEffect(Buffs.ReadyToRaze) && JustUsed(FatedCircle) && LevelChecked(FatedBrand)) //FatedCircle weave
-                                return FatedBrand;
-                        }
-
-                        //SonicBreak
-                        if (HasEffect(Buffs.ReadyToBreak) && !HasEffect(Buffs.ReadyToRaze) && HasEffect(Buffs.NoMercy)) //use on CD
-                            return SonicBreak;
-                        //DoubleDown
-                        if (Ammo >= 1 && ActionReady(DoubleDown) && HasEffect(Buffs.NoMercy)) //use on CD under NM
-                            return DoubleDown;
-                        //Reign
-                        if (LevelChecked(ReignOfBeasts)) //because leaving this out anywhere is a waste
-                        {
-                            if ((GetBuffRemainingTime(Buffs.ReadyToReign) > 0 && !ActionReady(DoubleDown) && GunStep == 0) ||
-                               (GunStep is 3 or 4))
-                                return OriginalHook(ReignOfBeasts);
-                        }
-                        //FatedCircle - if not LevelChecked, use BurstStrike
-                        if (Ammo > 0 && LevelChecked(FatedCircle) &&
-                            (HasEffect(Buffs.NoMercy) && !ActionReady(DoubleDown) && GunStep == 0) || //use when under NM after DD & ignores GF
-                            (bfCD < 6)) //Bloodfest prep
-                            return FatedCircle;
-                        if (Ammo > 0 && !LevelChecked(FatedCircle) && LevelChecked(BurstStrike) &&
-                            (HasEffect(Buffs.NoMercy) && !ActionReady(DoubleDown) && GunStep == 0)) //use when under NM after DD & ignores GF
-                            return BurstStrike;
-                    }
-
-                    //1-2
-                    if (comboTime > 0)
-                    {
-                        if (lastComboMove == DemonSlice && LevelChecked(DemonSlaughter))
-                        {
-                            if (Ammo == MaxCartridges(level))
-                            {
-                                if (LevelChecked(FatedCircle))
-                                    return FatedCircle;
-                                if (!LevelChecked(FatedCircle))
-                                    return BurstStrike;
-                            }
-                            if (Ammo != MaxCartridges(level))
-                            {
-                                return DemonSlaughter;
-                            }
-                        }
-                    }
-
-                    return DemonSlice;
-                }
-
-                return actionID;
-            }
-        }
-
-        //Simple Mode - AoE
-        internal class GNB_AoE_AdvancedMode : CustomCombo
-        {
-            protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.GNB_AoE_Advanced;
-
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
-            {
-                if (actionID == DemonSlice)
-                {
-                    var Ammo = GetJobGauge<GNBGauge>().Ammo; //Our carts
-                    var GunStep = GetJobGauge<GNBGauge>().AmmoComboStep; //For GnashingFang & (possibly) ReignCombo purposes
-                    var bfCD = GetCooldownRemainingTime(Bloodfest); //Bloodfest's cooldown; 120s total
-                    var gfCD = GetCooldownRemainingTime(GnashingFang); //GnashingFang's cooldown; 30s total
-                    float GCD = GetCooldown(KeenEdge).CooldownTotal; //2.5 is base SkS, but can work with 2.4x
-                    int nmStop = PluginConfiguration.GetCustomIntValue(Config.GNB_AoE_NoMercyStop);
-
-                    //Variant Cure
-                    if (IsEnabled(CustomComboPreset.GNB_Variant_Cure) && IsEnabled(Variant.VariantCure) && PlayerHealthPercentageHp() <= GetOptionValue(Config.GNB_VariantCure))
-                        return Variant.VariantCure;
-
-                    if (InCombat())
-                    {
-                        if (CanWeave(actionID))
-                        {
-                            //Variant SpiritDart
-                            Status? sustainedDamage = FindTargetEffect(Variant.Debuffs.SustainedDamage);
-                            if (IsEnabled(CustomComboPreset.GNB_Variant_SpiritDart) &&
-                                IsEnabled(Variant.VariantSpiritDart) &&
-                                (sustainedDamage is null || sustainedDamage?.RemainingTime <= 3))
-                                return Variant.VariantSpiritDart;
-
-                            //Variant Ultimatum
-                            if (IsEnabled(CustomComboPreset.GNB_Variant_Ultimatum) && IsEnabled(Variant.VariantUltimatum) && ActionReady(Variant.VariantUltimatum))
-                                return Variant.VariantUltimatum;
-
-                            //NoMercy
-                            if (IsEnabled(CustomComboPreset.GNB_AoE_NoMercy) && ActionReady(NoMercy) && GetTargetHPPercent() > nmStop) //use on CD
-                                return NoMercy;
-                            //BowShock
-                            if (IsEnabled(CustomComboPreset.GNB_AoE_BowShock) && ActionReady(BowShock) && LevelChecked(BowShock) && HasEffect(Buffs.NoMercy)) //use on CD under NM
-                                return BowShock;
-                            //Zone
-                            if (IsEnabled(CustomComboPreset.GNB_AoE_DangerZone) && ActionReady(DangerZone) && (HasEffect(Buffs.NoMercy) || gfCD <= GCD * 7)) //use on CD after first usage in NM
-                                return OriginalHook(DangerZone);
-                            //Bloodfest
-                            if (IsEnabled(CustomComboPreset.GNB_AoE_Bloodfest) && Ammo == 0 && ActionReady(Bloodfest) && LevelChecked(Bloodfest) && HasEffect(Buffs.NoMercy)) //use when Ammo is 0 in burst
-                                return Bloodfest;
-                            //Continuation
-                            if (LevelChecked(FatedBrand) && HasEffect(Buffs.ReadyToRaze) && JustUsed(FatedCircle) && LevelChecked(FatedBrand)) //FatedCircle weave
-                                return FatedBrand;
-                        }
-
-                        //SonicBreak
-                        if (IsEnabled(CustomComboPreset.GNB_AoE_SonicBreak) && HasEffect(Buffs.ReadyToBreak) && !HasEffect(Buffs.ReadyToRaze) && HasEffect(Buffs.NoMercy)) //use on CD
-                            return SonicBreak;
-                        //DoubleDown
-                        if (IsEnabled(CustomComboPreset.GNB_AoE_DoubleDown) && Ammo >= 1 && ActionReady(DoubleDown) && HasEffect(Buffs.NoMercy)) //use on CD under NM
-                            return DoubleDown;
-                        //Reign
-                        if (IsEnabled(CustomComboPreset.GNB_AoE_Reign) && LevelChecked(ReignOfBeasts)) //because leaving this out anywhere is a waste
-                        {
-                            if ((GetBuffRemainingTime(Buffs.ReadyToReign) > 0 && !ActionReady(DoubleDown) && GunStep == 0) ||
-                               (GunStep is 3 or 4))
-                                return OriginalHook(ReignOfBeasts);
-                        }
-                        //FatedCircle - if not LevelChecked, use BurstStrike
-                        if (Ammo > 0 && LevelChecked(FatedCircle) &&
-                            ((IsEnabled(CustomComboPreset.GNB_AoE_FatedCircle) && HasEffect(Buffs.NoMercy) && !ActionReady(DoubleDown) && GunStep == 0) || //use when under NM after DD & ignores GF
-                            (IsEnabled(CustomComboPreset.GNB_AoE_Bloodfest) && bfCD < 6))) //Bloodfest prep
-                            return FatedCircle;
-                        if (IsEnabled(CustomComboPreset.GNB_AoE_noFatedCircle) && Ammo > 0 && !LevelChecked(FatedCircle) && LevelChecked(BurstStrike) &&
-                            (HasEffect(Buffs.NoMercy) && GunStep == 0)) //Bloodfest prep
-                            return BurstStrike;
-                    }
-
-                    //1-2
-                    if (comboTime > 0)
-                    {
-                        if (lastComboMove == DemonSlice && LevelChecked(DemonSlaughter))
-                        {
-                            if (Ammo == MaxCartridges(level))
-                            {
-                                if (IsEnabled(CustomComboPreset.GNB_AoE_Overcap) && LevelChecked(FatedCircle))
-                                    return FatedCircle;
-                                if (IsEnabled(CustomComboPreset.GNB_AoE_BSOvercap) && !LevelChecked(FatedCircle))
-                                    return BurstStrike;
-                            }
-                            if (Ammo != MaxCartridges(level) ||
-                                (Ammo == MaxCartridges(level) && !LevelChecked(FatedCircle) && !IsEnabled(CustomComboPreset.GNB_AoE_BSOvercap)))
-                            {
-                                return DemonSlaughter;
-                            }
-                        }
-                    }
-
-                    return DemonSlice;
-                }
-
-                return actionID;
-            }
-        } 
-
-        //Burst Strike Features
+        #region Burst Strike Features
         internal class GNB_BS_Features : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.GNB_BS_Features;
@@ -1106,8 +1342,9 @@ namespace XIVSlothCombo.Combos.PvE
                 return actionID;
             }
         }
+        #endregion
 
-        //Fated Circle Features
+        #region Fated Circle Features
         internal class GNB_FC_Features : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.GNB_FC_Features;
@@ -1129,8 +1366,9 @@ namespace XIVSlothCombo.Combos.PvE
                 return actionID;
             }
         }
+        #endregion
 
-        //No Mercy Features
+        #region No Mercy Features
         internal class GNB_NM_Features : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.GNB_NM_Features;
@@ -1173,8 +1411,9 @@ namespace XIVSlothCombo.Combos.PvE
                 return actionID;
             }
         }
+        #endregion
 
-        //Aurora Protection
+        #region Aurora Protection
         internal class GNB_AuroraProtection : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.GNB_AuroraProtection;
@@ -1189,5 +1428,6 @@ namespace XIVSlothCombo.Combos.PvE
                 return actionID;
             }
         }
+        #endregion
     }
 }

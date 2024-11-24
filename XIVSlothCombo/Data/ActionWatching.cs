@@ -278,7 +278,7 @@ namespace XIVSlothCombo.Data
 
         public static int GetLevel(uint id) => ActionSheet.TryGetValue(id, out var action) && action.ClassJobCategory.IsValid ? action.ClassJobLevel : 255;
         public static float GetActionCastTime(uint id) => ActionSheet.TryGetValue(id, out var action) ? action.Cast100ms / (float)10 : 0;
-        public static int GetActionRange(uint id) => ActionSheet.TryGetValue(id, out var action) ? action.Range : -2; // 0 & -1 are valid numbers. -2 is our failure code for InActionRange
+        public unsafe static int GetActionRange(uint id) => (int)ActionManager.GetActionRange(id);
         public static int GetActionEffectRange(uint id) => ActionSheet.TryGetValue(id, out var action) ? action.EffectRange : -1;
         public static int GetTraitLevel(uint id) => TraitSheet.TryGetValue(id, out var trait) ? trait.Level : 255;
         public static string GetActionName(uint id) => ActionSheet.TryGetValue(id, out var action) ? action.Name.ToString() : "UNKNOWN ABILITY";

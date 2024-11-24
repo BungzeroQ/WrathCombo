@@ -120,11 +120,11 @@ namespace XIVSlothCombo.Combos.PvE
                     if (RDMOpenerLogic.DoFullOpener(ref actionID))
                         return actionID;
 
-                    //Lucid Dreaming
-                    if (TryLucidDreaming(actionID, 6500, lastComboMove)) return All.LucidDreaming;
-
                     //oGCDs
                     if (TryOGCDs(actionID, true, out uint oGCDAction)) return oGCDAction;
+
+                    //Lucid Dreaming
+                    if (TryLucidDreaming(actionID, 6500, lastComboMove)) return All.LucidDreaming;
 
                     //Melee Finisher
                     if (MeleeCombo.TryMeleeFinisher(lastComboMove, out uint finisherAction)) return finisherAction;
@@ -137,7 +137,7 @@ namespace XIVSlothCombo.Combos.PvE
                     //Normal Spell Rotation
                     if (SpellCombo.TryAcceleration(actionID, lastComboMove, out uint Accel)) return Accel;
                     if (SpellCombo.TrySTSpellRotation(actionID, out uint SpellID)) return SpellID;
-
+                                        
                 }
 
                 //NO_CONDITIONS_MET
@@ -173,12 +173,6 @@ namespace XIVSlothCombo.Combos.PvE
                     }
                 }
 
-                //Lucid Dreaming
-                if (IsEnabled(CustomComboPreset.RDM_ST_Lucid)
-                    && actionID is Jolt or Jolt2 or Jolt3
-                    && TryLucidDreaming(actionID, Config.RDM_ST_Lucid_Threshold, lastComboMove)) //Don't interupt certain combos
-                    return All.LucidDreaming;
-
                 //RDM_OGCD
                 if (IsEnabled(CustomComboPreset.RDM_ST_oGCD))
                 {
@@ -198,6 +192,12 @@ namespace XIVSlothCombo.Combos.PvE
                     }
                 }
                 //END_RDM_OGCD
+
+                //Lucid Dreaming
+                if (IsEnabled(CustomComboPreset.RDM_ST_Lucid)
+                    && actionID is Jolt or Jolt2 or Jolt3
+                    && TryLucidDreaming(actionID, Config.RDM_ST_Lucid_Threshold, lastComboMove)) //Don't interupt certain combos
+                    return All.LucidDreaming;
 
                 //RDM_MELEEFINISHER
                 if (IsEnabled(CustomComboPreset.RDM_ST_MeleeFinisher))
@@ -284,12 +284,12 @@ namespace XIVSlothCombo.Combos.PvE
                         CanSpellWeave(actionID))
                         return Variant.VariantRampart;
 
+                    //RDM_OGCD
+                    if (TryOGCDs(actionID, true, out uint oGCDAction, true)) return oGCDAction;
+
                     // LUCID
                     if (TryLucidDreaming(actionID, 6500, lastComboMove))
                         return All.LucidDreaming;
-
-                    //RDM_OGCD
-                    if (TryOGCDs(actionID, true, out uint oGCDAction, true)) return oGCDAction;
 
                     //RDM_MELEEFINISHER
                     if (MeleeCombo.TryMeleeFinisher(lastComboMove, out uint finisherAction))
@@ -330,15 +330,15 @@ namespace XIVSlothCombo.Combos.PvE
                         CanSpellWeave(actionID))
                         return Variant.VariantRampart;
 
-                    // LUCID
-                    if (IsEnabled(CustomComboPreset.RDM_AoE_Lucid)
-                        && TryLucidDreaming(actionID, Config.RDM_AoE_Lucid_Threshold, lastComboMove))
-                        return All.LucidDreaming;
-
                     //RDM_OGCD
                     if (IsEnabled(CustomComboPreset.RDM_AoE_oGCD)
                         && LevelChecked(Corpsacorps)
                         && TryOGCDs(actionID, true, out uint oGCDAction, true)) return oGCDAction;
+
+                    // LUCID
+                    if (IsEnabled(CustomComboPreset.RDM_AoE_Lucid)
+                        && TryLucidDreaming(actionID, Config.RDM_AoE_Lucid_Threshold, lastComboMove))
+                        return All.LucidDreaming;
                 }
 
                 //RDM_MELEEFINISHER

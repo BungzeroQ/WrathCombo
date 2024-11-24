@@ -23,13 +23,17 @@ namespace XIVSlothCombo.Combos.PvP
             MeikyoShisui = 29536,
             Midare = 29529,
             Kaeshi = 29531,
-            Zantetsuken = 29537;
+            Zantetsuken = 29537,
+            TendoSetsugekka = 41454,
+            TendoKaeshiSetsugekka = 41455;
 
         public static class Buffs
         {
             public const ushort
                 Kaiten = 3201,
-                Midare = 3203;
+                Midare = 3203,
+                TendoSetsugekkaReady = 3203,
+                ZanshinReady = 1318;
         }
 
         public static class Debuffs
@@ -57,10 +61,12 @@ namespace XIVSlothCombo.Combos.PvP
                 if ((IsNotEnabled(CustomComboPreset.SAMPvP_BurstMode_MainCombo) && actionID == MeikyoShisui) ||
                     (IsEnabled(CustomComboPreset.SAMPvP_BurstMode_MainCombo) && actionID is Yukikaze or Gekko or Kasha or Hyosetsu or Oka or Mangetsu))
                 {
-
                     if (!TargetHasEffectAny(PvPCommon.Buffs.Guard))
                     {
-                        if (IsOffCooldown(MeikyoShisui))
+                        if (IsEnabled(CustomComboPreset.SAMPvP_BurstMode_Zanshin) && CanWeave(actionID) && HasEffect(Buffs.ZanshinReady))
+                            return OriginalHook(Chiten);
+
+                        if (IsOffCooldown(MeikyoShisui) || HasEffect(Buffs.TendoSetsugekkaReady))
                             return OriginalHook(MeikyoShisui);
 
                         if (IsEnabled(CustomComboPreset.SAMPvP_BurstMode_Chiten) && IsOffCooldown(Chiten) && InCombat() && PlayerHealthPercentageHp() <= 95)
@@ -69,7 +75,7 @@ namespace XIVSlothCombo.Combos.PvP
                         if (GetCooldownRemainingTime(Soten) < 1 && CanWeave(Yukikaze))
                             return OriginalHook(Soten);
 
-                        if (OriginalHook(MeikyoShisui) == Midare && !IsMoving)
+                        if ((OriginalHook(MeikyoShisui) == TendoSetsugekka || OriginalHook(MeikyoShisui) == TendoKaeshiSetsugekka) && !IsMoving)
                             return OriginalHook(MeikyoShisui);
 
                         if (IsEnabled(CustomComboPreset.SAMPvP_BurstMode_Stun) && IsOffCooldown(Mineuchi))

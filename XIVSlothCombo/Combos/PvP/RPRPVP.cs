@@ -21,7 +21,7 @@ namespace XIVSlothCombo.Combos.PvP
             HellsIngress = 29550,
             Regress = 29551,
             Communio = 29554,
-            SoulSlice = 29566;
+            TenebraeLemurum = 29553;
 
         internal class Buffs
         {
@@ -31,7 +31,9 @@ namespace XIVSlothCombo.Combos.PvP
                 GallowsOiled = 2856,
                 Enshrouded = 2863,
                 ImmortalSacrifice = 3204,
-                PlentifulHarvest = 3205;
+                PlentifulHarvest = 3205,
+                DeathWarrant = 4308,
+                PerfectioParata = 4309;
         }
 
         internal class Debuffs
@@ -73,7 +75,6 @@ namespace XIVSlothCombo.Combos.PvP
                     float enshroudStacks = GetBuffStacks(Buffs.Enshrouded);
                     float immortalStacks = GetBuffStacks(Buffs.ImmortalSacrifice);
                     int immortalThreshold = PluginConfiguration.GetCustomIntValue(Config.RPRPvP_ImmortalStackThreshold);
-                    bool soulsow = HasEffect(Buffs.Soulsow);
                     #endregion
 
                     // Arcane Cirle Option
@@ -81,7 +82,7 @@ namespace XIVSlothCombo.Combos.PvP
                         && arcaneReady && playerHP <= arcaneThreshold)
                         return ArcaneCrest;
 
-                    if (!enemyGuarded) // Guard check on target
+                    if (!PvPCommon.IsImmuneToDamage()) // Guard check on target
                     {
                         // Plentiful Harvest Opener
                         if (IsEnabled(CustomComboPreset.RPRPvP_Burst_PlentifulOpener) &&
@@ -90,7 +91,7 @@ namespace XIVSlothCombo.Combos.PvP
 
                         // Harvest Moon Ranged Option
                         if (IsEnabled(CustomComboPreset.RPRPvP_Burst_RangedHarvest) &&
-                            distance > 5 && soulsow && GCDStopped)
+                            distance > 5 && GCDStopped)
                             return HarvestMoon;
 
                         // Enshroud
@@ -100,16 +101,12 @@ namespace XIVSlothCombo.Combos.PvP
                             {
                                 // Enshrouded Death Warrant Option
                                 if (IsEnabled(CustomComboPreset.RPRPvP_Burst_Enshrouded_DeathWarrant) &&
-                                    deathWarrantReady && enshroudStacks >= 3 && distance <= 25)
+                                    deathWarrantReady && enshroudStacks >= 3 && distance <= 25 || HasEffect(Buffs.DeathWarrant) && GetBuffRemainingTime(Buffs.DeathWarrant) <= 3)
                                     return OriginalHook(DeathWarrant);
 
                                 // Lemure's Slice
                                 if (lemuresSliceReady && canBind && distance <= 8)
                                     return LemuresSlice;
-
-                                // Harvest Moon proc
-                                if (soulsow && distance <= 25)
-                                    return OriginalHook(DeathWarrant);
                             }
 
                             // Communio Option
@@ -130,11 +127,15 @@ namespace XIVSlothCombo.Combos.PvP
                         // Outside of Enshroud
                         if (!enshrouded)
                         {
+
+                            if (HasEffect(Buffs.PerfectioParata))
+                                return OriginalHook(TenebraeLemurum);
+
                             // Death Warrant Option
                             if (IsEnabled(CustomComboPreset.RPRPvP_Burst_DeathWarrant) &&
                                 deathWarrantReady && distance <= 25 &&
                                 ((plentifulCD > 20 && immortalStacks < immortalThreshold) ||
-                                (plentifulReady && immortalStacks >= immortalThreshold)))
+                                (plentifulReady && immortalStacks >= immortalThreshold)) || HasEffect(Buffs.DeathWarrant) && GetBuffRemainingTime(Buffs.DeathWarrant) <= 3)
                                 return OriginalHook(DeathWarrant);
 
                             // Plentiful Harvest Pooling Option
@@ -147,7 +148,7 @@ namespace XIVSlothCombo.Combos.PvP
                             if (canWeave)
                             {
                                 // Harvest Moon Proc
-                                if (soulsow && distance <= 25)
+                                if (IsOffCooldown(DeathWarrant)|| distance <= 25 && HasEffect(Buffs.DeathWarrant) && GetBuffRemainingTime(Buffs.DeathWarrant) <= 3)
                                     return OriginalHook(DeathWarrant);
 
                                 // Grim Swathe Option
@@ -156,12 +157,6 @@ namespace XIVSlothCombo.Combos.PvP
                             }
                         }
                     }
-
-                    // Soul Slice
-                    if (!enshrouded && distance <= 5 &&
-                        (GetRemainingCharges(SoulSlice) == 2 ||
-                        (GetRemainingCharges(SoulSlice) > 0 && !HasEffect(Buffs.GallowsOiled) && !HasEffect(Buffs.SoulReaver))))
-                        return SoulSlice;
                 }
 
                 return actionID;

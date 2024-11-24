@@ -1,4 +1,5 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
+using ECommons.DalamudServices;
 using ECommons.GameFunctions;
 using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.Game;
@@ -6,6 +7,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using System;
 using System.Linq;
 using XIVSlothCombo.Data;
+using XIVSlothCombo.Extensions;
 using XIVSlothCombo.Services;
 
 namespace XIVSlothCombo.CustomComboNS.Functions
@@ -55,10 +57,6 @@ namespace XIVSlothCombo.CustomComboNS.Functions
             int range = ActionWatching.GetActionRange(id);
             switch (range)
             {
-                case -2:
-                    return false; //Error catch, Doesn't exist in ActionWatching
-                case -1:
-                    return InMeleeRange();//In the Sheet, all Melee skills appear to be -1
                 case 0: //Self Use Skills (Second Wind) or attacks (Art of War, Dyskrasia)
                     {
                         //NOTES: HOUSING DUMMIES ARE FUCKING CURSED BASTARDS THAT DON'T REGISTER ATTACKS CORRECTLY WITH SELF RADIUS ATTACKS
