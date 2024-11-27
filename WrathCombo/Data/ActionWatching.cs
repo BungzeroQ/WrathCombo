@@ -50,14 +50,12 @@ namespace WrathCombo.Data
                 sourceObjectId == Svc.ClientState.LocalPlayer.GameObjectId)
             {
                 TimeLastActionUsed = DateTime.Now;
-                LastActionUseCount++;
                 if (header.ActionId != LastAction)
-                {
                     LastActionUseCount = 1;
-                }
+                else
+                    LastActionUseCount++;
 
-                LastAction = header.ActionId;
-                LastSuccessfulUseTime[LastAction] = Environment.TickCount64;
+                LastSuccessfulUseTime[header.ActionId] = Environment.TickCount64;
 
                 if (ActionSheet.TryGetValue(header.ActionId, out var sheet))
                 { 
@@ -97,6 +95,7 @@ namespace WrathCombo.Data
                 CheckForChangedTarget(actionId, ref targetObjectId);
                 SendActionHook!.Original(targetObjectId, actionType, actionId, sequence, a5, a6, a7, a8, a9);
                 TimeLastActionUsed = DateTime.Now;
+                LastAction = actionId;
                 ActionType = actionType;
 
                 UpdateHelpers(actionId);
