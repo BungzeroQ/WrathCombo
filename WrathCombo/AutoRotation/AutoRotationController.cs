@@ -102,7 +102,6 @@ namespace WrathCombo.AutoRotation
                 if (action.IsHeal)
                 {
                     if (!AutomateHealing(preset.Key, attributes, gameAct) && Svc.Targets.Target != null && !Svc.Targets.Target.IsHostile() && Environment.TickCount64 > LastHealAt + 1000)
-                        Svc.Targets.Target = null;
 
                     if ((healTarget != null && !action.IsAoE) || (aoeheal && action.IsAoE))
                         return;
@@ -117,6 +116,7 @@ namespace WrathCombo.AutoRotation
                     continue;
                 }
 
+                if (!action.IsHeal)
                 AutomateDPS(preset.Key, attributes, gameAct);
             }
 
@@ -351,7 +351,6 @@ namespace WrathCombo.AutoRotation
                         HealerRotationMode.Lowest_Current => HealerTargeting.GetLowestCurrent(),
                         _ => HealerTargeting.ManualTarget(),
                     };
-
                     return target;
                 }
 
@@ -550,7 +549,7 @@ namespace WrathCombo.AutoRotation
                 if (Svc.Targets.Target == null) return null;
                 var t = Svc.Targets.Target;
                 bool goodToHeal = CustomComboFunctions.GetTargetHPPercent(t) <= (TargetHasRegen(t) ? Service.Configuration.RotationConfig.HealerSettings.SingleTargetRegenHPP : Service.Configuration.RotationConfig.HealerSettings.SingleTargetHPP);
-                if (goodToHeal)
+                if (goodToHeal && !t.IsHostile())
                 {
                     return t;
                 }
