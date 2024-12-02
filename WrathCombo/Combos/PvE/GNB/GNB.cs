@@ -508,6 +508,7 @@ namespace WrathCombo.Combos.PvE
                                 InCombat() && //In combat
                                 HasTarget() && //Has target
                                 canBF && //able to use Bloodfest
+                                CanWeave(actionID) &&
                                 Ammo == 0) //Only when ammo is empty
                                 return Bloodfest; //Execute Bloodfest if conditions are met
 
