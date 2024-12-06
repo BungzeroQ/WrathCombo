@@ -435,10 +435,12 @@ namespace WrathCombo.AutoRotation
                 var inRange = CustomComboFunctions.IsInLineOfSight(target) && CustomComboFunctions.InActionRange(outAct, target);
 
                 var canUse = canUseSelf || canUseTarget || areaTargeted;
+
+                if (canUse)
+                Svc.Targets.Target = target;
+
                 if (canUse && (inRange || areaTargeted))
                 {
-                    Svc.Targets.Target = target;
-
                     var ret = ActionManager.Instance()->UseAction(ActionType.Action, outAct, canUseTarget ? target.GameObjectId : Player.Object.GameObjectId);
                     if (mode is HealerRotationMode && ret)
                         LastHealAt = Environment.TickCount64 + castTime;
@@ -615,10 +617,12 @@ namespace WrathCombo.AutoRotation
 
             public static IGameObject? GetLowestMaxTarget()
             {
-                return DPSTargeting.BaseSelection
+                var t = DPSTargeting.BaseSelection
                     .OrderByDescending(x => x.TargetObject?.GameObjectId != Player.Object?.GameObjectId)
                     .OrderBy(x => (x as IBattleChara).MaxHp)
                     .ThenBy(x => CustomComboFunctions.GetTargetHPPercent(x)).FirstOrDefault();
+
+                return t;
             }
 
             public static IGameObject? GetHighestMaxTarget()
