@@ -43,9 +43,6 @@ namespace WrathCombo.CustomComboNS
         {
             newActionID = 0;
 
-            if (!Svc.ClientState.IsPvP && ActionManager.Instance()->QueuedActionType == ActionType.Action && ActionManager.Instance()->QueuedActionId != actionID)
-                return false;
-
             if (!IsEnabled(Preset))
                 return false;
 
@@ -68,6 +65,11 @@ namespace WrathCombo.CustomComboNS
             if (resultingActionID == 0 || actionID == resultingActionID)
                 return false;
 
+            if (!Svc.ClientState.IsPvP && ActionManager.Instance()->QueuedActionType == ActionType.Action && ActionManager.Instance()->QueuedActionId != actionID)
+            {
+                if (resultingActionID != OriginalHook(11))
+                    return false;
+            }
             newActionID = resultingActionID;
 
             return true;

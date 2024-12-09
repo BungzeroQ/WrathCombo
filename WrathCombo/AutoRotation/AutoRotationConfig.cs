@@ -18,6 +18,7 @@
         public bool FATEPriority = false;
         public bool QuestPriority = false;
         public int? DPSAoETargets = 3;
+        public bool PreferNonCombat = false;
     }
 
     public class HealerSettings

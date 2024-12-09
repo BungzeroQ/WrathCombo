@@ -605,6 +605,9 @@ internal partial class DRK
     {
         #region Main Buffs
 
+        /// Tank Stance
+        public const ushort Grit = 743;
+
         /// The lowest level buff, before Delirium
         public const ushort BloodWeapon = 742;
 

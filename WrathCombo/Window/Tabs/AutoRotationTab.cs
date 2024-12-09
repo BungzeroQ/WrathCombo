@@ -64,6 +64,7 @@ namespace WrathCombo.Window.Tabs
 
                 changed |= ImGui.Checkbox($"Prioritise FATE Targets", ref cfg.DPSSettings.FATEPriority);
                 changed |= ImGui.Checkbox($"Prioritise Quest Targets", ref cfg.DPSSettings.QuestPriority);
+                changed |= ImGui.Checkbox($"Prioritise Targets Not In Combat", ref cfg.DPSSettings.PreferNonCombat);
 
             }
             ImGui.Spacing();

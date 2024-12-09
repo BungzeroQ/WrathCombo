@@ -4,6 +4,7 @@ using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game.Fate;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using Lumina.Excel.Sheets;
+using WrathCombo.Combos.PvE;
 using GameMain = FFXIVClientStructs.FFXIV.Client.Game.GameMain;
 
 namespace WrathCombo.CustomComboNS.Functions
@@ -48,5 +49,18 @@ namespace WrathCombo.CustomComboNS.Functions
         }
 
         public unsafe static bool InFATE() => FateManager.Instance()->CurrentFate is not null && LocalPlayer.Level <= FateManager.Instance()->CurrentFate->MaxLevel;
+
+        public unsafe static bool PlayerHasTankStance()
+        {
+            return LocalPlayer.ClassJob.RowId switch
+            {
+                PLD.JobID or PLD.ClassID => HasEffect(PLD.Buffs.IronWill),
+                WAR.JobID or WAR.ClassID => HasEffect(WAR.Buffs.Defiance),
+                DRK.JobID => HasEffect(DRK.Buffs.Grit),
+                GNB.JobID => HasEffect(GNB.Buffs.RoyalGuard),
+                BLU.JobID => HasEffect(BLU.Buffs.TankMimicry),
+                _ => false
+            };
+        }
     }
 }

@@ -54,6 +54,7 @@ namespace WrathCombo.Combos.PvE
         public static class Buffs
         {
             public const ushort
+                IronWill = 79,
                 Requiescat = 1368,
                 AtonementReady = 1902, // First Atonement Buff
                 SupplicationReady = 3827, // Second Atonement Buff
