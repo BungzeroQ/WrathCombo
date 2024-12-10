@@ -89,7 +89,7 @@ internal partial class NIN
                     return false;
                 }
 
-                if (ActionWatching.LastAction == Ten)
+                if (ActionWatching.LastAction is Ten or TenCombo)
                 {
                     actionID = CustomComboFunctions.OriginalHook(Ninjutsu);
 
@@ -121,7 +121,7 @@ internal partial class NIN
                     return false;
                 }
 
-                if (ActionWatching.LastAction == Ten)
+                if (ActionWatching.LastAction is Ten or TenCombo)
                 {
                     actionID = CustomComboFunctions.OriginalHook(Chi);
 
@@ -160,7 +160,7 @@ internal partial class NIN
                     return false;
                 }
 
-                if (ActionWatching.LastAction == Chi)
+                if (ActionWatching.LastAction is Chi or ChiCombo)
                 {
                     actionID = CustomComboFunctions.OriginalHook(Ten);
 
@@ -238,7 +238,7 @@ internal partial class NIN
                     return false;
                 }
 
-                if (ActionWatching.LastAction == Chi)
+                if (ActionWatching.LastAction is Chi or ChiCombo)
                 {
                     actionID = CustomComboFunctions.OriginalHook(Jin);
 
@@ -284,7 +284,7 @@ internal partial class NIN
                     return false;
                 }
 
-                if (ActionWatching.LastAction == Ten)
+                if (ActionWatching.LastAction is Ten or TenCombo)
                 {
                     actionID = CustomComboFunctions.OriginalHook(Jin);
 
@@ -330,7 +330,7 @@ internal partial class NIN
                     return false;
                 }
 
-                if (ActionWatching.LastAction == Ten)
+                if (ActionWatching.LastAction is Ten or TenCombo)
                 {
                     actionID = CustomComboFunctions.OriginalHook(Chi);
 

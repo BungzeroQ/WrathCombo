@@ -1,5 +1,6 @@
 using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Statuses;
+using ECommons.DalamudServices;
 using WrathCombo.Combos.PvE.Content;
 using WrathCombo.Core;
 using WrathCombo.CustomComboNS;
@@ -191,8 +192,9 @@ namespace WrathCombo.Combos.PvE
                     if (IsEnabled(CustomComboPreset.NIN_ST_AdvancedMode_Kassatsu_HyoshoRaynryu) &&
                         HasEffect(Buffs.Kassatsu) &&
                         NINHelper.TrickDebuff &&
-                        (IsNotEnabled(CustomComboPreset.NIN_ST_AdvancedMode_Mug) || (IsEnabled(CustomComboPreset.NIN_ST_AdvancedMode_Mug) && IsOnCooldown(Mug))))
-                        mudraState.CurrentMudra = MudraCasting.MudraState.CastingHyoshoRanryu;
+                        (IsNotEnabled(CustomComboPreset.NIN_ST_AdvancedMode_Mug) || (IsEnabled(CustomComboPreset.NIN_ST_AdvancedMode_Mug) && IsOnCooldown(Mug))) &&
+                        mudraState.CastHyoshoRanryu(ref actionID))
+                        return actionID;
 
                     if (IsEnabled(CustomComboPreset.NIN_Variant_Cure) && IsEnabled(Variant.VariantCure) && PlayerHealthPercentageHp() <= GetOptionValue(Config.NIN_VariantCure))
                         return Variant.VariantCure;
@@ -659,7 +661,6 @@ namespace WrathCombo.Combos.PvE
 
                     if (HasEffect(Buffs.Kassatsu))
                     {
-                        mudraState.CurrentMudra = MudraCasting.MudraState.CastingHyoshoRanryu;
                         if (mudraState.CastHyoshoRanryu(ref actionID))
                             return actionID;
                     }

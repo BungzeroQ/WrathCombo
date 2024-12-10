@@ -34,7 +34,8 @@ namespace WrathCombo.Combos.PvP
                 Sleep = 1348,
                 DeepFreeze = 3219,
                 Heavy = 1344,
-                Unguarded = 3021;
+                Unguarded = 3021,
+                MiracleOfNature = 3085;
         }
 
         internal class Buffs
@@ -111,8 +112,13 @@ namespace WrathCombo.Combos.PvP
             {
                 if ((HasEffect(Buffs.Guard) || JustUsed(Guard)) && IsEnabled(CustomComboPreset.PvP_MashCancel))
                 {
-                    if (actionID == Guard) return Guard;
-                    else return OriginalHook(11);
+                    if (actionID == Guard)
+                    {
+                        if (IsEnabled(CustomComboPreset.PvP_MashCancelRecup) && !JustUsed(Guard, 2f) && LocalPlayer.CurrentMp >= 2500 && LocalPlayer.CurrentHp <= LocalPlayer.MaxHp - 15000) 
+                            return Recuperate;
+                        return Guard;
+                    }
+                    return OriginalHook(11);
                 }
 
                 if (Execute() &&
@@ -178,6 +184,7 @@ namespace WrathCombo.Combos.PvP
                 if (HasEffectAny(Debuffs.Bind) && selectedStatuses[4]) return true;
                 if (HasEffectAny(Debuffs.Heavy) && selectedStatuses[5]) return true;
                 if (HasEffectAny(Debuffs.Silence) && selectedStatuses[6]) return true;
+                if (HasEffectAny(Debuffs.MiracleOfNature) && selectedStatuses[7]) return true;
 
                 return false;
 
