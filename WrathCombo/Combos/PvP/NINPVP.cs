@@ -85,7 +85,7 @@ namespace WrathCombo.Combos.PvP
                     if (isHidden)
                         return OriginalHook(Assassinate);
 
-                    if (!PvPCommon.IsImmuneToDamage())
+                    if (!PvPCommon.TargetImmuneToDamage())
                     {
 
                         // Seiton Tenchu priority for targets below 50% HP
@@ -174,7 +174,7 @@ namespace WrathCombo.Combos.PvP
                     if (HasEffect(Buffs.Hidden))
                         return OriginalHook(Assassinate);
 
-                    if (!PvPCommon.IsImmuneToDamage())
+                    if (!PvPCommon.TargetImmuneToDamage())
                     {
                         // Seiton Tenchu priority for targets below 50% HP
                         if (IsEnabled(CustomComboPreset.NINPvP_AoE_SeitonTenchu) && GetTargetHPPercent() < GetOptionValue(Config.NINPVP_SeitonTenchu) && IsLB1Ready)

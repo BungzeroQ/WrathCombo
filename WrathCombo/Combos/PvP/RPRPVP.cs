@@ -74,7 +74,7 @@ namespace WrathCombo.Combos.PvP
                         && ActionReady(ArcaneCrest) && PlayerHealthPercentageHp() <= PluginConfiguration.GetCustomIntValue(Config.RPRPvP_ArcaneCircleThreshold))
                         return ArcaneCrest;
 
-                    if (!PvPCommon.IsImmuneToDamage()) // Guard check on target
+                    if (!PvPCommon.TargetImmuneToDamage()) // Guard check on target
                     {
                         // Harvest Moon Ranged Option
                         if (IsEnabled(CustomComboPreset.RPRPvP_Burst_RangedHarvest) && distance > 5)
