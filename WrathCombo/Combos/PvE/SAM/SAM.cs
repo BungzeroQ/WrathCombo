@@ -773,26 +773,25 @@ internal partial class SAM
         }
     }
 
-    internal class SAM_JinpuShifu : CustomCombo
+    internal class SAM_MeikyoSens : CustomCombo
     {
-        protected internal override CustomComboPreset Preset => CustomComboPreset.SAM_JinpuShifu;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.SAM_MeikyoSens;
 
         protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
         {
-            if (actionID is MeikyoShisui)
-                if (HasEffect(Buffs.MeikyoShisui))
-                {
-                    if (!HasEffect(Buffs.Fugetsu) ||
-                        !gauge.Sen.HasFlag(Sen.GETSU))
-                        return Gekko;
+            if (actionID is MeikyoShisui && HasEffect(Buffs.MeikyoShisui))
+            {
+                if (!HasEffect(Buffs.Fugetsu) ||
+                    !gauge.Sen.HasFlag(Sen.GETSU))
+                    return Gekko;
 
-                    if (!HasEffect(Buffs.Fuka) ||
-                        !gauge.Sen.HasFlag(Sen.KA))
-                        return Kasha;
+                if (!HasEffect(Buffs.Fuka) ||
+                    !gauge.Sen.HasFlag(Sen.KA))
+                    return Kasha;
 
-                    if (!gauge.Sen.HasFlag(Sen.SETSU))
-                        return Yukikaze;
-                }
+                if (!gauge.Sen.HasFlag(Sen.SETSU))
+                    return Yukikaze;
+            }
 
             return actionID;
         }

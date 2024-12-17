@@ -12,7 +12,7 @@ using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions;
 
 namespace WrathCombo.Combos.PvE;
 
-internal partial class MCH
+internal static partial class MCH
 {
     // MCH Gauge & Extensions
     internal static MCHOpenerLogic MCHOpener = new();
@@ -486,11 +486,11 @@ internal partial class MCH
                 return true;
             }
 
-            if (IsEnabled(CustomComboPreset.MCH_ST_SimpleMode) ||
-                (IsEnabled(CustomComboPreset.MCH_ST_Adv_AirAnchor) &&
-                 LevelChecked(HotShot) && !LevelChecked(AirAnchor) && !battery &&
-                 (GetCooldownRemainingTime(HotShot) <=
-                     GetCooldownRemainingTime(OriginalHook(SplitShot)) + 0.25 || ActionReady(HotShot))))
+            if ((IsEnabled(CustomComboPreset.MCH_ST_SimpleMode) ||
+                 IsEnabled(CustomComboPreset.MCH_ST_Adv_AirAnchor)) &&
+                LevelChecked(HotShot) && !LevelChecked(AirAnchor) && !battery &&
+                (GetCooldownRemainingTime(HotShot) <=
+                    GetCooldownRemainingTime(OriginalHook(SplitShot)) + 0.25 || ActionReady(HotShot)))
             {
                 actionID = HotShot;
 

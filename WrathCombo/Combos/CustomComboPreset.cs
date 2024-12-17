@@ -793,7 +793,7 @@ public enum CustomComboPreset
     [ReplaceSkill(BRD.HeavyShot, BRD.BurstShot)]
     [ConflictingCombos(BRD_ST_AdvMode)]
     [CustomComboInfo("Simple Mode - Single Target",
-        "Replaces Heavy shot with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.",
+        "Replaces Heavy Shot with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.",
         BRD.JobID)]
     BRD_ST_SimpleMode = 3036,
 
@@ -1952,7 +1952,7 @@ public enum CustomComboPreset
     #region Simple Mode
 
     [AutoAction(false, false)]
-    [ConflictingCombos(GNB_ST_Advanced, GNB_NM_Features)]
+    [ConflictingCombos(GNB_ST_Advanced)]
     [ReplaceSkill(GNB.KeenEdge)]
     [CustomComboInfo("Simple Mode - Single Target",
         "Replaces Keen Edge with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.",
@@ -1960,7 +1960,7 @@ public enum CustomComboPreset
     GNB_ST_Simple = 7001,
 
     [AutoAction(true, false)]
-    [ConflictingCombos(GNB_AoE_Advanced, GNB_NM_Features)]
+    [ConflictingCombos(GNB_AoE_Advanced)]
     [ReplaceSkill(GNB.DemonSlice)]
     [CustomComboInfo("Simple Mode - AoE",
         "Replaces Demon Slice with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.",
@@ -2184,18 +2184,14 @@ public enum CustomComboPreset
     #endregion
 
     #region Gnashing Fang
-
     [ReplaceSkill(GNB.GnashingFang)]
-    [CustomComboInfo("Gnashing Fang Features",
-        "Collection of Gnashing Fang related features.\n Enable all for this to be an all-in-one Single Target Burst button.",
-        GNB.JobID)]
+    [CustomComboInfo("Gnashing Fang Features","Collection of Gnashing Fang related features.\n Enable all for this to be an all-in-one Single Target Burst button.", GNB.JobID)]
     GNB_GF_Features = 7300,
 
     [ParentCombo(GNB_GF_Features)]
     [CustomComboInfo("Continuation Option", "Adds Continuation to Gnashing Fang when available.", GNB.JobID)]
     GNB_GF_Continuation = 7301,
 
-    [ConflictingCombos(GNB_NM_Features)]
     [ParentCombo(GNB_GF_Features)]
     [CustomComboInfo("No Mercy Option", "Adds No Mercy to Gnashing Fang when available.", GNB.JobID)]
     GNB_GF_NoMercy = 7302,
@@ -2213,30 +2209,23 @@ public enum CustomComboPreset
     GNB_GF_Bloodfest = 7305,
 
     [ParentCombo(GNB_GF_Features)]
-    [CustomComboInfo("Sonic Break Option", "Adds Sonic Break on Gnashing Fang under No Mercy when appropriate.",
-        GNB.JobID)]
+    [CustomComboInfo("Sonic Break Option", "Adds Sonic Break on Gnashing Fang under No Mercy when appropriate.", GNB.JobID)]
     GNB_GF_SonicBreak = 7306,
 
     [ParentCombo(GNB_GF_Features)]
-    [CustomComboInfo("Double Down Option", "Adds Double Down to Gnashing Fang under No Mercy when appropriate.",
-        GNB.JobID)]
+    [CustomComboInfo("Double Down Option", "Adds Double Down to Gnashing Fang under No Mercy when appropriate.", GNB.JobID)]
     GNB_GF_DoubleDown = 7307,
 
     [ParentCombo(GNB_GF_Features)]
-    [CustomComboInfo("Reign combo Option", "Adds Reign combo on Gnashing Fang under No Mercy when appropriate.",
-        GNB.JobID)]
+    [CustomComboInfo("Reign combo Option", "Adds Reign combo on Gnashing Fang under No Mercy when appropriate.", GNB.JobID)]
     GNB_GF_Reign = 7308,
 
     [ParentCombo(GNB_GF_Features)]
-    [CustomComboInfo("Burst Strike Option", "Adds Burst Strike on Gnashing Fang under No Mercy when appropriate.",
-        GNB.JobID)]
+    [CustomComboInfo("Burst Strike Option", "Adds Burst Strike on Gnashing Fang under No Mercy when appropriate.", GNB.JobID)]
     GNB_GF_BurstStrike = 7309,
-
     #endregion
 
     #region No Mercy
-
-    [ConflictingCombos(GNB_ST_Simple, GNB_AoE_Simple, GNB_GF_NoMercy)]
     [ReplaceSkill(GNB.NoMercy)]
     [CustomComboInfo("No Mercy Features", "Collection of No Mercy related features.", GNB.JobID)]
     GNB_NM_Features = 7500,
@@ -2256,7 +2245,6 @@ public enum CustomComboPreset
     [ParentCombo(GNB_NM_Features)]
     [CustomComboInfo("Continuation Option", "Adds all Continuation procs to No Mercy appropriately.", GNB.JobID)]
     GNB_NM_Continuation = 7504,
-
     #endregion
 
     #region Burst Strike
@@ -2557,7 +2545,6 @@ public enum CustomComboPreset
     MCH_ST_AdvancedMode = 8100,
 
     [ParentCombo(MCH_ST_AdvancedMode)]
-    [ConflictingCombos(MCH_GaussRoundRicochet, MCH_Heatblast_GaussRound)]
     [CustomComboInfo("Level 100 Opener Option", "Uses the Balance opener.", MCH.JobID)]
     MCH_ST_Adv_Opener = 8101,
 
@@ -2572,7 +2559,6 @@ public enum CustomComboPreset
     MCH_ST_Adv_Reassemble = 8103,
 
     [ParentCombo(MCH_ST_AdvancedMode)]
-    [ConflictingCombos(MCH_GaussRoundRicochet, MCH_Heatblast_GaussRound)]
     [CustomComboInfo("Gauss Round / Ricochet \nDouble Check / Checkmate option",
         "Adds Gauss Round and Ricochet or Double Check and Checkmate to the rotation. Will prevent overcapping.",
         MCH.JobID)]
@@ -2591,10 +2577,12 @@ public enum CustomComboPreset
         "Adds Rook Autoturret or Automaton Queen to the rotation.", MCH.JobID)]
     MCH_Adv_TurretQueen = 8107,
 
-    [ParentCombo(MCH_ST_AdvancedMode)] [CustomComboInfo("Wildfire Option", "Adds Wildfire to the rotation.", MCH.JobID)]
+    [ParentCombo(MCH_ST_AdvancedMode)]
+    [CustomComboInfo("Wildfire Option", "Adds Wildfire to the rotation.", MCH.JobID)]
     MCH_ST_Adv_WildFire = 8108,
 
-    [ParentCombo(MCH_ST_AdvancedMode)] [CustomComboInfo("Drill Option", "Adds Drill to the rotation.", MCH.JobID)]
+    [ParentCombo(MCH_ST_AdvancedMode)]
+    [CustomComboInfo("Drill Option", "Adds Drill to the rotation.", MCH.JobID)]
     MCH_ST_Adv_Drill = 8109,
 
     [ParentCombo(MCH_ST_AdvancedMode)]
@@ -2643,7 +2631,6 @@ public enum CustomComboPreset
     MCH_AoE_Adv_Reassemble = 8301,
 
     [ParentCombo(MCH_AoE_AdvancedMode)]
-    [ConflictingCombos(MCH_GaussRoundRicochet, MCH_Heatblast_GaussRound)]
     [CustomComboInfo("Gauss Round / Ricochet \nDouble Check / Checkmate option",
         "Adds Gauss Round and Ricochet or Double Check and Checkmate to the rotation.", MCH.JobID)]
     MCH_AoE_Adv_GaussRicochet = 8302,
@@ -2717,8 +2704,6 @@ public enum CustomComboPreset
     MCH_Overdrive = 8002,
 
     [ReplaceSkill(MCH.GaussRound, MCH.Ricochet, MCH.CheckMate, MCH.DoubleCheck)]
-    [ConflictingCombos(MCH_ST_Adv_Opener, MCH_ST_Adv_GaussRicochet, MCH_AoE_Adv_GaussRicochet,
-        MCH_Heatblast_GaussRound)]
     [CustomComboInfo("Gauss Round / Ricochet \nDouble Check / Checkmate Feature",
         "Replace Gauss Round and Ricochet or Double Check and Checkmate with one or the other depending on which has more charges.",
         MCH.JobID)]
@@ -2744,7 +2729,6 @@ public enum CustomComboPreset
     MCH_Heatblast_Wildfire = 8015,
 
     [ParentCombo(MCH_Heatblast)]
-    [ConflictingCombos(MCH_ST_Adv_Opener, MCH_ST_Adv_GaussRicochet, MCH_AoE_Adv_GaussRicochet, MCH_GaussRoundRicochet)]
     [CustomComboInfo("Gauss Round / Ricochet \nDouble Check / Checkmate Option",
         "Switches between Heat Blast and either Gauss Round and Ricochet or Double Check and Checkmate, depending on cooldown timers.",
         MCH.JobID)]
@@ -2804,7 +2788,7 @@ public enum CustomComboPreset
     #region Monk Advanced ST
 
     [AutoAction(false, false)]
-    [ReplaceSkill(MNK.Bootshine)]
+    [ReplaceSkill(MNK.Bootshine, MNK.LeapingOpo)]
     [ConflictingCombos(MNK_ST_BeastChakras, MNK_ST_SimpleMode)]
     [CustomComboInfo("Advanced Mode - Single Target",
         "Replaces Bootshine with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.",
@@ -4037,10 +4021,12 @@ public enum CustomComboPreset
     [CustomComboInfo("Plentiful Harvest Option", "Adds Plentiful Harvest to the rotation.", RPR.JobID)]
     RPR_AoE_PlentifulHarvest = 12106,
 
-    [ParentCombo(RPR_AoE_CDs)] [CustomComboInfo("Grim Swathe Option", "Adds Grim Swathe to the rotation.", RPR.JobID)]
+    [ParentCombo(RPR_AoE_CDs)] 
+    [CustomComboInfo("Grim Swathe Option", "Adds Grim Swathe to the rotation.", RPR.JobID)]
     RPR_AoE_GrimSwathe = 12107,
 
-    [ParentCombo(RPR_AoE_CDs)] [CustomComboInfo("Gluttony Option", "Adds Gluttony to the rotation.", RPR.JobID)]
+    [ParentCombo(RPR_AoE_CDs)] 
+    [CustomComboInfo("Gluttony Option", "Adds Gluttony to the rotation.", RPR.JobID)]
     RPR_AoE_Gluttony = 12108,
 
     #endregion
@@ -4133,13 +4119,7 @@ public enum CustomComboPreset
         "Adds Soulsow to the skills selected below when out of combat. \nWill also add Soulsow to Harpe when in combat and no target is selected.",
         RPR.JobID)]
     RPR_Soulsow = 12302,
-
-    [ReplaceSkill(RPR.Harpe)]
-    [ParentCombo(RPR_Soulsow)]
-    [CustomComboInfo("Harpe Harvest Moon Feature",
-        "Replaces Harpe with Harvest Moon when you are in combat with Soulsow active.", RPR.JobID)]
-    RPR_Soulsow_HarpeHarvestMoon = 12303,
-
+    
     [ReplaceSkill(RPR.Enshroud)]
     [CustomComboInfo("Enshroud Protection Feature", "Turns Enshroud into Gibbet/Gallows to protect Soul Reaver waste.",
         RPR.JobID)]
@@ -4288,14 +4268,25 @@ public enum CustomComboPreset
     [ParentCombo(RDM_ST_DPS)]
     [CustomComboInfo("Melee Finisher Option", "Add Verflare/Verholy and other finishing moves.", RDM.JobID)]
     RDM_ST_MeleeFinisher = 13510,
-
+    
+    #endregion
+    
     [ParentCombo(RDM_ST_DPS)]
     [CustomComboInfo("Lucid Dreaming Option", "Weaves Lucid Dreaming when your MP drops below the specified value.",
         RDM.JobID)]
     RDM_ST_Lucid = 13610,
 
-    #endregion
+    [ParentCombo(RDM_ST_MeleeCombo)]
+    [CustomComboInfo("Melee combo overcap protection",
+        "Adds melee combo to the rotation when mana is at a certain threshold.", RDM.JobID)]
+    RDM_ST_Melee_Overcap_Protection = 13660,
 
+    [ParentCombo(RDM_ST_MeleeCombo)]
+    [CustomComboInfo("Melee Combo Fill Option",
+        "Adds the melee combo to the rotation." + "\nRiposte itself must be initiated manually when using this option.",
+        RDM.JobID)]
+    RDM_ST_Adv_MeleeFill = 13710,
+    
     #region AoE DPS
 
     [AutoAction(true, false)]
@@ -4411,7 +4402,7 @@ public enum CustomComboPreset
     #endregion
 
     //Last Used 13838
-
+    
     #endregion
 
     #region SAGE
@@ -4795,10 +4786,12 @@ public enum CustomComboPreset
         SAM.JobID)]
     SAM_AoE_AdvancedMode = 15103,
 
-    [ParentCombo(SAM_AoE_AdvancedMode)] [CustomComboInfo("Oka Combo", "Adds Oka combo to the rotation.", SAM.JobID)]
+    [ParentCombo(SAM_AoE_AdvancedMode)]
+    [CustomComboInfo("Oka Combo", "Adds Oka combo to the rotation.", SAM.JobID)]
     SAM_AoE_Oka = 15104,
 
-    [ParentCombo(SAM_AoE_AdvancedMode)] [CustomComboInfo("Kyuten Option", "Adds Kyuten to the rotation.", SAM.JobID)]
+    [ParentCombo(SAM_AoE_AdvancedMode)] 
+    [CustomComboInfo("Kyuten Option", "Adds Kyuten to the rotation.", SAM.JobID)]
     SAM_AoE_Kyuten = 15105,
 
     [ParentCombo(SAM_AoE_AdvancedMode)]
@@ -4818,14 +4811,16 @@ public enum CustomComboPreset
         "Adds Ogi Namikiri and Kaeshi: Namikiri when ready and when you're not moving to the rotation.", SAM.JobID)]
     SAM_AoE_OgiNamikiri = 15109,
 
-    [ParentCombo(SAM_AoE_AdvancedMode)] [CustomComboInfo("Zanshin Option", "Adds Zanshin to the rotation.", SAM.JobID)]
+    [ParentCombo(SAM_AoE_AdvancedMode)]
+    [CustomComboInfo("Zanshin Option", "Adds Zanshin to the rotation.", SAM.JobID)]
     SAM_AoE_Zanshin = 15110,
 
     [ParentCombo(SAM_AoE_AdvancedMode)]
     [CustomComboInfo("Shoha Option", "Adds Shoha when you have 3 meditation stacks.", SAM.JobID)]
     SAM_AoE_Shoha = 15111,
 
-    [ParentCombo(SAM_AoE_AdvancedMode)] [CustomComboInfo("Guren Option", "Adds Guren to the rotation.", SAM.JobID)]
+    [ParentCombo(SAM_AoE_AdvancedMode)]
+    [CustomComboInfo("Guren Option", "Adds Guren to the rotation.", SAM.JobID)]
     SAM_AoE_Guren = 15112,
 
     [ParentCombo(SAM_AoE_AdvancedMode)]
@@ -4849,17 +4844,20 @@ public enum CustomComboPreset
     [CustomComboInfo("Yukikaze Combo", "Replace Yukikaze with its combo chain.", SAM.JobID)]
     SAM_ST_YukikazeCombo = 15000,
 
-    [ReplaceSkill(SAM.Kasha)] [CustomComboInfo("Kasha Combo", "Replace Kasha with its combo chain.", SAM.JobID)]
+    [ReplaceSkill(SAM.Kasha)] 
+    [CustomComboInfo("Kasha Combo", "Replace Kasha with its combo chain.", SAM.JobID)]
     SAM_ST_KashaCombo = 15001,
 
-    [ReplaceSkill(SAM.Gekko)] [CustomComboInfo("Gekko Combo", "Replace Gekko with its combo chain.", SAM.JobID)]
+    [ReplaceSkill(SAM.Gekko)]
+    [CustomComboInfo("Gekko Combo", "Replace Gekko with its combo chain.", SAM.JobID)]
     SAM_ST_GekkoCombo = 15010,
 
     #endregion
 
     #region AoE Oka Combo
 
-    [ReplaceSkill(SAM.Oka)] [CustomComboInfo("Oka Combo", "Replace Oka with its combo chain.", SAM.JobID)]
+    [ReplaceSkill(SAM.Oka)]
+    [CustomComboInfo("Oka Combo", "Replace Oka with its combo chain.", SAM.JobID)]
     SAM_AoE_OkaCombo = 15100,
 
     [ReplaceSkill(SAM.Mangetsu)]
@@ -4871,11 +4869,13 @@ public enum CustomComboPreset
     #region Meikyo Features
 
     [ReplaceSkill(SAM.MeikyoShisui)]
-    [CustomComboInfo("Jinpu/Shifu Feature",
-        "Replace Meikyo Shisui with Jinpu, Shifu, and Yukikaze depending on what is needed.", SAM.JobID)]
-    SAM_JinpuShifu = 15200,
+    [ConflictingCombos(SAM_MeikyoShisuiProtection)]
+    [CustomComboInfo("Sens Feature",
+        "Replace Meikyo Shisui with Gekko, Kasha, and Yukikaze depending on what is needed.", SAM.JobID)]
+    SAM_MeikyoSens = 15200,
 
     [ReplaceSkill(SAM.MeikyoShisui)]
+    [ConflictingCombos(SAM_MeikyoSens)]
     [CustomComboInfo("Meikyo Shisui Protection",
         "Replaces Meikyo Shisui with Savage Blade when u already have Meikyo Shisui active.", SAM.JobID)]
     SAM_MeikyoShisuiProtection = 15214,
@@ -4884,7 +4884,8 @@ public enum CustomComboPreset
 
     #region Iaijutsu Features
 
-    [ReplaceSkill(SAM.Iaijutsu)] [CustomComboInfo("Iaijutsu Features", "Collection of Iaijutsu Features.", SAM.JobID)]
+    [ReplaceSkill(SAM.Iaijutsu)] 
+    [CustomComboInfo("Iaijutsu Features", "Collection of Iaijutsu Features.", SAM.JobID)]
     SAM_Iaijutsu = 15201,
 
     [ParentCombo(SAM_Iaijutsu)]
@@ -5482,7 +5483,7 @@ public enum CustomComboPreset
 
     [AutoAction(false, false)]
     [ReplaceSkill(VPR.SteelFangs)]
-    [ConflictingCombos(VPR_ST_AdvancedMode)]
+    [ConflictingCombos(VPR_ST_AdvancedMode, VPR_SerpentsTail, VPR_Legacies, VPR_ReawakenLegacy)]
     [CustomComboInfo("Simple Mode - Single Target",
         "Replaces Steel Fangs with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.",
         VPR.JobID)]
@@ -5490,7 +5491,7 @@ public enum CustomComboPreset
 
     [AutoAction(true, false)]
     [ReplaceSkill(VPR.SteelMaw)]
-    [ConflictingCombos(VPR_AoE_AdvancedMode)]
+    [ConflictingCombos(VPR_AoE_AdvancedMode,VPR_SerpentsTail)]
     [CustomComboInfo("Simple Mode - AoE",
         "Replaces Steel Maw with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.",
         VPR.JobID)]
@@ -5502,14 +5503,13 @@ public enum CustomComboPreset
 
     [AutoAction(false, false)]
     [ReplaceSkill(VPR.SteelFangs)]
-    [ConflictingCombos(VPR_ST_SimpleMode)]
+    [ConflictingCombos(VPR_ST_SimpleMode, VPR_SerpentsTail, VPR_Legacies, VPR_ReawakenLegacy)]
     [CustomComboInfo("Advanced Mode - Single Target",
         "Replaces Steel Fangs with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.",
         VPR.JobID)]
     VPR_ST_AdvancedMode = 30001,
 
     [ParentCombo(VPR_ST_AdvancedMode)]
-    [ConflictingCombos(VPR_ReawakenLegacy)]
     [CustomComboInfo("Level 100 Opener",
         "Adds the Balance opener to the rotation.\n Does not check positional choice.\n Always does Hunter's Coil first ( FLANK )",
         VPR.JobID)]
@@ -5521,10 +5521,12 @@ public enum CustomComboPreset
     [CustomComboInfo("Cooldowns Option", "Adds various cooldowns to the rotation.", VPR.JobID)]
     VPR_ST_CDs = 30004,
 
-    [ParentCombo(VPR_ST_CDs)] [CustomComboInfo("Serpents Ire", "Adds Serpents Ire to the rotation.", VPR.JobID)]
+    [ParentCombo(VPR_ST_CDs)]
+    [CustomComboInfo("Serpents Ire", "Adds Serpents Ire to the rotation.", VPR.JobID)]
     VPR_ST_SerpentsIre = 30005,
 
-    [ParentCombo(VPR_ST_CDs)] [CustomComboInfo("Vicewinder", "Adds Vicewinder to the rotation.", VPR.JobID)]
+    [ParentCombo(VPR_ST_CDs)]
+    [CustomComboInfo("Vicewinder", "Adds Vicewinder to the rotation.", VPR.JobID)]
     VPR_ST_Vicewinder = 30006,
 
     [ParentCombo(VPR_ST_CDs)]
@@ -5553,12 +5555,10 @@ public enum CustomComboPreset
     VPR_ST_UncoiledFuryCombo = 30010,
 
     [ParentCombo(VPR_ST_AdvancedMode)]
-    [ConflictingCombos(VPR_ReawakenLegacy)]
     [CustomComboInfo("Reawaken", "Adds Reawaken to the rotation.", VPR.JobID)]
     VPR_ST_Reawaken = 30011,
 
     [ParentCombo(VPR_ST_AdvancedMode)]
-    [ConflictingCombos(VPR_ReawakenLegacy)]
     [CustomComboInfo("Reawaken Combo", "Adds Generation and Legacy to the rotation.", VPR.JobID)]
     VPR_ST_ReawakenCombo = 30012,
 
@@ -5588,7 +5588,7 @@ public enum CustomComboPreset
 
     [AutoAction(true, false)]
     [ReplaceSkill(VPR.SteelMaw)]
-    [ConflictingCombos(VPR_AoE_SimpleMode)]
+    [ConflictingCombos(VPR_AoE_SimpleMode, VPR_SerpentsTail)]
     [CustomComboInfo("Advanced Mode - AoE",
         "Replaces Steel Maw with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.",
         VPR.JobID)]
@@ -5600,10 +5600,12 @@ public enum CustomComboPreset
     [CustomComboInfo("Cooldowns Option", "Adds various cooldowns to the rotation.", VPR.JobID)]
     VPR_AoE_CDs = 30103,
 
-    [ParentCombo(VPR_AoE_CDs)] [CustomComboInfo("Serpents Ire", "Adds Serpents Ire to the rotation.", VPR.JobID)]
+    [ParentCombo(VPR_AoE_CDs)]
+    [CustomComboInfo("Serpents Ire", "Adds Serpents Ire to the rotation.", VPR.JobID)]
     VPR_AoE_SerpentsIre = 30104,
 
-    [ParentCombo(VPR_AoE_CDs)] [CustomComboInfo("Vicepit", "Adds Vicepit to the rotation.", VPR.JobID)]
+    [ParentCombo(VPR_AoE_CDs)] 
+    [CustomComboInfo("Vicepit", "Adds Vicepit to the rotation.", VPR.JobID)]
     VPR_AoE_Vicepit = 30105,
 
     [ParentCombo(VPR_AoE_Vicepit)]
@@ -5641,7 +5643,6 @@ public enum CustomComboPreset
     VPR_AoE_UncoiledFuryCombo = 30109,
 
     [ParentCombo(VPR_AoE_AdvancedMode)]
-    [ConflictingCombos(VPR_ReawakenLegacy)]
     [CustomComboInfo("Reawaken", "Adds Reawaken to the rotation.", VPR.JobID)]
     VPR_AoE_Reawaken = 30110,
 
@@ -5651,7 +5652,6 @@ public enum CustomComboPreset
     VPR_AoE_Reawaken_DisableRange = 30114,
 
     [ParentCombo(VPR_AoE_AdvancedMode)]
-    [ConflictingCombos(VPR_ReawakenLegacy)]
     [CustomComboInfo("Reawaken Combo", "Adds Generation and Legacy to the rotation.", VPR.JobID)]
     VPR_AoE_ReawakenCombo = 30112,
 
@@ -5682,7 +5682,7 @@ public enum CustomComboPreset
     VPR_UncoiledTwins = 30202,
 
     [ReplaceSkill(VPR.Reawaken, VPR.SteelFangs)]
-    [ConflictingCombos(VPR_ST_Reawaken, VPR_ST_ReawakenCombo, VPR_AoE_Reawaken, VPR_AoE_ReawakenCombo, VPR_ST_Opener)]
+    [ConflictingCombos(VPR_ST_SimpleMode, VPR_ST_AdvancedMode, VPR_Legacies, VPR_SerpentsTail)]
     [CustomComboInfo("Reawaken - Generation", "Replaces Option with the Generations.", VPR.JobID)]
     VPR_ReawakenLegacy = 30203,
 
@@ -5714,10 +5714,13 @@ public enum CustomComboPreset
     VPR_Variant_Rampart = 30301,
 
     [ReplaceSkill(VPR.SteelFangs, VPR.ReavingFangs, VPR.HuntersCoil, VPR.SwiftskinsCoil)]
+    [ConflictingCombos(VPR_ST_SimpleMode, VPR_ST_AdvancedMode, VPR_SerpentsTail, VPR_ReawakenLegacy)]
     [CustomComboInfo("Legacy Buttons", "Replaces Generations with the Legacys.", VPR.JobID)]
     VPR_Legacies = 30209,
 
     [ReplaceSkill(VPR.SteelFangs, VPR.ReavingFangs, VPR.SteelMaw, VPR.ReavingMaw)]
+    [ConflictingCombos(VPR_ST_SimpleMode, VPR_AoE_SimpleMode, VPR_ST_AdvancedMode, VPR_AoE_AdvancedMode, VPR_Legacies,
+        VPR_ReawakenLegacy)]
     [CustomComboInfo("Serpents Tail", "Replaces basic combo with Death Rattle or Last Lash when applicable.",
         VPR.JobID)]
     VPR_SerpentsTail = 30210,
@@ -5745,7 +5748,7 @@ public enum CustomComboPreset
     WAR_AoE_Simple = 18001,
 
     #endregion
-
+    
     #region Advanced ST
 
     [AutoAction(false, false)]
@@ -5978,11 +5981,11 @@ public enum CustomComboPreset
 
     [ReplaceSkill(WAR.ThrillOfBattle)]
     [ConflictingCombos(WAR_Mit_OneButton)]
-    [CustomComboInfo("Equilibrium Feature", "Replaces Thrill Of Battle with Equilbrium when used.", WAR.JobID)]
+    [CustomComboInfo("Equilibrium Feature", "Replaces Thrill Of Battle with Equilibrium when used.", WAR.JobID)]
     WAR_ThrillEquilibrium = 18055,
 
     [ParentCombo(WAR_ThrillEquilibrium)]
-    [CustomComboInfo("Buffed Equilibrium Only", "Replaces Thrill Of Battle with Equilbrium only when under its buff.",
+    [CustomComboInfo("Buffed Equilibrium Only", "Replaces Thrill Of Battle with Equilibrium only when under its buff.",
         WAR.JobID)]
     WAR_ThrillEquilibrium_BuffOnly = 18056,
 
@@ -6335,7 +6338,7 @@ public enum CustomComboPreset
     // Last value = 51011
 
     #endregion
-
+    
     #endregion
 
     #region PvP Combos

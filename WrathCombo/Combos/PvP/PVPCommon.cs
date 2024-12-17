@@ -48,6 +48,7 @@ namespace WrathCombo.Combos.PvP
 
         /// <summary> Checks if the target is immune to damage. Optionally, include buffs that provide significant damage reduction. </summary>
         /// <param name="includeReductions"> Includes buffs that provide significant damage reduction. </param>
+        /// <param name="optionalTarget"> Optional target to check. </param>
         public static bool TargetImmuneToDamage(bool includeReductions = true, IGameObject? optionalTarget = null)
         {
             var t = optionalTarget ?? CustomComboFunctions.CurrentTarget;

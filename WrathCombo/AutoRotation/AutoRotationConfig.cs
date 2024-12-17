@@ -19,6 +19,7 @@
         public bool QuestPriority = false;
         public int? DPSAoETargets = 3;
         public bool PreferNonCombat = false;
+        public float MaxDistance = 25;
     }
 
     public class HealerSettings
@@ -27,6 +28,7 @@
         public int AoETargetHPP = 80;
         public int SingleTargetRegenHPP = 60;
         public int? AoEHealTargetCount = 2;
+        public int HealDelay = 1;
         public bool ManageKardia = false;
         public bool KardiaTanksOnly = false;
         public bool AutoRez = false;

@@ -1,6 +1,9 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
+using ECommons.GameFunctions;
 using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using System.Collections.Generic;
+using System.Linq;
 using WrathCombo.Data;
 using WrathCombo.Services;
 using Status = Dalamud.Game.ClientState.Statuses.Status;
@@ -215,5 +218,42 @@ namespace WrathCombo.CustomComboNS.Functions
 
             return true;
         }
+
+        private static List<uint> InvincibleStatuses = new()
+        {
+            151,
+            198,
+            325,
+            328,
+            385,
+            394,
+            469,
+            529,
+            592,
+            656,
+            671,
+            775,
+            776,
+            895,
+            969,
+            981,
+            1240,
+            1302,
+            1303,
+            1567,
+            1570,
+            1697,
+            1829,
+            1936,
+            2413,
+            2654,
+            3039,
+            3052,
+            3054,
+            4410,
+            4175
+        };
+
+        public static bool TargetIsInvincible(IGameObject target) => (target as IBattleChara).StatusList.Any(y => InvincibleStatuses.Any(x => x == y.StatusId));
     }
 }

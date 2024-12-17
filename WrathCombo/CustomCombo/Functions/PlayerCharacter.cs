@@ -25,7 +25,7 @@ namespace WrathCombo.CustomComboNS.Functions
 
         /// <summary> Find if the player is bound by duty. </summary>
         /// <returns> A value indicating whether the player is bound by duty. </returns>
-        public static bool InDuty() => Svc.Condition[ConditionFlag.BoundByDuty] || Svc.Condition[ConditionFlag.BoundByDuty56] || Svc.Condition[ConditionFlag.BoundByDuty95];
+        public unsafe static bool InDuty() => GameMain.Instance()->CurrentContentFinderConditionId > 0;
 
         /// <summary> Find if the player has a pet present. </summary>
         /// <returns> A value indicating whether the player has a pet (fairy/carbuncle) present. </returns>

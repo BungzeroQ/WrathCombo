@@ -29,7 +29,7 @@ namespace WrathCombo.CustomComboNS
         protected byte ClassID { get; }
 
         /// <summary> Gets the job ID associated with this combo. </summary>
-        protected byte JobID { get; }
+        protected uint JobID { get; }
 
         /// <summary> Performs various checks then attempts to invoke the combo. </summary>
         /// <param name="actionID"> Starting action ID. </param>
@@ -37,8 +37,8 @@ namespace WrathCombo.CustomComboNS
         /// <param name="lastComboMove"> Last combo action ID. </param>
         /// <param name="comboTime"> Combo timer. </param>
         /// <param name="newActionID"> Replacement action ID. </param>
+        /// <param name="targetOverride"> Optional target override. </param>
         /// <returns> True if the action has changed, otherwise false. </returns>
-
         public unsafe bool TryInvoke(uint actionID, byte level, uint lastComboMove, float comboTime, out uint newActionID, IGameObject? targetOverride = null)
         {
             newActionID = 0;
