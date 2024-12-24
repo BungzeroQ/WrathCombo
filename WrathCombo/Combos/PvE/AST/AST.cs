@@ -249,7 +249,7 @@ namespace WrathCombo.Combos.PvE
                     if (IsEnabled(CustomComboPreset.AST_DPS_LightSpeed) &&
                         ActionReady(Lightspeed) &&
                         GetTargetHPPercent() > Config.AST_DPS_LightSpeedOption &&
-                        IsMoving &&
+                        (IsMoving || JustUsed(Divination, 15f)) &&
                         !HasEffect(Buffs.Lightspeed))
                         return Lightspeed;
 

@@ -569,7 +569,7 @@ namespace WrathCombo.Combos.PvE
 
                     if (IsEnabled(CustomComboPreset.BRD_Adv_BuffsEncore))
                     {
-                        if (HasEffect(Buffs.RadiantEncoreReady) && GetBuffRemainingTime(Buffs.RadiantFinale) < 15) // Delay Encore enough for buff window
+                        if (HasEffect(Buffs.RadiantEncoreReady) && GetBuffRemainingTime(Buffs.RadiantFinale) <= 15) // Delay Encore enough for buff window
                             return OriginalHook(RadiantEncore);
                     }
 
@@ -871,7 +871,7 @@ namespace WrathCombo.Combos.PvE
 
                     if (IsEnabled(CustomComboPreset.BRD_Adv_BuffsEncore))
                     {
-                        if (HasEffect(Buffs.RadiantEncoreReady) && GetBuffRemainingTime(Buffs.RadiantFinale) < 15) // Delay Encore enough for buff window
+                        if (HasEffect(Buffs.RadiantEncoreReady) && GetBuffRemainingTime(Buffs.RadiantFinale) < 15 && HasEffect(Buffs.BattleVoice)) // Delay Encore enough for buff window
                             return OriginalHook(RadiantEncore);
                     }
 
