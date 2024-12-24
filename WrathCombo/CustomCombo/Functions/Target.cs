@@ -619,10 +619,12 @@ namespace WrathCombo.CustomComboNS.Functions
 
         internal static unsafe bool IsQuestMob(IGameObject target) => target.Struct()->NamePlateIconId is 71204 or 71144 or 71224 or 71344;
 
-        private static bool IsBoss(IGameObject? target) => Svc.Data.GetExcelSheet<BNpcBase>().GetRow(target.DataId).Rank is 2 or 6;
+        private static bool IsBoss(IGameObject? target) => Svc.Data.GetExcelSheet<BNpcBase>().HasRow(target.DataId) ? Svc.Data.GetExcelSheet<BNpcBase>().GetRow(target.DataId).Rank is 2 or 6 : false;
 
         internal static bool TargetIsBoss() => IsBoss(LocalPlayer.TargetObject);
 
         internal static bool TargetIsHostile() => HasTarget() && CurrentTarget.IsHostile();
+
+        internal static IEnumerable<IBattleChara> NearbyBosses =>  Svc.Objects.Where(x => x.ObjectKind == ObjectKind.BattleNpc && IsBoss(x)).Cast<IBattleChara>();
     }
 }

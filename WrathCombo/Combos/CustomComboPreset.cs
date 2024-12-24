@@ -1,10 +1,6 @@
-﻿#region
-
-using WrathCombo.Attributes;
+﻿using WrathCombo.Attributes;
 using WrathCombo.Combos.PvE;
 using WrathCombo.Combos.PvP;
-
-#endregion
 
 namespace WrathCombo.Combos;
 
@@ -240,21 +236,28 @@ public enum CustomComboPreset
     AST_ST_DPS = 1004,
 
     [ParentCombo(AST_ST_DPS)]
+    [CustomComboInfo("Balance Opener (Level 92)", "Adds the Balance opener from level 92 onwards.", AST.JobID)]
+    AST_ST_DPS_Opener = 1040,
+
+    [ParentCombo(AST_ST_DPS)]
     [CustomComboInfo("Combust Uptime Option",
         "Adds Combust to the DPS feature if it's not present on current target, or is about to expire.", AST.JobID)]
     AST_ST_DPS_CombustUptime = 1018,
 
-    [ParentCombo(AST_ST_DPS)] [CustomComboInfo("Lightspeed Weave Option", "Adds Lightspeed when moving", AST.JobID)]
+    [ParentCombo(AST_ST_DPS)]
+    [CustomComboInfo("Lightspeed Weave Option", "Adds Lightspeed when moving", AST.JobID)]
     AST_DPS_LightSpeed = 1020,
 
     [ParentCombo(AST_ST_DPS)]
     [CustomComboInfo("Lucid Dreaming Weave Option", "Adds Lucid Dreaming when MP drops below slider value", AST.JobID)]
     AST_DPS_Lucid = 1008,
 
-    [ParentCombo(AST_ST_DPS)] [CustomComboInfo("Divination Weave Option", "Adds Divination", AST.JobID)]
+    [ParentCombo(AST_ST_DPS)]
+    [CustomComboInfo("Divination Weave Option", "Adds Divination", AST.JobID)]
     AST_DPS_Divination = 1016,
 
-    [ParentCombo(AST_ST_DPS)] [CustomComboInfo("Card Draw Weave Option", "Draws your cards", AST.JobID)]
+    [ParentCombo(AST_ST_DPS)]
+    [CustomComboInfo("Card Draw Weave Option", "Draws your cards", AST.JobID)]
     AST_DPS_AutoDraw = 1011,
 
     [ParentCombo(AST_ST_DPS)]
@@ -262,14 +265,13 @@ public enum CustomComboPreset
         AST.JobID)]
     AST_DPS_AutoPlay = 1037,
 
-    [ParentCombo(AST_ST_DPS)] [CustomComboInfo("Lord of Crowns Weave Option", "Adds Lord Of Crowns", AST.JobID)]
+    [ParentCombo(AST_ST_DPS)]
+    [CustomComboInfo("Lord of Crowns Weave Option", "Adds Lord Of Crowns", AST.JobID)]
     AST_DPS_LazyLord = 1014,
 
-    [ParentCombo(AST_ST_DPS)] [CustomComboInfo("Oracle Option", "Adds Oracle after Divination", AST.JobID)]
+    [ParentCombo(AST_ST_DPS)]
+    [CustomComboInfo("Oracle Option", "Adds Oracle after Divination", AST.JobID)]
     AST_DPS_Oracle = 1015,
-
-    [ParentCombo(AST_ST_DPS)] [CustomComboInfo("Level 100 Opener", "Use the Balance opener.", AST.JobID)]
-    AST_ST_DPS_Opener = 1040,
 
     [ParentCombo(AST_ST_DPS)]
     [CustomComboInfo("Earthly Star Option", "Adds Earthly Star." +
@@ -285,7 +287,8 @@ public enum CustomComboPreset
     [CustomComboInfo("AoE DPS Feature", "Replaces Gravity with options below", AST.JobID)]
     AST_AOE_DPS = 1041,
 
-    [ParentCombo(AST_AOE_DPS)] [CustomComboInfo("Lightspeed Weave Option", "Adds Lightspeed when moving", AST.JobID)]
+    [ParentCombo(AST_AOE_DPS)]
+    [CustomComboInfo("Lightspeed Weave Option", "Adds Lightspeed when moving", AST.JobID)]
     AST_AOE_LightSpeed = 1048,
 
     [ParentCombo(AST_AOE_DPS)]
@@ -293,10 +296,12 @@ public enum CustomComboPreset
     )]
     AST_AOE_Lucid = 1042,
 
-    [ParentCombo(AST_AOE_DPS)] [CustomComboInfo("Divination Weave Option", "Adds Divination", AST.JobID)]
+    [ParentCombo(AST_AOE_DPS)]
+    [CustomComboInfo("Divination Weave Option", "Adds Divination", AST.JobID)]
     AST_AOE_Divination = 1043,
 
-    [ParentCombo(AST_AOE_DPS)] [CustomComboInfo("Card Draw Weave Option", "Draws your cards", AST.JobID)]
+    [ParentCombo(AST_AOE_DPS)]
+    [CustomComboInfo("Card Draw Weave Option", "Draws your cards", AST.JobID)]
     AST_AOE_AutoDraw = 1044,
 
     [ParentCombo(AST_AOE_DPS)]
@@ -304,10 +309,12 @@ public enum CustomComboPreset
         AST.JobID)]
     AST_AOE_AutoPlay = 1045,
 
-    [ParentCombo(AST_AOE_DPS)] [CustomComboInfo("Lord of Crowns Weave Option", "Adds Lord Of Crowns", AST.JobID)]
+    [ParentCombo(AST_AOE_DPS)]
+    [CustomComboInfo("Lord of Crowns Weave Option", "Adds Lord Of Crowns", AST.JobID)]
     AST_AOE_LazyLord = 1046,
 
-    [ParentCombo(AST_AOE_DPS)] [CustomComboInfo("Oracle Option", "Adds Oracle after Divination", AST.JobID)]
+    [ParentCombo(AST_AOE_DPS)]
+    [CustomComboInfo("Oracle Option", "Adds Oracle after Divination", AST.JobID)]
     AST_AOE_Oracle = 1047,
 
     [ParentCombo(AST_AOE_DPS)]
@@ -321,7 +328,7 @@ public enum CustomComboPreset
 
     [AutoAction(false, true)]
     [ReplaceSkill(AST.Benefic2)]
-    [CustomComboInfo("Simple Heals (Single Target)", "Replaces Benefic II with a one button healing replacement.",
+    [CustomComboInfo("Simple Heals - Single Target", "Replaces Benefic II with a one button healing replacement.",
         AST.JobID)]
     AST_ST_SimpleHeals = 1023,
 
@@ -342,7 +349,8 @@ public enum CustomComboPreset
     [CustomComboInfo("Esuna Option", "Applies Esuna to your target if there is a cleansable debuff.", AST.JobID)]
     AST_ST_SimpleHeals_Esuna = 1039,
 
-    [ParentCombo(AST_ST_SimpleHeals)] [CustomComboInfo("Exaltation Option", "Adds Exaltation.", AST.JobID)]
+    [ParentCombo(AST_ST_SimpleHeals)]
+    [CustomComboInfo("Exaltation Option", "Adds Exaltation.", AST.JobID)]
     AST_ST_SimpleHeals_Exaltation = 1028,
 
     [ParentCombo(AST_ST_SimpleHeals)]
@@ -363,7 +371,7 @@ public enum CustomComboPreset
 
     [AutoAction(true, true)]
     [ReplaceSkill(AST.Helios, AST.AspectedHelios, AST.HeliosConjuction)]
-    [CustomComboInfo("Simple Heals (AoE)",
+    [CustomComboInfo("Simple Heals - AoE",
         "Replaces Aspected Helios/Helios Conjunction or Helios with a one button healing replacement.", AST.JobID)]
     AST_AoE_SimpleHeals_AspectedHelios = 1010,
 
@@ -438,16 +446,14 @@ public enum CustomComboPreset
     [ReplaceSkill(BLM.Fire)]
     [ConflictingCombos(BLM_ST_AdvancedMode)]
     [CustomComboInfo("Simple Mode - Single Target",
-        "Replaces Fire with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.",
-        BLM.JobID)]
+        "Replaces Fire with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.", BLM.JobID)]
     BLM_ST_SimpleMode = 2001,
 
     [AutoAction(true, false)]
     [ReplaceSkill(BLM.Blizzard2, BLM.HighBlizzard2)]
     [ConflictingCombos(BLM_AoE_AdvancedMode)]
     [CustomComboInfo("Simple Mode - AoE",
-        "Replaces Blizzard II with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.",
-        BLM.JobID)]
+        "Replaces Blizzard II with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.", BLM.JobID)]
     BLM_AoE_SimpleMode = 2002,
 
     #endregion
@@ -458,30 +464,37 @@ public enum CustomComboPreset
     [ReplaceSkill(BLM.Fire)]
     [ConflictingCombos(BLM_ST_SimpleMode)]
     [CustomComboInfo("Advanced Mode - Single Target",
-        "Replaces Fire with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.",
-        BLM.JobID)]
+        "Replaces Fire with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.", BLM.JobID)]
     BLM_ST_AdvancedMode = 2100,
 
     [ParentCombo(BLM_ST_AdvancedMode)]
-    [CustomComboInfo("Level 100 Opener",
-        "Adds the Balance opener to the rotation.\nNeed a GCD of 2.45 or lower to use.", BLM.JobID)]
+    [CustomComboInfo("Balance Opener (Level 100)",
+        "Adds the Balance opener at level 100.\nNeed a GCD of 2.45 or lower to use.", BLM.JobID)]
     BLM_ST_Opener = 2101,
+
+    [ParentCombo(BLM_ST_AdvancedMode)]
+    [CustomComboInfo("Leylines Option", "Add Leylines to the rotation.", BLM.JobID)]
+    BLM_ST_LeyLines = 2103,
 
     [ParentCombo(BLM_ST_AdvancedMode)]
     [CustomComboInfo("Amplifier Option", "Add Amplifier to the rotation.", BLM.JobID)]
     BLM_ST_Amplifier = 2102,
 
-    [ParentCombo(BLM_ST_AdvancedMode)] [CustomComboInfo("Leylines Option", "Add Leylines to the rotation.", BLM.JobID)]
-    BLM_ST_LeyLines = 2103,
+    [ParentCombo(BLM_ST_AdvancedMode)]
+    [CustomComboInfo("Manafont Option", "Add Manafont to the rotation.", BLM.JobID)]
+    BLM_ST_Manafont = 2108,
 
     [ParentCombo(BLM_ST_AdvancedMode)]
-    [CustomComboInfo("Foul/Xenoglossy Option", "Add Foul/Xenoglossy to the rotation.", BLM.JobID)]
-    BLM_ST_UsePolyglot = 2104,
+    [CustomComboInfo("(High) Thunder Option", "Add (High) Thunder to the rotation.", BLM.JobID)]
+    BLM_ST_Thunder = 2110,
 
     [ParentCombo(BLM_ST_AdvancedMode)]
-    [CustomComboInfo("Foul/Xenoglossy for Movement Option", "Add Foul / Xenoglossy to the rotation as movement option.",
-        BLM.JobID)]
-    BLM_ST_UsePolyglotMoving = 2105,
+    [CustomComboInfo("Despair Option", "Add Despair to the rotation.", BLM.JobID)]
+    BLM_ST_Despair = 2111,
+
+    [ParentCombo(BLM_ST_AdvancedMode)]
+    [CustomComboInfo("Flare Star Option", "Add Flare Star to the rotation.", BLM.JobID)]
+    BLM_ST_FlareStar = 2112,
 
     [ParentCombo(BLM_ST_AdvancedMode)]
     [CustomComboInfo("Swiftcast Option", "Add Swiftcast to the rotation.", BLM.JobID)]
@@ -491,23 +504,17 @@ public enum CustomComboPreset
     [CustomComboInfo("Triplecast Option", "Add Triplecast to the rotation.", BLM.JobID)]
     BLM_ST_Triplecast = 2107,
 
-    [ParentCombo(BLM_ST_AdvancedMode)] [CustomComboInfo("Manafont Option", "Add Manafont to the rotation.", BLM.JobID)]
-    BLM_ST_Manafont = 2108,
-
     [ParentCombo(BLM_ST_AdvancedMode)]
     [CustomComboInfo("Transpose Option", "Add Transpose to the rotation.", BLM.JobID)]
     BLM_ST_Transpose = 2109,
 
     [ParentCombo(BLM_ST_AdvancedMode)]
-    [CustomComboInfo("(High) Thunder Option", "Add (High) Thunder to the rotation.", BLM.JobID)]
-    BLM_ST_Thunder = 2110,
-
-    [ParentCombo(BLM_ST_AdvancedMode)] [CustomComboInfo("Despair Option", "Add Despair to the rotation.", BLM.JobID)]
-    BLM_ST_Despair = 2111,
+    [CustomComboInfo("Foul/Xenoglossy Option", "Add Foul/Xenoglossy to the rotation.", BLM.JobID)]
+    BLM_ST_UsePolyglot = 2104,
 
     [ParentCombo(BLM_ST_AdvancedMode)]
-    [CustomComboInfo("Flare Star Option", "Add Flare Star to the rotation.", BLM.JobID)]
-    BLM_ST_FlareStar = 2112,
+    [CustomComboInfo("Foul/Xenoglossy for Movement Option", "Add Foul / Xenoglossy to the rotation as movement option.", BLM.JobID)]
+    BLM_ST_UsePolyglotMoving = 2105,
 
     #endregion
 
@@ -517,23 +524,32 @@ public enum CustomComboPreset
     [ReplaceSkill(BLM.Blizzard2, BLM.HighBlizzard2)]
     [ConflictingCombos(BLM_AoE_SimpleMode)]
     [CustomComboInfo("Advanced Mode - AoE",
-        "Replaces Blizzard II with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.",
-        BLM.JobID)]
+        "Replaces Blizzard II with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.", BLM.JobID)]
     BLM_AoE_AdvancedMode = 2200,
+
+    [ParentCombo(BLM_AoE_AdvancedMode)]
+    [CustomComboInfo("Leylines Option", "Add Leylines to the rotation.", BLM.JobID)]
+    BLM_AoE_LeyLines = 2202,
 
     [ParentCombo(BLM_AoE_AdvancedMode)]
     [CustomComboInfo("Amplifier Option", "Add Amplifier to the rotation.", BLM.JobID)]
     BLM_AoE_Amplifier = 2201,
 
-    [ParentCombo(BLM_AoE_AdvancedMode)] [CustomComboInfo("Leylines Option", "Add Leylines to the rotation.", BLM.JobID)]
-    BLM_AoE_LeyLines = 2202,
-
-    [ParentCombo(BLM_AoE_AdvancedMode)] [CustomComboInfo("Foul Option", "Add Foul to the rotation.", BLM.JobID)]
-    BLM_AoE_UsePolyglot = 2203,
+    [ParentCombo(BLM_AoE_AdvancedMode)]
+    [CustomComboInfo("Manafont Option", "Add Manafont to the rotation.", BLM.JobID)]
+    BLM_AoE_Manafont = 2207,
 
     [ParentCombo(BLM_AoE_AdvancedMode)]
-    [CustomComboInfo("Foul for Movement Option", "Add Foul to the rotation as movement option.", BLM.JobID)]
-    BLM_AoE_UsePolyglotMoving = 2204,
+    [CustomComboInfo("(High) Thunder II Option", "Add (High) Thunder II to the rotation.", BLM.JobID)]
+    BLM_AoE_Thunder = 2209,
+
+    [ParentCombo(BLM_AoE_AdvancedMode)]
+    [CustomComboInfo("Flare Option", "Add Flare to the rotation.", BLM.JobID)]
+    BLM_AoE_Flare = 2210,
+
+    [ParentCombo(BLM_AoE_AdvancedMode)]
+    [CustomComboInfo("Flare Star Option", "Add Flare Star to the rotation.", BLM.JobID)]
+    BLM_AoE_FlareStar = 2211,
 
     [ParentCombo(BLM_AoE_AdvancedMode)]
     [CustomComboInfo("Swiftcast Option", "Add Swiftcast to the rotation.", BLM.JobID)]
@@ -543,23 +559,17 @@ public enum CustomComboPreset
     [CustomComboInfo("Triplecast Option", "Add Triplecast to the rotation.", BLM.JobID)]
     BLM_AoE_Triplecast = 2206,
 
-    [ParentCombo(BLM_AoE_AdvancedMode)] [CustomComboInfo("Manafont Option", "Add Manafont to the rotation.", BLM.JobID)]
-    BLM_AoE_Manafont = 2207,
-
     [ParentCombo(BLM_AoE_AdvancedMode)]
     [CustomComboInfo("Transpose Option", "Add Transpose to the rotation.", BLM.JobID)]
     BLM_AoE_Transpose = 2208,
 
     [ParentCombo(BLM_AoE_AdvancedMode)]
-    [CustomComboInfo("(High) Thunder II Option", "Add (High) Thunder II to the rotation.", BLM.JobID)]
-    BLM_AoE_Thunder = 2209,
-
-    [ParentCombo(BLM_AoE_AdvancedMode)] [CustomComboInfo("Flare Option", "Add Flare to the rotation.", BLM.JobID)]
-    BLM_AoE_Flare = 2210,
+    [CustomComboInfo("Foul Option", "Add Foul to the rotation.", BLM.JobID)]
+    BLM_AoE_UsePolyglot = 2203,
 
     [ParentCombo(BLM_AoE_AdvancedMode)]
-    [CustomComboInfo("Flare Star Option", "Add Flare Star to the rotation.", BLM.JobID)]
-    BLM_AoE_FlareStar = 2211,
+    [CustomComboInfo("Foul for Movement Option", "Add Foul to the rotation as movement option.", BLM.JobID)]
+    BLM_AoE_UsePolyglotMoving = 2204,
 
     #endregion
 
@@ -571,8 +581,7 @@ public enum CustomComboPreset
     BLM_Variant_Rampart = 2032,
 
     [Variant]
-    [CustomComboInfo("Raise Option", "Turn Swiftcast into Variant Raise whenever you have the Swiftcast buff.",
-        BLM.JobID)]
+    [CustomComboInfo("Raise Option", "Turn Swiftcast into Variant Raise whenever you have the Swiftcast buff.", BLM.JobID)]
     BLM_Variant_Raise = 2033,
 
     [Variant]
@@ -584,6 +593,21 @@ public enum CustomComboPreset
 
     #region Miscellaneous
 
+    [ReplaceSkill(BLM.Triplecast)]
+    [CustomComboInfo("Triplecast Protection",
+        "Replaces Triplecast with Savage Blade when u already have triplecast active.", BLM.JobID)]
+    BLM_TriplecastProtection = 2056,
+
+    [ReplaceSkill(BLM.Fire)]
+    [CustomComboInfo("Fire I/III Feature",
+        "Replaces Fire I with Fire III outside of Astral Fire or when Firestarter is up.", BLM.JobID)]
+    BLM_Fire_1to3 = 2054,
+
+    [ReplaceSkill(BLM.Blizzard, BLM.Freeze)]
+    [CustomComboInfo("Blizzard I/III Feature",
+        "Replaces Blizzard I with Blizzard III when out of Umbral Ice.\nReplaces Freeze with Blizzard II when synced below Lv.40.", BLM.JobID)]
+    BLM_Blizzard_1to3 = 2052,
+
     [ReplaceSkill(BLM.Fire4)]
     [CustomComboInfo("Fire & Ice", "Replaces Fire4 with Blizzard4 when in Umbral Ice.", BLM.JobID)]
     BLM_FireandIce = 2057,
@@ -593,36 +617,19 @@ public enum CustomComboPreset
         "Replaces Transpose with Umbral Soul when Umbral Soul is available.", BLM.JobID)]
     BLM_UmbralSoul = 2050,
 
+    [ReplaceSkill(BLM.Scathe)]
+    [CustomComboInfo("Xenoglossy Feature", "Replaces Scathe with Xenoglossy when available.", BLM.JobID)]
+    BLM_Scathe_Xeno = 2053,
+
     [ReplaceSkill(BLM.LeyLines)]
     [CustomComboInfo("Between the Ley Lines Feature",
         "Replaces Ley Lines with Between the Lines when Ley Lines is active.", BLM.JobID)]
     BLM_Between_The_LeyLines = 2051,
 
-    [ReplaceSkill(BLM.Blizzard, BLM.Freeze)]
-    [CustomComboInfo("Blizzard I/III Feature", "Replaces Blizzard I with Blizzard III when out of Umbral Ice." +
-                                               "\nReplaces Freeze with Blizzard II when synced below Lv.40.",
-        BLM.JobID)]
-    BLM_Blizzard_1to3 = 2052,
-
-    [ReplaceSkill(BLM.Scathe)]
-    [CustomComboInfo("Xenoglossy Feature", "Replaces Scathe with Xenoglossy when available.", BLM.JobID)]
-    BLM_Scathe_Xeno = 2053,
-
-    [ReplaceSkill(BLM.Fire)]
-    [CustomComboInfo("Fire I/III Feature",
-        "Replaces Fire I with Fire III outside of Astral Fire or when Firestarter is up.", BLM.JobID)]
-    BLM_Fire_1to3 = 2054,
-
     [ReplaceSkill(BLM.AetherialManipulation)]
     [CustomComboInfo("Aetherial Manipulation Feature",
-        "Replaces Aetherial Manipulation with Between the Lines when you are out of active Ley Lines and standing still.",
-        BLM.JobID)]
+        "Replaces Aetherial Manipulation with Between the Lines when you are out of active Ley Lines and standing still.", BLM.JobID)]
     BLM_Aetherial_Manipulation = 2055,
-
-    [ReplaceSkill(BLM.Triplecast)]
-    [CustomComboInfo("Triplecast Protection",
-        "Replaces Triplecast with Savage Blade when u already have triplecast active.", BLM.JobID)]
-    BLM_TriplecastProtection = 2056,
 
     #endregion
 
@@ -791,7 +798,7 @@ public enum CustomComboPreset
 
     [AutoAction(false, false)]
     [ReplaceSkill(BRD.HeavyShot, BRD.BurstShot)]
-    [ConflictingCombos(BRD_ST_AdvMode)]
+    [ConflictingCombos(BRD_ST_AdvMode, BRD_StraightShotUpgrade)]
     [CustomComboInfo("Simple Mode - Single Target",
         "Replaces Heavy Shot with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.",
         BRD.JobID)]
@@ -807,13 +814,80 @@ public enum CustomComboPreset
 
     #endregion
 
+    #region Advanced Mode
+
     [AutoAction(false, false)]
     [ReplaceSkill(BRD.HeavyShot, BRD.BurstShot)]
-    [ConflictingCombos(BRD_ST_SimpleMode)]
+    [ConflictingCombos(BRD_ST_SimpleMode, BRD_StraightShotUpgrade)]
     [CustomComboInfo("Advanced Mode - Single Target",
         "Replaces Heavy Shot with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.",
         BRD.JobID)]
     BRD_ST_AdvMode = 3009,
+
+    [ParentCombo(BRD_ST_AdvMode)]
+    [CustomComboInfo("Balance Opener (Level 100)", "Adds the Balance opener at level 100.", BRD.JobID)]
+    BRD_ST_Adv_Balance_Standard = 3048,
+
+    [ParentCombo(BRD_ST_AdvMode)]
+    [CustomComboInfo("Bard DoTs Option", "This option will make Bard apply DoTs if none are present on the target.",
+       BRD.JobID)]
+    BRD_Adv_DoT = 3010,
+
+    [ParentCombo(BRD_ST_AdvMode)]
+    [CustomComboInfo("Raging Jaws Option",
+        "Enable the snapshotting of DoTs, within the remaining time of Raging Strikes below:", BRD.JobID)]
+    BRD_Adv_RagingJaws = 3025,
+
+    [ParentCombo(BRD_ST_AdvMode)]
+    [CustomComboInfo("Bard Songs Option", "This option adds the Bard's Songs to the Advanced Bard Feature.", BRD.JobID)]
+    BRD_Adv_Song = 3011,
+
+    [ParentCombo(BRD_ST_AdvMode)]
+    [CustomComboInfo("Buffs Option", "Adds buffs onto the Advanced Bard feature.", BRD.JobID)]
+    BRD_Adv_Buffs = 3017,
+
+    [ParentCombo(BRD_ST_AdvMode)]
+    [CustomComboInfo("Buffs - Radiant Option", "Adds Radiant Finale to the Advanced Bard feature.", BRD.JobID)]
+    BRD_Adv_BuffsRadiant = 3018,
+
+    [ParentCombo(BRD_ST_AdvMode)]
+    [CustomComboInfo("Resonant Option", "Adds Resonant Arrow to the Rotation after Barrage.", BRD.JobID)]
+    BRD_Adv_BuffsResonant = 3041,
+
+    [ParentCombo(BRD_ST_AdvMode)]
+    [CustomComboInfo("Encore Option", "Adds Radiant Encore to the Rotation after Finale.", BRD.JobID)]
+    BRD_Adv_BuffsEncore = 3042,
+
+    [ParentCombo(BRD_ST_AdvMode)]
+    [CustomComboInfo("Apex Arrow Option", "Adds Apex Arrow and Blast shot", BRD.JobID)]
+    BRD_ST_ApexArrow = 3021,
+
+    [ParentCombo(BRD_ST_AdvMode)]
+    [CustomComboInfo("oGcd Option",
+        "Weave Sidewinder, Empyreal arrow, Rain of death, and Pitch perfect when available.", BRD.JobID)]
+    BRD_ST_Adv_oGCD = 3038,
+
+    [ParentCombo(BRD_ST_AdvMode)]
+    [CustomComboInfo("Pooling Option", "84+ Pools Bloodletter charges to allow for optimum burst phases.", BRD.JobID)]
+    BRD_Adv_Pooling = 3023,
+
+    [ParentCombo(BRD_ST_AdvMode)]
+    [CustomComboInfo("Interrupt Option", "Uses interrupt during the rotation if applicable.", BRD.JobID)]
+    BRD_Adv_Interrupt = 3020,
+
+    [ParentCombo(BRD_ST_AdvMode)]
+    [CustomComboInfo("No Waste Option",
+        "Adds enemy health checking on mobs for buffs, DoTs and Songs.\nThey will not be reapplied if less than specified.",
+        BRD.JobID)]
+    BRD_Adv_NoWaste = 3019,
+
+    [ParentCombo(BRD_ST_AdvMode)]
+    [CustomComboInfo("Second Wind Option", "Uses Second Wind when below set HP percentage.", BRD.JobID)]
+    BRD_ST_SecondWind = 3028,
+
+    [ParentCombo(BRD_ST_AdvMode)]
+    [CustomComboInfo("Self Cleanse Option", "Uses Wardens Paeon when you have a cleansable debuff.", BRD.JobID)]
+    BRD_ST_Wardens = 3047,
 
     [AutoAction(true, false)]
     [ConflictingCombos(BRD_AoE_Combo, BRD_AoE_SimpleMode)]
@@ -822,6 +896,49 @@ public enum CustomComboPreset
         "Replaces Quick Nock with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.",
         BRD.JobID)]
     BRD_AoE_AdvMode = 3015,
+
+    [ParentCombo(BRD_AoE_AdvMode)]
+    [CustomComboInfo("Bard Song Option", "Weave Songs on the Advanced AoE.", BRD.JobID)]
+    BRD_AoE_Adv_Songs = 3016,
+
+    [ParentCombo(BRD_AoE_AdvMode)]
+    [CustomComboInfo("AoE Buffs Option", "Adds buffs onto the Advance AoE Bard feature.", BRD.JobID)]
+    BRD_AoE_Adv_Buffs = 3032,
+
+    [ParentCombo(BRD_AoE_AdvMode)]
+    [CustomComboInfo("oGcd Option",
+       "Weave Sidewinder, Empyreal arrow, Rain of death, and Pitch perfect when available.", BRD.JobID)]
+    BRD_AoE_Adv_oGCD = 3037,
+
+    [ParentCombo(BRD_AoE_AdvMode)]
+    [CustomComboInfo("Pooling Option", "84+ Pools Rain of death charges to allow for optimum burst phases.", BRD.JobID)]
+    BRD_AoE_Pooling = 3040,
+
+    [ParentCombo(BRD_AoE_AdvMode)]
+    [CustomComboInfo("Interrupt Option", "Uses interrupt during the rotation if applicable.", BRD.JobID)]
+    BRD_AoE_Adv_Interrupt = 3043,
+
+    [ParentCombo(BRD_AoE_AdvMode)]
+    [CustomComboInfo("Apex Arrow Option", "Adds Apex Arrow and Blast shot", BRD.JobID)]
+    BRD_Aoe_ApexArrow = 3039,
+
+    [ParentCombo(BRD_AoE_AdvMode)]
+    [CustomComboInfo("AoE No Waste Option",
+        "Adds enemy health checking on targetted mob for songs.\nThey will not be reapplied if less than specified.",
+        BRD.JobID)]
+    BRD_AoE_Adv_NoWaste = 3033,
+
+    [ParentCombo(BRD_AoE_AdvMode)]
+    [CustomComboInfo("Second Wind Option", "Uses Second Wind when below set HP percentage.", BRD.JobID)]
+    BRD_AoE_SecondWind = 3029,
+
+    [ParentCombo(BRD_AoE_AdvMode)]
+    [CustomComboInfo("Self Cleanse Option", "Uses Wardens Paeon when you have a cleansable debuff.", BRD.JobID)]
+    BRD_AoE_Wardens = 3046,
+
+    #endregion
+
+    #region Smaller Features
 
     [ReplaceSkill(BRD.HeavyShot, BRD.BurstShot)]
     [ConflictingCombos(BRD_ST_AdvMode, BRD_ST_SimpleMode)]
@@ -848,12 +965,21 @@ public enum CustomComboPreset
         BRD.JobID)]
     BRD_IronJaws = 3003,
 
+    [ParentCombo(BRD_IronJaws)]
+    [CustomComboInfo("Iron Jaws Apex Option", "Adds Apex and Blast Arrow to Iron Jaws when available.", BRD.JobID)]
+    BRD_IronJawsApex = 3024,
+
     [ReplaceSkill(BRD.IronJaws)]
     [ConflictingCombos(BRD_IronJaws)]
     [CustomComboInfo("Iron Jaws Alternate Feature",
         "Iron Jaws is replaced with Caustic Bite/Stormbite if one or both are not up.\nIron Jaws will only show up when debuffs are about to expire.",
         BRD.JobID)]
     BRD_IronJaws_Alternate = 3004,
+
+    [ReplaceSkill(BRD.QuickNock, BRD.Ladonsbite)]
+    [ConflictingCombos(BRD_AoE_AdvMode, BRD_AoE_SimpleMode)]
+    [CustomComboInfo("Quick Nock Feature", "Replaces Quick Nock/Ladonsbite with Shadowbite when ready.", BRD.JobID)]
+    BRD_AoE_Combo = 3008,
 
     [ParentCombo(BRD_AoE_Combo)]
     [CustomComboInfo("Apex Arrow Option",
@@ -879,20 +1005,6 @@ public enum CustomComboPreset
         BRD.JobID)]
     BRD_AoE_oGCD_Songs = 3045,
 
-    [ReplaceSkill(BRD.QuickNock, BRD.Ladonsbite)]
-    [ConflictingCombos(BRD_AoE_AdvMode, BRD_AoE_SimpleMode)]
-    [CustomComboInfo("Quick Nock Feature", "Replaces Quick Nock/Ladonsbite with Shadowbite when ready.", BRD.JobID)]
-    BRD_AoE_Combo = 3008,
-
-    [ParentCombo(BRD_ST_AdvMode)]
-    [CustomComboInfo("Bard DoTs Option", "This option will make Bard apply DoTs if none are present on the target.",
-        BRD.JobID)]
-    BRD_Adv_DoT = 3010,
-
-    [ParentCombo(BRD_ST_AdvMode)]
-    [CustomComboInfo("Bard Songs Option", "This option adds the Bard's Songs to the Advanced Bard Feature.", BRD.JobID)]
-    BRD_Adv_Song = 3011,
-
     [ReplaceSkill(BRD.Barrage)]
     [CustomComboInfo("Bard Buffs Feature", "Adds Raging Strikes and Battle Voice onto Barrage.", BRD.JobID)]
     BRD_Buffs = 3013,
@@ -902,88 +1014,9 @@ public enum CustomComboPreset
         "Add Mage's Ballad and Army's Paeon to Wanderer's Minuet depending on cooldowns.", BRD.JobID)]
     BRD_OneButtonSongs = 3014,
 
-    [ParentCombo(BRD_AoE_AdvMode)] [CustomComboInfo("Bard Song Option", "Weave Songs on the Advanced AoE.", BRD.JobID)]
-    BRD_AoE_Adv_Songs = 3016,
+    #endregion
 
-    [ParentCombo(BRD_AoE_AdvMode)]
-    [CustomComboInfo("Interrupt Option", "Uses interrupt during the rotation if applicable.", BRD.JobID)]
-    BRD_AoE_Adv_Interrupt = 3043,
-
-    [ParentCombo(BRD_AoE_AdvMode)]
-    [CustomComboInfo("oGcd Option",
-        "Weave Sidewinder, Empyreal arrow, Rain of death, and Pitch perfect when available.", BRD.JobID)]
-    BRD_AoE_Adv_oGCD = 3037,
-
-    [ParentCombo(BRD_ST_AdvMode)]
-    [CustomComboInfo("oGcd Option",
-        "Weave Sidewinder, Empyreal arrow, Rain of death, and Pitch perfect when available.", BRD.JobID)]
-    BRD_ST_Adv_oGCD = 3038,
-
-    [ParentCombo(BRD_ST_AdvMode)]
-    [CustomComboInfo("Buffs Option", "Adds buffs onto the Advanced Bard feature.", BRD.JobID)]
-    BRD_Adv_Buffs = 3017,
-
-    [ParentCombo(BRD_ST_AdvMode)]
-    [CustomComboInfo("Resonant Option", "Adds Resonant Arrow to the Rotation after Barrage.", BRD.JobID)]
-    BRD_Adv_BuffsResonant = 3041,
-
-    [ParentCombo(BRD_ST_AdvMode)]
-    [CustomComboInfo("Buffs - Radiant Option", "Adds Radiant Finale to the Advanced Bard feature.", BRD.JobID)]
-    BRD_Adv_BuffsRadiant = 3018,
-
-    [ParentCombo(BRD_ST_AdvMode)]
-    [CustomComboInfo("Encore Option", "Adds Radiant Encore to the Rotation after Finale.", BRD.JobID)]
-    BRD_Adv_BuffsEncore = 3042,
-
-    [ParentCombo(BRD_ST_AdvMode)]
-    [CustomComboInfo("No Waste Option",
-        "Adds enemy health checking on mobs for buffs, DoTs and Songs.\nThey will not be reapplied if less than specified.",
-        BRD.JobID)]
-    BRD_Adv_NoWaste = 3019,
-
-    [ParentCombo(BRD_ST_AdvMode)]
-    [CustomComboInfo("Interrupt Option", "Uses interrupt during the rotation if applicable.", BRD.JobID)]
-    BRD_Adv_Interrupt = 3020,
-
-    [ParentCombo(BRD_ST_AdvMode)] [CustomComboInfo("Apex Arrow Option", "Adds Apex Arrow and Blast shot", BRD.JobID)]
-    BRD_ST_ApexArrow = 3021,
-
-    [ParentCombo(BRD_AoE_AdvMode)] [CustomComboInfo("Apex Arrow Option", "Adds Apex Arrow and Blast shot", BRD.JobID)]
-    BRD_Aoe_ApexArrow = 3039,
-
-    [ParentCombo(BRD_ST_AdvMode)]
-    [CustomComboInfo("Pooling Option", "84+ Pools Bloodletter charges to allow for optimum burst phases.", BRD.JobID)]
-    BRD_Adv_Pooling = 3023,
-
-    [ParentCombo(BRD_AoE_AdvMode)]
-    [CustomComboInfo("Pooling Option", "84+ Pools Rain of death charges to allow for optimum burst phases.", BRD.JobID)]
-    BRD_AoE_Pooling = 3040,
-
-    [ParentCombo(BRD_IronJaws)]
-    [CustomComboInfo("Iron Jaws Apex Option", "Adds Apex and Blast Arrow to Iron Jaws when available.", BRD.JobID)]
-    BRD_IronJawsApex = 3024,
-
-    [ParentCombo(BRD_ST_AdvMode)]
-    [CustomComboInfo("Raging Jaws Option",
-        "Enable the snapshotting of DoTs, within the remaining time of Raging Strikes below:", BRD.JobID)]
-    BRD_Adv_RagingJaws = 3025,
-
-    [ParentCombo(BRD_ST_AdvMode)]
-    [CustomComboInfo("Second Wind Option", "Uses Second Wind when below set HP percentage.", BRD.JobID)]
-    BRD_ST_SecondWind = 3028,
-
-    [ParentCombo(BRD_ST_AdvMode)]
-    [CustomComboInfo("Self Cleanse Option", "Uses Wardens Paeon when you have a cleansable debuff.", BRD.JobID)]
-    BRD_ST_Wardens = 3047,
-
-    [ParentCombo(BRD_AoE_AdvMode)]
-    [CustomComboInfo("Second Wind Option", "Uses Second Wind when below set HP percentage.", BRD.JobID)]
-    BRD_AoE_SecondWind = 3029,
-
-    [ParentCombo(BRD_AoE_AdvMode)]
-    [CustomComboInfo("Self Cleanse Option", "Uses Wardens Paeon when you have a cleansable debuff.", BRD.JobID)]
-    BRD_AoE_Wardens = 3046,
-
+    #region Variants
     [Variant]
     [VariantParent(BRD_ST_AdvMode, BRD_AoE_AdvMode)]
     [CustomComboInfo("Rampart Option", "Use Variant Rampart on cooldown.", BRD.JobID)]
@@ -994,17 +1027,9 @@ public enum CustomComboPreset
     [CustomComboInfo("Cure Option", "Use Variant Cure when HP is below set threshold.", BRD.JobID)]
     BRD_Variant_Cure = 3031,
 
-    [ParentCombo(BRD_AoE_AdvMode)]
-    [CustomComboInfo("AoE Buffs Option", "Adds buffs onto the Advance AoE Bard feature.", BRD.JobID)]
-    BRD_AoE_Adv_Buffs = 3032,
+    #endregion
 
-    [ParentCombo(BRD_AoE_AdvMode)]
-    [CustomComboInfo("AoE No Waste Option",
-        "Adds enemy health checking on targetted mob for songs.\nThey will not be reapplied if less than specified.",
-        BRD.JobID)]
-    BRD_AoE_Adv_NoWaste = 3033,
-
-    // Last value = 3047
+    // Last value = 3048
 
     #endregion
 
@@ -1016,226 +1041,68 @@ public enum CustomComboPreset
 
     #endregion
 
-    #region Single Target Multibutton
-
-    [AutoAction(false, false)]
-    [ReplaceSkill(DNC.Cascade)]
-    [ConflictingCombos(DNC_ST_AdvancedMode, DNC_AoE_AdvancedMode)]
-    [CustomComboInfo("Single Target Multibutton Feature", "Single target combo with Fan Dances and Esprit use.",
-        DNC.JobID)]
-    DNC_ST_MultiButton = 4000,
-
-    [ParentCombo(DNC_ST_MultiButton)]
-    [CustomComboInfo("Esprit Overcap Option", "Adds Saber Dance above the set Esprit threshold.", DNC.JobID)]
-    DNC_ST_EspritOvercap = 4001,
-
-    [ParentCombo(DNC_ST_MultiButton)]
-    [CustomComboInfo("Fan Dance Overcap Protection Option", "Adds Fan Dance 1 when Fourfold Feathers are full.",
-        DNC.JobID)]
-    DNC_ST_FanDanceOvercap = 4003,
-
-    [ParentCombo(DNC_ST_MultiButton)]
-    [CustomComboInfo("Fan Dance Option", "Adds Fan Dance 3/4 when available.", DNC.JobID)]
-    DNC_ST_FanDance34 = 4004,
-
-    #endregion
-
-    #region AoE Multibutton
-
-    [AutoAction(true, false)]
-    [ReplaceSkill(DNC.Windmill)]
-    [ConflictingCombos(DNC_ST_AdvancedMode, DNC_AoE_AdvancedMode)]
-    [CustomComboInfo("AoE Multibutton Feature", "AoE combo with Fan Dances and Esprit use.", DNC.JobID)]
-    DNC_AoE_MultiButton = 4010,
-
-    [ParentCombo(DNC_AoE_MultiButton)]
-    [CustomComboInfo("Esprit Overcap Option", "Adds Saber Dance above the set Esprit threshold.", DNC.JobID)]
-    DNC_AoE_EspritOvercap = 4011,
-
-    [ParentCombo(DNC_AoE_MultiButton)]
-    [CustomComboInfo("AoE Fan Dance Overcap Protection Option", "Adds Fan Dance 2 when Fourfold Feathers are full.",
-        DNC.JobID)]
-    DNC_AoE_FanDanceOvercap = 4013,
-
-    [ParentCombo(DNC_AoE_MultiButton)]
-    [CustomComboInfo("AoE Fan Dance Option", "Adds Fan Dance 3/4 when available.", DNC.JobID)]
-    DNC_AoE_FanDance34 = 4014,
-
-    #endregion
-
-    #region Dance Features
-
-    [ConflictingCombos(DNC_ST_AdvancedMode, DNC_AoE_AdvancedMode)]
-    [CustomComboInfo("Dance Features",
-        "Features and options involving Standard Step and Technical Step.\nCollapsing this category does NOT disable the features inside.",
-        DNC.JobID)]
-    DNC_Dance_Menu = 4020,
-
-    [ParentCombo(DNC_Dance_Menu)]
-    [ConflictingCombos(DNC_DanceStepCombo, DNC_ST_AdvancedMode, DNC_AoE_AdvancedMode)]
-    [CustomComboInfo("Custom Dance Step Feature",
-        "Change custom actions into dance steps while dancing." +
-        "\nThis helps ensure you can still dance with combos on, without using auto dance." +
-        "\nYou can change the respective actions by inputting action IDs below for each dance step." +
-        "\nThe defaults are Cascade, Flourish, Fan Dance and Fan Dance II. If set to 0, they will reset to these actions." +
-        "\nYou can get Action IDs with Garland Tools by searching for the action and clicking the cog.", DNC.JobID)]
-    DNC_DanceComboReplacer = 4025,
-
-    #endregion
-
-    #region Flourishing Features
-
-    [ConflictingCombos(DNC_ST_AdvancedMode, DNC_AoE_AdvancedMode)]
-    [CustomComboInfo("Flourishing Features", "Features and options involving Fourfold Feathers and Flourish." +
-                                             "\nCollapsing this category does NOT disable the features inside.",
-        DNC.JobID)]
-    DNC_FlourishingFeatures_Menu = 4030,
-
-    [ReplaceSkill(DNC.Flourish)]
-    [ParentCombo(DNC_FlourishingFeatures_Menu)]
-    [ConflictingCombos(DNC_ST_AdvancedMode, DNC_AoE_AdvancedMode)]
-    [CustomComboInfo("Flourishing Fan Dance Feature",
-        "Replace Flourish with Fan Dance 3 & 4 during weave-windows, when Flourish is on cooldown.", DNC.JobID)]
-    DNC_FlourishingFanDances = 4032,
-
-    #endregion
-
-    #region Fan Dance Combo Features
-
-    [ParentCombo(DNC_FlourishingFeatures_Menu)]
-    [ConflictingCombos(DNC_ST_AdvancedMode, DNC_AoE_AdvancedMode)]
-    [CustomComboInfo("Fan Dance Combo Feature", "Options for Fan Dance combos." +
-                                                "\nFan Dance 3 takes priority over Fan Dance 4.", DNC.JobID)]
-    DNC_FanDanceCombos = 4033,
-
-    [ReplaceSkill(DNC.FanDance1)]
-    [ParentCombo(DNC_FanDanceCombos)]
-    [CustomComboInfo("Fan Dance 1 -> 3 Option", "Changes Fan Dance 1 to Fan Dance 3 when available.", DNC.JobID)]
-    DNC_FanDance_1to3_Combo = 4034,
-
-    [ReplaceSkill(DNC.FanDance1)]
-    [ParentCombo(DNC_FanDanceCombos)]
-    [CustomComboInfo("Fan Dance 1 -> 4 Option", "Changes Fan Dance 1 to Fan Dance 4 when available.", DNC.JobID)]
-    DNC_FanDance_1to4_Combo = 4035,
-
-    [ReplaceSkill(DNC.FanDance2)]
-    [ParentCombo(DNC_FanDanceCombos)]
-    [CustomComboInfo("Fan Dance 2 -> 3 Option", "Changes Fan Dance 2 to Fan Dance 3 when available.", DNC.JobID)]
-    DNC_FanDance_2to3_Combo = 4036,
-
-    [ReplaceSkill(DNC.FanDance2)]
-    [ParentCombo(DNC_FanDanceCombos)]
-    [CustomComboInfo("Fan Dance 2 -> 4 Option", "Changes Fan Dance 2 to Fan Dance 4 when available.", DNC.JobID)]
-    DNC_FanDance_2to4_Combo = 4037,
-
-    #endregion
-
-    // Devilment --> Starfall
-    [ReplaceSkill(DNC.Devilment)]
-    [ConflictingCombos(DNC_ST_AdvancedMode, DNC_AoE_AdvancedMode)]
-    [CustomComboInfo("Devilment to Starfall Feature", "Change Devilment into Starfall Dance after use.", DNC.JobID)]
-    DNC_Starfall_Devilment = 4038,
-
-    [ReplaceSkill(DNC.StandardStep, DNC.TechnicalStep)]
-    [ConflictingCombos(DNC_DanceComboReplacer)]
-    [CustomComboInfo("Dance Step Combo Feature",
-        "Change Standard Step and Technical Step into each dance step, while dancing." +
-        "\nWorks with Simple Dancer and Simple Dancer AoE.", DNC.JobID)]
-    DNC_DanceStepCombo = 4039,
-
-    // StandardStep(or Finishing Move) --> Last Dance
-    [ReplaceSkill(DNC.StandardStep, DNC.FinishingMove)]
-    [ConflictingCombos(DNC_ST_AdvancedMode, DNC_AoE_AdvancedMode)]
-    [CustomComboInfo("Standard Step to Last Dance Feature",
-        "Change Standard Step or Finishing Move to Last Dance when available.", DNC.JobID)]
-    DNC_StandardStep_LastDance = 4086,
-
-    // Technical Step --> Devilment
-    [ReplaceSkill(DNC.StandardStep, DNC.FinishingMove)]
-    [ConflictingCombos(DNC_ST_AdvancedMode, DNC_AoE_AdvancedMode)]
-    [CustomComboInfo("Technical Step to Devilment Feature", "Change Technical Step to Devilment as soon as possible.",
-        DNC.JobID)]
-    DNC_TechnicalStep_Devilment = 4087,
-
     #region Advanced Dancer (Single Target)
 
     [AutoAction(false, false)]
     [ReplaceSkill(DNC.Cascade)]
-    [ConflictingCombos(DNC_ST_MultiButton, DNC_AoE_MultiButton, DNC_DanceComboReplacer, DNC_FlourishingFeatures_Menu,
-        DNC_Starfall_Devilment)]
+    [ConflictingCombos(DNC_ST_MultiButton)]
     [CustomComboInfo("Advanced Mode - Single Target",
-        "Replaces Cascade with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.",
-        DNC.JobID)]
-    DNC_ST_AdvancedMode = 4050,
+        "Replaces Cascade with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.", DNC.JobID)]
+    DNC_ST_AdvancedMode = 4010,
 
     [ParentCombo(DNC_ST_AdvancedMode)]
-    [CustomComboInfo("Interrupt Option",
-        "Includes an interrupt in the rotation (if applicable to your current target).", DNC.JobID)]
-    DNC_ST_Adv_Interrupt = 4051,
+    [CustomComboInfo("Balance Opener (Level 100)",
+        "Adds the Balance opener at level 100." +
+        "\nRequirements:" +
+        "\n- Standard Step ready" +
+        "\n- Technical Step ready" +
+        "\n- Devilment ready" +
+        "\n(Will change to Savage Blade to wait for the countdown)" +
+        "\n(REQUIRES a countdown)", DNC.JobID)]
+    DNC_ST_BalanceOpener = 4011,
 
     [ParentCombo(DNC_ST_AdvancedMode)]
-    [ConflictingCombos(DNC_ST_Adv_StandardFill)]
-    [CustomComboInfo("Standard Dance Option", "Includes Standard Step, all dance steps, and Finish in the rotation." +
-                                              "\nIt is recommended to use one of the two Anti-Drift options along with this.",
-        DNC.JobID)]
-    DNC_ST_Adv_SS = 4052,
-
-    [ParentCombo(DNC_ST_Adv_SS)]
-    [CustomComboInfo("Standard Dance Opener Option", "Starts Standard Step (and steps) before combat.", DNC.JobID)]
-    DNC_ST_Adv_SS_Prepull = 4090,
-
-    [ParentCombo(DNC_ST_Adv_SS)]
-    [ConflictingCombos(DNC_ST_Adv_Flourish_ForcedTripleWeave)]
-    [CustomComboInfo("Hold for Standard Option (Anti-Drift)",
-        "Will hold GCDs for Standard Step if it is going to come off cooldown before your next GCD." +
-        "\nThis WILL give you down-time." +
-        "\nONLY recommended if you have extra skill speed, but can be used as an anti-drift option.", DNC.JobID)]
-    DNC_ST_Adv_SS_Hold = 4091,
+    [CustomComboInfo("Dance Partner Reminder Option", "Includes Closed Position when out of combat and no dance partner is found.", DNC.JobID)]
+    DNC_ST_Adv_Partner = 4012,
 
     [ParentCombo(DNC_ST_AdvancedMode)]
-    [ConflictingCombos(DNC_ST_Adv_SS)]
-    [CustomComboInfo("Standard Fill Option", "Adds ONLY Standard dance steps and Standard Finish to the rotation." +
-                                             "\nStandard Step itself must be initiated manually when using this option.",
-        DNC.JobID)]
-    DNC_ST_Adv_StandardFill = 4061,
-
-    [ParentCombo(DNC_ST_AdvancedMode)]
-    [CustomComboInfo("Peloton Opener Option",
+    [CustomComboInfo("Peloton Pre-Pull Option",
         "Uses Peloton when you are out of combat, do not already have the Peloton buff and are performing Standard Step with greater than 5s remaining of your dance." +
-        "\nWill not override Dance Step Combo Feature.", DNC.JobID)]
-    DNC_ST_Adv_Peloton = 4062,
+        "\n(Already included in The Balance Opener).", DNC.JobID)]
+    DNC_ST_Adv_Peloton = 4013,
 
     [ParentCombo(DNC_ST_AdvancedMode)]
-    [ConflictingCombos(DNC_ST_Adv_TechFill)]
-    [CustomComboInfo("Technical Dance Option", "Includes Technical Step, all dance steps, and Finish in the rotation." +
-                                               "\nIt is recommended to use one of the two Anti-Drift options along with this.",
-        DNC.JobID)]
-    DNC_ST_Adv_TS = 4053,
+    [CustomComboInfo("Interrupt Option", "Includes an interrupt in the rotation (if applicable to your current target).", DNC.JobID)]
+    DNC_ST_Adv_Interrupt = 4014,
 
     [ParentCombo(DNC_ST_AdvancedMode)]
-    [ConflictingCombos(DNC_ST_Adv_TS)]
-    [CustomComboInfo("Tech Fill Option", "Adds ONLY Technical dance steps and Technical Finish to the rotation." +
-                                         "\nTechnical Step itself must be initiated manually when using this option.",
-        DNC.JobID)]
-    DNC_ST_Adv_TechFill = 4054,
+    [CustomComboInfo("Standard Dance Option", "Include all dance steps, and Finish, and optionally Standard Step, in the rotation.", DNC.JobID)]
+    DNC_ST_Adv_SS = 4015,
+
+    [ParentCombo(DNC_ST_Adv_SS)]
+    [CustomComboInfo("Finishing Move Option", "Includes Finishing Move in the rotation.", DNC.JobID)]
+    DNC_ST_Adv_FM = 4016,
+
+    [ParentCombo(DNC_ST_Adv_SS)]
+    [CustomComboInfo("Standard Dance Pre-Pull Option",
+        "Starts Standard Step (and steps) before combat." +
+        "\n(Already included in The Balance Opener).", DNC.JobID)]
+    DNC_ST_Adv_SS_Prepull = 4017,
 
     [ParentCombo(DNC_ST_AdvancedMode)]
-    [CustomComboInfo("Devilment Option", "Includes Devilment in the rotation." +
-                                         "\nWill activate only during Technical Finish if you're Lv70 or above." +
-                                         "\nWill be used on cooldown below Lv70.", DNC.JobID)]
-    DNC_ST_Adv_Devilment = 4055,
+    [CustomComboInfo("Technical Dance Option", "Include all dance steps, and Finish, and optionally Technical Step, in the rotation.", DNC.JobID)]
+    DNC_ST_Adv_TS = 4018,
+
+    [ParentCombo(DNC_ST_AdvancedMode)]
+    [CustomComboInfo("Devilment Option",
+        "Includes Devilment in the rotation." +
+        "\nWill activate only during Technical Finish if you're Lv70 or above." +
+        "\nWill be used on cooldown below Lv70.", DNC.JobID)]
+    DNC_ST_Adv_Devilment = 4019,
 
     [ParentCombo(DNC_ST_AdvancedMode)]
     [CustomComboInfo("Flourish Option", "Includes Flourish in the rotation.", DNC.JobID)]
-    DNC_ST_Adv_Flourish = 4056,
-
-    [ParentCombo(DNC_ST_Adv_Flourish)]
-    [ConflictingCombos(DNC_ST_Adv_SS_Hold)]
-    [CustomComboInfo("Force Triple Weave Option (Anti-Drift)",
-        "Forces a triple weave of Flourish and Fan Dance 3 + 4 during non-opener burst windows." +
-        "\nFixes SS/FM drift where you use a gcd when SS/FM is on a 0.5sec CD." +
-        "\nRecommended to help prevent drift.", DNC.JobID)]
-    DNC_ST_Adv_Flourish_ForcedTripleWeave = 4088,
+    DNC_ST_Adv_Flourish = 4020,
 
     [ParentCombo(DNC_ST_AdvancedMode)]
     [CustomComboInfo("Feathers Option",
@@ -1243,165 +1110,287 @@ public enum CustomComboPreset
         "\nWeaves feathers where possible during Technical Finish." +
         "\nWeaves feathers outside of burst when target is below set HP percentage (Set to 0 to disable)." +
         "\nWeaves feathers whenever available when under Lv.70.", DNC.JobID)]
-    DNC_ST_Adv_Feathers = 4057,
+    DNC_ST_Adv_Feathers = 4021,
 
     [ParentCombo(DNC_ST_AdvancedMode)]
-    [CustomComboInfo("Improvisation Option", "Includes Improvisation in the rotation when available." +
-                                             "\nWill not use while under Technical Finish", DNC.JobID)]
-    DNC_ST_Adv_Improvisation = 4060,
+    [CustomComboInfo("Improvisation Option",
+        "Includes Improvisation in the rotation when available." +
+        "\nWill not use while under Technical Finish", DNC.JobID)]
+    DNC_ST_Adv_Improvisation = 4022,
 
     [ParentCombo(DNC_ST_AdvancedMode)]
     [CustomComboInfo("Tillana Option", "Includes Tillana in the rotation.", DNC.JobID)]
-    DNC_ST_Adv_Tillana = 4092,
-
-    [ParentCombo(DNC_ST_Adv_Tillana)]
-    [CustomComboInfo("Favor over Esprit Option",
-        "Will perform Tillana over Saber or Dance of the Dawn, even if above 50 Esprit." +
-        "\nCan prevent Tillana from drifting out of burst windows." +
-        "\nShould be used with Saber Dance's Esprit slider being a value above 50.", DNC.JobID)]
-    DNC_ST_Adv_TillanaOverEsprit = 4094,
+    DNC_ST_Adv_Tillana = 4023,
 
     [ParentCombo(DNC_ST_AdvancedMode)]
     [CustomComboInfo("Saber Dance Option",
         "Includes Saber Dance in the rotation when at or over the Esprit threshold." +
         "\n(And to prevent overcapping while under Technical Finish)", DNC.JobID)]
-    DNC_ST_Adv_SaberDance = 4063,
+    DNC_ST_Adv_SaberDance = 4024,
 
     [ParentCombo(DNC_ST_Adv_SaberDance)]
     [CustomComboInfo("Dance of the Dawn Option",
         "Includes Dance of the Dawn in the rotation after Saber Dance and when over the threshold, or in the final seconds of Dance of the Dawn ready.",
         DNC.JobID)]
-    DNC_ST_Adv_DawnDance = 4064,
+    DNC_ST_Adv_DawnDance = 4025,
 
     [ParentCombo(DNC_ST_AdvancedMode)]
     [CustomComboInfo("Last Dance Option", "Includes Last Dance in the rotation.", DNC.JobID)]
-    DNC_ST_Adv_LD = 4093,
+    DNC_ST_Adv_LD = 4026,
 
     [ParentCombo(DNC_ST_AdvancedMode)]
     [CustomComboInfo("Panic Heals Option",
         "Includes Curing Waltz and Second Wind in the rotation when available and your HP is below the set percentages.",
         DNC.JobID)]
-    DNC_ST_Adv_PanicHeals = 4059,
-
-    [ParentCombo(DNC_ST_AdvancedMode)]
-    [CustomComboInfo("Dance Partner Reminder Option",
-        "Includes Closed Position when out of combat and no dance partner is found.", DNC.JobID)]
-    DNC_ST_Adv_Partner = 4089,
+    DNC_ST_Adv_PanicHeals = 4027,
 
     #endregion
+    // Last value = 4027
 
     #region Advanced Dancer (AoE)
 
     [AutoAction(true, false)]
     [ReplaceSkill(DNC.Windmill)]
-    [ConflictingCombos(DNC_ST_MultiButton, DNC_AoE_MultiButton, DNC_DanceComboReplacer, DNC_FlourishingFeatures_Menu,
-        DNC_Starfall_Devilment)]
+    [ConflictingCombos(DNC_AoE_MultiButton)]
     [CustomComboInfo("Advanced Mode - AoE",
         "Replaces Windmill with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.",
         DNC.JobID)]
-    DNC_AoE_AdvancedMode = 4070,
+    DNC_AoE_AdvancedMode = 4040,
+
+    [ParentCombo(DNC_AoE_AdvancedMode)]
+    [CustomComboInfo("Dance Partner Reminder Option",
+        "Includes Closed Position when out of combat and no dance partner is found.", DNC.JobID)]
+    DNC_AoE_Adv_Partner = 4041,
 
     [ParentCombo(DNC_AoE_AdvancedMode)]
     [CustomComboInfo("Interrupt Option",
         "Includes an interrupt in the AoE rotation (if your current target can be interrupted).", DNC.JobID)]
-    DNC_AoE_Adv_Interrupt = 4071,
+    DNC_AoE_Adv_Interrupt = 4042,
 
     [ParentCombo(DNC_AoE_AdvancedMode)]
-    [ConflictingCombos(DNC_AoE_Adv_StandardFill)]
-    [CustomComboInfo("Standard Dance Option", "Includes Standard Step (and all steps) in the AoE rotation.", DNC.JobID
-    )]
-    DNC_AoE_Adv_SS = 4072,
+    [CustomComboInfo("Standard Dance Option", "Include all dance steps, and Finish, and optionally Standard Step, in the AoE rotation.", DNC.JobID)]
+    DNC_AoE_Adv_SS = 4043,
+
+    [ParentCombo(DNC_AoE_Adv_SS)]
+    [CustomComboInfo("Finishing Move Option", "Includes Finishing Move in the AoE rotation.", DNC.JobID)]
+    DNC_AoE_Adv_FM = 4044,
 
     [ParentCombo(DNC_AoE_AdvancedMode)]
-    [ConflictingCombos(DNC_AoE_Adv_SS)]
-    [CustomComboInfo("Standard Fill Option", "Adds ONLY Standard dance steps and Standard Finish to the AoE rotation." +
-                                             "\nStandard Step itself must be initiated manually when using this option.",
-        DNC.JobID)]
-    DNC_AoE_Adv_StandardFill = 4081,
+    [CustomComboInfo("Technical Dance Option", "Include all dance steps, and Finish, and optionally Technical Step, in the AoE rotation.", DNC.JobID)]
+    DNC_AoE_Adv_TS = 4045,
 
     [ParentCombo(DNC_AoE_AdvancedMode)]
-    [ConflictingCombos(DNC_AoE_Adv_TechFill)]
-    [CustomComboInfo("Technical Dance Option",
-        "Includes Technical Step, all dance steps and Technical Finish in the AoE rotation.", DNC.JobID)]
-    DNC_AoE_Adv_TS = 4073,
-
-    [ParentCombo(DNC_AoE_AdvancedMode)]
-    [ConflictingCombos(DNC_AoE_Adv_TS)]
-    [CustomComboInfo("Tech Fill Option", "Adds ONLY Technical dance steps and Technical Finish to the AoE rotation." +
-                                         "\nTechnical Step itself must be initiated manually when using this option.",
-        DNC.JobID)]
-    DNC_AoE_Adv_TechFill = 4074,
-
-    [ParentCombo(DNC_AoE_AdvancedMode)]
-    [CustomComboInfo("Tech Devilment Option", "Includes Devilment in the AoE rotation." +
-                                              "\nWill activate only during Technical Finish if you're Lv70 or above." +
-                                              "\nWill be used on cooldown below Lv70.", DNC.JobID)]
-    DNC_AoE_Adv_Devilment = 4075,
+    [CustomComboInfo("Tech Devilment Option",
+        "Includes Devilment in the AoE rotation." +
+        "\nWill activate only during Technical Finish if you're Lv70 or above." +
+        "\nWill be used on cooldown below Lv70.", DNC.JobID)]
+    DNC_AoE_Adv_Devilment = 4046,
 
     [ParentCombo(DNC_AoE_AdvancedMode)]
     [CustomComboInfo("Flourish Option", "Includes Flourish in the AoE rotation.", DNC.JobID)]
-    DNC_AoE_Adv_Flourish = 4076,
+    DNC_AoE_Adv_Flourish = 4047,
 
     [ParentCombo(DNC_AoE_AdvancedMode)]
     [CustomComboInfo("Feathers Option",
         "Expends a feather in the next available weave window when capped and under the effect of Flourishing Symmetry or Flourishing Flow." +
         "\nWeaves feathers where possible during Technical Finish." +
         "\nWeaves feathers whenever available when under Lv.70.", DNC.JobID)]
-    DNC_AoE_Adv_Feathers = 4077,
+    DNC_AoE_Adv_Feathers = 4048,
 
     [ParentCombo(DNC_AoE_AdvancedMode)]
-    [CustomComboInfo("Improvisation Option", "Includes Improvisation in the AoE rotation when available." +
-                                             "\nWill not use while under Technical Finish", DNC.JobID)]
-    DNC_AoE_Adv_Improvisation = 4080,
+    [CustomComboInfo("Improvisation Option",
+        "Includes Improvisation in the AoE rotation when available." +
+        "\nWill not use while under Technical Finish", DNC.JobID)]
+    DNC_AoE_Adv_Improvisation = 4049,
 
     [ParentCombo(DNC_AoE_AdvancedMode)]
     [CustomComboInfo("Tillana Option", "Includes Tillana in the rotation.", DNC.JobID)]
-    DNC_AoE_Adv_Tillana = 4101,
+    DNC_AoE_Adv_Tillana = 4050,
 
     [ParentCombo(DNC_AoE_AdvancedMode)]
     [CustomComboInfo("Saber Dance Option",
         "Includes Saber Dance in the AoE rotation when at or over the Esprit threshold." +
         "\n(And to prevent overcapping while under Technical Finish)", DNC.JobID)]
-    DNC_AoE_Adv_SaberDance = 4082,
+    DNC_AoE_Adv_SaberDance = 4051,
 
     [ParentCombo(DNC_AoE_Adv_SaberDance)]
     [CustomComboInfo("Dance of the Dawn Option",
         "Includes Dance of the Dawn in the AoE rotation after Saber Dance and when over the threshold, or in the final seconds of Dance of the Dawn ready.",
         DNC.JobID)]
-    DNC_AoE_Adv_DawnDance = 4085,
+    DNC_AoE_Adv_DawnDance = 4052,
 
     [ParentCombo(DNC_AoE_AdvancedMode)]
     [CustomComboInfo("Last Dance Option", "Includes Last Dance in the rotation.", DNC.JobID)]
-    DNC_AoE_Adv_LD = 4102,
+    DNC_AoE_Adv_LD = 4053,
 
     [ParentCombo(DNC_AoE_AdvancedMode)]
     [CustomComboInfo("Panic Heals Option",
         "Includes Curing Waltz and Second Wind in the AoE rotation when available and your HP is below the set percentages.",
         DNC.JobID)]
-    DNC_AoE_Adv_PanicHeals = 4079,
-
-    [ParentCombo(DNC_AoE_AdvancedMode)]
-    [CustomComboInfo("Dance Partner Reminder Option",
-        "Includes Closed Position when out of combat and no dance partner is found.", DNC.JobID)]
-    DNC_AoE_Adv_Partner = 4095,
+    DNC_AoE_Adv_PanicHeals = 4054,
 
     #endregion
+    // Last value = 4054
+
+    #region Multibutton Features
+
+    #region Single Target Multibutton
+
+    [AutoAction(false, false)]
+    [ReplaceSkill(DNC.Cascade)]
+    [ConflictingCombos(DNC_ST_AdvancedMode)]
+    [CustomComboInfo("Single Target Multibutton Feature", "Single target combo with Fan Dances and Esprit use.",
+        DNC.JobID)]
+    DNC_ST_MultiButton = 4070,
+
+    [ParentCombo(DNC_ST_MultiButton)]
+    [CustomComboInfo("Esprit Overcap Option", "Adds Saber Dance above the set Esprit threshold.", DNC.JobID)]
+    DNC_ST_EspritOvercap = 4071,
+
+    [ParentCombo(DNC_ST_MultiButton)]
+    [CustomComboInfo("Fan Dance Overcap Protection Option", "Adds Fan Dance 1 when Fourfold Feathers are full.",
+        DNC.JobID)]
+    DNC_ST_FanDanceOvercap = 4072,
+
+    [ParentCombo(DNC_ST_MultiButton)]
+    [CustomComboInfo("Fan Dance Option", "Adds Fan Dance 3/4 when available.", DNC.JobID)]
+    DNC_ST_FanDance34 = 4073,
+
+    #endregion
+    // Last value = 4073
+
+    #region AoE Multibutton
+
+    [AutoAction(true, false)]
+    [ReplaceSkill(DNC.Windmill)]
+    [ConflictingCombos(DNC_AoE_AdvancedMode)]
+    [CustomComboInfo("AoE Multibutton Feature", "AoE combo with Fan Dances and Esprit use.", DNC.JobID)]
+    DNC_AoE_MultiButton = 4090,
+
+    [ParentCombo(DNC_AoE_MultiButton)]
+    [CustomComboInfo("Esprit Overcap Option", "Adds Saber Dance above the set Esprit threshold.", DNC.JobID)]
+    DNC_AoE_EspritOvercap = 4091,
+
+    [ParentCombo(DNC_AoE_MultiButton)]
+    [CustomComboInfo("AoE Fan Dance Overcap Protection Option", "Adds Fan Dance 2 when Fourfold Feathers are full.",
+        DNC.JobID)]
+    DNC_AoE_FanDanceOvercap = 4092,
+
+    [ParentCombo(DNC_AoE_MultiButton)]
+    [CustomComboInfo("AoE Fan Dance Option", "Adds Fan Dance 3/4 when available.", DNC.JobID)]
+    DNC_AoE_FanDance34 = 4093,
+
+    #endregion
+    // Last value = 4093
+
+    #region Smaller Features
+
+    #region Dance Features
+
+    [ReplaceSkill(DNC.StandardStep, DNC.TechnicalStep)]
+    [ConflictingCombos(DNC_StandardStep_LastDance, DNC_TechnicalStep_Devilment)]
+    [CustomComboInfo("Dance Step Combo Feature",
+        "Change Standard Step and Technical Step into each dance step, while dancing." +
+        "\nWorks with Simple Dancer and Simple Dancer AoE.", DNC.JobID)]
+    DNC_DanceStepCombo = 4110,
+
+    [CustomComboInfo("Custom Dance Step Feature",
+        "Change custom actions into dance steps while dancing." +
+        "\nLets you still dance with combos on, without using Dance Step Combo Feature.", DNC.JobID)]
+    DNC_DanceComboReplacer = 4115,
+
+    #endregion
+    // Last value = 4115
+
+    #region Fan Features
+
+    [ReplaceSkill(DNC.Flourish)]
+    [CustomComboInfo("Flourishing Fan Dance Feature",
+        "Replace Flourish with Fan Dance 4 during weave-windows, when Flourish is on cooldown.", DNC.JobID)]
+    DNC_FlourishingFanDances = 4130,
+
+    [ParentCombo(DNC_FlourishingFanDances)]
+    [CustomComboInfo("Fan Dance 3 Option",
+        "Include Fan Dance 3 before 4.", DNC.JobID)]
+    DNC_Flourishing_FD3 = 4131,
+
+    [CustomComboInfo("Fan Dance Combo Feature",
+        "Options for Fan Dance combos." +
+        "\nFan Dance 3 takes priority over Fan Dance 4.", DNC.JobID)]
+    DNC_FanDanceCombos = 4135,
+
+    [ReplaceSkill(DNC.FanDance1)]
+    [ParentCombo(DNC_FanDanceCombos)]
+    [CustomComboInfo("Fan Dance 1 -> 3 Option", "Changes Fan Dance 1 to Fan Dance 3 when available.", DNC.JobID)]
+    DNC_FanDance_1to3_Combo = 4136,
+
+    [ReplaceSkill(DNC.FanDance1)]
+    [ParentCombo(DNC_FanDanceCombos)]
+    [CustomComboInfo("Fan Dance 1 -> 4 Option", "Changes Fan Dance 1 to Fan Dance 4 when available.", DNC.JobID)]
+    DNC_FanDance_1to4_Combo = 4137,
+
+    [ReplaceSkill(DNC.FanDance2)]
+    [ParentCombo(DNC_FanDanceCombos)]
+    [CustomComboInfo("Fan Dance 2 -> 3 Option", "Changes Fan Dance 2 to Fan Dance 3 when available.", DNC.JobID)]
+    DNC_FanDance_2to3_Combo = 4138,
+
+    [ReplaceSkill(DNC.FanDance2)]
+    [ParentCombo(DNC_FanDanceCombos)]
+    [CustomComboInfo("Fan Dance 2 -> 4 Option", "Changes Fan Dance 2 to Fan Dance 4 when available.", DNC.JobID)]
+    DNC_FanDance_2to4_Combo = 4139,
+
+    #endregion
+    // Last value = 4139
+
+    // Devilment --> Starfall
+    [ReplaceSkill(DNC.Devilment)]
+    [CustomComboInfo("Devilment to Starfall Feature", "Change Devilment into Starfall Dance after use.", DNC.JobID)]
+    DNC_Starfall_Devilment = 4150,
+
+    // StandardStep(or Finishing Move) --> Last Dance
+    [ReplaceSkill(DNC.StandardStep, DNC.FinishingMove)]
+    [ConflictingCombos(DNC_DanceStepCombo, DNC_TechnicalStep_Devilment)]
+    [CustomComboInfo("Standard Step to Last Dance Feature",
+        "Change Standard Step or Finishing Move to Last Dance when available.", DNC.JobID)]
+    DNC_StandardStep_LastDance = 4155,
+
+    // Technical Step --> Devilment
+    [ReplaceSkill(DNC.StandardStep, DNC.FinishingMove)]
+    [ConflictingCombos(DNC_StandardStep_LastDance, DNC_DanceStepCombo)]
+    [CustomComboInfo("Technical Step to Devilment Feature", "Change Technical Step to Devilment as soon as possible.",
+        DNC.JobID)]
+    DNC_TechnicalStep_Devilment = 4160,
+
+    // Bloodshower --> Bladeshower (or Bloodshower)
+    [ReplaceSkill(DNC.Bloodshower)]
+    [CustomComboInfo("Bloodshower to Bladeshower Feature", "Change Bloodshower to Bladeshower when Bloodshower is not available.", DNC.JobID)]
+    DNC_Procc_Bladeshower = 4165,
+
+    // Rising Windmill --> Windmill (or Rising Windmill)
+    [ReplaceSkill(DNC.RisingWindmill)]
+    [CustomComboInfo("Rising Windmill to Windmill Feature", "Change Rising Windmill to Windmill when Rising Windmill is not available.", DNC.JobID)]
+    DNC_Procc_Windmill = 4170,
+
+    #endregion
+    // Last value = 4170
+
+    #endregion
+    // Last value = 4170
 
     #region Variant
 
     [Variant]
     [VariantParent(DNC_ST_AdvancedMode, DNC_AoE_AdvancedMode)]
     [CustomComboInfo("Rampart Option", "Use Variant Rampart on cooldown.", DNC.JobID)]
-    DNC_Variant_Rampart = 4083,
+    DNC_Variant_Rampart = 4190,
 
     [Variant]
     [VariantParent(DNC_ST_AdvancedMode, DNC_AoE_AdvancedMode)]
     [CustomComboInfo("Cure Option", "Use Variant Cure when HP is below set threshold.", DNC.JobID)]
-    DNC_Variant_Cure = 4084,
+    DNC_Variant_Cure = 4195,
 
     #endregion
-
-    // Last value = 4090
+    // Last value = 4195
 
     #endregion
 
@@ -1421,6 +1410,34 @@ public enum CustomComboPreset
         "Replaces Hard Slash with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.",
         DRK.JobID)]
     DRK_ST_Combo = 5001,
+
+    [ParentCombo(DRK_ST_Combo)]
+    [CustomComboInfo("Balance Opener (Level 100)",
+        "Adds the Balance opener at level 100." +
+        "\nRequirements:" +
+        "\n- Over 7,000 mana" +
+        "\n- 2 Shadowbringer charges ready" +
+        "\n- Living Shadow off cooldown" +
+        "\n- Delirium off cooldown" +
+        "\n- Carve and Spit off cooldown" +
+        "\n- Salted Earth off cooldown" +
+        "\n(will skip the 2nd Edge if you have not popped a TBN)" +
+        "\n(does support TBN'ing during use or pre-pull)",
+        DRK.JobID)]
+    DRK_ST_BalanceOpener = 5041,
+
+    [ParentCombo(DRK_ST_Combo)]
+    [CustomComboInfo("Unmend Uptime Option", "Adds Unmend to the rotation when you are out of range.", DRK.JobID)]
+    DRK_ST_RangedUptime = 5015,
+
+    [ParentCombo(DRK_ST_Combo)]
+    [CustomComboInfo("Blood Gauge Overcap Option",
+        "Adds Bloodspiller to the rotation when at 90 blood gauge or higher.", DRK.JobID)]
+    DRK_ST_BloodOvercap = 5014,
+
+    [ParentCombo(DRK_ST_Combo)]
+    [CustomComboInfo("Bloodspiller Option", "Adds Bloodspiller to the rotation when Delirium is active.", DRK.JobID)]
+    DRK_ST_Bloodspiller = 5013,
 
     #region Buff Options
 
@@ -1535,19 +1552,6 @@ public enum CustomComboPreset
 
     // Last value = 5036
 
-    [ParentCombo(DRK_ST_Combo)]
-    [CustomComboInfo("Bloodspiller Option", "Adds Bloodspiller to the rotation when Delirium is active.", DRK.JobID)]
-    DRK_ST_Bloodspiller = 5013,
-
-    [ParentCombo(DRK_ST_Combo)]
-    [CustomComboInfo("Blood Gauge Overcap Option",
-        "Adds Bloodspiller to the rotation when at 90 blood gauge or higher.", DRK.JobID)]
-    DRK_ST_BloodOvercap = 5014,
-
-    [ParentCombo(DRK_ST_Combo)]
-    [CustomComboInfo("Unmend Uptime Option", "Adds Unmend to the rotation when you are out of range.", DRK.JobID)]
-    DRK_ST_RangedUptime = 5015,
-
     #endregion
 
     // Last value = 5015
@@ -1560,6 +1564,11 @@ public enum CustomComboPreset
         "Replaces Unleash with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.",
         DRK.JobID)]
     DRK_AoE_Combo = 5016,
+
+    [ParentCombo(DRK_AoE_Combo)]
+    [CustomComboInfo("Blood Gauge Overcap Option", "Adds Quietus to the rotation when at 90 blood gauge or higher.",
+        DRK.JobID)]
+    DRK_AoE_BloodOvercap = 5026,
 
     #region Buff Options
 
@@ -1645,11 +1654,6 @@ public enum CustomComboPreset
 
     // Last value = 5040
 
-    [ParentCombo(DRK_AoE_Combo)]
-    [CustomComboInfo("Blood Gauge Overcap Option", "Adds Quietus to the rotation when at 90 blood gauge or higher.",
-        DRK.JobID)]
-    DRK_AoE_BloodOvercap = 5026,
-
     #endregion
 
     // Last value = 5038
@@ -1702,16 +1706,14 @@ public enum CustomComboPreset
     [ReplaceSkill(DRG.TrueThrust)]
     [ConflictingCombos(DRG_ST_AdvancedMode)]
     [CustomComboInfo("Simple Mode - Single Target",
-        "Replaces True Thrust with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.",
-        DRG.JobID)]
+        "Replaces True Thrust with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.", DRG.JobID)]
     DRG_ST_SimpleMode = 6001,
 
     [AutoAction(true, false)]
     [ReplaceSkill(DRG.DoomSpike)]
     [ConflictingCombos(DRG_AOE_AdvancedMode)]
     [CustomComboInfo("Simple Mode - AoE",
-        "Replaces Doom Spike with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.",
-        DRG.JobID)]
+        "Replaces Doom Spike with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.", DRG.JobID)]
     DRG_AOE_SimpleMode = 6200,
 
     #endregion
@@ -1722,12 +1724,11 @@ public enum CustomComboPreset
     [ReplaceSkill(DRG.TrueThrust)]
     [ConflictingCombos(DRG_ST_SimpleMode)]
     [CustomComboInfo("Advanced Mode - Single Target",
-        "Replaces True Thrust with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.",
-        DRG.JobID)]
+        "Replaces True Thrust with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.", DRG.JobID)]
     DRG_ST_AdvancedMode = 6100,
 
     [ParentCombo(DRG_ST_AdvancedMode)]
-    [CustomComboInfo("Level 100 Opener", "Adds the Balance opener to the rotation.", DRG.JobID)]
+    [CustomComboInfo("Balance Opener (Level 100)", "Adds the Balance opener at level 100.", DRG.JobID)]
     DRG_ST_Opener = 6101,
 
     #region Buffs ST
@@ -1757,30 +1758,7 @@ public enum CustomComboPreset
     DRG_ST_LifeSurge = 6106,
 
     [ParentCombo(DRG_ST_CDs)]
-    [CustomComboInfo("Dragonfire Dive Option", "Adds Dragonfire Dive to the rotation.", DRG.JobID)]
-    DRG_ST_DragonfireDive = 6107,
-
-    [ParentCombo(DRG_ST_DragonfireDive)]
-    [CustomComboInfo("Dragonfire Dive Melee option",
-        "Adds Dragonfire Dive to the rotation when in the target ring (1 yalm) & when not moving.", DRG.JobID)]
-    DRG_ST_DragonfireDive_Melee = 6108,
-
-    [ParentCombo(DRG_ST_CDs)]
-    [CustomComboInfo("Rise of the Dragon Option", "Adds Rise of the Dragon to the rotation.", DRG.JobID)]
-    DRG_ST_Dives_RiseOfTheDragon = 6109,
-
-    [ParentCombo(DRG_ST_CDs)] [CustomComboInfo("Stardiver Option", "Adds Stardiver to the rotation.", DRG.JobID)]
-    DRG_ST_Stardiver = 6110,
-
-    [ParentCombo(DRG_ST_Stardiver)]
-    [CustomComboInfo("Stardiver Melee option",
-        "Adds Stardiver to the rotation when in the target ring (1 yalm) & when not moving.", DRG.JobID)]
-    DRG_ST_Stardiver_Melee = 6111,
-
-    [ParentCombo(DRG_ST_CDs)] [CustomComboInfo("Starcross Option", "Adds Starcross to the rotation.", DRG.JobID)]
-    DRG_ST_Starcross = 6112,
-
-    [ParentCombo(DRG_ST_CDs)] [CustomComboInfo("High Jump Option", "Adds (High) Jump to the rotation.", DRG.JobID)]
+    [CustomComboInfo("High Jump Option", "Adds (High) Jump to the rotation.", DRG.JobID)]
     DRG_ST_HighJump = 6113,
 
     [ParentCombo(DRG_ST_HighJump)]
@@ -1792,32 +1770,58 @@ public enum CustomComboPreset
     [CustomComboInfo("Mirage Dive Option", "Adds Mirage Dive to the rotation.", DRG.JobID)]
     DRG_ST_Mirage = 6115,
 
-    [ParentCombo(DRG_ST_CDs)] [CustomComboInfo("Geirskogul Option", "Adds Geirskogul to the rotation.", DRG.JobID)]
+    [ParentCombo(DRG_ST_CDs)]
+    [CustomComboInfo("Dragonfire Dive Option", "Adds Dragonfire Dive to the rotation.", DRG.JobID)]
+    DRG_ST_DragonfireDive = 6107,
+
+    [ParentCombo(DRG_ST_DragonfireDive)]
+    [CustomComboInfo("Dragonfire Dive Melee option",
+        "Adds Dragonfire Dive to the rotation when in the target ring (1 yalm) & when not moving.", DRG.JobID)]
+    DRG_ST_DragonfireDive_Melee = 6108,
+
+    [ParentCombo(DRG_ST_CDs)]
+    [CustomComboInfo("Geirskogul Option", "Adds Geirskogul to the rotation.", DRG.JobID)]
     DRG_ST_Geirskogul = 6116,
 
-    [ParentCombo(DRG_ST_CDs)] [CustomComboInfo("Nastrond Option", "Adds Nastrond to the rotation.", DRG.JobID)]
+    [ParentCombo(DRG_ST_CDs)]
+    [CustomComboInfo("Nastrond Option", "Adds Nastrond to the rotation.", DRG.JobID)]
     DRG_ST_Nastrond = 6117,
+
+    [ParentCombo(DRG_ST_CDs)]
+    [CustomComboInfo("Stardiver Option", "Adds Stardiver to the rotation.", DRG.JobID)]
+    DRG_ST_Stardiver = 6110,
+
+    [ParentCombo(DRG_ST_Stardiver)]
+    [CustomComboInfo("Stardiver Melee option",
+        "Adds Stardiver to the rotation when in the target ring (1 yalm) & when not moving.", DRG.JobID)]
+    DRG_ST_Stardiver_Melee = 6111,
 
     [ParentCombo(DRG_ST_CDs)]
     [CustomComboInfo("Wyrmwind Thrust Option", "Adds Wyrmwind Thrust to the rotation.", DRG.JobID)]
     DRG_ST_Wyrmwind = 6118,
 
+    [ParentCombo(DRG_ST_CDs)]
+    [CustomComboInfo("Rise of the Dragon Option", "Adds Rise of the Dragon to the rotation.", DRG.JobID)]
+    DRG_ST_Dives_RiseOfTheDragon = 6109,
+
+    [ParentCombo(DRG_ST_CDs)]
+    [CustomComboInfo("Starcross Option", "Adds Starcross to the rotation.", DRG.JobID)]
+    DRG_ST_Starcross = 6112,
+
     #endregion
 
     [ParentCombo(DRG_ST_AdvancedMode)]
-    [CustomComboInfo("Ranged Uptime Option", "Adds Piercing Talon to the rotation when you are out of melee range.",
-        DRG.JobID)]
+    [CustomComboInfo("Dynamic True North Option",
+        "Adds True North before Chaos Thrust/Chaotic Spring, Fang And Claw and Wheeling Thrust when you are not in the correct position for the enhanced potency bonus.", DRG.JobID)]
+    DRG_TrueNorthDynamic = 6199,
+
+    [ParentCombo(DRG_ST_AdvancedMode)]
+    [CustomComboInfo("Ranged Uptime Option", "Adds Piercing Talon to the rotation when you are out of melee range.", DRG.JobID)]
     DRG_ST_RangedUptime = 6197,
 
     [ParentCombo(DRG_ST_AdvancedMode)]
     [CustomComboInfo("Combo Heals Option", "Adds Bloodbath and Second Wind to the rotation.", DRG.JobID)]
     DRG_ST_ComboHeals = 6198,
-
-    [ParentCombo(DRG_ST_AdvancedMode)]
-    [CustomComboInfo("Dynamic True North Option",
-        "Adds True North before Chaos Thrust/Chaotic Spring, Fang And Claw and Wheeling Thrust when you are not in the correct position for the enhanced potency bonus.",
-        DRG.JobID)]
-    DRG_TrueNorthDynamic = 6199,
 
     #endregion
 
@@ -1827,8 +1831,7 @@ public enum CustomComboPreset
     [ReplaceSkill(DRG.DoomSpike)]
     [ConflictingCombos(DRG_AOE_SimpleMode)]
     [CustomComboInfo("Advanced Mode - AoE",
-        "Replaces Doomspike with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.",
-        DRG.JobID)]
+        "Replaces Doomspike with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.", DRG.JobID)]
     DRG_AOE_AdvancedMode = 6201,
 
     #region Buffs AoE
@@ -1858,30 +1861,7 @@ public enum CustomComboPreset
     DRG_AoE_LifeSurge = 6206,
 
     [ParentCombo(DRG_AoE_CDs)]
-    [CustomComboInfo("Dragonfire Dive Option", "Adds Dragonfire Dive to the rotation.", DRG.JobID)]
-    DRG_AoE_DragonfireDive = 6207,
-
-    [ParentCombo(DRG_AoE_DragonfireDive)]
-    [CustomComboInfo("Dragonfire Dive Melee option",
-        "Adds Dragonfire Dive to the rotation when in the target ring (1 yalm) & when not moving.", DRG.JobID)]
-    DRG_AoE_DragonfireDive_Melee = 6208,
-
-    [ParentCombo(DRG_AoE_CDs)]
-    [CustomComboInfo("Rise of the Dragon Option", "Adds Rise of the Dragon to the rotation.", DRG.JobID)]
-    DRG_AoE_RiseOfTheDragon = 6209,
-
-    [ParentCombo(DRG_AoE_CDs)] [CustomComboInfo("Stardiver Option", "Adds Stardiver to the rotation.", DRG.JobID)]
-    DRG_AoE_Stardiver = 6210,
-
-    [ParentCombo(DRG_AoE_Stardiver)]
-    [CustomComboInfo("Stardiver Melee option",
-        "Adds Stardiver to the rotation when in the target ring (1 yalm) & when not moving.", DRG.JobID)]
-    DRG_AoE_Stardiver_Melee = 6211,
-
-    [ParentCombo(DRG_AoE_CDs)] [CustomComboInfo("Starcross Option", "Adds Starcross to the rotation.", DRG.JobID)]
-    DRG_AoE_Starcross = 6212,
-
-    [ParentCombo(DRG_AoE_CDs)] [CustomComboInfo("High Jump Option", "Adds (High) Jump to the rotation.", DRG.JobID)]
+    [CustomComboInfo("High Jump Option", "Adds (High) Jump to the rotation.", DRG.JobID)]
     DRG_AoE_HighJump = 6213,
 
     [ParentCombo(DRG_AoE_HighJump)]
@@ -1893,14 +1873,43 @@ public enum CustomComboPreset
     [CustomComboInfo("Mirage Dive Option", "Adds Mirage Dive to the rotation.", DRG.JobID)]
     DRG_AoE_Mirage = 6215,
 
-    [ParentCombo(DRG_AoE_CDs)] [CustomComboInfo("Geirskogul Option", "Adds Geirskogul to the rotation.", DRG.JobID)]
+    [ParentCombo(DRG_AoE_CDs)]
+    [CustomComboInfo("Dragonfire Dive Option", "Adds Dragonfire Dive to the rotation.", DRG.JobID)]
+    DRG_AoE_DragonfireDive = 6207,
+
+    [ParentCombo(DRG_AoE_DragonfireDive)]
+    [CustomComboInfo("Dragonfire Dive Melee option",
+        "Adds Dragonfire Dive to the rotation when in the target ring (1 yalm) & when not moving.", DRG.JobID)]
+    DRG_AoE_DragonfireDive_Melee = 6208,
+
+    [ParentCombo(DRG_AoE_CDs)]
+    [CustomComboInfo("Geirskogul Option", "Adds Geirskogul to the rotation.", DRG.JobID)]
     DRG_AoE_Geirskogul = 6216,
 
-    [ParentCombo(DRG_AoE_CDs)] [CustomComboInfo("Nastrond Option", "Adds Nastrond to the rotation.", DRG.JobID)]
+    [ParentCombo(DRG_AoE_CDs)]
+    [CustomComboInfo("Nastrond Option", "Adds Nastrond to the rotation.", DRG.JobID)]
     DRG_AoE_Nastrond = 6217,
 
-    [ParentCombo(DRG_AoE_CDs)] [CustomComboInfo("Wyrmwind Option", "Adds Wyrmwind Thrust to the rotation.", DRG.JobID)]
+    [ParentCombo(DRG_AoE_CDs)]
+    [CustomComboInfo("Stardiver Option", "Adds Stardiver to the rotation.", DRG.JobID)]
+    DRG_AoE_Stardiver = 6210,
+
+    [ParentCombo(DRG_AoE_Stardiver)]
+    [CustomComboInfo("Stardiver Melee option",
+        "Adds Stardiver to the rotation when in the target ring (1 yalm) & when not moving.", DRG.JobID)]
+    DRG_AoE_Stardiver_Melee = 6211,
+
+    [ParentCombo(DRG_AoE_CDs)]
+    [CustomComboInfo("Wyrmwind Option", "Adds Wyrmwind Thrust to the rotation.", DRG.JobID)]
     DRG_AoE_Wyrmwind = 6218,
+
+    [ParentCombo(DRG_AoE_CDs)]
+    [CustomComboInfo("Rise of the Dragon Option", "Adds Rise of the Dragon to the rotation.", DRG.JobID)]
+    DRG_AoE_RiseOfTheDragon = 6209,
+
+    [ParentCombo(DRG_AoE_CDs)]
+    [CustomComboInfo("Starcross Option", "Adds Starcross to the rotation.", DRG.JobID)]
+    DRG_AoE_Starcross = 6212,
 
     #endregion
 
@@ -1920,6 +1929,20 @@ public enum CustomComboPreset
 
     #endregion
 
+    #region Variant
+
+    [Variant]
+    [VariantParent(DRG_ST_AdvancedMode, DRG_AOE_AdvancedMode)]
+    [CustomComboInfo("Cure Option", "Use Variant Cure when HP is below set threshold.", DRG.JobID)]
+    DRG_Variant_Cure = 6302,
+
+    [Variant]
+    [VariantParent(DRG_ST_AdvancedMode, DRG_AOE_AdvancedMode)]
+    [CustomComboInfo("Rampart Option", "Use Variant Rampart on cooldown.", DRG.JobID)]
+    DRG_Variant_Rampart = 6303,
+
+    #endregion
+
     [ReplaceSkill(DRG.FullThrust, DRG.HeavensThrust)]
     [CustomComboInfo("FullThrust Combo", "Replace Full Thrust/Heavens' Thrust with its combo chain.", DRG.JobID)]
     DRG_ST_FullThrustCombo = 6304,
@@ -1933,17 +1956,8 @@ public enum CustomComboPreset
         "Turns Lance Charge into Battle Litany when the former is on cooldown.", DRG.JobID)]
     DRG_BurstCDFeature = 6301,
 
-    [Variant]
-    [VariantParent(DRG_ST_AdvancedMode, DRG_AOE_AdvancedMode)]
-    [CustomComboInfo("Cure Option", "Use Variant Cure when HP is below set threshold.", DRG.JobID)]
-    DRG_Variant_Cure = 6302,
-
-    [Variant]
-    [VariantParent(DRG_ST_AdvancedMode, DRG_AOE_AdvancedMode)]
-    [CustomComboInfo("Rampart Option", "Use Variant Rampart on cooldown.", DRG.JobID)]
-    DRG_Variant_Rampart = 6303,
-
-    // Last value = 6117 - 6216 - 6305
+    // Last value ST = 6117
+    // Last value AoE = 6216
 
     #endregion
 
@@ -1978,6 +1992,10 @@ public enum CustomComboPreset
         "Replaces Keen Edge with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.",
         GNB.JobID)]
     GNB_ST_Advanced = 7003,
+
+    [ParentCombo(GNB_ST_Advanced)]
+    [CustomComboInfo("Balance Opener (Level 100)", "Adds the Balance opener at level 100. Switches between 2 different openers depending on skillspeed.", GNB.JobID)]
+    GNB_ST_Advanced_Opener = 7006,
 
     #region Cooldowns
 
@@ -2185,7 +2203,7 @@ public enum CustomComboPreset
 
     #region Gnashing Fang
     [ReplaceSkill(GNB.GnashingFang)]
-    [CustomComboInfo("Gnashing Fang Features","Collection of Gnashing Fang related features.\n Enable all for this to be an all-in-one Single Target Burst button.", GNB.JobID)]
+    [CustomComboInfo("Gnashing Fang Features", "Collection of Gnashing Fang related features.\n Enable all for this to be an all-in-one Single Target Burst button.", GNB.JobID)]
     GNB_GF_Features = 7300,
 
     [ParentCombo(GNB_GF_Features)]
@@ -2336,19 +2354,24 @@ public enum CustomComboPreset
 
     #region Bozja
 
-    [Bozja] [CustomComboInfo("Lost Focus Option", "Use Lost Focus when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Focus Option", "Use Lost Focus when available.", GNB.JobID)]
     GNB_Bozja_LostFocus = 7070,
 
-    [Bozja] [CustomComboInfo("Lost Font Of Power Option", "Use Lost Font Of Power when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Font Of Power Option", "Use Lost Font Of Power when available.", GNB.JobID)]
     GNB_Bozja_LostFontOfPower = 7036,
 
-    [Bozja] [CustomComboInfo("Lost Slash Option", "Use Lost Slash when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Slash Option", "Use Lost Slash when available.", GNB.JobID)]
     GNB_Bozja_LostSlash = 7037,
 
-    [Bozja] [CustomComboInfo("Lost Death Option", "Use Lost Death when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Death Option", "Use Lost Death when available.", GNB.JobID)]
     GNB_Bozja_LostDeath = 7038,
 
-    [Bozja] [CustomComboInfo("Banner Of Noble Ends Option", "Use Banner Of Noble Ends when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Banner Of Noble Ends Option", "Use Banner Of Noble Ends when available.", GNB.JobID)]
     GNB_Bozja_BannerOfNobleEnds = 7039,
 
     [Bozja]
@@ -2368,16 +2391,20 @@ public enum CustomComboPreset
         "Use Banner Of Honored Sacrifice only when under Lost Font of Power.", GNB.JobID)]
     GNB_Bozja_PowerSacrifice = 7042,
 
-    [Bozja] [CustomComboInfo("Banner Of Honed Acuity Option", "Use Banner Of Honed Acuity when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Banner Of Honed Acuity Option", "Use Banner Of Honed Acuity when available.", GNB.JobID)]
     GNB_Bozja_BannerOfHonedAcuity = 7043,
 
-    [Bozja] [CustomComboInfo("Lost Fair Trade Option", "Use Lost Fair Trade when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Fair Trade Option", "Use Lost Fair Trade when available.", GNB.JobID)]
     GNB_Bozja_LostFairTrade = 7044,
 
-    [Bozja] [CustomComboInfo("Lost Assassination Option", "Use Lost Assassination when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Assassination Option", "Use Lost Assassination when available.", GNB.JobID)]
     GNB_Bozja_LostAssassination = 7045,
 
-    [Bozja] [CustomComboInfo("Lost Manawall Option", "Use Lost Manawall when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Manawall Option", "Use Lost Manawall when available.", GNB.JobID)]
     GNB_Bozja_LostManawall = 7046,
 
     [Bozja]
@@ -2385,80 +2412,104 @@ public enum CustomComboPreset
         GNB.JobID)]
     GNB_Bozja_BannerOfTirelessConviction = 7047,
 
-    [Bozja] [CustomComboInfo("Lost Blood Rage Option", "Use Lost Blood Rage when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Blood Rage Option", "Use Lost Blood Rage when available.", GNB.JobID)]
     GNB_Bozja_LostBloodRage = 7048,
 
     [Bozja]
     [CustomComboInfo("Banner Of Solemn Clarity Option", "Use Banner Of Solemn Clarity when available.", GNB.JobID)]
     GNB_Bozja_BannerOfSolemnClarity = 7049,
 
-    [Bozja] [CustomComboInfo("Lost Cure Option", "Use Lost Cure when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Cure Option", "Use Lost Cure when available.", GNB.JobID)]
     GNB_Bozja_LostCure = 7050,
 
-    [Bozja] [CustomComboInfo("Lost Cure II Option", "Use Lost Cure II when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Cure II Option", "Use Lost Cure II when available.", GNB.JobID)]
     GNB_Bozja_LostCure2 = 7051,
 
-    [Bozja] [CustomComboInfo("Lost Cure III Option", "Use Lost Cure III when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Cure III Option", "Use Lost Cure III when available.", GNB.JobID)]
     GNB_Bozja_LostCure3 = 7052,
 
-    [Bozja] [CustomComboInfo("Lost Cure IV Option", "Use Lost Cure IV when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Cure IV Option", "Use Lost Cure IV when available.", GNB.JobID)]
     GNB_Bozja_LostCure4 = 7053,
 
-    [Bozja] [CustomComboInfo("Lost Arise Option", "Use Lost Arise when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Arise Option", "Use Lost Arise when available.", GNB.JobID)]
     GNB_Bozja_LostArise = 7054,
 
-    [Bozja] [CustomComboInfo("Lost Sacrifice Option", "Use Lost Sacrifice when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Sacrifice Option", "Use Lost Sacrifice when available.", GNB.JobID)]
     GNB_Bozja_LostSacrifice = 7055,
 
-    [Bozja] [CustomComboInfo("Lost Reraise Option", "Use Lost Reraise when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Reraise Option", "Use Lost Reraise when available.", GNB.JobID)]
     GNB_Bozja_LostReraise = 7056,
 
-    [Bozja] [CustomComboInfo("Lost Spellforge Option", "Use Lost Spellforge when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Spellforge Option", "Use Lost Spellforge when available.", GNB.JobID)]
     GNB_Bozja_LostSpellforge = 7057,
 
-    [Bozja] [CustomComboInfo("Lost Steel Sting Option", "Use Lost Steel Sting when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Steel Sting Option", "Use Lost Steel Sting when available.", GNB.JobID)]
     GNB_Bozja_LostSteelsting = 7058,
 
-    [Bozja] [CustomComboInfo("Lost Protect Option", "Use Lost Protect when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Protect Option", "Use Lost Protect when available.", GNB.JobID)]
     GNB_Bozja_LostProtect = 7059,
 
-    [Bozja] [CustomComboInfo("Lost Shell Option", "Use Lost Shell when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Shell Option", "Use Lost Shell when available.", GNB.JobID)]
     GNB_Bozja_LostShell = 7060,
 
-    [Bozja] [CustomComboInfo("Lost Reflect Option", "Use Lost Reflect when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Reflect Option", "Use Lost Reflect when available.", GNB.JobID)]
     GNB_Bozja_LostReflect = 7061,
 
-    [Bozja] [CustomComboInfo("Lost Bravery Option", "Use Lost Bravery when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Bravery Option", "Use Lost Bravery when available.", GNB.JobID)]
     GNB_Bozja_LostBravery = 7062,
 
-    [Bozja] [CustomComboInfo("Lost Aethershield Option", "Use Lost Aether Shield when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Aethershield Option", "Use Lost Aether Shield when available.", GNB.JobID)]
     GNB_Bozja_LostAethershield = 7063,
 
-    [Bozja] [CustomComboInfo("Lost Protect II Option", "Use Lost Protect II when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Protect II Option", "Use Lost Protect II when available.", GNB.JobID)]
     GNB_Bozja_LostProtect2 = 7064,
 
-    [Bozja] [CustomComboInfo("Lost Shell II Option", "Use Lost Shell II when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Shell II Option", "Use Lost Shell II when available.", GNB.JobID)]
     GNB_Bozja_LostShell2 = 7065,
 
-    [Bozja] [CustomComboInfo("Lost Bubble Option", "Use Lost Bubble when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Bubble Option", "Use Lost Bubble when available.", GNB.JobID)]
     GNB_Bozja_LostBubble = 7066,
 
-    [Bozja] [CustomComboInfo("Lost Stealth Option", "Use Lost Stealth when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Stealth Option", "Use Lost Stealth when available.", GNB.JobID)]
     GNB_Bozja_LostStealth = 7067,
 
-    [Bozja] [CustomComboInfo("Lost Swift Option", "Use Lost Swift when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Swift Option", "Use Lost Swift when available.", GNB.JobID)]
     GNB_Bozja_LostSwift = 7068,
 
-    [Bozja] [CustomComboInfo("Lost Font Of Skill Option", "Use Lost Font Of Skill when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Font Of Skill Option", "Use Lost Font Of Skill when available.", GNB.JobID)]
     GNB_Bozja_LostFontOfSkill = 7069,
 
-    [Bozja] [CustomComboInfo("Lost Impetus Option", "Use Lost Impetus when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Impetus Option", "Use Lost Impetus when available.", GNB.JobID)]
     GNB_Bozja_LostImpetus = 7071,
 
-    [Bozja] [CustomComboInfo("Lost Paralyze III Option", "Use Lost Paralyze III when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Paralyze III Option", "Use Lost Paralyze III when available.", GNB.JobID)]
     GNB_Bozja_LostParalyze3 = 7072,
 
-    [Bozja] [CustomComboInfo("Lost Rampage Option", "Use Lost Rampage when available.", GNB.JobID)]
+    [Bozja]
+    [CustomComboInfo("Lost Rampage Option", "Use Lost Rampage when available.", GNB.JobID)]
     GNB_Bozja_LostRampage = 7073,
 
     #endregion
@@ -2520,16 +2571,14 @@ public enum CustomComboPreset
     [ReplaceSkill(MCH.SplitShot, MCH.HeatedSplitShot)]
     [ConflictingCombos(MCH_ST_AdvancedMode)]
     [CustomComboInfo("Simple Mode - Single Target",
-        "Replaces Split Shot with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.",
-        MCH.JobID)]
+        "Replaces Split Shot with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.", MCH.JobID)]
     MCH_ST_SimpleMode = 8001,
 
     [AutoAction(true, false)]
     [ReplaceSkill(MCH.SpreadShot, MCH.Scattergun)]
     [ConflictingCombos(MCH_AoE_AdvancedMode)]
     [CustomComboInfo("Simple Mode - AoE",
-        "Replaces Spreadshot with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.",
-        MCH.JobID)]
+        "Replaces Spreadshot with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.", MCH.JobID)]
     MCH_AoE_SimpleMode = 8200,
 
     #endregion
@@ -2540,29 +2589,29 @@ public enum CustomComboPreset
     [ReplaceSkill(MCH.SplitShot, MCH.HeatedSplitShot)]
     [ConflictingCombos(MCH_ST_SimpleMode)]
     [CustomComboInfo("Advanced Mode - Single Target",
-        "Replaces Split Shot with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.",
-        MCH.JobID)]
+        "Replaces Split Shot with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.", MCH.JobID)]
     MCH_ST_AdvancedMode = 8100,
 
     [ParentCombo(MCH_ST_AdvancedMode)]
-    [CustomComboInfo("Level 100 Opener Option", "Uses the Balance opener.", MCH.JobID)]
+    [CustomComboInfo("Balance Opener (Level 100)", "Adds the Balance opener at level 100.", MCH.JobID)]
     MCH_ST_Adv_Opener = 8101,
 
     [ParentCombo(MCH_ST_AdvancedMode)]
-    [CustomComboInfo("Hot Shot / Air Anchor Option", "Adds Hot Shot/Air Anchor to the rotation.", MCH.JobID)]
-    MCH_ST_Adv_AirAnchor = 8102,
+    [CustomComboInfo("Barrel Stabilizer Option", "Adds Barrel Stabilizer to the rotation.", MCH.JobID)]
+    MCH_ST_Adv_Stabilizer = 8110,
 
     [ParentCombo(MCH_ST_AdvancedMode)]
-    [CustomComboInfo("Reassemble Option",
-        "Adds Reassemble to the rotation.\nWill be used priority based.\nOrder from highest to lowest priority :\nExcavator - Chainsaw - Air Anchor - Drill - Clean Shot",
-        MCH.JobID)]
-    MCH_ST_Adv_Reassemble = 8103,
+    [CustomComboInfo("Full Metal Field Option", "Adds Full Metal Field to the rotation.", MCH.JobID)]
+    MCH_ST_Adv_Stabilizer_FullMetalField = 8111,
 
     [ParentCombo(MCH_ST_AdvancedMode)]
     [CustomComboInfo("Gauss Round / Ricochet \nDouble Check / Checkmate option",
-        "Adds Gauss Round and Ricochet or Double Check and Checkmate to the rotation. Will prevent overcapping.",
-        MCH.JobID)]
+        "Adds Gauss Round and Ricochet or Double Check and Checkmate to the rotation. Will prevent overcapping.", MCH.JobID)]
     MCH_ST_Adv_GaussRicochet = 8104,
+
+    [ParentCombo(MCH_ST_AdvancedMode)]
+    [CustomComboInfo("Wildfire Option", "Adds Wildfire to the rotation.", MCH.JobID)]
+    MCH_ST_Adv_WildFire = 8108,
 
     [ParentCombo(MCH_ST_AdvancedMode)]
     [CustomComboInfo("Hypercharge Option", "Adds Hypercharge to the rotation.", MCH.JobID)]
@@ -2578,20 +2627,21 @@ public enum CustomComboPreset
     MCH_Adv_TurretQueen = 8107,
 
     [ParentCombo(MCH_ST_AdvancedMode)]
-    [CustomComboInfo("Wildfire Option", "Adds Wildfire to the rotation.", MCH.JobID)]
-    MCH_ST_Adv_WildFire = 8108,
+    [CustomComboInfo("Rook / Queen Overdrive Option", "Adds Rook or Queen Overdrive to the rotation.", MCH.JobID)]
+    MCH_ST_Adv_QueenOverdrive = 8115,
+
+    [ParentCombo(MCH_ST_AdvancedMode)]
+    [CustomComboInfo("Reassemble Option",
+        "Adds Reassemble to the rotation.\nWill be used priority based.\nOrder from highest to lowest priority :\nExcavator - Chainsaw - Air Anchor - Drill - Clean Shot", MCH.JobID)]
+    MCH_ST_Adv_Reassemble = 8103,
 
     [ParentCombo(MCH_ST_AdvancedMode)]
     [CustomComboInfo("Drill Option", "Adds Drill to the rotation.", MCH.JobID)]
     MCH_ST_Adv_Drill = 8109,
 
     [ParentCombo(MCH_ST_AdvancedMode)]
-    [CustomComboInfo("Barrel Stabilizer Option", "Adds Barrel Stabilizer to the rotation.", MCH.JobID)]
-    MCH_ST_Adv_Stabilizer = 8110,
-
-    [ParentCombo(MCH_ST_AdvancedMode)]
-    [CustomComboInfo("Full Metal Field Option", "Adds Full Metal Field to the rotation.", MCH.JobID)]
-    MCH_ST_Adv_Stabilizer_FullMetalField = 8111,
+    [CustomComboInfo("Hot Shot / Air Anchor Option", "Adds Hot Shot/Air Anchor to the rotation.", MCH.JobID)]
+    MCH_ST_Adv_AirAnchor = 8102,
 
     [ParentCombo(MCH_ST_AdvancedMode)]
     [CustomComboInfo("Chain Saw Option", "Adds Chain Saw to the rotation.", MCH.JobID)]
@@ -2602,12 +2652,7 @@ public enum CustomComboPreset
     MCH_ST_Adv_Excavator = 8116,
 
     [ParentCombo(MCH_ST_AdvancedMode)]
-    [CustomComboInfo("Rook / Queen Overdrive Option", "Adds Rook or Queen Overdrive to the rotation.", MCH.JobID)]
-    MCH_ST_Adv_QueenOverdrive = 8115,
-
-    [ParentCombo(MCH_ST_AdvancedMode)]
-    [CustomComboInfo("Head Graze Option", "Uses Head Graze to interrupt during the rotation, where applicable.",
-        MCH.JobID)]
+    [CustomComboInfo("Head Graze Option", "Uses Head Graze to interrupt during the rotation, where applicable.", MCH.JobID)]
     MCH_ST_Adv_Interrupt = 8113,
 
     [ParentCombo(MCH_ST_AdvancedMode)]
@@ -2622,13 +2667,21 @@ public enum CustomComboPreset
     [ReplaceSkill(MCH.SpreadShot, MCH.Scattergun)]
     [ConflictingCombos(MCH_AoE_SimpleMode)]
     [CustomComboInfo("Advanced Mode - AoE",
-        "Replaces Spreadshot with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.",
-        MCH.JobID)]
+        "Replaces Spreadshot with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.", MCH.JobID)]
     MCH_AoE_AdvancedMode = 8300,
 
     [ParentCombo(MCH_AoE_AdvancedMode)]
-    [CustomComboInfo("Reassemble Option", "Adds Reassemble to the rotation.", MCH.JobID)]
-    MCH_AoE_Adv_Reassemble = 8301,
+    [CustomComboInfo("Flamethrower Option",
+        "Adds Flamethrower to the rotation.\n Changes to Savage blade when in use to prevent cancelling.", MCH.JobID)]
+    MCH_AoE_Adv_FlameThrower = 8305,
+
+    [ParentCombo(MCH_AoE_AdvancedMode)]
+    [CustomComboInfo("Barrel Stabilizer Option", "Adds Barrel Stabilizer to the rotation.", MCH.JobID)]
+    MCH_AoE_Adv_Stabilizer = 8307,
+
+    [ParentCombo(MCH_AoE_AdvancedMode)]
+    [CustomComboInfo("Full Metal Field Option", "Adds Full Metal Field to the rotation.", MCH.JobID)]
+    MCH_AoE_Adv_Stabilizer_FullMetalField = 8308,
 
     [ParentCombo(MCH_AoE_AdvancedMode)]
     [CustomComboInfo("Gauss Round / Ricochet \nDouble Check / Checkmate option",
@@ -2649,21 +2702,16 @@ public enum CustomComboPreset
     MCH_AoE_Adv_Queen = 8304,
 
     [ParentCombo(MCH_AoE_AdvancedMode)]
-    [CustomComboInfo("Flamethrower Option",
-        "Adds Flamethrower to the rotation.\n Changes to Savage blade when in use to prevent cancelling.", MCH.JobID)]
-    MCH_AoE_Adv_FlameThrower = 8305,
+    [CustomComboInfo("Reassemble Option", "Adds Reassemble to the rotation.", MCH.JobID)]
+    MCH_AoE_Adv_Reassemble = 8301,
 
     [ParentCombo(MCH_AoE_AdvancedMode)]
     [CustomComboInfo("Bioblaster Option", "Adds Bioblaster to the rotation.", MCH.JobID)]
     MCH_AoE_Adv_Bioblaster = 8306,
 
     [ParentCombo(MCH_AoE_AdvancedMode)]
-    [CustomComboInfo("Barrel Stabilizer Option", "Adds Barrel Stabilizer to the rotation.", MCH.JobID)]
-    MCH_AoE_Adv_Stabilizer = 8307,
-
-    [ParentCombo(MCH_AoE_AdvancedMode)]
-    [CustomComboInfo("Full Metal Field Option", "Adds Full Metal Field to the rotation.", MCH.JobID)]
-    MCH_AoE_Adv_Stabilizer_FullMetalField = 8308,
+    [CustomComboInfo("Air Anchor Option", "Adds Air Anchor to the the rotation.", MCH.JobID)]
+    MCH_AoE_Adv_AirAnchor = 8313,
 
     [ParentCombo(MCH_AoE_AdvancedMode)]
     [CustomComboInfo("Chain Saw Option", "Adds Chain Saw to the the rotation.", MCH.JobID)]
@@ -2674,13 +2722,12 @@ public enum CustomComboPreset
     MCH_AoE_Adv_Excavator = 8310,
 
     [ParentCombo(MCH_AoE_AdvancedMode)]
-    [CustomComboInfo("Second Wind Option", "Use Second Wind when below the set HP percentage.", MCH.JobID)]
-    MCH_AoE_Adv_SecondWind = 8399,
+    [CustomComboInfo("Head Graze Option", "Uses Head Graze to interrupt during the rotation, where applicable.", MCH.JobID)]
+    MCH_AoE_Adv_Interrupt = 8311,
 
     [ParentCombo(MCH_AoE_AdvancedMode)]
-    [CustomComboInfo("Head Graze Option", "Uses Head Graze to interrupt during the rotation, where applicable.",
-        MCH.JobID)]
-    MCH_AoE_Adv_Interrupt = 8311,
+    [CustomComboInfo("Second Wind Option", "Use Second Wind when below the set HP percentage.", MCH.JobID)]
+    MCH_AoE_Adv_SecondWind = 8399,
 
     #endregion
 
@@ -2698,26 +2745,20 @@ public enum CustomComboPreset
 
     #endregion
 
-    [ReplaceSkill(MCH.RookAutoturret, MCH.AutomatonQueen)]
-    [CustomComboInfo("Overdrive Feature", "Replace Rook Autoturret and Automaton Queen with Overdrive while active.",
-        MCH.JobID)]
-    MCH_Overdrive = 8002,
+    [ReplaceSkill(MCH.Dismantle)]
+    [CustomComboInfo("Physical Ranged DPS: Double Dismantle Protection",
+        "Prevents the use of Dismantle when target already has the effect.", MCH.JobID)]
+    All_PRanged_Dismantle = 8042,
 
-    [ReplaceSkill(MCH.GaussRound, MCH.Ricochet, MCH.CheckMate, MCH.DoubleCheck)]
-    [CustomComboInfo("Gauss Round / Ricochet \nDouble Check / Checkmate Feature",
-        "Replace Gauss Round and Ricochet or Double Check and Checkmate with one or the other depending on which has more charges.",
-        MCH.JobID)]
-    MCH_GaussRoundRicochet = 8003,
+    [ReplaceSkill(MCH.Dismantle)]
+    [CustomComboInfo("Dismantle - Tactician", "Swap dismantle with tactician when dismantle is on cooldown.", MCH.JobID)]
+    MCH_DismantleTactician = 8058,
 
-    [ReplaceSkill(MCH.Drill, MCH.AirAnchor, MCH.HotShot, MCH.Chainsaw)]
-    [CustomComboInfo("Big Hitter Feature",
-        "Replace Hot Shot, Drill, Air Anchor, Chainsaw and Excavator depending on which is on cooldown.", MCH.JobID)]
-    MCH_HotShotDrillChainsawExcavator = 8004,
+    #region Heatblast
 
     [ReplaceSkill(MCH.Heatblast, MCH.BlazingShot)]
     [CustomComboInfo("Single Button Heat Blast Feature",
-        "Turns Heat Blast or Blazing Shot into Hypercharge \nwhen u have 50 or more heat or when u got Hypercharged buff.",
-        MCH.JobID)]
+        "Turns Heat Blast or Blazing Shot into Hypercharge \nwhen u have 50 or more heat or when u got Hypercharged buff.", MCH.JobID)]
     MCH_Heatblast = 8006,
 
     [ParentCombo(MCH_Heatblast)]
@@ -2730,9 +2771,12 @@ public enum CustomComboPreset
 
     [ParentCombo(MCH_Heatblast)]
     [CustomComboInfo("Gauss Round / Ricochet \nDouble Check / Checkmate Option",
-        "Switches between Heat Blast and either Gauss Round and Ricochet or Double Check and Checkmate, depending on cooldown timers.",
-        MCH.JobID)]
+        "Switches between Heat Blast and either Gauss Round and Ricochet or Double Check and Checkmate, depending on cooldown timers.", MCH.JobID)]
     MCH_Heatblast_GaussRound = 8016,
+
+    #endregion
+
+    #region AutoCrossbow
 
     [ReplaceSkill(MCH.AutoCrossbow)]
     [CustomComboInfo("Single Button Auto Crossbow Feature",
@@ -2745,21 +2789,28 @@ public enum CustomComboPreset
 
     [ParentCombo(MCH_AutoCrossbow)]
     [CustomComboInfo("Gauss Round / Ricochet\n Double Check / Checkmate Option",
-        "Switches between Auto Crossbow and either Gauss Round and Ricochet or Double Check and Checkmate, depending on cooldown timers.",
-        MCH.JobID)]
+        "Switches between Auto Crossbow and either Gauss Round and Ricochet or Double Check and Checkmate, depending on cooldown timers.", MCH.JobID)]
     MCH_AutoCrossbow_GaussRound = 8020,
 
-    [ReplaceSkill(MCH.Dismantle)]
-    [CustomComboInfo("Physical Ranged DPS: Double Dismantle Protection",
-        "Prevents the use of Dismantle when target already has the effect.", MCH.JobID)]
-    All_PRanged_Dismantle = 8042,
+    #endregion
 
-    [ReplaceSkill(MCH.Dismantle)]
-    [CustomComboInfo("Dismantle - Tactician", "Swap dismantle with tactician when dismantle is on cooldown.",
-        MCH.JobID)]
-    MCH_DismantleTactician = 8058,
+    [ReplaceSkill(MCH.RookAutoturret, MCH.AutomatonQueen)]
+    [CustomComboInfo("Overdrive Feature", "Replace Rook Autoturret and Automaton Queen with Overdrive while active.", MCH.JobID)]
+    MCH_Overdrive = 8002,
 
-    // Last value = 8058
+    [ReplaceSkill(MCH.Drill, MCH.AirAnchor, MCH.HotShot, MCH.Chainsaw)]
+    [CustomComboInfo("Big Hitter Feature",
+        "Replace Hot Shot, Drill, Air Anchor, Chainsaw and Excavator depending on which is on cooldown.", MCH.JobID)]
+    MCH_HotShotDrillChainsawExcavator = 8004,
+
+    [ReplaceSkill(MCH.GaussRound, MCH.Ricochet, MCH.CheckMate, MCH.DoubleCheck)]
+    [CustomComboInfo("Gauss Round / Ricochet \nDouble Check / Checkmate Feature",
+        "Replace Gauss Round and Ricochet or Double Check and Checkmate with one or the other depending on which has more charges.", MCH.JobID)]
+    MCH_GaussRoundRicochet = 8003,
+
+    // Last value ST = 8116
+    // Last value AoE = 8313
+    // Last value Misc = 8058
 
     #endregion
 
@@ -2771,16 +2822,14 @@ public enum CustomComboPreset
     [ReplaceSkill(MNK.Bootshine, MNK.LeapingOpo)]
     [ConflictingCombos(MNK_ST_BeastChakras, MNK_ST_AdvancedMode)]
     [CustomComboInfo("Simple Mode - Single Target",
-        "Replaces Bootshine with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.",
-        MNK.JobID)]
+        "Replaces Bootshine with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.", MNK.JobID)]
     MNK_ST_SimpleMode = 9004,
 
     [AutoAction(true, false)]
     [ReplaceSkill(MNK.ArmOfTheDestroyer, MNK.ShadowOfTheDestroyer)]
     [ConflictingCombos(MNK_AOE_AdvancedMode)]
     [CustomComboInfo("Simple Mode - AoE",
-        "Replaces Arms of the Destroyer with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.",
-        MNK.JobID)]
+        "Replaces Arms of the Destroyer with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.", MNK.JobID)]
     MNK_AOE_SimpleMode = 9003,
 
     #endregion
@@ -2791,54 +2840,56 @@ public enum CustomComboPreset
     [ReplaceSkill(MNK.Bootshine, MNK.LeapingOpo)]
     [ConflictingCombos(MNK_ST_BeastChakras, MNK_ST_SimpleMode)]
     [CustomComboInfo("Advanced Mode - Single Target",
-        "Replaces Bootshine with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.",
-        MNK.JobID)]
+        "Replaces Bootshine with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.", MNK.JobID)]
     MNK_ST_AdvancedMode = 9005,
-
-    [ParentCombo(MNK_ST_AdvancedMode)] [CustomComboInfo("Opener Option", "Uses selected opener", MNK.JobID)]
-    MNK_STUseOpener = 9006,
 
     [ParentCombo(MNK_ST_AdvancedMode)]
     [CustomComboInfo("Meditation Option", "Adds Meditation to the rotation", MNK.JobID)]
     MNK_STUseMeditation = 9007,
 
     [ParentCombo(MNK_ST_AdvancedMode)]
+    [CustomComboInfo("The Forbidden Chakra Option", "Adds The Forbidden Chakra to the rotation", MNK.JobID)]
+    MNK_STUseTheForbiddenChakra = 9012,
+
+    [ParentCombo(MNK_ST_AdvancedMode)]
+    [CustomComboInfo("Form Shift Option", "Adds Form Shift to the rotation", MNK.JobID)]
+    MNK_STUseFormShift = 9017,
+
+    [ParentCombo(MNK_ST_AdvancedMode)]
+    [CustomComboInfo("Opener Option", "Uses selected opener", MNK.JobID)]
+    MNK_STUseOpener = 9006,
+
+    [ParentCombo(MNK_ST_AdvancedMode)]
     [CustomComboInfo("Buffs Option", "Adds selected buffs to the rotation", MNK.JobID)]
     MNK_STUseBuffs = 9008,
 
-    [ParentCombo(MNK_STUseBuffs)] [CustomComboInfo("Brotherhood Option", "Adds Brotherhood to the rotation", MNK.JobID)]
-    MNK_STUseBrotherhood = 9009,
-
     [ParentCombo(MNK_STUseBuffs)]
-    [CustomComboInfo("Riddle of Wind Option", "Adds Riddle of Wind to the rotation", MNK.JobID)]
-    MNK_STUseROW = 9010,
+    [CustomComboInfo("Brotherhood Option", "Adds Brotherhood to the rotation", MNK.JobID)]
+    MNK_STUseBrotherhood = 9009,
 
     [ParentCombo(MNK_STUseBuffs)]
     [CustomComboInfo("Riddle of Fire Option", "Adds Riddle of Fire to the rotation", MNK.JobID)]
     MNK_STUseROF = 9011,
 
-    [ParentCombo(MNK_ST_AdvancedMode)]
-    [CustomComboInfo("The Forbidden Chakra Option", "Adds The Forbidden Chakra to the rotation", MNK.JobID)]
-    MNK_STUseTheForbiddenChakra = 9012,
+    [ParentCombo(MNK_STUseROF)]
+    [CustomComboInfo("Fire's Reply Option", "Adds Fire's Reply to the rotation", MNK.JobID)]
+    MNK_STUseFiresReply = 9016,
+
+    [ParentCombo(MNK_STUseBuffs)]
+    [CustomComboInfo("Riddle of Wind Option", "Adds Riddle of Wind to the rotation", MNK.JobID)]
+    MNK_STUseROW = 9010,
+
+    [ParentCombo(MNK_STUseROW)]
+    [CustomComboInfo("Wind's Reply Option", "Adds Wind's Reply to the rotation", MNK.JobID)]
+    MNK_STUseWindsReply = 9015,
 
     [ParentCombo(MNK_ST_AdvancedMode)]
     [CustomComboInfo("Perfect Balance Option", "Adds Perfect Balance and Masterful Blitz to the rotation", MNK.JobID)]
     MNK_STUsePerfectBalance = 9013,
 
     [ParentCombo(MNK_ST_AdvancedMode)]
-    [CustomComboInfo("True North Option", "Adds True North dynamically, when not in positional, to the rotation",
-        MNK.JobID)]
+    [CustomComboInfo("True North Option", "Adds True North dynamically, when not in positional, to the rotation", MNK.JobID)]
     MNK_STUseTrueNorth = 9014,
-
-    [ParentCombo(MNK_STUseROW)] [CustomComboInfo("Wind's Reply Option", "Adds Wind's Reply to the rotation", MNK.JobID)]
-    MNK_STUseWindsReply = 9015,
-
-    [ParentCombo(MNK_STUseROF)] [CustomComboInfo("Fire's Reply Option", "Adds Fire's Reply to the rotation", MNK.JobID)]
-    MNK_STUseFiresReply = 9016,
-
-    [ParentCombo(MNK_ST_AdvancedMode)]
-    [CustomComboInfo("Form Shift Option", "Adds Form Shift to the rotation", MNK.JobID)]
-    MNK_STUseFormShift = 9017,
 
     [ParentCombo(MNK_ST_AdvancedMode)]
     [CustomComboInfo("Combo Heals Option", "Adds Bloodbath and Second Wind to the rotation.", MNK.JobID)]
@@ -2852,13 +2903,20 @@ public enum CustomComboPreset
     [ReplaceSkill(MNK.ArmOfTheDestroyer, MNK.ShadowOfTheDestroyer)]
     [ConflictingCombos(MNK_AOE_SimpleMode)]
     [CustomComboInfo("Advanced Mode - AoE",
-        "Replaces Arms of the Destroyer with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.",
-        MNK.JobID)]
+        "Replaces Arms of the Destroyer with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.", MNK.JobID)]
     MNK_AOE_AdvancedMode = 9027,
 
     [ParentCombo(MNK_AOE_AdvancedMode)]
     [CustomComboInfo("Meditation Option", "Adds Meditation to the rotation", MNK.JobID)]
     MNK_AoEUseMeditation = 9028,
+
+    [ParentCombo(MNK_AOE_AdvancedMode)]
+    [CustomComboInfo("Howling Fist Option", "Adds Howling Fist to the rotation", MNK.JobID)]
+    MNK_AoEUseHowlingFist = 9033,
+
+    [ParentCombo(MNK_AOE_AdvancedMode)]
+    [CustomComboInfo("Form Shift Option", "Adds Form Shift to the rotation", MNK.JobID)]
+    MNK_AoEUseFormShift = 9038,
 
     [ParentCombo(MNK_AOE_AdvancedMode)]
     [CustomComboInfo("Buffs Option", "Adds selected buffs to the rotation", MNK.JobID)]
@@ -2869,28 +2927,24 @@ public enum CustomComboPreset
     MNK_AoEUseBrotherhood = 9030,
 
     [ParentCombo(MNK_AoEUseBuffs)]
-    [CustomComboInfo("Riddle of Wind Option", "Adds Riddle of Wind to the rotation", MNK.JobID)]
-    MNK_AoEUseROW = 9031,
-
-    [ParentCombo(MNK_AoEUseBuffs)]
     [CustomComboInfo("Riddle of Fire Option", "Adds Riddle of Fire to the rotation", MNK.JobID)]
     MNK_AoEUseROF = 9032,
 
-    [ParentCombo(MNK_AOE_AdvancedMode)]
-    [CustomComboInfo("Howling Fist Option", "Adds Howling Fist to the rotation", MNK.JobID)]
-    MNK_AoEUseHowlingFist = 9033,
+    [ParentCombo(MNK_AoEUseROF)]
+    [CustomComboInfo("Fire's Reply Option", "Adds Fire's Reply to the rotation", MNK.JobID)]
+    MNK_AoEUseFiresReply = 9036,
 
-    [ParentCombo(MNK_AOE_AdvancedMode)]
-    [CustomComboInfo("Perfect Balance Option", "Adds Perfect Balance and Masterful Blitz to the rotation", MNK.JobID)]
-    MNK_AoEUsePerfectBalance = 9034,
+    [ParentCombo(MNK_AoEUseBuffs)]
+    [CustomComboInfo("Riddle of Wind Option", "Adds Riddle of Wind to the rotation", MNK.JobID)]
+    MNK_AoEUseROW = 9031,
 
     [ParentCombo(MNK_AoEUseROW)]
     [CustomComboInfo("Wind's Reply Option", "Adds Wind's Reply to the rotation", MNK.JobID)]
     MNK_AoEUseWindsReply = 9035,
 
-    [ParentCombo(MNK_AoEUseROF)]
-    [CustomComboInfo("Fire's Reply Option", "Adds Fire's Reply to the rotation", MNK.JobID)]
-    MNK_AoEUseFiresReply = 9036,
+    [ParentCombo(MNK_AOE_AdvancedMode)]
+    [CustomComboInfo("Perfect Balance Option", "Adds Perfect Balance and Masterful Blitz to the rotation", MNK.JobID)]
+    MNK_AoEUsePerfectBalance = 9034,
 
     [ParentCombo(MNK_AOE_AdvancedMode)]
     [CustomComboInfo("Combo Heals Option", "Adds Bloodbath and Second Wind to the rotation.", MNK.JobID)]
@@ -2921,16 +2975,6 @@ public enum CustomComboPreset
 
     #endregion
 
-    [ReplaceSkill(MNK.PerfectBalance)]
-    [CustomComboInfo("Perfect Balance Feature",
-        "Perfect Balance becomes Masterful Blitz while you have 3 Beast Chakra.", MNK.JobID)]
-    MNK_PerfectBalance = 9023,
-
-    [ReplaceSkill(MNK.RiddleOfFire)]
-    [CustomComboInfo("Riddle of Fire/Brotherhood Feature",
-        "Replaces Riddle of Fire with Brotherhood when Riddle of Fire is on cooldown.", MNK.JobID)]
-    MNK_Riddle_Brotherhood = 9024,
-
     #region Variant
 
     [Variant]
@@ -2945,8 +2989,17 @@ public enum CustomComboPreset
 
     #endregion
 
-    // last value = 9037
-    // End Monk
+    [ReplaceSkill(MNK.PerfectBalance)]
+    [CustomComboInfo("Perfect Balance Feature",
+        "Perfect Balance becomes Masterful Blitz while you have 3 Beast Chakra.", MNK.JobID)]
+    MNK_PerfectBalance = 9023,
+
+    [ReplaceSkill(MNK.RiddleOfFire)]
+    [CustomComboInfo("Riddle of Fire/Brotherhood Feature",
+        "Replaces Riddle of Fire with Brotherhood when Riddle of Fire is on cooldown.", MNK.JobID)]
+    MNK_Riddle_Brotherhood = 9024,
+
+    // Last value = 9037
 
     #endregion
 
@@ -2961,12 +3014,6 @@ public enum CustomComboPreset
         "Replaces Spinning Edge with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.",
         NIN.JobID)]
     NIN_ST_SimpleMode = 10000,
-
-    [ParentCombo(NIN_ST_SimpleMode)]
-    [CustomComboInfo("Balance Opener Option",
-        "Starts with the Balance opener.\nRequires level 100, with the following requirements:\n- 2 mudra charges ready\n- Dokumori off cooldown.\n- Kunai's Bane off cooldown.\n- TenChiJin off cooldown.\n- Phantom Kamaitachi off cooldown.\n- Bunshin off cooldown.\n- Dream Within a Dream off cooldown.\n- Kassatsu off cooldown.",
-        NIN.JobID)]
-    NIN_ST_SimpleMode_BalanceOpener = 10001,
 
     [AutoAction(true, false)]
     [ReplaceSkill(NIN.DeathBlossom)]
@@ -2985,6 +3032,12 @@ public enum CustomComboPreset
         "Replaces Spinning Edge with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.",
         NIN.JobID)]
     NIN_ST_AdvancedMode = 10003,
+
+    [ParentCombo(NIN_ST_AdvancedMode)]
+    [CustomComboInfo("Balance Opener (Level 100)",
+        "Adds the Balance opener at level 100.\nRequirements:\n- 2 mudra charges ready\n- Dokumori off cooldown.\n- Kunai's Bane off cooldown.\n- TenChiJin off cooldown.\n- Phantom Kamaitachi off cooldown.\n- Bunshin off cooldown.\n- Dream Within a Dream off cooldown.\n- Kassatsu off cooldown.",
+        NIN.JobID)]
+    NIN_ST_AdvancedMode_BalanceOpener = 10029,
 
     [ParentCombo(NIN_ST_AdvancedMode)]
     [CustomComboInfo("Throwing Dagger Uptime Option", "Adds Throwing Dagger to Advanced Mode if out of melee range.",
@@ -3063,8 +3116,6 @@ public enum CustomComboPreset
 
     [ParentCombo(NIN_ST_AdvancedMode)]
     [CustomComboInfo("Bhavacakra Option", "Adds Bhavacakra to Advanced Mode.", NIN.JobID)]
-
-    //Has Config
     NIN_ST_AdvancedMode_Bhavacakra = 10022,
 
     [ParentCombo(NIN_ST_AdvancedMode)]
@@ -3075,10 +3126,12 @@ public enum CustomComboPreset
     [CustomComboInfo("Tenri Jindo Option", "Adds Tenri Jindo to Advanced Mode.", NIN.JobID)]
     NIN_ST_AdvancedMode_TenriJindo = 10071,
 
-    [ParentCombo(NIN_ST_AdvancedMode)] [CustomComboInfo("Meisui Option", "Adds Meisui to Advanced Mode.", NIN.JobID)]
+    [ParentCombo(NIN_ST_AdvancedMode)]
+    [CustomComboInfo("Meisui Option", "Adds Meisui to Advanced Mode.", NIN.JobID)]
     NIN_ST_AdvancedMode_Meisui = 10024,
 
-    [ParentCombo(NIN_ST_AdvancedMode)] [CustomComboInfo("Bunshin Option", "Adds Bunshin to Advanced Mode.", NIN.JobID)]
+    [ParentCombo(NIN_ST_AdvancedMode)]
+    [CustomComboInfo("Bunshin Option", "Adds Bunshin to Advanced Mode.", NIN.JobID)]
     NIN_ST_AdvancedMode_Bunshin = 10025,
 
     [ParentCombo(NIN_ST_AdvancedMode_Bunshin)]
@@ -3092,12 +3145,6 @@ public enum CustomComboPreset
     [ParentCombo(NIN_ST_AdvancedMode_Raiju)]
     [CustomComboInfo("Forked Raiju Gap-Closer Option", "Uses Forked Raiju when out of range.", NIN.JobID)]
     NIN_ST_AdvancedMode_Raiju_Forked = 10028,
-
-    [ParentCombo(NIN_ST_AdvancedMode)]
-    [CustomComboInfo("Balance Opener Option",
-        "Starts with the Balance opener.\nRequires level 100, with the following requirements:\n- 2 mudra charges ready\n- Dokumori off cooldown.\n- Kunai's Bane off cooldown.\n- TenChiJin off cooldown.\n- Phantom Kamaitachi off cooldown.\n- Bunshin off cooldown.\n- Dream Within a Dream off cooldown.\n- Kassatsu off cooldown.",
-        NIN.JobID)]
-    NIN_ST_AdvancedMode_BalanceOpener = 10029,
 
     [ParentCombo(NIN_ST_AdvancedMode)]
     [CustomComboInfo("True North Option", "Adds True North to Advanced Mode.", NIN.JobID)]
@@ -3179,10 +3226,12 @@ public enum CustomComboPreset
     [CustomComboInfo("Tenri Jindo Option", "Adds Tenri Jindo to Advanced Mode.", NIN.JobID)]
     NIN_AoE_AdvancedMode_TenriJindo = 10072,
 
-    [ParentCombo(NIN_AoE_AdvancedMode)] [CustomComboInfo("Meisui Option", "Adds Meisui to Advanced Mode.", NIN.JobID)]
+    [ParentCombo(NIN_AoE_AdvancedMode)]
+    [CustomComboInfo("Meisui Option", "Adds Meisui to Advanced Mode.", NIN.JobID)]
     NIN_AoE_AdvancedMode_Meisui = 10047,
 
-    [ParentCombo(NIN_AoE_AdvancedMode)] [CustomComboInfo("Bunshin Option", "Adds Bunshin to Advanced Mode.", NIN.JobID)]
+    [ParentCombo(NIN_AoE_AdvancedMode)]
+    [CustomComboInfo("Bunshin Option", "Adds Bunshin to Advanced Mode.", NIN.JobID)]
     NIN_AoE_AdvancedMode_Bunshin = 10048,
 
     [ParentCombo(NIN_AoE_AdvancedMode_Bunshin)]
@@ -3302,33 +3351,10 @@ public enum CustomComboPreset
     PCT_ST_AdvancedMode = 20005,
 
     [ParentCombo(PCT_ST_AdvancedMode)]
-    [ConflictingCombos(PCT_ST_SimpleMode)]
-    [CustomComboInfo("Balance Opener Option",
-        "Uses the Balance Opener depending on your current level. \n Supports lvl 70, 80, 90, 92, 100. \n - Requirements: \n - Starry Muse off cooldown \n - Pom. Weapon, Landscape Motif",
+    [CustomComboInfo("Balance Opener (Level 100)",
+        "Adds the Balance opener at level 100.",
         PCT.JobID)]
     PCT_ST_Advanced_Openers = 20006,
-
-    [ParentCombo(PCT_ST_Advanced_Openers)]
-    [ConflictingCombos(PCT_ST_Advanced_Openers_2, PCT_ST_Advanced_Openers_3, PCT_ST_SimpleMode)]
-    [CustomComboInfo("3rd GCD Opener", "Uses 3rd GCD lvl 100 Balance Opener.", PCT.JobID)]
-    PCT_ST_Advanced_Openers_1 = 20036,
-
-    [ParentCombo(PCT_ST_Advanced_Openers)]
-    [ConflictingCombos(PCT_ST_Advanced_Openers_1, PCT_ST_Advanced_Openers_3, PCT_ST_SimpleMode)]
-    [CustomComboInfo("2nd GCD Opener", "Uses 2nd GCD lvl 100 Balance Opener.", PCT.JobID)]
-    PCT_ST_Advanced_Openers_2 = 20037,
-
-    [ParentCombo(PCT_ST_Advanced_Openers)]
-    [ConflictingCombos(PCT_ST_Advanced_Openers_1, PCT_ST_Advanced_Openers_2, PCT_ST_SimpleMode)]
-    [CustomComboInfo("2nd GCD + Swiftcast Opener",
-        "Uses 2nd GCD lvl 100 Balance Opener with added swiftcast for Wing Motif.", PCT.JobID)]
-    PCT_ST_Advanced_Openers_3 = 20038,
-
-    [ParentCombo(PCT_ST_Advanced_Openers)]
-    [ConflictingCombos(PCT_ST_SimpleMode)]
-    [CustomComboInfo("Early Balance Opener Option",
-        "Uses Balance Opener. This setting only applies to when below lvl 100", PCT.JobID)]
-    PCT_ST_Advanced_Openers_EarlyOpener = 20007,
 
     [ParentCombo(PCT_ST_AdvancedMode)]
     [CustomComboInfo("Prepull Motifs Feature", "Adds missing Motifs to the combo while out of combat.", PCT.JobID)]
@@ -3391,7 +3417,8 @@ public enum CustomComboPreset
     [CustomComboInfo("Living Muse Option", "Adds Living Muse.", PCT.JobID)]
     PCT_ST_AdvancedMode_LivingMuse = 20022,
 
-    [ParentCombo(PCT_ST_AdvancedMode_MuseFeature)] [CustomComboInfo("Steel Muse Option", "Adds Steel Muse.", PCT.JobID)]
+    [ParentCombo(PCT_ST_AdvancedMode_MuseFeature)]
+    [CustomComboInfo("Steel Muse Option", "Adds Steel Muse.", PCT.JobID)]
     PCT_ST_AdvancedMode_SteelMuse = 20023,
 
     [ParentCombo(PCT_ST_AdvancedMode)]
@@ -3635,6 +3662,10 @@ public enum CustomComboPreset
     PLD_ST_AdvancedMode = 11002,
 
     [ParentCombo(PLD_ST_AdvancedMode)]
+    [CustomComboInfo("Balance Opener (Level 100)", "Adds the Balance opener at level 100.", PLD.JobID)]
+    PLD_ST_AdvancedMode_BalanceOpener = 11046,
+
+    [ParentCombo(PLD_ST_AdvancedMode)]
     [CustomComboInfo("Fight or Flight Option",
         "Adds Fight or Flight to Advanced Mode.\n- Uses after Royal Authority during opener.\n- Afterward, on cooldown alongside Requiescat.\n- Target HP must be at or above:",
         PLD.JobID)]
@@ -3858,7 +3889,7 @@ public enum CustomComboPreset
         PLD.JobID)]
     PLD_Variant_Ultimatum = 11032,
 
-    //// Last value = 11037
+    //// Last value = 11046
 
     #endregion
 
@@ -3870,16 +3901,14 @@ public enum CustomComboPreset
     [ReplaceSkill(RPR.Slice)]
     [ConflictingCombos(RPR_ST_AdvancedMode)]
     [CustomComboInfo("Simple Mode - Single Target",
-        "Replaces Slice with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.",
-        RPR.JobID)]
+        "Replaces Slice with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.", RPR.JobID)]
     RPR_ST_SimpleMode = 12000,
 
     [AutoAction(true, false)]
     [ReplaceSkill(RPR.SpinningScythe)]
     [ConflictingCombos(RPR_AoE_AdvancedMode)]
     [CustomComboInfo("Simple Mode - AoE",
-        "Replaces Spinning Scythe with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.",
-        RPR.JobID)]
+        "Replaces Spinning Scythe with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.", RPR.JobID)]
     RPR_AoE_SimpleMode = 12100,
 
     #endregion
@@ -3890,15 +3919,21 @@ public enum CustomComboPreset
     [ReplaceSkill(RPR.Slice)]
     [ConflictingCombos(RPR_ST_SimpleMode)]
     [CustomComboInfo("Advanced Mode - Single Target",
-        "Replaces Slice with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.",
-        RPR.JobID)]
+        "Replaces Slice with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.", RPR.JobID)]
     RPR_ST_AdvancedMode = 12001,
 
     [ParentCombo(RPR_ST_AdvancedMode)]
-    [CustomComboInfo("Level 100 Opener",
-        "Adds the Balance opener to the rotation.\n Does not check positional choice.\n Always does Gibbet first ( FLANK )",
-        RPR.JobID)]
+    [CustomComboInfo("Balance Opener (Level 100)",
+        "Adds the Balance opener at level 100.\n Does not check positional choice.\n Always does Gibbet first (FLANK)", RPR.JobID)]
     RPR_ST_Opener = 12002,
+
+    [ParentCombo(RPR_ST_AdvancedMode)]
+    [CustomComboInfo("Arcane Circle Option", "Adds Arcane Circle to the rotation.", RPR.JobID)]
+    RPR_ST_ArcaneCircle = 12006,
+
+    [ParentCombo(RPR_ST_AdvancedMode)]
+    [CustomComboInfo("Plentiful Harvest Option", "Adds Plentiful Harvest to the rotation.", RPR.JobID)]
+    RPR_ST_PlentifulHarvest = 12007,
 
     [ParentCombo(RPR_ST_AdvancedMode)]
     [CustomComboInfo("Shadow Of Death Option", "Adds Shadow of Death to the rotation.", RPR.JobID)]
@@ -3908,35 +3943,25 @@ public enum CustomComboPreset
     [CustomComboInfo("Soul Slice Option", "Adds Soul Slice to the rotation.", RPR.JobID)]
     RPR_ST_SoulSlice = 12004,
 
-    #region Cooldowns ST
-
     [ParentCombo(RPR_ST_AdvancedMode)]
-    [CustomComboInfo("Cooldowns Option", "Adds various cooldowns to the rotation.", RPR.JobID)]
-    RPR_ST_CDs = 12005,
-
-    [ParentCombo(RPR_ST_CDs)]
-    [CustomComboInfo("Arcane Circle Option", "Adds Arcane Circle to the rotation.", RPR.JobID)]
-    RPR_ST_ArcaneCircle = 12006,
-
-    [ParentCombo(RPR_ST_CDs)]
-    [CustomComboInfo("Plentiful Harvest Option", "Adds Plentiful Harvest to the rotation.", RPR.JobID)]
-    RPR_ST_PlentifulHarvest = 12007,
-
-    [ParentCombo(RPR_ST_CDs)] [CustomComboInfo("Bloodstalk Option", "Adds Bloodstalk to the rotation.", RPR.JobID)]
+    [CustomComboInfo("Bloodstalk Option", "Adds Bloodstalk to the rotation.", RPR.JobID)]
     RPR_ST_Bloodstalk = 12008,
 
-    [ParentCombo(RPR_ST_CDs)] [CustomComboInfo("Gluttony Option", "Adds Gluttony to the rotation.", RPR.JobID)]
+    [ParentCombo(RPR_ST_AdvancedMode)]
+    [CustomComboInfo("Gluttony Option", "Adds Gluttony to the rotation.", RPR.JobID)]
     RPR_ST_Gluttony = 12009,
 
-    #endregion
+    [ParentCombo(RPR_ST_AdvancedMode)]
+    [CustomComboInfo("Gibbet and Gallows Option", "Adds Gibbet and Gallows to the rotation.", RPR.JobID)]
+    RPR_ST_GibbetGallows = 12016,
 
-    [ParentCombo(RPR_ST_AdvancedMode)] [CustomComboInfo("Enshroud Option", "Adds Enshroud to the rotation.", RPR.JobID)]
+    [ParentCombo(RPR_ST_AdvancedMode)]
+    [CustomComboInfo("Enshroud Option", "Adds Enshroud to the rotation.", RPR.JobID)]
     RPR_ST_Enshroud = 12010,
 
     [ParentCombo(RPR_ST_AdvancedMode)]
     [CustomComboInfo("Void/Cross Reaping Option",
-        "Adds Void Reaping and Cross Reaping to the rotation.\n(Disabling this may stop the one-button combo working during enshroud)",
-        RPR.JobID)]
+        "Adds Void Reaping and Cross Reaping to the rotation.\n(Disabling this may stop the one-button combo working during enshroud)", RPR.JobID)]
     RPR_ST_Reaping = 12011,
 
     [ParentCombo(RPR_ST_AdvancedMode)]
@@ -3944,20 +3969,26 @@ public enum CustomComboPreset
     RPR_ST_Lemure = 12012,
 
     [ParentCombo(RPR_ST_AdvancedMode)]
-    [CustomComboInfo("Sacrificium Option", "Adds Sacrificium to the rotation.", RPR.JobID)]
-    RPR_ST_Sacrificium = 12013,
-
-    [ParentCombo(RPR_ST_AdvancedMode)]
     [CustomComboInfo("Communio Finisher Option", "Adds Communio to the rotation.", RPR.JobID)]
     RPR_ST_Communio = 12014,
+
+    [ParentCombo(RPR_ST_AdvancedMode)]
+    [CustomComboInfo("Sacrificium Option", "Adds Sacrificium to the rotation.", RPR.JobID)]
+    RPR_ST_Sacrificium = 12013,
 
     [ParentCombo(RPR_ST_AdvancedMode)]
     [CustomComboInfo("Perfectio Option", "Adds Perfectio to the rotation.", RPR.JobID)]
     RPR_ST_Perfectio = 12015,
 
     [ParentCombo(RPR_ST_AdvancedMode)]
-    [CustomComboInfo("Gibbet and Gallows Option", "Adds Gibbet and Gallows to the rotation.", RPR.JobID)]
-    RPR_ST_GibbetGallows = 12016,
+    [CustomComboInfo("Dynamic True North Feature",
+        "Adds True North before Gibbet/Gallows when you are not in the correct position.", RPR.JobID)]
+    RPR_ST_TrueNorthDynamic = 12098,
+
+    [ParentCombo(RPR_ST_TrueNorthDynamic)]
+    [CustomComboInfo("Hold True North for Gluttony Option",
+        "Will hold the last charge of True North for use with Gluttony, even when out of position for Gibbet/Gallows.", RPR.JobID)]
+    RPR_ST_TrueNorthDynamic_HoldCharge = 12099,
 
     [ParentCombo(RPR_ST_AdvancedMode)]
     [CustomComboInfo("Ranged Filler Option",
@@ -3974,17 +4005,6 @@ public enum CustomComboPreset
         "Adds Bloodbath and Second Wind to the combo, using them when below the HP Percentage threshold.", RPR.JobID)]
     RPR_ST_ComboHeals = 12097,
 
-    [ParentCombo(RPR_ST_AdvancedMode)]
-    [CustomComboInfo("Dynamic True North Feature",
-        "Adds True North before Gibbet/Gallows when you are not in the correct position.", RPR.JobID)]
-    RPR_ST_TrueNorthDynamic = 12098,
-
-    [ParentCombo(RPR_ST_TrueNorthDynamic)]
-    [CustomComboInfo("Hold True North for Gluttony Option",
-        "Will hold the last charge of True North for use with Gluttony, even when out of position for Gibbet/Gallows.",
-        RPR.JobID)]
-    RPR_ST_TrueNorthDynamic_HoldCharge = 12099,
-
     //last value = 12019
 
     #endregion
@@ -3995,9 +4015,16 @@ public enum CustomComboPreset
     [ReplaceSkill(RPR.SpinningScythe)]
     [ConflictingCombos(RPR_AoE_SimpleMode)]
     [CustomComboInfo("Advanced Mode - AoE",
-        "Replaces Spinning Scythe with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.",
-        RPR.JobID)]
+        "Replaces Spinning Scythe with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.", RPR.JobID)]
     RPR_AoE_AdvancedMode = 12101,
+
+    [ParentCombo(RPR_AoE_AdvancedMode)]
+    [CustomComboInfo("Arcane Circle Option", "Adds Arcane Circle to the rotation.", RPR.JobID)]
+    RPR_AoE_ArcaneCircle = 12105,
+
+    [ParentCombo(RPR_AoE_AdvancedMode)]
+    [CustomComboInfo("Plentiful Harvest Option", "Adds Plentiful Harvest to the rotation.", RPR.JobID)]
+    RPR_AoE_PlentifulHarvest = 12106,
 
     [ParentCombo(RPR_AoE_AdvancedMode)]
     [CustomComboInfo("Whorl Of Death Option", "Adds Whorl of Death to the rotation.", RPR.JobID)]
@@ -4007,29 +4034,17 @@ public enum CustomComboPreset
     [CustomComboInfo("Soul Scythe Option", "Adds Soul Scythe to the rotation.", RPR.JobID)]
     RPR_AoE_SoulScythe = 12103,
 
-    #region Cooldowns
-
     [ParentCombo(RPR_AoE_AdvancedMode)]
-    [CustomComboInfo("Cooldowns Option", "Adds various cooldowns to the rotation.", RPR.JobID)]
-    RPR_AoE_CDs = 12104,
-
-    [ParentCombo(RPR_AoE_CDs)]
-    [CustomComboInfo("Arcane Circle Option", "Adds Arcane Circle to the rotation.", RPR.JobID)]
-    RPR_AoE_ArcaneCircle = 12105,
-
-    [ParentCombo(RPR_AoE_CDs)]
-    [CustomComboInfo("Plentiful Harvest Option", "Adds Plentiful Harvest to the rotation.", RPR.JobID)]
-    RPR_AoE_PlentifulHarvest = 12106,
-
-    [ParentCombo(RPR_AoE_CDs)] 
     [CustomComboInfo("Grim Swathe Option", "Adds Grim Swathe to the rotation.", RPR.JobID)]
     RPR_AoE_GrimSwathe = 12107,
 
-    [ParentCombo(RPR_AoE_CDs)] 
+    [ParentCombo(RPR_AoE_AdvancedMode)]
     [CustomComboInfo("Gluttony Option", "Adds Gluttony to the rotation.", RPR.JobID)]
     RPR_AoE_Gluttony = 12108,
 
-    #endregion
+    [ParentCombo(RPR_AoE_AdvancedMode)]
+    [CustomComboInfo("Guillotine Option", "Adds Guillotine to the rotation.", RPR.JobID)]
+    RPR_AoE_Guillotine = 12115,
 
     [ParentCombo(RPR_AoE_AdvancedMode)]
     [CustomComboInfo("Enshroud Option", "Adds Enshroud to the rotation.", RPR.JobID)]
@@ -4037,8 +4052,7 @@ public enum CustomComboPreset
 
     [ParentCombo(RPR_AoE_AdvancedMode)]
     [CustomComboInfo("Grim Reaping Option",
-        "Adds Grim Reaping to the rotation.\n(Disabling this may stop the one-button combo working during enshroud)",
-        RPR.JobID)]
+        "Adds Grim Reaping to the rotation.\n(Disabling this may stop the one-button combo working during enshroud)", RPR.JobID)]
     RPR_AoE_Reaping = 12110,
 
     [ParentCombo(RPR_AoE_AdvancedMode)]
@@ -4046,20 +4060,16 @@ public enum CustomComboPreset
     RPR_AoE_Lemure = 12111,
 
     [ParentCombo(RPR_AoE_AdvancedMode)]
-    [CustomComboInfo("Sacrificium Option", "Adds Sacrificium to the rotation.", RPR.JobID)]
-    RPR_AoE_Sacrificium = 12112,
-
-    [ParentCombo(RPR_AoE_AdvancedMode)]
     [CustomComboInfo("Communio Finisher Option", "Adds Communio to the rotation.", RPR.JobID)]
     RPR_AoE_Communio = 12113,
 
     [ParentCombo(RPR_AoE_AdvancedMode)]
-    [CustomComboInfo("Perfectio Option", "Adds Perfectio to the rotation.", RPR.JobID)]
-    RPR_AoE_Perfectio = 12114,
+    [CustomComboInfo("Sacrificium Option", "Adds Sacrificium to the rotation.", RPR.JobID)]
+    RPR_AoE_Sacrificium = 12112,
 
     [ParentCombo(RPR_AoE_AdvancedMode)]
-    [CustomComboInfo("Guillotine Option", "Adds Guillotine to the rotation.", RPR.JobID)]
-    RPR_AoE_Guillotine = 12115,
+    [CustomComboInfo("Perfectio Option", "Adds Perfectio to the rotation.", RPR.JobID)]
+    RPR_AoE_Perfectio = 12114,
 
     [ParentCombo(RPR_AoE_AdvancedMode)]
     [CustomComboInfo("Combo Heals Option",
@@ -4079,14 +4089,12 @@ public enum CustomComboPreset
 
     [ParentCombo(RPR_GluttonyBloodSwathe)]
     [CustomComboInfo("Gibbet and Gallows/Guillotine on Blood Stalk/Grim Swathe Feature",
-        "Adds (Executioner's) Gibbet and Gallows on Blood Stalk.\nAdds (Executioner's) Guillotine on Grim Swathe.",
-        RPR.JobID)]
+        "Adds (Executioner's) Gibbet and Gallows on Blood Stalk.\nAdds (Executioner's) Guillotine on Grim Swathe.", RPR.JobID)]
     RPR_GluttonyBloodSwathe_BloodSwatheCombo = 12201,
 
     [ParentCombo(RPR_GluttonyBloodSwathe)]
     [CustomComboInfo("Enshroud Combo Option",
-        "Adds Enshroud combo (Void/Cross Reaping, Communio, Lemure's Slice, Sacrificium and Perfectio) on Blood Stalk and Grim Swathe.",
-        RPR.JobID)]
+        "Adds Enshroud combo (Void/Cross Reaping, Communio, Lemure's Slice, Sacrificium and Perfectio) on Blood Stalk and Grim Swathe.", RPR.JobID)]
     RPR_GluttonyBloodSwathe_Enshroud = 12202,
 
     [ParentCombo(RPR_GluttonyBloodSwathe)]
@@ -4098,65 +4106,16 @@ public enum CustomComboPreset
         "Adds only Sacrificium on Blood Stalk and Grim Swathe while enshrouded.", RPR.JobID)]
     RPR_GluttonyBloodSwathe_Sacrificium = 12203,
 
+    [ParentCombo(RPR_GluttonyBloodSwathe)]
+    [CustomComboInfo("True North Feature",
+        "Adds True North when under Gluttony and if Gibbet/Gallows options are selected to replace those skills.", RPR.JobID)]
+    RPR_TrueNorthGluttony = 12310,
+
     // Last value = 12204
 
     #endregion
 
-    #region Miscellaneous
-
-    [ReplaceSkill(RPR.ArcaneCircle)]
-    [CustomComboInfo("Arcane Circle Harvest Feature",
-        "Replaces Arcane Circle with Plentiful Harvest when you have stacks of Immortal Sacrifice.", RPR.JobID)]
-    RPR_ArcaneCirclePlentifulHarvest = 12300,
-
-    [ReplaceSkill(RPR.HellsEgress, RPR.HellsIngress)]
-    [CustomComboInfo("Regress Feature",
-        "Changes both Hell's Ingress and Hell's Egress turn into Regress when Threshold is active.", RPR.JobID)]
-    RPR_Regress = 12301,
-
-    [ReplaceSkill(RPR.Slice, RPR.SpinningScythe, RPR.ShadowOfDeath, RPR.Harpe, RPR.BloodStalk)]
-    [CustomComboInfo("Soulsow Reminder Feature",
-        "Adds Soulsow to the skills selected below when out of combat. \nWill also add Soulsow to Harpe when in combat and no target is selected.",
-        RPR.JobID)]
-    RPR_Soulsow = 12302,
-    
-    [ReplaceSkill(RPR.Enshroud)]
-    [CustomComboInfo("Enshroud Protection Feature", "Turns Enshroud into Gibbet/Gallows to protect Soul Reaver waste.",
-        RPR.JobID)]
-    RPR_EnshroudProtection = 12304,
-
-    [ReplaceSkill(RPR.Gibbet, RPR.Gallows, RPR.Guillotine)]
-    [CustomComboInfo("Communio on Gibbet/Gallows and Guillotine Feature",
-        "Adds Communio to Gibbet/Gallows and Guillotine.", RPR.JobID)]
-    RPR_CommunioOnGGG = 12305,
-
-    [ParentCombo(RPR_CommunioOnGGG)]
-    [CustomComboInfo("Lemure's Slice/Scythe Option",
-        "Adds Lemure's Slice to Gibbet/Gallows and Lemure's Scythe to Guillotine.", RPR.JobID)]
-    RPR_LemureOnGGG = 12306,
-
-    [ReplaceSkill(RPR.Enshroud)]
-    [CustomComboInfo("Enshroud to Communio to Perfectio Feature",
-        "Turns Enshroud to Communio and Perfectio when available to use.", RPR.JobID)]
-    RPR_EnshroudCommunio = 12307,
-
-    [ParentCombo(RPR_EnshroudProtection)]
-    [CustomComboInfo("True North Feature",
-        "Adds True North when under Gluttony and if Gibbet/Gallows options are selected to replace those skills.",
-        RPR.JobID)]
-    RPR_TrueNorthEnshroud = 12308,
-
-    [ReplaceSkill(RPR.Harpe)]
-    [ParentCombo(RPR_Soulsow)]
-    [CustomComboInfo("Soulsow Reminder during Combat",
-        "Adds Soulsow to Harpe during combat when no target is selected.", RPR.JobID)]
-    RPR_Soulsow_Combat = 12309,
-
-    [ParentCombo(RPR_GluttonyBloodSwathe)]
-    [CustomComboInfo("True North Feature",
-        "Adds True North when under Gluttony and if Gibbet/Gallows options are selected to replace those skills.",
-        RPR.JobID)]
-    RPR_TrueNorthGluttony = 12310,
+    #region Variant
 
     [Variant]
     [VariantParent(RPR_ST_AdvancedMode, RPR_AoE_AdvancedMode)]
@@ -4168,6 +4127,55 @@ public enum CustomComboPreset
     [CustomComboInfo("Rampart Option", "Use Variant Rampart on cooldown.", RPR.JobID)]
     RPR_Variant_Rampart = 12312,
 
+    #endregion
+
+    #region Miscellaneous
+
+    [ReplaceSkill(RPR.Slice, RPR.SpinningScythe, RPR.ShadowOfDeath, RPR.Harpe, RPR.BloodStalk)]
+    [CustomComboInfo("Soulsow Reminder Feature",
+        "Adds Soulsow to the skills selected below when out of combat. \nWill also add Soulsow to Harpe when in combat and no target is selected.", RPR.JobID)]
+    RPR_Soulsow = 12302,
+
+    [ParentCombo(RPR_Soulsow)]
+    [CustomComboInfo("Soulsow Reminder during Combat",
+        "Adds Soulsow to Harpe during combat when no target is selected.", RPR.JobID)]
+    RPR_Soulsow_Combat = 12309,
+
+    [ReplaceSkill(RPR.ArcaneCircle)]
+    [CustomComboInfo("Arcane Circle Harvest Feature",
+        "Replaces Arcane Circle with Plentiful Harvest when you have stacks of Immortal Sacrifice.", RPR.JobID)]
+    RPR_ArcaneCirclePlentifulHarvest = 12300,
+
+    [ReplaceSkill(RPR.HellsEgress, RPR.HellsIngress)]
+    [CustomComboInfo("Regress Feature",
+        "Changes both Hell's Ingress and Hell's Egress turn into Regress when Threshold is active.", RPR.JobID)]
+    RPR_Regress = 12301,
+
+    [ReplaceSkill(RPR.Enshroud)]
+    [ConflictingCombos(RPR_EnshroudCommunio)]
+    [CustomComboInfo("Enshroud Protection Feature", "Turns Enshroud into Gibbet/Gallows to protect Soul Reaver waste.", RPR.JobID)]
+    RPR_EnshroudProtection = 12304,
+
+    [ParentCombo(RPR_EnshroudProtection)]
+    [CustomComboInfo("True North Feature",
+        "Adds True North when under Gluttony and if Gibbet/Gallows options are selected to replace those skills.", RPR.JobID)]
+    RPR_TrueNorthEnshroud = 12308,
+
+    [ReplaceSkill(RPR.Enshroud)]
+    [ConflictingCombos(RPR_EnshroudProtection)]
+    [CustomComboInfo("Enshroud to Communio to Perfectio Feature",
+        "Turns Enshroud to Communio and Perfectio when available to use.", RPR.JobID)]
+    RPR_EnshroudCommunio = 12307,
+
+    [ReplaceSkill(RPR.Gibbet, RPR.Gallows, RPR.Guillotine)]
+    [CustomComboInfo("Communio on Gibbet/Gallows and Guillotine Feature", "Adds Communio to Gibbet/Gallows and Guillotine.", RPR.JobID)]
+    RPR_CommunioOnGGG = 12305,
+
+    [ParentCombo(RPR_CommunioOnGGG)]
+    [CustomComboInfo("Lemure's Slice/Scythe Option",
+        "Adds Lemure's Slice to Gibbet/Gallows and Lemure's Scythe to Guillotine.", RPR.JobID)]
+    RPR_LemureOnGGG = 12306,
+
     // Last value = 12312
 
     #endregion
@@ -4176,12 +4184,12 @@ public enum CustomComboPreset
 
     #region RED MAGE
 
-    /* RDM Feature Numbering
-    Numbering Scheme: 13[Section][Feature Number][Sub-Feature]
-    Example: 13110 (Section 1: Openers, Feature Number 1, Sub-feature 0)
-    New features should be added to the appropriate sections.
-    If more than 10 sub features, use the next feature number if available
-    The three digets after RDM.JobID can be used to reorder items in the list
+    /*
+     RDM Feature Numbering Scheme:
+     13[Section][Feature Number][Sub-Feature]
+     Example: 13110 (Section 1: Openers, Feature Number 1, Sub-feature 0)
+     New features should be added to the appropriate sections.
+     If more than 10 sub features, use the next feature number if available.
     */
 
     #region Simple Mode
@@ -4215,8 +4223,8 @@ public enum CustomComboPreset
     RDM_ST_DPS = 13000,
 
     [ParentCombo(RDM_ST_DPS)]
-    [CustomComboInfo("Balance Opener Option",
-        "Replaces Jolt with the Balance opener.\n**Must move into melee range before melee combo**", RDM.JobID)]
+    [CustomComboInfo("Balance Opener (Level 100)",
+        "Adds the Balance opener at level 100..\n**Must move into melee range before melee combo**", RDM.JobID)]
     RDM_Balance_Opener = 13110,
 
     [ParentCombo(RDM_ST_DPS)]
@@ -4268,9 +4276,9 @@ public enum CustomComboPreset
     [ParentCombo(RDM_ST_DPS)]
     [CustomComboInfo("Melee Finisher Option", "Add Verflare/Verholy and other finishing moves.", RDM.JobID)]
     RDM_ST_MeleeFinisher = 13510,
-    
+
     #endregion
-    
+
     [ParentCombo(RDM_ST_DPS)]
     [CustomComboInfo("Lucid Dreaming Option", "Weaves Lucid Dreaming when your MP drops below the specified value.",
         RDM.JobID)]
@@ -4286,7 +4294,7 @@ public enum CustomComboPreset
         "Adds the melee combo to the rotation." + "\nRiposte itself must be initiated manually when using this option.",
         RDM.JobID)]
     RDM_ST_Adv_MeleeFill = 13710,
-    
+
     #region AoE DPS
 
     [AutoAction(true, false)]
@@ -4396,13 +4404,14 @@ public enum CustomComboPreset
     [CustomComboInfo("Cure Option", "Use Variant Cure when HP is below set threshold. Replaces Jolts.", RDM.JobID)]
     RDM_Variant_Cure = 13832,
 
-    [Variant] [CustomComboInfo("Cure on Vercure Option", "Replaces Vercure with Variant Cure.", RDM.JobID)]
+    [Variant]
+    [CustomComboInfo("Cure on Vercure Option", "Replaces Vercure with Variant Cure.", RDM.JobID)]
     RDM_Variant_Cure2 = 13833,
 
     #endregion
 
     //Last Used 13838
-    
+
     #endregion
 
     #region SAGE
@@ -4414,7 +4423,8 @@ public enum CustomComboPreset
     [CustomComboInfo("Single Target DPS Feature", "Adds various options to Dosis I/II/III.", SGE.JobID)]
     SGE_ST_DPS = 14001,
 
-    [ParentCombo(SGE_ST_DPS)] [CustomComboInfo("Opener Option", "Use the Balance opener from level 92+.", SGE.JobID)]
+    [ParentCombo(SGE_ST_DPS)]
+    [CustomComboInfo("Balance Opener (Level 92)", "Use the Balance opener from level 92 onwards.", SGE.JobID)]
     SGE_ST_DPS_Opener = 14055,
 
     [ParentCombo(SGE_ST_DPS)]
@@ -4422,7 +4432,8 @@ public enum CustomComboPreset
         SGE.JobID)]
     SGE_ST_DPS_Lucid = 14002,
 
-    [ParentCombo(SGE_ST_DPS)] [CustomComboInfo("Eukrasian Dosis Option", "Automatic DoT Uptime.", SGE.JobID)]
+    [ParentCombo(SGE_ST_DPS)]
+    [CustomComboInfo("Eukrasian Dosis Option", "Automatic DoT Uptime.", SGE.JobID)]
     SGE_ST_DPS_EDosis = 14003,
 
     [ParentCombo(SGE_ST_DPS)]
@@ -4446,7 +4457,8 @@ public enum CustomComboPreset
     [CustomComboInfo("Soteria Option", "Weaves Soteria if you have the Kardia buff.", SGE.JobID)]
     SGE_ST_DPS_Soteria = 14056,
 
-    [ParentCombo(SGE_ST_DPS)] [CustomComboInfo("Psyche Option", "Weaves Psyche when available.", SGE.JobID)]
+    [ParentCombo(SGE_ST_DPS)]
+    [CustomComboInfo("Psyche Option", "Weaves Psyche when available.", SGE.JobID)]
     SGE_ST_DPS_Psyche = 14008,
 
     [ParentCombo(SGE_ST_DPS)]
@@ -4463,16 +4475,20 @@ public enum CustomComboPreset
     [CustomComboInfo("AoE DPS Feature", "Adds various options to Dyskrasia I & II. Requires a target.", SGE.JobID)]
     SGE_AoE_DPS = 14009,
 
-    [ParentCombo(SGE_AoE_DPS)] [CustomComboInfo("Phlegma Option", "Uses Phlegma if available.", SGE.JobID)]
+    [ParentCombo(SGE_AoE_DPS)]
+    [CustomComboInfo("Phlegma Option", "Uses Phlegma if available.", SGE.JobID)]
     SGE_AoE_DPS_Phlegma = 14010,
 
-    [ParentCombo(SGE_AoE_DPS)] [CustomComboInfo("Toxikon Option", "Use Toxikon if available.", SGE.JobID)]
+    [ParentCombo(SGE_AoE_DPS)]
+    [CustomComboInfo("Toxikon Option", "Use Toxikon if available.", SGE.JobID)]
     SGE_AoE_DPS_Toxikon = 14011,
 
-    [ParentCombo(SGE_AoE_DPS)] [CustomComboInfo("Psyche Option", "Weaves Psyche if available.", SGE.JobID)]
+    [ParentCombo(SGE_AoE_DPS)]
+    [CustomComboInfo("Psyche Option", "Weaves Psyche if available.", SGE.JobID)]
     SGE_AoE_DPS_Psyche = 14051,
 
-    [ParentCombo(SGE_AoE_DPS)] [CustomComboInfo("Eukrasia Option", "Uses Eukrasia for Eukrasia Dyskrasia.", SGE.JobID)]
+    [ParentCombo(SGE_AoE_DPS)]
+    [CustomComboInfo("Eukrasia Option", "Uses Eukrasia for Eukrasia Dyskrasia.", SGE.JobID)]
     SGE_AoE_DPS_EDyskrasia = 14052,
 
     [ParentCombo(SGE_AoE_DPS)]
@@ -4500,7 +4516,7 @@ public enum CustomComboPreset
 
     [AutoAction(false, true)]
     [ReplaceSkill(SGE.Diagnosis)]
-    [CustomComboInfo("Single Target Heal Feature", "Supports soft-targeting.\nOptions below are in priority order.",
+    [CustomComboInfo("Simple Heals - Single Target", "Supports soft-targeting.\nOptions below are in priority order.",
         SGE.JobID)]
     SGE_ST_Heal = 14014,
 
@@ -4518,28 +4534,36 @@ public enum CustomComboPreset
         "Diagnosis becomes Eukrasian Diagnosis if the shield is not applied to the target.", SGE.JobID)]
     SGE_ST_Heal_EDiagnosis = 14017,
 
-    [ParentCombo(SGE_ST_Heal)] [CustomComboInfo("Soteria Option", "Applies Soteria.", SGE.JobID)]
+    [ParentCombo(SGE_ST_Heal)]
+    [CustomComboInfo("Soteria Option", "Applies Soteria.", SGE.JobID)]
     SGE_ST_Heal_Soteria = 14018,
 
-    [ParentCombo(SGE_ST_Heal)] [CustomComboInfo("Zoe Option", "Applies Zoe.", SGE.JobID)]
+    [ParentCombo(SGE_ST_Heal)]
+    [CustomComboInfo("Zoe Option", "Applies Zoe.", SGE.JobID)]
     SGE_ST_Heal_Zoe = 14019,
 
-    [ParentCombo(SGE_ST_Heal)] [CustomComboInfo("Pepsis Option", "Triggers Pepsis if a shield is present.", SGE.JobID)]
+    [ParentCombo(SGE_ST_Heal)]
+    [CustomComboInfo("Pepsis Option", "Triggers Pepsis if a shield is present.", SGE.JobID)]
     SGE_ST_Heal_Pepsis = 14020,
 
-    [ParentCombo(SGE_ST_Heal)] [CustomComboInfo("Taurochole Option", "Adds Taurochole.", SGE.JobID)]
+    [ParentCombo(SGE_ST_Heal)]
+    [CustomComboInfo("Taurochole Option", "Adds Taurochole.", SGE.JobID)]
     SGE_ST_Heal_Taurochole = 14021,
 
-    [ParentCombo(SGE_ST_Heal)] [CustomComboInfo("Haima Option", "Applies Haima.", SGE.JobID)]
+    [ParentCombo(SGE_ST_Heal)]
+    [CustomComboInfo("Haima Option", "Applies Haima.", SGE.JobID)]
     SGE_ST_Heal_Haima = 14022,
 
-    [ParentCombo(SGE_ST_Heal)] [CustomComboInfo("Rhizomata Option", "Adds Rhizomata when Addersgall is 0.", SGE.JobID)]
+    [ParentCombo(SGE_ST_Heal)]
+    [CustomComboInfo("Rhizomata Option", "Adds Rhizomata when Addersgall is 0.", SGE.JobID)]
     SGE_ST_Heal_Rhizomata = 14023,
 
-    [ParentCombo(SGE_ST_Heal)] [CustomComboInfo("Krasis Option", "Applies Krasis.", SGE.JobID)]
+    [ParentCombo(SGE_ST_Heal)]
+    [CustomComboInfo("Krasis Option", "Applies Krasis.", SGE.JobID)]
     SGE_ST_Heal_Krasis = 14024,
 
-    [ParentCombo(SGE_ST_Heal)] [CustomComboInfo("Druochole Option", "Applies Druochole.", SGE.JobID)]
+    [ParentCombo(SGE_ST_Heal)]
+    [CustomComboInfo("Druochole Option", "Applies Druochole.", SGE.JobID)]
     SGE_ST_Heal_Druochole = 14025,
 
     #endregion
@@ -4548,13 +4572,16 @@ public enum CustomComboPreset
 
     [AutoAction(true, true)]
     [ReplaceSkill(SGE.Prognosis)]
-    [CustomComboInfo("AoE Heal Feature", "Customize your AoE healing to your liking.", SGE.JobID)]
+    [CustomComboInfo("Simple Heals - AoE", "Customize your AoE healing to your liking.", SGE
+        .JobID)]
     SGE_AoE_Heal = 14026,
 
-    [ParentCombo(SGE_AoE_Heal)] [CustomComboInfo("Physis Option", "Adds Physis.", SGE.JobID)]
+    [ParentCombo(SGE_AoE_Heal)]
+    [CustomComboInfo("Physis Option", "Adds Physis.", SGE.JobID)]
     SGE_AoE_Heal_Physis = 14027,
 
-    [ParentCombo(SGE_AoE_Heal)] [CustomComboInfo("Philosophia Option", "Adds Philosophia.", SGE.JobID)]
+    [ParentCombo(SGE_AoE_Heal)]
+    [CustomComboInfo("Philosophia Option", "Adds Philosophia.", SGE.JobID)]
     SGE_AoE_Heal_Philosophia = 14050,
 
     [ParentCombo(SGE_AoE_Heal)]
@@ -4567,22 +4594,28 @@ public enum CustomComboPreset
         "Warning, will force the use of Eukrasia Prognosis, and normal Prognosis will be unavailable.", SGE.JobID)]
     SGE_AoE_Heal_EPrognosis_IgnoreShield = 14029,
 
-    [ParentCombo(SGE_AoE_Heal)] [CustomComboInfo("Holos Option", "Adds Holos.", SGE.JobID)]
+    [ParentCombo(SGE_AoE_Heal)]
+    [CustomComboInfo("Holos Option", "Adds Holos.", SGE.JobID)]
     SGE_AoE_Heal_Holos = 14030,
 
-    [ParentCombo(SGE_AoE_Heal)] [CustomComboInfo("Panhaima Option", "Adds Panhaima.", SGE.JobID)]
+    [ParentCombo(SGE_AoE_Heal)]
+    [CustomComboInfo("Panhaima Option", "Adds Panhaima.", SGE.JobID)]
     SGE_AoE_Heal_Panhaima = 14031,
 
-    [ParentCombo(SGE_AoE_Heal)] [CustomComboInfo("Pepsis Option", "Triggers Pepsis if a shield is present.", SGE.JobID)]
+    [ParentCombo(SGE_AoE_Heal)]
+    [CustomComboInfo("Pepsis Option", "Triggers Pepsis if a shield is present.", SGE.JobID)]
     SGE_AoE_Heal_Pepsis = 14032,
 
-    [ParentCombo(SGE_AoE_Heal)] [CustomComboInfo("Ixochole Option", "Adds Ixochole.", SGE.JobID)]
+    [ParentCombo(SGE_AoE_Heal)]
+    [CustomComboInfo("Ixochole Option", "Adds Ixochole.", SGE.JobID)]
     SGE_AoE_Heal_Ixochole = 14033,
 
-    [ParentCombo(SGE_AoE_Heal)] [CustomComboInfo("Kerachole Option", "Adds Kerachole.", SGE.JobID)]
+    [ParentCombo(SGE_AoE_Heal)]
+    [CustomComboInfo("Kerachole Option", "Adds Kerachole.", SGE.JobID)]
     SGE_AoE_Heal_Kerachole = 14035,
 
-    [ParentCombo(SGE_AoE_Heal)] [CustomComboInfo("Rhizomata Option", "Adds Rhizomata when Addersgall is 0.", SGE.JobID)]
+    [ParentCombo(SGE_AoE_Heal)]
+    [CustomComboInfo("Rhizomata Option", "Adds Rhizomata when Addersgall is 0.", SGE.JobID)]
     SGE_AoE_Heal_Rhizomata = 14036,
 
     #endregion
@@ -4672,16 +4705,14 @@ public enum CustomComboPreset
     [ReplaceSkill(SAM.Hakaze, SAM.Gyofu)]
     [ConflictingCombos(SAM_ST_AdvancedMode)]
     [CustomComboInfo("Simple Mode - Single Target",
-        "Replaces Hakaze with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.",
-        SAM.JobID)]
+        "Replaces Hakaze with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.", SAM.JobID)]
     SAM_ST_SimpleMode = 15002,
 
     [AutoAction(true, false)]
     [ReplaceSkill(SAM.Fuga, SAM.Fuko)]
     [ConflictingCombos(SAM_AoE_AdvancedMode)]
     [CustomComboInfo("Simple Mode - AoE",
-        "Replaces Fuga with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.",
-        SAM.JobID)]
+        "Replaces Fuga with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.", SAM.JobID)]
     SAM_AoE_SimpleMode = 15102,
 
     #endregion
@@ -4692,22 +4723,23 @@ public enum CustomComboPreset
     [ReplaceSkill(SAM.Hakaze, SAM.Gyofu)]
     [ConflictingCombos(SAM_ST_SimpleMode)]
     [CustomComboInfo("Advanced Mode - Single Target",
-        "Replaces Hakaze with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.",
-        SAM.JobID)]
+        "Replaces Hakaze with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.", SAM.JobID)]
     SAM_ST_AdvancedMode = 15003,
+
+    [ParentCombo(SAM_ST_AdvancedMode)]
+    [CustomComboInfo("Balance Opener (Level 100)", "Adds the Balance opener at level 100.", SAM.JobID)]
+    SAM_ST_Opener = 15006,
 
     [ParentCombo(SAM_ST_AdvancedMode)]
     [CustomComboInfo("Yukikaze Combo", "Adds Yukikaze combo to the rotation.", SAM.JobID)]
     SAM_ST_Yukikaze = 15004,
 
-    [ParentCombo(SAM_ST_AdvancedMode)] [CustomComboInfo("Kasha Combo", "Adds Kasha combo to the rotation.", SAM.JobID)]
+    [ParentCombo(SAM_ST_AdvancedMode)]
+    [CustomComboInfo("Kasha Combo", "Adds Kasha combo to the rotation.", SAM.JobID)]
     SAM_ST_Kasha = 15005,
 
     [ParentCombo(SAM_ST_AdvancedMode)]
-    [CustomComboInfo("Level 100 Opener", "Adds the Balance opener to the rotation.", SAM.JobID)]
-    SAM_ST_Opener = 15006,
-
-    [ParentCombo(SAM_ST_AdvancedMode)] [CustomComboInfo("Shinten Option", "Adds Shinten to the rotation", SAM.JobID)]
+    [CustomComboInfo("Shinten Option", "Adds Shinten to the rotation", SAM.JobID)]
     SAM_ST_Shinten = 15008,
 
     #region cooldowns on Main Combo
@@ -4717,14 +4749,28 @@ public enum CustomComboPreset
     SAM_ST_CDs = 15011,
 
     [ParentCombo(SAM_ST_CDs)]
+    [CustomComboInfo("Meikyo Shisui Option", "Adds Meikyo Shisui to the rotation.", SAM.JobID)]
+    SAM_ST_CDs_MeikyoShisui = 15018,
+
+    [ParentCombo(SAM_ST_CDs)]
     [CustomComboInfo("Ikishoten Option",
-        "Adds Ikishoten when at or below 50 Kenki.\nWill dump Kenki at 10 seconds left to allow Ikishoten to be used.",
-        SAM.JobID)]
+        "Adds Ikishoten when at or below 50 Kenki.\nWill dump Kenki at 10 seconds left to allow Ikishoten to be used.", SAM.JobID)]
     SAM_ST_CDs_Ikishoten = 15012,
 
     [ParentCombo(SAM_ST_CDs)]
-    [CustomComboInfo("Iaijutsu Option", "Adds Midare: Setsugekka, Higanbana, and Kaeshi: Setsugekka to the rotation.",
-        SAM.JobID)]
+    [CustomComboInfo("Shoha Option", "Adds Shoha when you have three meditation stacks.", SAM.JobID)]
+    SAM_ST_CDs_Shoha = 15019,
+
+    [ParentCombo(SAM_ST_CDs)]
+    [CustomComboInfo("Senei Option", "Adds Senei to the rotation.", SAM.JobID)]
+    SAM_ST_CDs_Senei = 15020,
+
+    [ParentCombo(SAM_ST_CDs_Senei)]
+    [CustomComboInfo("Guren Option", "Adds Guren to the rotation if Senei is not unlocked.", SAM.JobID)]
+    SAM_ST_CDs_Guren = 15021,
+
+    [ParentCombo(SAM_ST_CDs)]
+    [CustomComboInfo("Iaijutsu Option", "Adds Midare: Setsugekka, Higanbana, and Kaeshi: Setsugekka to the rotation.", SAM.JobID)]
     SAM_ST_CDs_Iaijutsu = 15013,
 
     [ParentCombo(SAM_ST_CDs_Iaijutsu)]
@@ -4737,29 +4783,18 @@ public enum CustomComboPreset
     SAM_ST_CDs_OgiNamikiri = 15015,
 
     [ParentCombo(SAM_ST_CDs_OgiNamikiri)]
-    [CustomComboInfo("Ogi Namikiri movement Option", "Adds Ogi Namikiri and Kaeshi: Namikiri when you're not moving.",
-        SAM.JobID)]
+    [CustomComboInfo("Ogi Namikiri movement Option", "Adds Ogi Namikiri and Kaeshi: Namikiri when you're not moving.", SAM.JobID)]
     SAM_ST_CDs_OgiNamikiri_Movement = 15016,
 
-    [ParentCombo(SAM_ST_CDs)] [CustomComboInfo("Zanshin Option", "Adds Zanshin when ready to the rotation.", SAM.JobID)]
+    [ParentCombo(SAM_ST_CDs)]
+    [CustomComboInfo("Zanshin Option", "Adds Zanshin when ready to the rotation.", SAM.JobID)]
     SAM_ST_CDs_Zanshin = 15017,
 
-    [ParentCombo(SAM_ST_CDs)]
-    [CustomComboInfo("Meikyo Shisui Option", "Adds Meikyo Shisui to the rotation.", SAM.JobID)]
-    SAM_ST_CDs_MeikyoShisui = 15018,
-
-    [ParentCombo(SAM_ST_CDs)]
-    [CustomComboInfo("Shoha Option", "Adds Shoha when you have three meditation stacks.", SAM.JobID)]
-    SAM_ST_CDs_Shoha = 15019,
-
-    [ParentCombo(SAM_ST_CDs)] [CustomComboInfo("Senei Option", "Adds Senei to the rotation.", SAM.JobID)]
-    SAM_ST_CDs_Senei = 15020,
-
-    [ParentCombo(SAM_ST_CDs_Senei)]
-    [CustomComboInfo("Guren Option", "Adds Guren to the rotation if Senei is not unlocked.", SAM.JobID)]
-    SAM_ST_CDs_Guren = 15021,
-
     #endregion
+
+    [ParentCombo(SAM_ST_AdvancedMode)]
+    [CustomComboInfo("True North Feature", "Adds True North if Meikyo Shisui's buff is on you.", SAM.JobID)]
+    SAM_ST_TrueNorth = 15099,
 
     [ParentCombo(SAM_ST_AdvancedMode)]
     [CustomComboInfo("Ranged Uptime Feature", "Adds Enpi to the rotation when you are out of range.", SAM.JobID)]
@@ -4770,10 +4805,6 @@ public enum CustomComboPreset
         "Adds Bloodbath and Second Wind to the combo, using them when below the HP Percentage threshold.", SAM.JobID)]
     SAM_ST_ComboHeals = 15098,
 
-    [ParentCombo(SAM_ST_AdvancedMode)]
-    [CustomComboInfo("True North Feature", "Adds True North if Meikyo Shisui's buff is on you.", SAM.JobID)]
-    SAM_ST_TrueNorth = 15099,
-
     #endregion
 
     #region AoE Combos
@@ -4782,38 +4813,25 @@ public enum CustomComboPreset
     [ReplaceSkill(SAM.Fuga, SAM.Fuko)]
     [ConflictingCombos(SAM_AoE_SimpleMode)]
     [CustomComboInfo("Advanced Mode - AoE",
-        "Replaces Fuga with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.",
-        SAM.JobID)]
+        "Replaces Fuga with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.", SAM.JobID)]
     SAM_AoE_AdvancedMode = 15103,
 
     [ParentCombo(SAM_AoE_AdvancedMode)]
     [CustomComboInfo("Oka Combo", "Adds Oka combo to the rotation.", SAM.JobID)]
     SAM_AoE_Oka = 15104,
 
-    [ParentCombo(SAM_AoE_AdvancedMode)] 
+    [ParentCombo(SAM_AoE_AdvancedMode)]
     [CustomComboInfo("Kyuten Option", "Adds Kyuten to the rotation.", SAM.JobID)]
     SAM_AoE_Kyuten = 15105,
 
     [ParentCombo(SAM_AoE_AdvancedMode)]
-    [CustomComboInfo("Iaijutsu Option",
-        "Adds Tenka Goken, Midare: Setsugekka, and Kaeshi: Goken when ready and when you're not moving to the rotation.",
-        SAM.JobID)]
-    SAM_AoE_TenkaGoken = 15107,
+    [CustomComboInfo("Meikyo Shisui Option", "Adds Meikyo Shisui to the rotation.", SAM.JobID)]
+    SAM_AoE_MeikyoShisui = 15114,
 
     [ParentCombo(SAM_AoE_AdvancedMode)]
     [CustomComboInfo("Ikishoten Option",
-        "Adds Ikishoten when at or below 50 Kenki.\nWill dump Kenki at 10 seconds left to allow Ikishoten to be used.",
-        SAM.JobID)]
+        "Adds Ikishoten when at or below 50 Kenki.\nWill dump Kenki at 10 seconds left to allow Ikishoten to be used.", SAM.JobID)]
     SAM_AOE_CDs_Ikishoten = 15108,
-
-    [ParentCombo(SAM_AoE_AdvancedMode)]
-    [CustomComboInfo("Ogi Namikiri Option",
-        "Adds Ogi Namikiri and Kaeshi: Namikiri when ready and when you're not moving to the rotation.", SAM.JobID)]
-    SAM_AoE_OgiNamikiri = 15109,
-
-    [ParentCombo(SAM_AoE_AdvancedMode)]
-    [CustomComboInfo("Zanshin Option", "Adds Zanshin to the rotation.", SAM.JobID)]
-    SAM_AoE_Zanshin = 15110,
 
     [ParentCombo(SAM_AoE_AdvancedMode)]
     [CustomComboInfo("Shoha Option", "Adds Shoha when you have 3 meditation stacks.", SAM.JobID)]
@@ -4828,8 +4846,18 @@ public enum CustomComboPreset
     SAM_AoE_Hagakure = 15113,
 
     [ParentCombo(SAM_AoE_AdvancedMode)]
-    [CustomComboInfo("Meikyo Shisui Option", "Adds Meikyo Shisui to the rotation.", SAM.JobID)]
-    SAM_AoE_MeikyoShisui = 15114,
+    [CustomComboInfo("Iaijutsu Option",
+        "Adds Tenka Goken, Midare: Setsugekka, and Kaeshi: Goken when ready and when you're not moving to the rotation.", SAM.JobID)]
+    SAM_AoE_TenkaGoken = 15107,
+
+    [ParentCombo(SAM_AoE_AdvancedMode)]
+    [CustomComboInfo("Ogi Namikiri Option",
+        "Adds Ogi Namikiri and Kaeshi: Namikiri when ready and when you're not moving to the rotation.", SAM.JobID)]
+    SAM_AoE_OgiNamikiri = 15109,
+
+    [ParentCombo(SAM_AoE_AdvancedMode)]
+    [CustomComboInfo("Zanshin Option", "Adds Zanshin to the rotation.", SAM.JobID)]
+    SAM_AoE_Zanshin = 15110,
 
     [ParentCombo(SAM_AoE_AdvancedMode)]
     [CustomComboInfo("Combo Heals Option",
@@ -4844,7 +4872,7 @@ public enum CustomComboPreset
     [CustomComboInfo("Yukikaze Combo", "Replace Yukikaze with its combo chain.", SAM.JobID)]
     SAM_ST_YukikazeCombo = 15000,
 
-    [ReplaceSkill(SAM.Kasha)] 
+    [ReplaceSkill(SAM.Kasha)]
     [CustomComboInfo("Kasha Combo", "Replace Kasha with its combo chain.", SAM.JobID)]
     SAM_ST_KashaCombo = 15001,
 
@@ -4884,7 +4912,7 @@ public enum CustomComboPreset
 
     #region Iaijutsu Features
 
-    [ReplaceSkill(SAM.Iaijutsu)] 
+    [ReplaceSkill(SAM.Iaijutsu)]
     [CustomComboInfo("Iaijutsu Features", "Collection of Iaijutsu Features.", SAM.JobID)]
     SAM_Iaijutsu = 15201,
 
@@ -4950,27 +4978,14 @@ public enum CustomComboPreset
     SAM_Ikishoten = 15253,
 
     [ParentCombo(SAM_Ikishoten)]
-    [CustomComboInfo("Ikishoten to Namikiri", "Replace Ikishoten with Ogi Namikiri & Kaeshi Namikiri when available.",
-        SAM.JobID)]
+    [CustomComboInfo("Ikishoten to Namikiri", "Replace Ikishoten with Ogi Namikiri & Kaeshi Namikiri when available.", SAM.JobID)]
     SAM_Ikishoten_Namikiri = 15212,
 
     [ParentCombo(SAM_Ikishoten)]
-    [CustomComboInfo("Ikishoten to Shoha", "Replace Ikishoten with Shoha when Meditation is full before Ogi Namikiri.",
-        SAM.JobID)]
+    [CustomComboInfo("Ikishoten to Shoha", "Replace Ikishoten with Shoha when Meditation is full before Ogi Namikiri.", SAM.JobID)]
     SAM_Ikishoten_Shoha = 15213,
 
     #endregion
-
-    #region Other
-
-    [ReplaceSkill(SAM.Gyoten)]
-    [CustomComboInfo("Gyoten Feature",
-        "Hissatsu: Gyoten becomes Yaten/Gyoten depending on the distance from your target.", SAM.JobID)]
-    SAM_GyotenYaten = 15211,
-
-    #endregion
-
-    // Last value = 15214
 
     #region variant
 
@@ -4988,6 +5003,17 @@ public enum CustomComboPreset
 
     #endregion
 
+    #region Other
+
+    [ReplaceSkill(SAM.Gyoten)]
+    [CustomComboInfo("Gyoten Feature",
+        "Hissatsu: Gyoten becomes Yaten/Gyoten depending on the distance from your target.", SAM.JobID)]
+    SAM_GyotenYaten = 15211,
+
+    #endregion
+
+    // Last value = 15214
+
     #endregion
 
     #region SCHOLAR
@@ -4998,6 +5024,10 @@ public enum CustomComboPreset
     [ReplaceSkill(SCH.Ruin, SCH.Broil, SCH.Broil2, SCH.Broil3, SCH.Broil4, SCH.Bio, SCH.Bio2, SCH.Biolysis)]
     [CustomComboInfo("Single Target DPS Feature", "Replaces Ruin I / Broils with options below", SCH.JobID)]
     SCH_DPS = 16001,
+
+    [ParentCombo(SCH_DPS)]
+    [CustomComboInfo("Balance Opener (Level 100)", "Adds the Balance opener at level 100.", SCH.JobID)]
+    SCH_DPS_Balance_Opener = 16009,
 
     [ParentCombo(SCH_DPS)]
     [CustomComboInfo("Lucid Dreaming Weave Option", "Adds Lucid Dreaming when MP drops below slider value:", SCH.JobID)]
@@ -5023,15 +5053,13 @@ public enum CustomComboPreset
         "Holds Energy Drain when Chain Stratagem is ready or has less than 10 seconds cooldown remaining.", SCH.JobID)]
     SCH_DPS_EnergyDrain_BurstSaver = 16006,
 
-    [ParentCombo(SCH_DPS)] [CustomComboInfo("Ruin II Moving Option", "Use Ruin II when you have to move.", SCH.JobID)]
+    [ParentCombo(SCH_DPS)]
+    [CustomComboInfo("Ruin II Moving Option", "Use Ruin II when you have to move.", SCH.JobID)]
     SCH_DPS_Ruin2Movement = 16007,
 
-    [ParentCombo(SCH_DPS)] [CustomComboInfo("Bio / Biolysis Option", "Automatic DoT uptime.", SCH.JobID)]
-    SCH_DPS_Bio = 16008,
-
     [ParentCombo(SCH_DPS)]
-    [CustomComboInfo("Dissipation Opener Option", "Use Dissipation at the start of the battle.", SCH.JobID)]
-    SCH_DPS_Dissipation_Opener = 16009,
+    [CustomComboInfo("Bio / Biolysis Option", "Automatic DoT uptime.", SCH.JobID)]
+    SCH_DPS_Bio = 16008,
 
     [AutoAction(true, false)]
     [ReplaceSkill(SCH.ArtOfWar, SCH.ArtOfWarII)]
@@ -5076,7 +5104,7 @@ public enum CustomComboPreset
 
     [AutoAction(true, true)]
     [ReplaceSkill(SCH.Succor)]
-    [CustomComboInfo("AoE Heal Feature", "Replaces Succor with options below:", SCH.JobID)]
+    [CustomComboInfo("Simple Heals - AoE", "Replaces Succor with options below:", SCH.JobID)]
     SCH_AoE_Heal = 16018,
 
     [ParentCombo(SCH_AoE_Heal)]
@@ -5109,19 +5137,21 @@ public enum CustomComboPreset
     [CustomComboInfo("Whispering Dawn Option", "Use Whispering Dawn before using Succor.", SCH.JobID)]
     SCH_AoE_Heal_WhisperingDawn = 16043,
 
-    [ParentCombo(SCH_AoE_Heal)] [CustomComboInfo("Seraphism Option", "Use Seraphism before using Succor.", SCH.JobID)]
+    [ParentCombo(SCH_AoE_Heal)]
+    [CustomComboInfo("Seraphism Option", "Use Seraphism before using Succor.", SCH.JobID)]
     SCH_AoE_Heal_Seraphism = 16044,
 
     [ParentCombo(SCH_AoE_Heal)]
     [CustomComboInfo("Fey Blessing Option", "Use Fey Blessing before using Succor.", SCH.JobID)]
     SCH_AoE_Heal_FeyBlessing = 16045,
 
-    [ParentCombo(SCH_AoE_Heal)] [CustomComboInfo("Consolation", "Use Consolation before using Succor.", SCH.JobID)]
+    [ParentCombo(SCH_AoE_Heal)]
+    [CustomComboInfo("Consolation", "Use Consolation before using Succor.", SCH.JobID)]
     SCH_AoE_Heal_Consolation = 16046,
 
     [AutoAction(false, true)]
     [ReplaceSkill(SCH.Physick)]
-    [CustomComboInfo("Single Target Heal Feature",
+    [CustomComboInfo("Simple Heals - Single Target",
         "Change Physick into Adloquium, Lustrate, then Physick with below options:", SCH.JobID)]
     SCH_ST_Heal = 16023,
 
@@ -5145,7 +5175,8 @@ public enum CustomComboPreset
     [CustomComboInfo("Adloquium Option", "Use Adloquium when missing Galvanize or target HP%% below:", SCH.JobID)]
     SCH_ST_Heal_Adloquium = 16027,
 
-    [ParentCombo(SCH_ST_Heal)] [CustomComboInfo("Lustrate Option", "Use Lustrate when target HP%% below:", SCH.JobID)]
+    [ParentCombo(SCH_ST_Heal)]
+    [CustomComboInfo("Lustrate Option", "Use Lustrate when target HP%% below:", SCH.JobID)]
     SCH_ST_Heal_Lustrate = 16028,
 
     [ParentCombo(SCH_ST_Heal)]
@@ -5245,6 +5276,10 @@ public enum CustomComboPreset
         "Replaces Ruin with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.",
         SMN.JobID)]
     SMN_Advanced_Combo = 17000,
+
+    [ParentCombo(SMN_Advanced_Combo)]
+    [CustomComboInfo("Balance Opener (Level 100)", "Adds the Balance opener at level 100.", SMN.JobID)]
+    SMN_Advanced_Combo_Balance_Opener = 170001,
 
     [ParentCombo(SMN_Advanced_Combo)]
     [CustomComboInfo("Demi Attacks Combo Option", "Adds Demi Summon oGCDs to the single target combo.", SMN.JobID)]
@@ -5475,6 +5510,12 @@ public enum CustomComboPreset
         SMN.JobID)]
     SMN_DemiEgiMenu_EgiOrder_AoE = 17065,
 
+    [ParentCombo(SMN_Advanced_Combo)]
+    [CustomComboInfo("Use Ruin III instead of Emerald Ruin III", 
+        "Replaces Emerald Ruin III with Ruin III in the rotation when Ruin Mastery III is not active.", 
+        SMN.JobID, 15)]
+    SMN_ST_Ruin3_Emerald_Ruin3 = 17067,
+
     #endregion
 
     #region VIPER
@@ -5485,16 +5526,14 @@ public enum CustomComboPreset
     [ReplaceSkill(VPR.SteelFangs)]
     [ConflictingCombos(VPR_ST_AdvancedMode, VPR_SerpentsTail, VPR_Legacies, VPR_ReawakenLegacy)]
     [CustomComboInfo("Simple Mode - Single Target",
-        "Replaces Steel Fangs with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.",
-        VPR.JobID)]
+        "Replaces Steel Fangs with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.", VPR.JobID)]
     VPR_ST_SimpleMode = 30000,
 
     [AutoAction(true, false)]
     [ReplaceSkill(VPR.SteelMaw)]
-    [ConflictingCombos(VPR_AoE_AdvancedMode,VPR_SerpentsTail)]
+    [ConflictingCombos(VPR_AoE_AdvancedMode, VPR_SerpentsTail)]
     [CustomComboInfo("Simple Mode - AoE",
-        "Replaces Steel Maw with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.",
-        VPR.JobID)]
+        "Replaces Steel Maw with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.", VPR.JobID)]
     VPR_AoE_SimpleMode = 30100,
 
     #endregion
@@ -5505,41 +5544,30 @@ public enum CustomComboPreset
     [ReplaceSkill(VPR.SteelFangs)]
     [ConflictingCombos(VPR_ST_SimpleMode, VPR_SerpentsTail, VPR_Legacies, VPR_ReawakenLegacy)]
     [CustomComboInfo("Advanced Mode - Single Target",
-        "Replaces Steel Fangs with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.",
-        VPR.JobID)]
+        "Replaces Steel Fangs with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.", VPR.JobID)]
     VPR_ST_AdvancedMode = 30001,
 
     [ParentCombo(VPR_ST_AdvancedMode)]
-    [CustomComboInfo("Level 100 Opener",
-        "Adds the Balance opener to the rotation.\n Does not check positional choice.\n Always does Hunter's Coil first ( FLANK )",
-        VPR.JobID)]
+    [CustomComboInfo("Balance Opener (Level 100)",
+        "Adds the Balance opener at level 100.\n Does not check positional choice.\n Always does Hunter's Coil first (FLANK)", VPR.JobID)]
     VPR_ST_Opener = 30002,
 
-    #region Cooldowns ST
-
     [ParentCombo(VPR_ST_AdvancedMode)]
-    [CustomComboInfo("Cooldowns Option", "Adds various cooldowns to the rotation.", VPR.JobID)]
-    VPR_ST_CDs = 30004,
-
-    [ParentCombo(VPR_ST_CDs)]
     [CustomComboInfo("Serpents Ire", "Adds Serpents Ire to the rotation.", VPR.JobID)]
     VPR_ST_SerpentsIre = 30005,
 
-    [ParentCombo(VPR_ST_CDs)]
+    [ParentCombo(VPR_ST_AdvancedMode)]
     [CustomComboInfo("Vicewinder", "Adds Vicewinder to the rotation.", VPR.JobID)]
     VPR_ST_Vicewinder = 30006,
 
-    [ParentCombo(VPR_ST_CDs)]
+    [ParentCombo(VPR_ST_AdvancedMode)]
     [CustomComboInfo("Vicewinder Combo",
-        "Adds Swiftskin's Coil and Hunter's Coil to the rotation.\nWill automatically swap depending on your position.",
-        VPR.JobID)]
+        "Adds Swiftskin's Coil and Hunter's Coil to the rotation.\nWill automatically swap depending on your position.", VPR.JobID)]
     VPR_ST_VicewinderCombo = 30007,
 
-    [ParentCombo(VPR_ST_CDs)]
+    [ParentCombo(VPR_ST_AdvancedMode)]
     [CustomComboInfo("Vicewinder Weaves", "Adds Twinfang and Bloodfang to the rotation.", VPR.JobID)]
     VPR_ST_VicewinderWeaves = 30013,
-
-    #endregion
 
     [ParentCombo(VPR_ST_AdvancedMode)]
     [CustomComboInfo("Serpents Tail", "Adds Serpents Tail to the rotation.", VPR.JobID)]
@@ -5550,8 +5578,7 @@ public enum CustomComboPreset
     VPR_ST_UncoiledFury = 30009,
 
     [ParentCombo(VPR_ST_AdvancedMode)]
-    [CustomComboInfo("Uncoiled Fury Combo", "Adds Uncoiled Twinfang and Uncoiled Twinblood to the rotation.",
-        VPR.JobID)]
+    [CustomComboInfo("Uncoiled Fury Combo", "Adds Uncoiled Twinfang and Uncoiled Twinblood to the rotation.", VPR.JobID)]
     VPR_ST_UncoiledFuryCombo = 30010,
 
     [ParentCombo(VPR_ST_AdvancedMode)]
@@ -5563,24 +5590,22 @@ public enum CustomComboPreset
     VPR_ST_ReawakenCombo = 30012,
 
     [ParentCombo(VPR_ST_AdvancedMode)]
-    [CustomComboInfo("Ranged Uptime Option", "Adds Writhing Snap to the rotation when you are out of melee range.",
-        VPR.JobID)]
+    [CustomComboInfo("Dynamic True North Option",
+        "Adds True North when you are not in the correct position for the enhanced potency bonus.", VPR.JobID)]
+    VPR_TrueNorthDynamic = 30098,
+
+    [ParentCombo(VPR_ST_AdvancedMode)]
+    [CustomComboInfo("Ranged Uptime Option", "Adds Writhing Snap to the rotation when you are out of melee range.", VPR.JobID)]
     VPR_ST_RangedUptime = 30095,
 
     [ParentCombo(VPR_ST_RangedUptime)]
     [CustomComboInfo("Add Uncoiled Fury",
-        "Adds Uncoiled Fury to the rotation when you are out of melee range and have Rattling Coil charges.",
-        VPR.JobID)]
+        "Adds Uncoiled Fury to the rotation when you are out of melee range and have Rattling Coil charges.", VPR.JobID)]
     VPR_ST_RangedUptimeUncoiledFury = 30096,
 
     [ParentCombo(VPR_ST_AdvancedMode)]
     [CustomComboInfo("Combo Heals Option", "Adds Bloodbath and Second Wind to the rotation.", VPR.JobID)]
     VPR_ST_ComboHeals = 30097,
-
-    [ParentCombo(VPR_ST_AdvancedMode)]
-    [CustomComboInfo("Dynamic True North Option",
-        "Adds True North when you are not in the correct position for the enhanced potency bonus.", VPR.JobID)]
-    VPR_TrueNorthDynamic = 30098,
 
     #endregion
 
@@ -5590,21 +5615,14 @@ public enum CustomComboPreset
     [ReplaceSkill(VPR.SteelMaw)]
     [ConflictingCombos(VPR_AoE_SimpleMode, VPR_SerpentsTail)]
     [CustomComboInfo("Advanced Mode - AoE",
-        "Replaces Steel Maw with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.",
-        VPR.JobID)]
+        "Replaces Steel Maw with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.", VPR.JobID)]
     VPR_AoE_AdvancedMode = 30101,
 
-    #region Cooldowns AoE
-
     [ParentCombo(VPR_AoE_AdvancedMode)]
-    [CustomComboInfo("Cooldowns Option", "Adds various cooldowns to the rotation.", VPR.JobID)]
-    VPR_AoE_CDs = 30103,
-
-    [ParentCombo(VPR_AoE_CDs)]
     [CustomComboInfo("Serpents Ire", "Adds Serpents Ire to the rotation.", VPR.JobID)]
     VPR_AoE_SerpentsIre = 30104,
 
-    [ParentCombo(VPR_AoE_CDs)] 
+    [ParentCombo(VPR_AoE_AdvancedMode)]
     [CustomComboInfo("Vicepit", "Adds Vicepit to the rotation.", VPR.JobID)]
     VPR_AoE_Vicepit = 30105,
 
@@ -5613,21 +5631,18 @@ public enum CustomComboPreset
         "Disables the range check for Vicepit, so it will be used even without a target selected.", VPR.JobID)]
     VPR_AoE_Vicepit_DisableRange = 30111,
 
-    [ParentCombo(VPR_AoE_CDs)]
+    [ParentCombo(VPR_AoE_AdvancedMode)]
     [CustomComboInfo("Vicepit Combo", "Adds Swiftskin's Den and Hunter's Den to the rotation.", VPR.JobID)]
     VPR_AoE_VicepitCombo = 30106,
 
     [ParentCombo(VPR_AoE_VicepitCombo)]
     [CustomComboInfo("Disable Range Check",
-        "Disables the range check for Swiftskin's Den and Hunter's Den, so they will be used even without a target selected.",
-        VPR.JobID)]
+        "Disables the range check for Swiftskin's Den and Hunter's Den, so they will be used even without a target selected.", VPR.JobID)]
     VPR_AoE_VicepitCombo_DisableRange = 30113,
 
-    [ParentCombo(VPR_AoE_CDs)]
+    [ParentCombo(VPR_AoE_AdvancedMode)]
     [CustomComboInfo("Vicepit Weaves", "Adds Twinfang and Twinblood to the rotation.", VPR.JobID)]
     VPR_AoE_VicepitWeaves = 30115,
-
-    #endregion
 
     [ParentCombo(VPR_AoE_AdvancedMode)]
     [CustomComboInfo("Serpents Tail", "Adds Serpents Tail to the rotation.", VPR.JobID)]
@@ -5638,8 +5653,7 @@ public enum CustomComboPreset
     VPR_AoE_UncoiledFury = 30108,
 
     [ParentCombo(VPR_AoE_AdvancedMode)]
-    [CustomComboInfo("Uncoiled Fury Combo", "Adds Uncoiled Twinfang and Uncoiled Twinblood to the rotation.",
-        VPR.JobID)]
+    [CustomComboInfo("Uncoiled Fury Combo", "Adds Uncoiled Twinfang and Uncoiled Twinblood to the rotation.", VPR.JobID)]
     VPR_AoE_UncoiledFuryCombo = 30109,
 
     [ParentCombo(VPR_AoE_AdvancedMode)]
@@ -5663,22 +5677,15 @@ public enum CustomComboPreset
 
     [ReplaceSkill(VPR.Vicewinder)]
     [CustomComboInfo("Vicewinder - Coils",
-        "Replaces Vicewinder with Hunter's/Swiftskin's Coils.\nWill automatically swap depending on your position.",
-        VPR.JobID)]
+        "Replaces Vicewinder with Hunter's/Swiftskin's Coils.\nWill automatically swap depending on your position.", VPR.JobID)]
     VPR_VicewinderCoils = 30200,
-
-    [ParentCombo(VPR_VicewinderCoils)]
-    [CustomComboInfo("Dynamic True North Option",
-        "Adds True North when you are not in the correct position for the enhanced potency bonus.", VPR.JobID)]
-    VPR_VicewinderCoilsTN = 30208,
 
     [ReplaceSkill(VPR.Vicepit)]
     [CustomComboInfo("Vicepit - Dens", "Replaces Vicepit with Hunter's/Swiftskin's Dens.", VPR.JobID)]
     VPR_VicepitDens = 30201,
 
     [ReplaceSkill(VPR.UncoiledFury)]
-    [CustomComboInfo("Uncoiled - Twins", "Replaces Uncoiled Fury with Uncoiled Twinfang and Uncoiled Twinblood.",
-        VPR.JobID)]
+    [CustomComboInfo("Uncoiled - Twins", "Replaces Uncoiled Fury with Uncoiled Twinfang and Uncoiled Twinblood.", VPR.JobID)]
     VPR_UncoiledTwins = 30202,
 
     [ReplaceSkill(VPR.Reawaken, VPR.SteelFangs)]
@@ -5721,8 +5728,7 @@ public enum CustomComboPreset
     [ReplaceSkill(VPR.SteelFangs, VPR.ReavingFangs, VPR.SteelMaw, VPR.ReavingMaw)]
     [ConflictingCombos(VPR_ST_SimpleMode, VPR_AoE_SimpleMode, VPR_ST_AdvancedMode, VPR_AoE_AdvancedMode, VPR_Legacies,
         VPR_ReawakenLegacy)]
-    [CustomComboInfo("Serpents Tail", "Replaces basic combo with Death Rattle or Last Lash when applicable.",
-        VPR.JobID)]
+    [CustomComboInfo("Serpents Tail", "Replaces basic combo with Death Rattle or Last Lash when applicable.", VPR.JobID)]
     VPR_SerpentsTail = 30210,
 
     #endregion
@@ -5748,7 +5754,7 @@ public enum CustomComboPreset
     WAR_AoE_Simple = 18001,
 
     #endregion
-    
+
     #region Advanced ST
 
     [AutoAction(false, false)]
@@ -5758,6 +5764,10 @@ public enum CustomComboPreset
         "Replaces Storm's Path with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.",
         WAR.JobID)]
     WAR_ST_Advanced = 18002,
+
+    [ParentCombo(WAR_ST_Advanced)]
+    [CustomComboInfo("Balance Opener (Level 100)", "Adds the Balance opener at level 100.", WAR.JobID)]
+    WAR_ST_Advanced_BalanceOpener = 18058,
 
     [ParentCombo(WAR_ST_Advanced)]
     [CustomComboInfo("Storm's Eye Option", "Adds Storms Eye into the rotation.", WAR.JobID)]
@@ -5777,10 +5787,12 @@ public enum CustomComboPreset
         WAR.JobID)]
     WAR_ST_Advanced_FellCleave = 18006,
 
-    [ParentCombo(WAR_ST_Advanced)] [CustomComboInfo("Infuriate Option", "Adds Infuriate into the rotation.", WAR.JobID)]
+    [ParentCombo(WAR_ST_Advanced)]
+    [CustomComboInfo("Infuriate Option", "Adds Infuriate into the rotation.", WAR.JobID)]
     WAR_ST_Advanced_Infuriate = 18007,
 
-    [ParentCombo(WAR_ST_Advanced)] [CustomComboInfo("Onslaught Option", "Adds Onslaught into the rotation.", WAR.JobID)]
+    [ParentCombo(WAR_ST_Advanced)]
+    [CustomComboInfo("Onslaught Option", "Adds Onslaught into the rotation.", WAR.JobID)]
     WAR_ST_Advanced_Onslaught = 18008,
 
     [ParentCombo(WAR_ST_Advanced_Onslaught)]
@@ -5789,7 +5801,8 @@ public enum CustomComboPreset
         WAR.JobID)]
     WAR_ST_Advanced_Onslaught_MeleeSpender = 18015,
 
-    [ParentCombo(WAR_ST_Advanced)] [CustomComboInfo("Upheaval Option", "Adds Upheaval into the rotation.", WAR.JobID)]
+    [ParentCombo(WAR_ST_Advanced)]
+    [CustomComboInfo("Upheaval Option", "Adds Upheaval into the rotation.", WAR.JobID)]
     WAR_ST_Advanced_Upheaval = 18009,
 
     [ParentCombo(WAR_ST_Advanced)]
@@ -5806,7 +5819,8 @@ public enum CustomComboPreset
     [CustomComboInfo("Primal Ruination Option", "Adds Primal Ruination into the rotation.", WAR.JobID)]
     WAR_ST_Advanced_PrimalRuination = 18011,
 
-    [ParentCombo(WAR_AoE_Advanced)] [CustomComboInfo("Orogeny Option", "Adds Orogeny into the rotation.", WAR.JobID)]
+    [ParentCombo(WAR_AoE_Advanced)]
+    [CustomComboInfo("Orogeny Option", "Adds Orogeny into the rotation.", WAR.JobID)]
     WAR_AoE_Advanced_Orogeny = 18012,
 
     [ParentCombo(WAR_ST_Advanced_PrimalRend)]
@@ -6040,7 +6054,7 @@ public enum CustomComboPreset
 
     #endregion
 
-    // Last value = 18056
+    // Last value = 18058
 
     #endregion
 
@@ -6055,7 +6069,7 @@ public enum CustomComboPreset
     WHM_ST_MainCombo = 19099,
 
     [ParentCombo(WHM_ST_MainCombo)]
-    [CustomComboInfo("Opener Option", "Use the Balance opener from level 56+.", WHM.JobID)]
+    [CustomComboInfo("Balance Opener (Level 92)", "Adds the Balance opener from level 92 onwards.", WHM.JobID)]
     WHM_ST_MainCombo_Opener = 19023,
 
     [ParentCombo(WHM_ST_MainCombo)]
@@ -6106,7 +6120,8 @@ public enum CustomComboPreset
         "\nRequires you to already be in combat, to have stopped moving, and to not have used Assize yet.", WHM.JobID)]
     WHM_AoE_DPS_SwiftHoly = 19197,
 
-    [ParentCombo(WHM_AoE_DPS)] [CustomComboInfo("Assize Option", "Adds Assize to the AoE combo.", WHM.JobID)]
+    [ParentCombo(WHM_AoE_DPS)]
+    [CustomComboInfo("Assize Option", "Adds Assize to the AoE combo.", WHM.JobID)]
     WHM_AoE_DPS_Assize = 19192,
 
     [ParentCombo(WHM_AoE_DPS)]
@@ -6150,7 +6165,7 @@ public enum CustomComboPreset
 
     [AutoAction(true, true)]
     [ReplaceSkill(WHM.Medica1)]
-    [CustomComboInfo("Simple Heals (AoE)", "Replaces Medica with a one button AoE healing setup.", WHM.JobID)]
+    [CustomComboInfo("Simple Heals - AoE", "Replaces Medica with a one button AoE healing setup.", WHM.JobID)]
     WHM_AoEHeals = 19007,
 
     [ParentCombo(WHM_AoEHeals)]
@@ -6161,14 +6176,16 @@ public enum CustomComboPreset
     [CustomComboInfo("Afflatus Misery Option", "Uses Afflatus Misery when available.", WHM.JobID)]
     WHM_AoEHeals_Misery = 19010,
 
-    [ParentCombo(WHM_AoEHeals)] [CustomComboInfo("Thin Air Option", "Uses Thin Air when available.", WHM.JobID)]
+    [ParentCombo(WHM_AoEHeals)]
+    [CustomComboInfo("Thin Air Option", "Uses Thin Air when available.", WHM.JobID)]
     WHM_AoEHeals_ThinAir = 19200,
 
     [ParentCombo(WHM_AoEHeals)]
     [CustomComboInfo("Cure III Option", "Replaces Medica with Cure III when available.", WHM.JobID)]
     WHM_AoEHeals_Cure3 = 19201,
 
-    [ParentCombo(WHM_AoEHeals)] [CustomComboInfo("Assize Option", "Uses Assize when available.", WHM.JobID)]
+    [ParentCombo(WHM_AoEHeals)]
+    [CustomComboInfo("Assize Option", "Uses Assize when available.", WHM.JobID)]
     WHM_AoEHeals_Assize = 19202,
 
     [ParentCombo(WHM_AoEHeals)]
@@ -6194,11 +6211,12 @@ public enum CustomComboPreset
 
     [AutoAction(false, true)]
     [ReplaceSkill(WHM.Cure)]
-    [CustomComboInfo("Simple Heals (Single Target)", "Replaces Cure with a one button single target healing setup.",
+    [CustomComboInfo("Simple Heals - Single Target", "Replaces Cure with a one button single target healing setup.",
         WHM.JobID)]
     WHM_STHeals = 19300,
 
-    [ParentCombo(WHM_STHeals)] [CustomComboInfo("Regen Option", "Applies Regen to the target if missing.", WHM.JobID)]
+    [ParentCombo(WHM_STHeals)]
+    [CustomComboInfo("Regen Option", "Applies Regen to the target if missing.", WHM.JobID)]
     WHM_STHeals_Regen = 19301,
 
     [ParentCombo(WHM_STHeals)]
@@ -6209,7 +6227,8 @@ public enum CustomComboPreset
     [CustomComboInfo("Afflatus Solace Option", "Uses Afflatus Solace when available.", WHM.JobID)]
     WHM_STHeals_Solace = 19303,
 
-    [ParentCombo(WHM_STHeals)] [CustomComboInfo("Thin Air Option", "Uses Thin Air when available.", WHM.JobID)]
+    [ParentCombo(WHM_STHeals)]
+    [CustomComboInfo("Thin Air Option", "Uses Thin Air when available.", WHM.JobID)]
     WHM_STHeals_ThinAir = 19304,
 
     [ParentCombo(WHM_STHeals)]
@@ -6220,7 +6239,8 @@ public enum CustomComboPreset
     [CustomComboInfo("Divine Benison Option", "Uses Divine Benison when available.", WHM.JobID)]
     WHM_STHeals_Benison = 19306,
 
-    [ParentCombo(WHM_STHeals)] [CustomComboInfo("Aquaveil Option", "Uses Aquaveil when available.", WHM.JobID)]
+    [ParentCombo(WHM_STHeals)]
+    [CustomComboInfo("Aquaveil Option", "Uses Aquaveil when available.", WHM.JobID)]
     WHM_STHeals_Aquaveil = 19307,
 
     [ParentCombo(WHM_STHeals)]
@@ -6338,7 +6358,7 @@ public enum CustomComboPreset
     // Last value = 51011
 
     #endregion
-    
+
     #endregion
 
     #region PvP Combos
@@ -6376,16 +6396,20 @@ public enum CustomComboPreset
 
     #region ASTROLOGIAN
 
-    [PvPCustomCombo] [CustomComboInfo("Burst Mode", "Turns Fall Malefic into an all-in-one damage button.", AST.JobID)]
+    [PvPCustomCombo]
+    [CustomComboInfo("Burst Mode", "Turns Fall Malefic into an all-in-one damage button.", AST.JobID)]
     ASTPvP_Burst = 111000,
 
-    [ParentCombo(ASTPvP_Burst)] [CustomComboInfo("Card Draw Option", "Adds Drawing Cards to Burst Mode.", AST.JobID)]
+    [ParentCombo(ASTPvP_Burst)]
+    [CustomComboInfo("Card Draw Option", "Adds Drawing Cards to Burst Mode.", AST.JobID)]
     ASTPvP_Burst_DrawCard = 111002,
 
-    [ParentCombo(ASTPvP_Burst)] [CustomComboInfo("Card Play Option", "Adds Playing Cards to Burst Mode.", AST.JobID)]
+    [ParentCombo(ASTPvP_Burst)]
+    [CustomComboInfo("Card Play Option", "Adds Playing Cards to Burst Mode.", AST.JobID)]
     ASTPvP_Burst_PlayCard = 111003,
 
-    [PvPCustomCombo] [CustomComboInfo("Double Cast Heal Feature", "Adds Double Cast to Aspected Benefic.", AST.JobID)]
+    [PvPCustomCombo]
+    [CustomComboInfo("Double Cast Heal Feature", "Adds Double Cast to Aspected Benefic.", AST.JobID)]
     ASTPvP_Heal = 111004,
 
     [ParentCombo(ASTPvP_Burst)]
@@ -6396,7 +6420,8 @@ public enum CustomComboPreset
     [CustomComboInfo("Double Gravity Cast Option", "Adds Double Gravity Cast to Burst Mode.", AST.JobID)]
     ASTPvP_Burst_DoubleGravity = 111009,
 
-    [ParentCombo(ASTPvP_Burst)] [CustomComboInfo("Gravity Burst Option", "Adds Gravity Cast to Burst Mode.", AST.JobID)]
+    [ParentCombo(ASTPvP_Burst)]
+    [CustomComboInfo("Gravity Burst Option", "Adds Gravity Cast to Burst Mode.", AST.JobID)]
     ASTPvP_Burst_Gravity = 111006,
 
     [ParentCombo(ASTPvP_Burst)]
@@ -6405,7 +6430,8 @@ public enum CustomComboPreset
         AST.JobID)]
     ASTPvP_Burst_Macrocosmos = 111007,
 
-    [PvPCustomCombo] [CustomComboInfo("Epicycle Burst Feature", "Turns Epicycle into burst combo.", AST.JobID)]
+    [PvPCustomCombo]
+    [CustomComboInfo("Epicycle Burst Feature", "Turns Epicycle into burst combo.", AST.JobID)]
     ASTPvP_Epicycle = 111008,
 
     // Last value = 111009
@@ -6415,64 +6441,41 @@ public enum CustomComboPreset
     #region BLACK MAGE
 
     [PvPCustomCombo]
-    [CustomComboInfo("Burst Mode", "Turns Fire and Blizzard into all-in-one damage buttons.", BLM.JobID)]
+    [ReplaceSkill(BLMPvP.Fire, BLMPvP.Blizzard)]
+    [CustomComboInfo("Burst Mode", "Turns Fire into an all-in-one button.\n- Uses Blizzard spells while moving (One Button Mode only).\n- Will use Paradox when appropriate.", BLMPvP.JobID)]
     BLMPvP_BurstMode = 112000,
 
     [ParentCombo(BLMPvP_BurstMode)]
     [PvPCustomCombo]
-    [CustomComboInfo("Aetherial Manipulation Option",
-        "Uses Aetherial Manipulation to gap close if Burst is off cooldown.", BLM.JobID)]
-    BLMPvP_BurstMode_AetherialManip = 112001,
+    [CustomComboInfo("Burst Option", "Uses Burst when available.\n- Requires target to be within range.", BLMPvP.JobID)]
+    BLMPvP_Burst = 112001,
 
     [ParentCombo(BLMPvP_BurstMode)]
     [PvPCustomCombo]
-    [CustomComboInfo("Burst cast Option", "Adds Burst to Burst Mode.", BLM.JobID)]
-    BLMPvP_BurstMode_Burst = 112002,
+    [CustomComboInfo("Xenoglossy Option", "Uses Xenoglossy when available.\n- Requires target's HP to be under:", BLMPvP.JobID)]
+    BLMPvP_Xenoglossy = 112002,
 
     [ParentCombo(BLMPvP_BurstMode)]
     [PvPCustomCombo]
-    [CustomComboInfo("Paradox Option", "Adds Paradox to Burst Mode.", BLM.JobID)]
-    BLMPvP_BurstMode_Paradox = 112003,
+    [CustomComboInfo("Lethargy Option", "Uses Lethargy when available.\n- Will not use against non-players.\n- Requires target's HP to be under:", BLMPvP.JobID)]
+    BLMPvP_Lethargy = 112003,
 
     [ParentCombo(BLMPvP_BurstMode)]
     [PvPCustomCombo]
-    [CustomComboInfo("Xenoglossy Option", "Adds Xenoglossy to Burst Mode.", BLM.JobID)]
-    BLMPvP_BurstMode_Xenoglossy = 112004,
+    [CustomComboInfo("Elemental Weave Option", "Uses Wreath of Fire when available.\n- Requires player's HP to be at or above:", BLMPvP.JobID)]
+    BLMPvP_ElementalWeave = 112004,
 
     [ParentCombo(BLMPvP_BurstMode)]
     [PvPCustomCombo]
-    [CustomComboInfo("Lethargy Option", "Adds Lethargy to Burst Mode.", BLM.JobID)]
-    BLMPvP_BurstMode_Lethargy = 112005,
+    [CustomComboInfo("Elemental Star Option", "Uses Elemental Star when available.\n- Prioritizes Flare Star unless expiring.", BLMPvP.JobID)]
+    BLMPvP_ElementalStar = 112005,
 
-    [ParentCombo(BLMPvP_BurstMode)]
     [PvPCustomCombo]
-    [CustomComboInfo("Wreath of Fire (Elemental Weave) Option",
-        "Adds Wreath of Fire to Burst Mode when the target is under Guard status.", BLM.JobID)]
-    BLMPvP_BurstMode_WreathOfFire = 112006,
+    [ReplaceSkill(BLMPvP.AetherialManipulation)]
+    [CustomComboInfo("Aetherial Manipulation Feature", "Adds Purify when affected by crowd control.\n- Requires Purify to be available.", BLMPvP.JobID)]
+    BLMPvP_Manipulation_Feature = 112006,
 
-    [ParentCombo(BLMPvP_BurstMode_WreathOfFire)]
-    [PvPCustomCombo]
-    [CustomComboInfo("Wreath of Fire (Elemental Weave) Execute Option",
-        "Adds Wreath of Fire to Burst Mode when the target is under selected %", BLM.JobID)]
-    BLMPvP_BurstMode_WreathOfFireExecute = 112010,
-
-    [ParentCombo(BLMPvP_BurstMode)]
-    [PvPCustomCombo]
-    [CustomComboInfo("Wreath of Ice (Elemental Weave) Option",
-        "Adds Wreath of Ice to Burst Mode when player is below set threshold", BLM.JobID)]
-    BLMPvP_BurstMode_WreathOfIce = 112007,
-
-    [ParentCombo(BLMPvP_BurstMode)]
-    [PvPCustomCombo]
-    [CustomComboInfo("Flare Star Option", "Adds Flare Star to Burst Mode.", BLM.JobID)]
-    BLMPvP_BurstMode_FlareStar = 112008,
-
-    [ParentCombo(BLMPvP_BurstMode)]
-    [PvPCustomCombo]
-    [CustomComboInfo("Frost Star Option", "Adds Frost Star to Burst Mode.", BLM.JobID)]
-    BLMPvP_BurstMode_FrostStar = 112009,
-
-    // Last value = 112010
+    // Last value = 112006
 
     #endregion
 
@@ -6610,13 +6613,16 @@ public enum CustomComboPreset
     [CustomComboInfo("Burst Mode", "Turns Drakesbane Combo into an all-in-one damage button.", DRG.JobID)]
     DRGPvP_Burst = 116000,
 
-    [ParentCombo(DRGPvP_Burst)] [CustomComboInfo("Geirskogul Option", "Adds Geirskogul to Burst Mode.", DRG.JobID)]
+    [ParentCombo(DRGPvP_Burst)]
+    [CustomComboInfo("Geirskogul Option", "Adds Geirskogul to Burst Mode.", DRG.JobID)]
     DRGPvP_Geirskogul = 116001,
 
-    [ParentCombo(DRGPvP_Geirskogul)] [CustomComboInfo("Nastrond Option", "Adds Nastrond to Burst Mode.", DRG.JobID)]
+    [ParentCombo(DRGPvP_Geirskogul)]
+    [CustomComboInfo("Nastrond Option", "Adds Nastrond to Burst Mode.", DRG.JobID)]
     DRGPvP_Nastrond = 116002,
 
-    [ParentCombo(DRGPvP_Burst)] [CustomComboInfo("Horrid Roar Option", "Adds Horrid Roar to Burst Mode.", DRG.JobID)]
+    [ParentCombo(DRGPvP_Burst)]
+    [CustomComboInfo("Horrid Roar Option", "Adds Horrid Roar to Burst Mode.", DRG.JobID)]
     DRGPvP_HorridRoar = 116003,
 
     [ParentCombo(DRGPvP_Burst)]
@@ -6633,7 +6639,8 @@ public enum CustomComboPreset
     [CustomComboInfo("Wyrmwind Thrust Option", "Adds Wyrmwind Thrust to Burst Mode.", DRG.JobID)]
     DRGPvP_WyrmwindThrust = 116006,
 
-    [ParentCombo(DRGPvP_Burst)] [CustomComboInfo("High Jump Weave Option", "Adds High Jump to Burst Mode.", DRG.JobID)]
+    [ParentCombo(DRGPvP_Burst)]
+    [CustomComboInfo("High Jump Weave Option", "Adds High Jump to Burst Mode.", DRG.JobID)]
     DRGPvP_HighJump = 116007,
 
     [ParentCombo(DRGPvP_Burst)]
@@ -6666,7 +6673,8 @@ public enum CustomComboPreset
     [CustomComboInfo("Gnashing Fang Option", "Adds Gnashing Fang to Burst Mode.", GNB.JobID)]
     GNBPvP_ST_GnashingFang = 117004,
 
-    [ParentCombo(GNBPvP_Burst)] [CustomComboInfo("Continuation Option", "Adds Continuation to Burst Mode.", GNB.JobID)]
+    [ParentCombo(GNBPvP_Burst)]
+    [CustomComboInfo("Continuation Option", "Adds Continuation to Burst Mode.", GNB.JobID)]
     GNBPvP_ST_Continuation = 117005,
 
     [ParentCombo(GNBPvP_Burst)]
@@ -6910,19 +6918,24 @@ public enum CustomComboPreset
     [CustomComboInfo("Burst Mode", "Turns Royal Authority Combo into an all-in-one damage button.", PLD.JobID)]
     PLDPvP_Burst = 121000,
 
-    [ParentCombo(PLDPvP_Burst)] [CustomComboInfo("Shield Smite Option", "Adds Shield Smite to Burst Mode.", PLD.JobID)]
+    [ParentCombo(PLDPvP_Burst)]
+    [CustomComboInfo("Shield Smite Option", "Adds Shield Smite to Burst Mode.", PLD.JobID)]
     PLDPvP_ShieldSmite = 121001,
 
-    [ParentCombo(PLDPvP_Burst)] [CustomComboInfo("Imperator Option", "Adds Imperator to Burst Mode.", PLD.JobID)]
+    [ParentCombo(PLDPvP_Burst)]
+    [CustomComboInfo("Imperator Option", "Adds Imperator to Burst Mode.", PLD.JobID)]
     PLDPvP_Imperator = 121002,
 
-    [ParentCombo(PLDPvP_Burst)] [CustomComboInfo("Confiteor Option", "Adds Confiteor to Burst Mode.", PLD.JobID)]
+    [ParentCombo(PLDPvP_Burst)]
+    [CustomComboInfo("Confiteor Option", "Adds Confiteor to Burst Mode.", PLD.JobID)]
     PLDPvP_Confiteor = 121003,
 
-    [ParentCombo(PLDPvP_Burst)] [CustomComboInfo("Holy Spirit Option", "Adds Holy Spirit to Burst Mode.", PLD.JobID)]
+    [ParentCombo(PLDPvP_Burst)]
+    [CustomComboInfo("Holy Spirit Option", "Adds Holy Spirit to Burst Mode.", PLD.JobID)]
     PLDPvP_HolySpirit = 121004,
 
-    [ParentCombo(PLDPvP_Burst)] [CustomComboInfo("Intervene Option", "Adds Intervene to Burst Mode.", PLD.JobID)]
+    [ParentCombo(PLDPvP_Burst)]
+    [CustomComboInfo("Intervene Option", "Adds Intervene to Burst Mode.", PLD.JobID)]
     PLDPvP_Intervene = 121005,
 
     [ParentCombo(PLDPvP_Burst)]
@@ -6967,7 +6980,8 @@ public enum CustomComboPreset
     [CustomComboInfo("Creature Motif Option", "Adds Creature Motif to Burst Mode.", PCTPvP.JobID)]
     PCTPvP_CreatureMotif = 140004,
 
-    [ParentCombo(PCTPvP_Burst)] [CustomComboInfo("Living Muse Option", "Adds Living Muse to Burst Mode.", PCTPvP.JobID)]
+    [ParentCombo(PCTPvP_Burst)]
+    [CustomComboInfo("Living Muse Option", "Adds Living Muse to Burst Mode.", PCTPvP.JobID)]
     PCTPvP_LivingMuse = 140005,
 
     [ParentCombo(PCTPvP_Burst)]
@@ -6978,7 +6992,8 @@ public enum CustomComboPreset
     [CustomComboInfo("Holy In White Option", "Adds Holy In White to Burst Mode.", PCTPvP.JobID)]
     PCTPvP_HolyInWhite = 140007,
 
-    [ParentCombo(PCTPvP_Burst)] [CustomComboInfo("Star Prism Option", "Adds Star Prism to Burst Mode.", PCTPvP.JobID)]
+    [ParentCombo(PCTPvP_Burst)]
+    [CustomComboInfo("Star Prism Option", "Adds Star Prism to Burst Mode.", PCTPvP.JobID)]
     PCTPvP_StarPrism = 140008,
 
     // Last value = 140008
@@ -7053,62 +7068,82 @@ public enum CustomComboPreset
 
     #region RED MAGE
 
-    [PvPCustomCombo] [CustomComboInfo("Burst Mode", "Turns Jolt3 into an all-in-one damage button.", RDMPvP.JobID)]
+    [PvPCustomCombo]
+    [ReplaceSkill(RDMPvP.Jolt3)]
+    [CustomComboInfo("Burst Mode", "Turns Jolt III into an all-in-one button.\n- Will not attempt to cast Jolt III while moving.", RDMPvP.JobID)]
     RDMPvP_BurstMode = 123000,
 
     [PvPCustomCombo]
     [ParentCombo(RDMPvP_BurstMode)]
-    [CustomComboInfo("Corps-a-Corps Option", "Adds Corps-a-Corps to Burst Mode.", RDMPvP.JobID)]
-    RDMPvP_Burst_CorpsACorps = 123001,
+    [CustomComboInfo("Riposte Combo Option", "Uses Riposte and Scorch when available.\n- Requires melee range for Riposte Combo.", RDMPvP.JobID)]
+    RDMPvP_Riposte = 123001,
 
     [PvPCustomCombo]
     [ParentCombo(RDMPvP_BurstMode)]
-    [CustomComboInfo("Displacement Option", "Adds Displacement to Burst Mode.", RDMPvP.JobID)]
-    RDMPvP_Burst_Displacement = 123002,
+    [CustomComboInfo("Resolution Option", "Uses Resolution when available.\n- Will not use against non-players.\n- Requires target's HP to be under:", RDMPvP.JobID)]
+    RDMPvP_Resolution = 123002,
 
     [PvPCustomCombo]
     [ParentCombo(RDMPvP_BurstMode)]
-    [CustomComboInfo("Embolden Option", "Adds Embolden to Burst Mode.", RDMPvP.JobID)]
-    RDMPvP_Burst_Embolden = 123003,
+    [CustomComboInfo("Embolden Option", "Uses Embolden when available.\n- Requires Enchanted Riposte to be available.\n- Will use alongside Corps-a-corps if enabled.", RDMPvP.JobID)]
+    RDMPvP_Embolden = 123003,
 
     [PvPCustomCombo]
     [ParentCombo(RDMPvP_BurstMode)]
-    [CustomComboInfo("Resolution Option", "Adds Resolution to Burst Mode.", RDMPvP.JobID)]
-    RDMPvP_Burst_Resolution = 123004,
+    [CustomComboInfo("Corps-a-corps Option", "Uses Corps-a-corps when available.\n- Must remain within maximum range.\n- Requires Enchanted Riposte to be available.", RDMPvP.JobID)]
+    RDMPvP_Corps = 123004,
 
     [PvPCustomCombo]
     [ParentCombo(RDMPvP_BurstMode)]
-    [CustomComboInfo("Enchanted Riposte Option", "Adds Enchanted Riposte to Burst Mode.", RDMPvP.JobID)]
-    RDMPvP_Burst_EnchantedRiposte = 123005,
+    [CustomComboInfo("Displacement Option", "Uses Displacement when available.\n- Will use when Scorch becomes available.\n- Requires target to be within melee range.", RDMPvP.JobID)]
+    RDMPvP_Displacement = 123005,
 
-    // Last value = 123005
+    [PvPCustomCombo]
+    [ParentCombo(RDMPvP_BurstMode)]
+    [CustomComboInfo("Forte Option", "Uses Forte when available.\n- Will not use outside combat.\n- Requires player's HP to be under:", RDMPvP.JobID)]
+    RDMPvP_Forte = 123006,
+
+    [PvPCustomCombo]
+    [ReplaceSkill(RDMPvP.CorpsACorps, RDMPvP.Displacement)]
+    [CustomComboInfo("Corps-a-corps / Displacement Feature", "Adds Purify when affected by crowd control.\n- Requires Purify to be available.", RDMPvP.JobID)]
+    RDMPvP_Dash_Feature = 123007,
+
+    // Last value = 123007
 
     #endregion
 
     #region SAGE
 
-    [PvPCustomCombo] [CustomComboInfo("Burst Mode", "Turns Dosis III into an all-in-one damage button.", SGE.JobID)]
+    [PvPCustomCombo]
+    [CustomComboInfo("Burst Mode", "Turns Dosis III into an all-in-one damage button.", SGE.JobID)]
     SGEPvP_BurstMode = 124000,
 
-    [ParentCombo(SGEPvP_BurstMode)] [CustomComboInfo("Pneuma Option", "Adds Pneuma to Burst Mode.", SGE.JobID)]
+    [ParentCombo(SGEPvP_BurstMode)]
+    [CustomComboInfo("Pneuma Option", "Adds Pneuma to Burst Mode.", SGE.JobID)]
     SGEPvP_BurstMode_Pneuma = 124001,
 
-    [ParentCombo(SGEPvP_BurstMode)] [CustomComboInfo("Eukrasia Option", "Adds Eukrasia to Burst Mode.", SGE.JobID)]
+    [ParentCombo(SGEPvP_BurstMode)]
+    [CustomComboInfo("Eukrasia Option", "Adds Eukrasia to Burst Mode.", SGE.JobID)]
     SGEPvP_BurstMode_Eukrasia = 124002,
 
-    [ParentCombo(SGEPvP_BurstMode)] [CustomComboInfo("Phlegma Option", "Adds Phlegma to Burst Mode.", SGE.JobID)]
+    [ParentCombo(SGEPvP_BurstMode)]
+    [CustomComboInfo("Phlegma Option", "Adds Phlegma to Burst Mode.", SGE.JobID)]
     SGEPvP_BurstMode_Phlegma = 124003,
 
-    [ParentCombo(SGEPvP_BurstMode)] [CustomComboInfo("Psyche Option", "Adds Psyche to Burst Mode.", SGE.JobID)]
+    [ParentCombo(SGEPvP_BurstMode)]
+    [CustomComboInfo("Psyche Option", "Adds Psyche to Burst Mode.", SGE.JobID)]
     SGEPvP_BurstMode_Psyche = 124004,
 
-    [ParentCombo(SGEPvP_BurstMode)] [CustomComboInfo("Toxikon Option", "Adds Toxikon to Burst Mode.", SGE.JobID)]
+    [ParentCombo(SGEPvP_BurstMode)]
+    [CustomComboInfo("Toxikon Option", "Adds Toxikon to Burst Mode.", SGE.JobID)]
     SGEPvP_BurstMode_Toxikon = 124005,
 
-    [ParentCombo(SGEPvP_BurstMode)] [CustomComboInfo("Toxikon II Option", "Adds Toxikon II to Burst Mode.", SGE.JobID)]
+    [ParentCombo(SGEPvP_BurstMode)]
+    [CustomComboInfo("Toxikon II Option", "Adds Toxikon II to Burst Mode.", SGE.JobID)]
     SGEPvP_BurstMode_Toxikon2 = 124006,
 
-    [ParentCombo(SGEPvP_BurstMode)] [CustomComboInfo("Kardia Reminder Option", "Adds Kardia to Burst Mode.", SGE.JobID)]
+    [ParentCombo(SGEPvP_BurstMode)]
+    [CustomComboInfo("Kardia Reminder Option", "Adds Kardia to Burst Mode.", SGE.JobID)]
     SGEPvP_BurstMode_KardiaReminder = 124007,
 
     // Last value = 124007
@@ -7164,7 +7199,8 @@ public enum CustomComboPreset
 
     #region SCHOLAR
 
-    [PvPCustomCombo] [CustomComboInfo("Burst Mode", "Turns Broil IV into all-in-one damage button.", SCH.JobID)]
+    [PvPCustomCombo]
+    [CustomComboInfo("Burst Mode", "Turns Broil IV into all-in-one damage button.", SCH.JobID)]
     SCHPvP_Burst = 126000,
 
     [ParentCombo(SCHPvP_Burst)]
@@ -7335,10 +7371,12 @@ public enum CustomComboPreset
 
     #region WHITE MAGE
 
-    [PvPCustomCombo] [CustomComboInfo("Burst Mode", "Turns Glare into an all-in-one damage button.", WHM.JobID)]
+    [PvPCustomCombo]
+    [CustomComboInfo("Burst Mode", "Turns Glare into an all-in-one damage button.", WHM.JobID)]
     WHMPvP_Burst = 129000,
 
-    [ParentCombo(WHMPvP_Burst)] [CustomComboInfo("Misery Option", "Adds Afflatus Misery to Burst Mode.", WHM.JobID)]
+    [ParentCombo(WHMPvP_Burst)]
+    [CustomComboInfo("Misery Option", "Adds Afflatus Misery to Burst Mode.", WHM.JobID)]
     WHMPvP_Afflatus_Misery = 129001,
 
     [ParentCombo(WHMPvP_Burst)]
@@ -7349,13 +7387,16 @@ public enum CustomComboPreset
     [CustomComboInfo("Seraph Strike Option", "Adds Seraph Strike to Burst Mode.", WHM.JobID)]
     WHMPvP_Seraph_Strike = 129003,
 
-    [PvPCustomCombo] [CustomComboInfo("Aquaveil Feature", "Adds Aquaveil to Cure II when available.", WHM.JobID)]
+    [PvPCustomCombo]
+    [CustomComboInfo("Aquaveil Feature", "Adds Aquaveil to Cure II when available.", WHM.JobID)]
     WHMPvP_Aquaveil = 129004,
 
-    [PvPCustomCombo] [CustomComboInfo("Cure III Feature", "Adds Cure III to Cure II when available.", WHM.JobID)]
+    [PvPCustomCombo]
+    [CustomComboInfo("Cure III Feature", "Adds Cure III to Cure II when available.", WHM.JobID)]
     WHMPvP_Cure3 = 129005,
 
-    [ParentCombo(WHMPvP_Burst)] [CustomComboInfo("Glare IV Option", "Adds Glare IV to Burst Mode.", WHM.JobID)]
+    [ParentCombo(WHMPvP_Burst)]
+    [CustomComboInfo("Glare IV Option", "Adds Glare IV to Burst Mode.", WHM.JobID)]
     WHMPvP_Glare4 = 129006,
 
     // Last value = 129006

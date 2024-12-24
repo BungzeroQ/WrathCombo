@@ -62,34 +62,34 @@ namespace WrathCombo.Combos.PvP
 
             protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
             {
-                #region Variables
-                float targetDistance = GetTargetDistance();
-                float targetCurrentPercentHp = GetTargetHPPercent();
-                float playerCurrentPercentHp = PlayerHealthPercentageHp();
-                uint chargesSoten = HasCharges(Soten) ? GetCooldown(Soten).RemainingCharges : 0;
-                bool isMoving = IsMoving;
-                bool inCombat = InCombat();
-                bool hasTarget = HasTarget();
-                bool inMeleeRange = targetDistance <= 5;
-                bool hasKaiten = HasEffect(Buffs.Kaiten);
-                bool hasZanshin = OriginalHook(Chiten) is Zanshin;
-                bool hasBind = HasEffectAny(PvPCommon.Debuffs.Bind);
-                bool targetHasImmunity = PvPCommon.TargetImmuneToDamage();
-                bool isTargetPrimed = hasTarget && !targetHasImmunity;
-                bool targetHasKuzushi = TargetHasEffect(Debuffs.Kuzushi);
-                bool hasKaeshiNamikiri = OriginalHook(OgiNamikiri) is Kaeshi;
-                bool hasTendo = OriginalHook(MeikyoShisui) is TendoSetsugekka;
-                bool isYukikazePrimed = ComboTimer == 0 || lastComboMove is Kasha;
-                bool isMeikyoPrimed = !hasKaeshiNamikiri && !hasKaiten && !isMoving;
-                bool hasTendoKaeshi = OriginalHook(MeikyoShisui) is TendoKaeshiSetsugekka;
-                bool hasPrioWeaponskill = hasTendo || hasTendoKaeshi || hasKaeshiNamikiri;
-                bool isZantetsukenPrimed = IsLB1Ready && !hasBind && hasTarget && targetHasKuzushi && targetDistance <= 20;
-                bool isSotenPrimed = chargesSoten > Config.SAMPvP_Soten_Charges && !hasKaiten && !hasBind && !hasPrioWeaponskill;
-                bool isTargetInvincible = TargetHasEffectAny(PLDPvP.Buffs.HallowedGround) || TargetHasEffectAny(DRKPvP.Buffs.UndeadRedemption);
-                #endregion
-
                 if (actionID is Yukikaze or Gekko or Kasha)
                 {
+                    #region Variables
+                    float targetDistance = GetTargetDistance();
+                    float targetCurrentPercentHp = GetTargetHPPercent();
+                    float playerCurrentPercentHp = PlayerHealthPercentageHp();
+                    uint chargesSoten = HasCharges(Soten) ? GetCooldown(Soten).RemainingCharges : 0;
+                    bool isMoving = IsMoving();
+                    bool inCombat = InCombat();
+                    bool hasTarget = HasTarget();
+                    bool inMeleeRange = targetDistance <= 5;
+                    bool hasKaiten = HasEffect(Buffs.Kaiten);
+                    bool hasZanshin = OriginalHook(Chiten) is Zanshin;
+                    bool hasBind = HasEffectAny(PvPCommon.Debuffs.Bind);
+                    bool targetHasImmunity = PvPCommon.TargetImmuneToDamage();
+                    bool isTargetPrimed = hasTarget && !targetHasImmunity;
+                    bool targetHasKuzushi = TargetHasEffect(Debuffs.Kuzushi);
+                    bool hasKaeshiNamikiri = OriginalHook(OgiNamikiri) is Kaeshi;
+                    bool hasTendo = OriginalHook(MeikyoShisui) is TendoSetsugekka;
+                    bool isYukikazePrimed = ComboTimer == 0 || lastComboMove is Kasha;
+                    bool hasTendoKaeshi = OriginalHook(MeikyoShisui) is TendoKaeshiSetsugekka;
+                    bool hasPrioWeaponskill = hasTendo || hasTendoKaeshi || hasKaeshiNamikiri;
+                    bool isMeikyoPrimed = IsOnCooldown(OgiNamikiri) && !hasKaeshiNamikiri && !hasKaiten && !isMoving;
+                    bool isZantetsukenPrimed = IsLB1Ready && !hasBind && hasTarget && targetHasKuzushi && targetDistance <= 20;
+                    bool isSotenPrimed = chargesSoten > Config.SAMPvP_Soten_Charges && !hasKaiten && !hasBind && !hasPrioWeaponskill;
+                    bool isTargetInvincible = TargetHasEffectAny(PLDPvP.Buffs.HallowedGround) || TargetHasEffectAny(DRKPvP.Buffs.UndeadRedemption);
+                    #endregion
+
                     // Zantetsuken
                     if (IsEnabled(CustomComboPreset.SAMPvP_Zantetsuken) && isZantetsukenPrimed && !isTargetInvincible)
                         return OriginalHook(Zantetsuken);

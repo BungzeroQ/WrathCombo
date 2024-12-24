@@ -66,37 +66,37 @@ namespace WrathCombo.Combos.PvP
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPRPvP_Burst;
             protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
             {
-                #region Variables
-                float targetDistance = GetTargetDistance();
-                float targetCurrentPercentHp = GetTargetHPPercent();
-                float playerCurrentPercentHp = PlayerHealthPercentageHp();
-                uint chargesSlither = HasCharges(Slither) ? GetCooldown(Slither).RemainingCharges : 0;
-                uint chargesUncoiledFury = HasCharges(UncoiledFury) ? GetCooldown(UncoiledFury).RemainingCharges : 0;
-                bool[] optionsRattlingCoil = Config.VPRPvP_RattlingCoil_SubOptions;
-                bool hasTarget = HasTarget();
-                bool inMeleeRange = targetDistance <= 5;
-                bool hasSlither = HasEffect(Buffs.Slither);
-                bool hasBind = HasEffectAny(PvPCommon.Debuffs.Bind);
-                bool targetHasImmunity = PvPCommon.TargetImmuneToDamage();
-                bool hasBacklash = OriginalHook(SnakeScales) is Backlash;
-                bool hasOuroboros = OriginalHook(Bloodcoil) is Ouroboros;
-                bool hasSnakesBane = hasBacklash && HasEffect(Buffs.SnakesBane);
-                bool hasSanguineFeast = OriginalHook(Bloodcoil) is SanguineFeast;
-                bool isMeleeDependant = !hasTarget || (hasTarget && inMeleeRange);
-                bool isSnakeScalesDown = IsOnCooldown(SnakeScales) && !hasBacklash;
-                bool isUncoiledFuryEnabled = IsEnabled(CustomComboPreset.VPRPvP_UncoiledFury);
-                bool hasRangedWeave = OriginalHook(SerpentsTail) is UncoiledTwinfang or UncoiledTwinblood;
-                bool hasCommonWeave = OriginalHook(SerpentsTail) is DeathRattle or TwinfangBite or TwinbloodBite;
-                bool hasLegacyWeave = OriginalHook(SerpentsTail) is FirstLegacy or SecondLegacy or ThirdLegacy or FourthLegacy;
-                bool isBloodcoilPrimed = IsOffCooldown(Bloodcoil) && hasTarget && !targetHasImmunity && !hasOuroboros && !hasSanguineFeast;
-                bool inGenerationsCombo = OriginalHook(actionID) is FirstGeneration or SecondGeneration or ThirdGeneration or FourthGeneration;
-                bool isUncoiledFuryPrimed = chargesUncoiledFury > 0 && hasTarget && !targetHasImmunity && targetCurrentPercentHp < Config.VPRPvP_UncoiledFury_TargetHP;
-                bool isUncoiledFuryDependant = !isUncoiledFuryEnabled || !(isUncoiledFuryEnabled && isUncoiledFuryPrimed);
-                bool isSlitherPrimed = hasTarget && !inMeleeRange && isUncoiledFuryDependant && !hasSlither && !hasBind;
-                #endregion
-
                 if (actionID is SteelFangs or HuntersSting or BarbarousSlice or PiercingFangs or SwiftskinsSting or RavenousBite)
                 {
+                    #region Variables
+                    float targetDistance = GetTargetDistance();
+                    float targetCurrentPercentHp = GetTargetHPPercent();
+                    float playerCurrentPercentHp = PlayerHealthPercentageHp();
+                    uint chargesSlither = HasCharges(Slither) ? GetCooldown(Slither).RemainingCharges : 0;
+                    uint chargesUncoiledFury = HasCharges(UncoiledFury) ? GetCooldown(UncoiledFury).RemainingCharges : 0;
+                    bool[] optionsRattlingCoil = Config.VPRPvP_RattlingCoil_SubOptions;
+                    bool hasTarget = HasTarget();
+                    bool inMeleeRange = targetDistance <= 5;
+                    bool hasSlither = HasEffect(Buffs.Slither);
+                    bool hasBind = HasEffectAny(PvPCommon.Debuffs.Bind);
+                    bool targetHasImmunity = PvPCommon.TargetImmuneToDamage();
+                    bool hasBacklash = OriginalHook(SnakeScales) is Backlash;
+                    bool hasOuroboros = OriginalHook(Bloodcoil) is Ouroboros;
+                    bool hasSnakesBane = hasBacklash && HasEffect(Buffs.SnakesBane);
+                    bool hasSanguineFeast = OriginalHook(Bloodcoil) is SanguineFeast;
+                    bool isMeleeDependant = !hasTarget || (hasTarget && inMeleeRange);
+                    bool isSnakeScalesDown = IsOnCooldown(SnakeScales) && !hasBacklash;
+                    bool isUncoiledFuryEnabled = IsEnabled(CustomComboPreset.VPRPvP_UncoiledFury);
+                    bool hasRangedWeave = OriginalHook(SerpentsTail) is UncoiledTwinfang or UncoiledTwinblood;
+                    bool hasCommonWeave = OriginalHook(SerpentsTail) is DeathRattle or TwinfangBite or TwinbloodBite;
+                    bool hasLegacyWeave = OriginalHook(SerpentsTail) is FirstLegacy or SecondLegacy or ThirdLegacy or FourthLegacy;
+                    bool isBloodcoilPrimed = IsOffCooldown(Bloodcoil) && hasTarget && !targetHasImmunity && !hasOuroboros && !hasSanguineFeast;
+                    bool inGenerationsCombo = OriginalHook(actionID) is FirstGeneration or SecondGeneration or ThirdGeneration or FourthGeneration;
+                    bool isUncoiledFuryPrimed = chargesUncoiledFury > 0 && hasTarget && !targetHasImmunity && targetCurrentPercentHp < Config.VPRPvP_UncoiledFury_TargetHP;
+                    bool isUncoiledFuryDependant = !isUncoiledFuryEnabled || !(isUncoiledFuryEnabled && isUncoiledFuryPrimed);
+                    bool isSlitherPrimed = hasTarget && !inMeleeRange && isUncoiledFuryDependant && !hasSlither && !hasBind;
+                    #endregion
+
                     // Backlash
                     if (IsEnabled(CustomComboPreset.VPRPvP_Backlash) && ((!Config.VPRPvP_Backlash_SubOption && hasBacklash) ||
                         (Config.VPRPvP_Backlash_SubOption && hasSnakesBane)))
