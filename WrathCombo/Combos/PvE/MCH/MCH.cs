@@ -451,8 +451,8 @@ internal static partial class MCH
                     !IsEnabled(CustomComboPreset.MCH_AoE_Adv_Reassemble);
 
                 bool reassembledAirAnchorAoE =
-                    (IsEnabled(CustomComboPreset.MCH_AoE_Adv_Reassemble) && Config.MCH_AoE_Reassembled [4] && HasEffect(Buffs.Reassembled)) ||
-                    (IsEnabled(CustomComboPreset.MCH_AoE_Adv_Reassemble) && !Config.MCH_AoE_Reassembled [4] && !HasEffect(Buffs.Reassembled)) ||
+                    (IsEnabled(CustomComboPreset.MCH_AoE_Adv_Reassemble) && Config.MCH_AoE_Reassembled [1] && HasEffect(Buffs.Reassembled)) ||
+                    (IsEnabled(CustomComboPreset.MCH_AoE_Adv_Reassemble) && !Config.MCH_AoE_Reassembled [1] && !HasEffect(Buffs.Reassembled)) ||
                     (!HasEffect(Buffs.Reassembled) && GetRemainingCharges(Reassemble) <= Config.MCH_AoE_ReassemblePool) ||
                     !IsEnabled(CustomComboPreset.MCH_AoE_Adv_Reassemble);
 
@@ -572,7 +572,7 @@ internal static partial class MCH
                 if (IsEnabled(CustomComboPreset.MCH_AoE_Adv_AirAnchor) &&
                     reassembledAirAnchorAoE &&
                     LevelChecked(AirAnchor) &&
-                    (GetCooldownRemainingTime(AirAnchor) <= GCD + 0.25 || ActionReady(Chainsaw)))
+                    (GetCooldownRemainingTime(AirAnchor) <= GCD + 0.25 || ActionReady(AirAnchor)))
                     return AirAnchor;
 
                 if (reassembledScattergunAoE)

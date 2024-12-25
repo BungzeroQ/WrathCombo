@@ -66,11 +66,10 @@ namespace WrathCombo.Window.Tabs
                 ImGuiEx.TextUnderlined($"Targeting Mode");
 
                 P.IPC.UIHelper.ShowIPCControlledIndicatorIfNeeded("DPSRotationMode");
-                P.IPC.UIHelper.ShowIPCControlledComboIfNeeded(
+                changed |= P.IPC.UIHelper.ShowIPCControlledComboIfNeeded(
                     "###DPSTargetingMode", true, ref cfg.DPSRotationMode,
                     ref cfg.HealerRotationMode, "DPSRotationMode");
 
-                changed |= ImGuiEx.EnumCombo("###DPSTargetingMode", ref cfg.DPSRotationMode);
                 ImGuiComponents.HelpMarker("Manual - Leaves all targeting decisions to you.\n" +
                     "Highest Max - Prioritises enemies with the highest max HP.\n" +
                     "Lowest Max - Prioritises enemies with the lowest max HP.\n" +
@@ -158,7 +157,7 @@ namespace WrathCombo.Window.Tabs
             {
                 ImGuiEx.TextUnderlined($"Healing Targeting Mode");
                 P.IPC.UIHelper.ShowIPCControlledIndicatorIfNeeded("HealerRotationMode");
-                P.IPC.UIHelper.ShowIPCControlledComboIfNeeded(
+                changed |= P.IPC.UIHelper.ShowIPCControlledComboIfNeeded(
                     "###HealerTargetingMode", false, ref cfg.DPSRotationMode,
                     ref cfg.HealerRotationMode, "HealerRotationMode");
                 ImGuiComponents.HelpMarker("Manual - Will only heal a target if you select them manually. If the target does not meet the healing threshold settings criteria below it will skip healing in favour of DPSing (if also enabled).\n" +

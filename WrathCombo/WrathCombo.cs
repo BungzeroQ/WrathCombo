@@ -227,7 +227,7 @@ namespace WrathCombo
             var autoOn = IPC.GetAutoRotationState();
             DtrBarEntry.Text = new SeString(
                 new IconPayload(autoOn ? BitmapFontIcon.SwordUnsheathed : BitmapFontIcon.SwordSheathed),
-                new TextPayload($"{(autoOn ? $": On ({Presets.GetJobAutorots.Count} active)" : ": Off")}")
+                new TextPayload($"{(autoOn ? $": On ({P.IPCSearch.ActiveJobPresets} active)" : ": Off")}")
                 );
         }
 
@@ -357,7 +357,6 @@ namespace WrathCombo
                                 continue;
 
                             Service.Configuration.EnabledActions.Add(preset);
-                            Service.Configuration.EnabledActions.Remove(preset);
                             if (int.TryParse(preset.ToString(), out int pres)) continue;
                             var controlled =
                                 IPC.UIHelper.PresetControlled(preset) is not null;
@@ -377,7 +376,6 @@ namespace WrathCombo
                             if (!preset.ToString().Equals(targetPreset, StringComparison.InvariantCultureIgnoreCase))
                                 continue;
 
-                            Service.Configuration.EnabledActions.Remove(preset);
                             if (int.TryParse(preset.ToString(), out int pres)) continue;
                             var controlled =
                                 IPC.UIHelper.PresetControlled(preset) is not null;

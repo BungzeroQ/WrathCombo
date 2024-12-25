@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
+using ECommons.GameHelpers;
 using WrathCombo.Attributes;
 using WrathCombo.Combos;
 using WrathCombo.CustomComboNS.Functions;
@@ -309,10 +310,17 @@ public class Search(ref Leasing leasing)
                     }
                 );
             _lastCacheUpdateForPresetStates = DateTime.Now;
-
+            UpdateActiveJobPresets();
             return field;
         }
     }
+
+    internal void UpdateActiveJobPresets()
+    {
+        ActiveJobPresets = AutoActions.Where(x => (Player.JobId == x.Key.Attributes().CustomComboInfo.JobID || CustomComboFunctions.JobIDs.ClassToJob((byte)Player.Job) == x.Key.Attributes().CustomComboInfo.JobID) && x.Value && CustomComboFunctions.IsEnabled(x.Key) && x.Key.Attributes().Parent == null).Count();
+    }
+
+    internal int ActiveJobPresets = 0;
 
     #endregion
 

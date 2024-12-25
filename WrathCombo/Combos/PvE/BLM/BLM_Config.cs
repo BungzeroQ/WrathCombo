@@ -131,7 +131,7 @@ internal partial class BLM
                     if (BLMPvP.Config.BLMPVP_BurstButtonOption == 0)
                     {
                         ImGui.Indent();
-                        DrawRoundedSliderFloat(0, 3, BLMPvP.Config.BLMPvP_Movement_Threshold, "Movement Threshold", 137);
+                        DrawRoundedSliderFloat(0.1f, 3, BLMPvP.Config.BLMPvP_Movement_Threshold, "Movement Threshold", 137);
                         ImGui.Unindent();
                         if (ImGui.IsItemHovered())
                         {

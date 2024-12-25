@@ -94,6 +94,7 @@ namespace WrathCombo.Window.Functions
                 {
                     Service.Configuration.AutoActions[preset] = autoOn;
                     Service.Configuration.Save();
+                    P.IPCSearch.UpdateActiveJobPresets();
                 }
                 ImGui.SameLine();
                 ImGui.Text(label);

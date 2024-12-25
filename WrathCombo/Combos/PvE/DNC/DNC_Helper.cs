@@ -62,7 +62,6 @@ internal partial class DNC
             ReverseCascade, //20
             ReverseCascade,
             ReverseCascade,
-            ReverseCascade,
         ];
 
         public override List<(int[] Steps, int HoldDelay)> PrepullDelays { get; set; } =
@@ -94,6 +93,9 @@ internal partial class DNC
                 return false;
 
             if (!ActionReady(Devilment))
+                return false;
+
+            if (InCombat())
                 return false;
 
             return true;
@@ -132,7 +134,6 @@ internal partial class DNC
             ReverseCascade, //20
             FinishingMove,
             ReverseCascade,
-            ReverseCascade,
         ];
 
         public override List<(int[] Steps, int HoldDelay)> PrepullDelays { get; set; } =
@@ -164,6 +165,9 @@ internal partial class DNC
                 return false;
 
             if (!ActionReady(Devilment))
+                return false;
+
+            if (InCombat())
                 return false;
 
             return true;

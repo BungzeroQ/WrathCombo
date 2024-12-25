@@ -210,6 +210,8 @@ public partial class Helper(ref Leasing leasing, ref Search search)
         return combos;
     }
 
+    public static string? PrefixForIPC;
+
     /// <summary>
     ///     Method to set up an IPC, call the Wrath Combo callback, and dispose
     ///     of the IPC.
@@ -220,21 +222,15 @@ public partial class Helper(ref Leasing leasing, ref Search search)
     internal static void CallIPCCallback(string prefix, CancellationReason reason,
         string additionalInfo = "")
     {
-        EzIPCDisposalToken[] disposalTokens = [];
         try
         {
-            disposalTokens =
-                EzIPC.Init(typeof(LeaseeIPC), prefix, SafeWrapper.IPCException);
+            PrefixForIPC = prefix;
             LeaseeIPC.WrathComboCallback((int)reason, additionalInfo);
+            LeaseeIPC.Dispose();
         }
         catch
         {
-            // ignored
-        }
-        finally
-        {
-            foreach (var token in disposalTokens)
-                token.Dispose();
+            Logging.Error("Failed to call IPC callback with IPC prefix: " + prefix);
         }
     }
 
@@ -354,7 +350,19 @@ internal static class Logging
 
 internal static class LeaseeIPC
 {
+    private static EzIPCDisposalToken[]? _disposalTokens =
+        EzIPC.Init(typeof(LeaseeIPC), Helper.PrefixForIPC, SafeWrapper.IPCException);
+
 #pragma warning disable CS0649, CS8618 // Complaints of the method
     [EzIPC] internal static readonly Action<int, string> WrathComboCallback;
 #pragma warning restore CS8618, CS0649
+
+    public static void Dispose()
+    {
+        if (_disposalTokens is null)
+            return;
+        foreach (var token in _disposalTokens)
+            token.Dispose();
+        _disposalTokens = null;
+    }
 }

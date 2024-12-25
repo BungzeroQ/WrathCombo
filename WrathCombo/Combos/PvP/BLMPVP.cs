@@ -70,7 +70,7 @@ namespace WrathCombo.Combos.PvP
                 BLMPvP_Xenoglossy_SubOption = new("BLMPvP_Xenoglossy_SubOption");
 
             public static UserFloat
-                BLMPvP_Movement_Threshold = new("BLMPvP_Movement_Threshold", 0);
+                BLMPvP_Movement_Threshold = new("BLMPvP_Movement_Threshold", 0.1f);
         }
 
         internal class BLMPvP_BurstMode : CustomCombo
@@ -102,7 +102,7 @@ namespace WrathCombo.Combos.PvP
                     bool targetHasHeavy = TargetHasEffectAny(PvPCommon.Debuffs.Heavy);
                     bool isPlayerTargeted = CurrentTarget?.TargetObjectId == LocalPlayer.GameObjectId;
                     bool isParadoxPrimed = HasEffect(Buffs.UmbralIce1) || HasEffect(Buffs.AstralFire1);
-                    bool isMovingAdjusted = TimeMoving.TotalSeconds >= Config.BLMPvP_Movement_Threshold;
+                    bool isMovingAdjusted = TimeMoving.TotalMilliseconds / 1000f >= Config.BLMPvP_Movement_Threshold;
                     bool isResonanceExpiring = HasEffect(Buffs.SoulResonance) && GetBuffRemainingTime(Buffs.SoulResonance) <= 10;
                     bool hasUmbralIce = HasEffect(Buffs.UmbralIce1) || HasEffect(Buffs.UmbralIce2) || HasEffect(Buffs.UmbralIce3);
                     bool isElementalStarDelayed = HasEffect(Buffs.ElementalStar) && GetBuffRemainingTime(Buffs.ElementalStar) <= 20;
@@ -171,9 +171,9 @@ namespace WrathCombo.Combos.PvP
 
 
                     // Basic Spells
-                    return isMovingAdjusted && Config.BLMPVP_BurstButtonOption == 0
-                        ? OriginalHook(Blizzard) // Fire Mode
-                        : OriginalHook(actionID); // Ice Mode
+                    return isMovingAdjusted && Config.BLMPVP_BurstButtonOption == 0 && hasAstralFire
+                        ? OriginalHook(Blizzard)
+                        : OriginalHook(actionID);
 
 
                 }

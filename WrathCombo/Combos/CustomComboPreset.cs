@@ -1291,7 +1291,7 @@ public enum CustomComboPreset
     [ConflictingCombos(DNC_StandardStep_LastDance, DNC_TechnicalStep_Devilment)]
     [CustomComboInfo("Dance Step Combo Feature",
         "Change Standard Step and Technical Step into each dance step, while dancing." +
-        "\nWorks with Simple Dancer and Simple Dancer AoE.", DNC.JobID)]
+        "\nWorks with Advanced Mode DNC.", DNC.JobID)]
     DNC_DanceStepCombo = 4110,
 
     [CustomComboInfo("Custom Dance Step Feature",

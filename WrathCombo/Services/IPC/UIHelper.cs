@@ -455,14 +455,10 @@ public class UIHelper(ref Leasing leasing, ref Search search)
         ImGui.SameLine();
 
         if (forPreset is null)
-        {
             ImGuiHelpers.SafeTextColoredWrapped(ImGuiColors.DalamudGrey, label);
-        }
         else
-        {
             ImGuiHelpers.SafeTextColoredWrapped(ImGuiColors.DalamudGrey,
-                label.Contains("Auto") ? "Auto-Mode" : label.Split('#')[0]);
-        }
+                label.Contains("Auto") ? "" : label.Split('#')[0]);
 
         ImGui.PopStyleColor(2);
         ImGui.EndGroup();
