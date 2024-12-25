@@ -1,6 +1,7 @@
 ﻿using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using ECommons.DalamudServices;
+using ECommons.GameHelpers;
 using System;
 using System.Collections.Generic;
 using WrathCombo.Combos.JobHelpers.Enums;
@@ -764,6 +765,11 @@ namespace WrathCombo.Combos.PvE
             ];
             public override int MinOpenerLevel => 100;
             public override int MaxOpenerLevel => 109;
+
+            public override List<(int[] Steps, uint NewAction, Func<bool> Condition)> SubstitutionSteps { get; set; } =
+            [
+                ([1], Jolt3, () => InCombat() && !Player.Object.IsCasting)
+            ];
 
             internal override UserData? ContentCheckConfig => Config.RDM_BalanceOpener_Content;
 

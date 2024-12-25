@@ -28,7 +28,7 @@ internal partial class WHM
 
     internal class WHMOpenerMaxLevel1 : WrathOpener
     {
-        public override int MinOpenerLevel => 100;
+        public override int MinOpenerLevel => 92;
 
         public override int MaxOpenerLevel => 109;
 
@@ -42,13 +42,13 @@ internal partial class WHM
             Glare4,
             Assize,
             Glare4,
-            Glare3,
-            Glare3,
-            Glare3,
-            Glare3,
-            Glare3,
-            Glare3,
             Glare4,
+            Glare3,
+            Glare3,
+            Glare3,
+            Glare3,
+            Glare3,
+            Glare3,
             Dia
         ];
         internal override UserData? ContentCheckConfig => Config.WHM_Balance_Content;

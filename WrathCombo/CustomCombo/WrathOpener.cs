@@ -151,6 +151,12 @@ namespace WrathCombo.CustomComboNS
                     return false;
                 }
 
+                while (CustomComboFunctions.GetCooldownRemainingTime(CurrentOpenerAction) > 6 && !CustomComboFunctions.HasCharges(CurrentOpenerAction))
+                {
+                    OpenerStep++;
+                    CurrentOpenerAction = OpenerActions[OpenerStep - 1];
+                }
+
                 actionID = CurrentOpenerAction = OpenerActions[OpenerStep - 1];
                 
                 if (DelayedWeaveSteps.Any(x => x == OpenerStep))

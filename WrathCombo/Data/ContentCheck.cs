@@ -463,6 +463,9 @@ public class ContentCheck
             return true;
         }
 
+        if (Content.ContentFinderConditionRow?.RowId is 1010) //Chaotic Alliance, might end up being refactored in the future
+            return true;
+
         return false;
     }
 
