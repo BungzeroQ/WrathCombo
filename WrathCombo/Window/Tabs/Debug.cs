@@ -191,7 +191,7 @@ namespace WrathCombo.Window.Tabs
                         CustomStyleText($"Can Target Party:", $"{debugSpell.Value.CanTargetParty}");
                         CustomStyleText($"Can Target Area:", $"{debugSpell.Value.TargetArea}");
                         CustomStyleText($"Cast Type:", $"{debugSpell.Value.CastType}");
-                        CustomStyleText("Can Queue:", $"{ActionWatching.canQueueAction.Original(ActionManager.Instance(), 1, debugSpell.Value.RowId)}");
+                        CustomStyleText("Can Queue:", $"{CanQueue(debugSpell.Value.RowId)}");
                         if (debugSpell.Value.EffectRange > 0)
                             CustomStyleText($"Targets Hit:", $"{NumberOfEnemiesInRange(debugSpell.Value.RowId, CurrentTarget)}");
 
@@ -234,7 +234,6 @@ namespace WrathCombo.Window.Tabs
                 CustomStyleText("LB Level:", LimitBreakLevel);
                 CustomStyleText("LB Action:", LimitBreakAction.ActionName());
                 CustomStyleText("Animation Lock:", ActionManager.Instance()->AnimationLock);
-                CustomStyleText("Queued Action:", $"{ActionManager.Instance()->QueuedActionId.ActionName()}");
                 CustomStyleText("Movement Timer:", TimeMoving.ToString("mm\\:ss\\:ff"));
                 ImGui.Spacing();
 
@@ -360,6 +359,7 @@ namespace WrathCombo.Window.Tabs
                 CustomStyleText("Cast Time:", $"{LocalPlayer.CurrentCastTime:F2} / {LocalPlayer.TotalCastTime:F2}");
                 CustomStyleText("Cast Action:", LocalPlayer.CastActionId == 0 ? string.Empty : $"{(string.IsNullOrEmpty(ActionWatching.GetActionName(LocalPlayer.CastActionId)) ? "Unknown" : ActionWatching.GetActionName(LocalPlayer.CastActionId))} (ID: {LocalPlayer.CastActionId})");
                 CustomStyleText("Animation Lock:", $"{ActionManager.Instance()->AnimationLock:F1}");
+                CustomStyleText("Queued Action:", ActionManager.Instance()->QueuedActionId.ActionName());
                 ImGui.Spacing();
 
                 // Party Info

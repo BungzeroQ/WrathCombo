@@ -250,7 +250,7 @@ public class Search(ref Leasing leasing)
                         var isAutoMode =
                             Service.Configuration.AutoActions.TryGetValue(
                                 preset.Value.ID, out bool autoMode) &&
-                            autoMode;
+                            autoMode && preset.Value.ID.Attributes().AutoAction != null;
                         return new Dictionary<ComboStateKeys, bool>
                         {
                             { ComboStateKeys.Enabled, isEnabled },
@@ -259,14 +259,14 @@ public class Search(ref Leasing leasing)
                     }
                 );
             _lastCacheUpdateForPresetStates = DateTime.Now;
-            UpdateActiveJobPresets();
-            return _presetStates;
+            Svc.Framework.RunOnTick(() => UpdateActiveJobPresets(), TimeSpan.FromSeconds(1));
+            return field;
         }
     }
 
     internal void UpdateActiveJobPresets()
     {
-        ActiveJobPresets = AutoActions.Where(x => (Player.JobId == x.Key.Attributes().CustomComboInfo.JobID || CustomComboFunctions.JobIDs.ClassToJob((byte)Player.Job) == x.Key.Attributes().CustomComboInfo.JobID) && x.Value && CustomComboFunctions.IsEnabled(x.Key) && x.Key.Attributes().Parent == null).Count();
+        ActiveJobPresets = Window.Functions.Presets.GetJobAutorots.Count;
     }
 
     internal int ActiveJobPresets = 0;

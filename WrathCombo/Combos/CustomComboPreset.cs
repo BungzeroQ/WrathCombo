@@ -5511,8 +5511,8 @@ public enum CustomComboPreset
     SMN_DemiEgiMenu_EgiOrder_AoE = 17065,
 
     [ParentCombo(SMN_Advanced_Combo)]
-    [CustomComboInfo("Use Ruin III instead of Emerald Ruin III", 
-        "Replaces Emerald Ruin III with Ruin III in the rotation when Ruin Mastery III is not active.", 
+    [CustomComboInfo("Use Ruin III instead of Emerald Ruin III",
+        "Replaces Emerald Ruin III with Ruin III in the rotation when Ruin Mastery III is not active.",
         SMN.JobID, 15)]
     SMN_ST_Ruin3_Emerald_Ruin3 = 17067,
 
@@ -7372,6 +7372,7 @@ public enum CustomComboPreset
     #region WHITE MAGE
 
     [PvPCustomCombo]
+    [ReplaceSkill(WHMPvP.Glare)]
     [CustomComboInfo("Burst Mode", "Turns Glare into an all-in-one damage button.", WHM.JobID)]
     WHMPvP_Burst = 129000,
 
@@ -7387,19 +7388,30 @@ public enum CustomComboPreset
     [CustomComboInfo("Seraph Strike Option", "Adds Seraph Strike to Burst Mode.", WHM.JobID)]
     WHMPvP_Seraph_Strike = 129003,
 
-    [PvPCustomCombo]
-    [CustomComboInfo("Aquaveil Feature", "Adds Aquaveil to Cure II when available.", WHM.JobID)]
-    WHMPvP_Aquaveil = 129004,
+    [ParentCombo(WHMPvP_Burst)]
+    [CustomComboInfo("Afflatus Purgation Option", "Adds Afflatus Purgation (Limit Break) to Burst Mode.", WHM.JobID)]
+    WHMPvP_AfflatusPurgation = 129008,
 
     [PvPCustomCombo]
-    [CustomComboInfo("Cure III Feature", "Adds Cure III to Cure II when available.", WHM.JobID)]
+    [ReplaceSkill(WHMPvP.Cure2)]
+    [CustomComboInfo("Heal Feature", "Adds the below options onto Cure II.", WHM.JobID)]
+    WHMPvP_Heals = 129004,
+
+    [PvPCustomCombo]
+    [ParentCombo(WHMPvP_Heals)]
+    [CustomComboInfo("Cure III Option", "Adds Cure III to Cure II when available.", WHM.JobID)]
     WHMPvP_Cure3 = 129005,
+
+    [PvPCustomCombo]
+    [ParentCombo(WHMPvP_Heals)]
+    [CustomComboInfo("Aquaveil Option", "Adds Aquaviel to Cure II when available.", WHM.JobID)]
+    WHMPvP_Aquaveil = 129007,
 
     [ParentCombo(WHMPvP_Burst)]
     [CustomComboInfo("Glare IV Option", "Adds Glare IV to Burst Mode.", WHM.JobID)]
     WHMPvP_Glare4 = 129006,
 
-    // Last value = 129006
+    // Last value = 129007
 
     #endregion
 

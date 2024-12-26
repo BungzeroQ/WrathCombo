@@ -251,14 +251,14 @@ namespace WrathCombo.CustomComboNS.Functions
         {
             bool original = ActionWatching.canQueueAction.Original(ActionManager.Instance(), (uint)ActionType.Action, actionID);
             bool alreadyQueued = ActionManager.Instance()->QueuedActionId != 0;
-            bool inSlidecast = (LocalPlayer.TotalCastTime - LocalPlayer.CurrentCastTime) <= 0.4f;
+            bool inSlidecast = (LocalPlayer.TotalCastTime - LocalPlayer.CurrentCastTime) <= 0.5f;
             bool animLocked = ActionManager.Instance()->AnimationLock > 0;
-            bool recast = GetCooldown(actionID).CooldownRemaining <= 0.4f || GetCooldown(actionID).RemainingCharges > 0;
+            bool recast = GetCooldown(actionID).CooldownRemaining <= 0.5f || GetCooldown(actionID).RemainingCharges > 0;
             bool classCheck = ActionManager.Instance()->GetActionStatus(ActionType.Action, actionID) != 574;
 
-            var ret = original && !alreadyQueued && inSlidecast && !animLocked && recast && classCheck;
-
-            return ret || ActionManager.Instance()->GetActionStatus(ActionType.Action, actionID) == 0;
+            var ret = !alreadyQueued && inSlidecast && !animLocked && recast && classCheck;
+            var status = ActionManager.Instance()->GetActionStatus(ActionType.Action, actionID);
+            return ret && status is 0 or 582;
         }
     }
 }

@@ -3,6 +3,7 @@ using WrathCombo.CustomComboNS.Functions;
 using static WrathCombo.Extensions.UIntExtensions;
 using static WrathCombo.Window.Functions.UserConfig;
 using static WrathCombo.Window.Functions.SliderIncrements;
+using WrathCombo.Combos.PvP;
 
 namespace WrathCombo.Combos.PvE
 {
@@ -162,6 +163,11 @@ namespace WrathCombo.Combos.PvE
                     case CustomComboPreset.WHM_AoEHeals_Medica2:
                         DrawRoundedSliderFloat(0f, 6f, WHM_AoEHeals_MedicaTime, "Time Remaining on Buff to Renew");
                         DrawAdditionalBoolChoice(WHM_AoEHeals_MedicaMO, "Party UI Mousover Checking", "Check your mouseover target for the Medica II/III buff.\nTo be used in conjunction with Redirect/Reaction/etc.");
+                        break;
+
+                    case CustomComboPreset.WHMPvP_Heals:
+                        DrawHorizontalRadioButton(WHMPvP.Config.WHMPVP_HealOrder, $"{WHMPvP.Aquaveil.ActionName()} First", $"If Both {WHMPvP.Aquaveil.ActionName()} & {WHMPvP.Cure3.ActionName()} are ready, prioritise {WHMPvP.Aquaveil.ActionName()}", 0);
+                        DrawHorizontalRadioButton(WHMPvP.Config.WHMPVP_HealOrder, $"{WHMPvP.Cure3.ActionName()} First", $"If Both {WHMPvP.Aquaveil.ActionName()} & {WHMPvP.Cure3.ActionName()} are ready, prioritise {WHMPvP.Cure3.ActionName()}", 1);
                         break;
                 }
 

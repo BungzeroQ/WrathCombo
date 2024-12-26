@@ -1,5 +1,5 @@
 ﻿using Dalamud.Game.ClientState.JobGauge.Types;
-using ECommons.DalamudServices;
+using System;
 using System.Collections.Generic;
 using WrathCombo.CustomComboNS;
 using WrathCombo.CustomComboNS.Functions;
@@ -28,7 +28,7 @@ internal partial class PCT
 
         if (!Gauge.CanvasFlags.HasFlag(Dalamud.Game.ClientState.JobGauge.Enums.CanvasFlags.Pom))
             return false;
-      
+
         if (!Gauge.CanvasFlags.HasFlag(Dalamud.Game.ClientState.JobGauge.Enums.CanvasFlags.Weapon))
             return false;
 
@@ -68,6 +68,14 @@ internal partial class PCT
             ClawedMuse,
         ];
         internal override UserData? ContentCheckConfig => Config.PCT_Balance_Content;
+
+        public override List<(int[] Steps, uint NewAction, Func<bool> Condition)> SubstitutionSteps { get; set; } =
+[
+            ([8, 9, 10], BlizzardinCyan, () => OriginalHook(BlizzardinCyan) == BlizzardinCyan),
+            ([8, 9, 10], StoneinYellow, () => OriginalHook(BlizzardinCyan) == StoneinYellow),
+            ([8, 9, 10], ThunderinMagenta, () => OriginalHook(BlizzardinCyan) == ThunderinMagenta),
+            ([11], HolyInWhite, () => !HasEffect(Buffs.MonochromeTones)),
+        ];
 
         public override bool HasCooldowns()
         {
@@ -111,8 +119,8 @@ internal partial class PCT
             HammerStamp,
             SubtractivePalette,
             BlizzardinCyan,
-            StoneinYellow,
-            ThunderinMagenta,
+            BlizzardinCyan,
+            BlizzardinCyan,
             CometinBlack,
             WingedMuse,
             MogoftheAges,
@@ -125,6 +133,15 @@ internal partial class PCT
             ClawedMuse
         ];
         internal override UserData? ContentCheckConfig => Config.PCT_Balance_Content;
+
+        public override List<(int[] Steps, uint NewAction, Func<bool> Condition)> SubstitutionSteps { get; set; } =
+        [
+            ([3], CometinBlack, () => HasEffect(Buffs.MonochromeTones)),
+            ([9, 10, 11], BlizzardinCyan, () => OriginalHook(BlizzardinCyan) == BlizzardinCyan),
+             ([9, 10, 11], StoneinYellow, () => OriginalHook(BlizzardinCyan) == StoneinYellow),
+            ([9, 10, 11], ThunderinMagenta, () => OriginalHook(BlizzardinCyan) == ThunderinMagenta),
+            ([12], HolyInWhite, () => !HasEffect(Buffs.MonochromeTones)),
+        ];
 
         public override bool HasCooldowns()
         {

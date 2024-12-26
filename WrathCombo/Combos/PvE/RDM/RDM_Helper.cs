@@ -768,7 +768,7 @@ namespace WrathCombo.Combos.PvE
 
             public override List<(int[] Steps, uint NewAction, Func<bool> Condition)> SubstitutionSteps { get; set; } =
             [
-                ([1], Jolt3, () => InCombat() && !Player.Object.IsCasting)
+                ([1], Jolt3, () => PartyInCombat() && !Player.Object.IsCasting)
             ];
 
             internal override UserData? ContentCheckConfig => Config.RDM_BalanceOpener_Content;

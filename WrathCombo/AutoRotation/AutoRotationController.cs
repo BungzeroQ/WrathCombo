@@ -40,7 +40,7 @@ namespace WrathCombo.AutoRotation
             var cfg = new AutoRotationConfigIPCWrapper(
                 Service.Configuration.RotationConfig);
 
-            if (!cfg.Enabled || !Player.Available || Svc.Condition[ConditionFlag.Mounted])
+            if (!cfg.Enabled || !Player.Available || Player.Object.IsDead || Svc.Condition[ConditionFlag.Mounted])
                 return;
 
             if (!EzThrottler.Throttle("AutoRotController", 50))
@@ -68,7 +68,8 @@ namespace WrathCombo.AutoRotation
             if (!needsHeal)
                 TimeToHeal = null;
 
-            bool canHeal = TimeToHeal is null ? false : (DateTime.Now - TimeToHeal.Value).TotalSeconds >= cfg.HealerSettings.HealDelay;
+            bool actCheck = autoActions.Any(x => x.Key.Attributes().AutoAction.IsHeal && CustomComboFunctions.ActionReady(AutoRotationHelper.InvokeCombo(x.Key, x.Key.Attributes())));
+            bool canHeal = TimeToHeal is null ? false : (DateTime.Now - TimeToHeal.Value).TotalSeconds >= cfg.HealerSettings.HealDelay && actCheck;
 
             if (Player.Object.CurrentCastTime > 0) return;
             if (Player.Object.GetRole() is CombatRole.Healer || (Player.Job is Job.SMN or Job.RDM && cfg.HealerSettings.AutoRezDPSJobs))
@@ -99,6 +100,7 @@ namespace WrathCombo.AutoRotation
                 var action = attributes.AutoAction;
                 if ((action.IsAoE && LockedST) || (!action.IsAoE && LockedAoE)) continue;
                 var gameAct = attributes.ReplaceSkill.ActionIDs.First();
+                if (ActionManager.Instance()->GetActionStatus(ActionType.Action, gameAct) == 639) continue;
                 var sheetAct = Svc.Data.GetExcelSheet<Action>().GetRow(gameAct);
 
                 var outAct = AutoRotationHelper.InvokeCombo(preset.Key, attributes);
@@ -584,7 +586,7 @@ namespace WrathCombo.AutoRotation
             {
                 if (CustomComboFunctions.GetPartyMembers().Count == 0) return Player.Object;
                 var target = CustomComboFunctions.GetPartyMembers()
-                    .Where(x => !x.IsDead && x.IsTargetable && CustomComboFunctions.GetTargetHPPercent(x) <= (TargetHasRegen(x) ? Service.Configuration.RotationConfig.HealerSettings.SingleTargetRegenHPP : Service.Configuration.RotationConfig.HealerSettings.SingleTargetHPP))
+                    .Where(x => CustomComboFunctions.IsInLineOfSight(x) && CustomComboFunctions.GetTargetDistance(x) <= 30 && !x.IsDead && x.IsTargetable && CustomComboFunctions.GetTargetHPPercent(x) <= (TargetHasRegen(x) ? Service.Configuration.RotationConfig.HealerSettings.SingleTargetRegenHPP : Service.Configuration.RotationConfig.HealerSettings.SingleTargetHPP))
                     .OrderByDescending(x => CustomComboFunctions.GetTargetHPPercent(x)).FirstOrDefault();
                 return target;
             }
@@ -593,7 +595,7 @@ namespace WrathCombo.AutoRotation
             {
                 if (CustomComboFunctions.GetPartyMembers().Count == 0) return Player.Object;
                 var target = CustomComboFunctions.GetPartyMembers()
-                    .Where(x => !x.IsDead && x.IsTargetable && CustomComboFunctions.GetTargetHPPercent(x) <= (TargetHasRegen(x) ? Service.Configuration.RotationConfig.HealerSettings.SingleTargetRegenHPP : Service.Configuration.RotationConfig.HealerSettings.SingleTargetHPP))
+                    .Where(x => CustomComboFunctions.IsInLineOfSight(x) && CustomComboFunctions.GetTargetDistance(x) <= 30 && !x.IsDead && x.IsTargetable && CustomComboFunctions.GetTargetHPPercent(x) <= (TargetHasRegen(x) ? Service.Configuration.RotationConfig.HealerSettings.SingleTargetRegenHPP : Service.Configuration.RotationConfig.HealerSettings.SingleTargetHPP))
                     .OrderBy(x => CustomComboFunctions.GetTargetHPPercent(x)).FirstOrDefault();
                 return target;
             }

@@ -97,6 +97,7 @@ namespace WrathCombo
                     AST.QuickTargetCards.SelectedRandomMember = null;
                     PvEFeatures.HasToOpenJob = true;
                     WrathOpener.SelectOpener(value.Value);
+                    Svc.Framework.RunOnTick(() => P.IPCSearch.UpdateActiveJobPresets(), TimeSpan.FromSeconds(0.1));
                 }
                 jobID = value;
             }
@@ -152,6 +153,7 @@ namespace WrathCombo
 
             CachePresets();
             Svc.Framework.Update += OnFrameworkUpdate;
+            Svc.ClientState.TerritoryChanged += ClientState_TerritoryChanged;
 
             KillRedundantIDs();
             HandleConflictedCombos();
@@ -162,6 +164,11 @@ namespace WrathCombo
 #if DEBUG
             ConfigWindow.IsOpen = true;
 #endif
+        }
+
+        private void ClientState_TerritoryChanged(ushort obj)
+        {
+            Svc.Framework.RunOnTick(() => P.IPCSearch.UpdateActiveJobPresets(), TimeSpan.FromSeconds(1));
         }
 
         private const string OptionControlledByIPC =
@@ -312,6 +319,7 @@ namespace WrathCombo
             ws.RemoveAllWindows();
             Svc.DtrBar.Remove("Wrath Combo");
             Svc.Framework.Update -= OnFrameworkUpdate;
+            Svc.ClientState.TerritoryChanged -= ClientState_TerritoryChanged;
             Svc.PluginInterface.UiBuilder.OpenConfigUi -= OnOpenConfigUi;
             Svc.PluginInterface.UiBuilder.Draw -= DrawUI;
 
