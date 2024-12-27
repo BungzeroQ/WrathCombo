@@ -213,8 +213,8 @@ internal partial class DRK
         /// <summary>
         ///     Whether abilities should be restricted to Bosses or not.
         /// </summary>
-        /// <seealso cref="Config.DRK_ST_TBNBossRestriction" />
-        /// <seealso cref="Config.DRK_ST_LivingDeadBossRestriction" />
+        /// <seealso cref="DRK_ST_TBNBossRestriction" />
+        /// <seealso cref="DRK_ST_LivingDeadBossRestriction" />
         internal enum BossAvoidance
         {
             Off = 1,

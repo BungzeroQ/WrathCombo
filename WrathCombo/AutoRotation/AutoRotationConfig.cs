@@ -36,6 +36,7 @@
         public bool AutoRezDPSJobs = false;
         public bool AutoCleanse = false;
         public bool PreEmptiveHoT = false;
+        public bool IncludeNPCs = false;
 
     }
 }

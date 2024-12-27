@@ -1,7 +1,13 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.DalamudServices;
+using ECommons.ExcelServices;
+using ECommons.GameFunctions;
+using ECommons.GameHelpers;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using System.Collections.Generic;
 using System.Linq;
+using WrathCombo.AutoRotation;
+using WrathCombo.Combos.PvE;
 using WrathCombo.Services;
 
 namespace WrathCombo.CustomComboNS.Functions
@@ -14,7 +20,7 @@ namespace WrathCombo.CustomComboNS.Functions
 
         /// <summary> Gets the party list </summary>
         /// <returns> Current party list. </returns>
-        public static List<IBattleChara> GetPartyMembers()
+        public unsafe static List<IBattleChara> GetPartyMembers()
         {
             var output = new List<IBattleChara>();
             for (int i = 1; i <= 8; i++)
@@ -23,6 +29,19 @@ namespace WrathCombo.CustomComboNS.Functions
                 if (member != null)
                     output.Add((IBattleChara)member);
             }
+
+            if (AutoRotationController.cfg is not null)
+            {
+                if (AutoRotationController.cfg.Enabled && AutoRotationController.cfg.HealerSettings.IncludeNPCs && Player.Job.IsHealer())
+                {
+                    foreach (var npc in Svc.Objects.Where(x => x is IBattleChara).Cast<IBattleChara>())
+                    {
+                        if (ActionManager.CanUseActionOnTarget(All.Esuna, npc.GameObject()) && !output.Contains(npc))
+                            output.Add(npc);
+                    }
+                }
+            }
+
             return output;
         }
 

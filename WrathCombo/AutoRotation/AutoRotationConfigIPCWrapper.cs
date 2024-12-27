@@ -165,6 +165,18 @@ public class HealerSettingsIPCWrapper(HealerSettings settings)
         }
     }
 
+    public bool IncludeNPCs
+    {
+        get
+        {
+            var checkControlled =
+                P.IPC.UIHelper.AutoRotationConfigControlled("IncludeNPCs");
+            return checkControlled is not null
+                ? checkControlled.Value.state == 1
+                : settings.IncludeNPCs;
+        }
+    }
+
     #region Direct Pass-Throughs (no IPC check)
 
     public int? AoEHealTargetCount => settings.AoEHealTargetCount;

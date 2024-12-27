@@ -181,6 +181,9 @@ public enum AutoRotationConfigOption
 
     /// <seealso cref="HealerSettings.AutoCleanse" />
     [ConfigValueType(typeof(bool))] AutoCleanse,
+
+    /// <seealso cref="HealerSettings.IncludeNPCs"/>
+    [ConfigValueType(typeof(bool))] IncludeNPCs,
 }
 
 /// <summary>
@@ -189,19 +192,19 @@ public enum AutoRotationConfigOption
 /// </summary>
 public enum AutoRotationConfigDPSRotationSubset
 {
-    /// <seealso cref="AutoRotation.DPSRotationMode.Manual" />
+    /// <seealso cref="DPSRotationMode.Manual" />
     Manual,
 
-    /// <seealso cref="AutoRotation.DPSRotationMode.Lowest_Current" />
+    /// <seealso cref="DPSRotationMode.Lowest_Current" />
     Lowest_Current,
 
-    /// <seealso cref="AutoRotation.DPSRotationMode.Highest_Max" />
+    /// <seealso cref="DPSRotationMode.Highest_Max" />
     Highest_Max,
 
-    /// <seealso cref="AutoRotation.DPSRotationMode.Tank_Target" />
+    /// <seealso cref="DPSRotationMode.Tank_Target" />
     Tank_Target,
 
-    /// <seealso cref="AutoRotation.DPSRotationMode.Nearest" />
+    /// <seealso cref="DPSRotationMode.Nearest" />
     Nearest,
 }
 
@@ -211,10 +214,10 @@ public enum AutoRotationConfigDPSRotationSubset
 /// </summary>
 public enum AutoRotationConfigHealerRotationSubset
 {
-    /// <seealso cref="AutoRotation.HealerRotationMode.Manual" />
+    /// <seealso cref="HealerRotationMode.Manual" />
     Manual,
 
-    /// <seealso cref="AutoRotation.HealerRotationMode.Highest_Current" />
+    /// <seealso cref="HealerRotationMode.Highest_Current" />
     Lowest_Current,
 }
 

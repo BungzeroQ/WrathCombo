@@ -20,11 +20,11 @@ namespace WrathCombo.Window;
 ///     Just search for "UPDATE THIS VALUE" and update the value as needed.<br/>
 ///     (or follow the see-also links below)
 /// </summary>
-/// <seealso cref="SettingChangeWindow.Option"/>
-/// <seealso cref="SettingChangeWindow.OptionSuggestedValue"/>
-/// <seealso cref="SettingChangeWindow.VersionWhereProblemIntroduced"/>
-/// <seealso cref="SettingChangeWindow.Explanation"/>
-/// <seealso cref="SettingChangeWindow.Draw"/>
+/// <seealso cref="Option"/>
+/// <seealso cref="OptionSuggestedValue"/>
+/// <seealso cref="VersionWhereProblemIntroduced"/>
+/// <seealso cref="Explanation"/>
+/// <seealso cref="Draw"/>
 internal class SettingChangeWindow : Dalamud.Interface.Windowing.Window
 {
 

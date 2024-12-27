@@ -18,7 +18,7 @@ namespace WrathCombo.Services.IPC;
 
 /// <summary>
 ///     IPC service for other plugins to have user-overridable control of Wrath.<br />
-///     See <see cref="Provider.RegisterForLease(string,string)" /> for details on use.
+///     See <see cref="RegisterForLease(string,string)" /> for details on use.
 ///     <br />
 ///     See the "Normal IPC Flow" region for the main IPC methods.
 /// </summary>

@@ -123,7 +123,7 @@ public class Lease(
     ///     <see cref="IPCPrefixForCallback">IPC</see>.
     /// </summary>
     /// <param name="cancellationReason">
-    ///     The <see cref="CancellationReason" /> for cancelling the lease.
+    ///     The <see cref="CancellationReasonEnum" /> for cancelling the lease.
     /// </param>
     /// <param name="additionalInfo">
     ///     Any additional information to provide with the cancellation.
@@ -135,7 +135,7 @@ public class Lease(
     ///     by the user via <see cref="UIHelper.RevokeControl"/>.
     /// </remarks>
     public void Cancel
-        (CancellationReason cancellationReason, string additionalInfo = "")
+        (CancellationReasonEnum cancellationReason, string additionalInfo = "")
     {
         Logging.Log(
             "Cancelling Lease for: "
@@ -481,7 +481,7 @@ public partial class Leasing
     ///     Your lease ID from <see cref="Provider.RegisterForLease(string,string)" />
     /// </param>
     /// <param name="cancellationReason">
-    ///     The <see cref="CancellationReason" /> for cancelling the lease.
+    ///     The <see cref="CancellationReasonEnum" /> for cancelling the lease.
     /// </param>
     /// <param name="additionalInfo">
     ///     Any additional information to log and provide with the cancellation.
@@ -491,10 +491,10 @@ public partial class Leasing
     ///     provided.
     /// </remarks>
     internal void RemoveRegistration
-    (Guid lease, CancellationReason cancellationReason,
+    (Guid lease, CancellationReasonEnum cancellationReason,
         string additionalInfo = "")
     {
-        if (cancellationReason == CancellationReason.WrathUserManuallyCancelled)
+        if (cancellationReason == CancellationReasonEnum.WrathUserManuallyCancelled)
             _userRevokedTemporaryBlacklist.Add(
                 lease,
                 (Registrations[lease].InternalPluginName,
@@ -568,7 +568,7 @@ public partial class Leasing
 
         if (CheckBlacklist(Registrations[lease].ConfigurationsHash) &&
             Registrations[lease].SetsLeased > 4)
-            RemoveRegistration(lease, CancellationReason.WrathUserManuallyCancelled,
+            RemoveRegistration(lease, CancellationReasonEnum.WrathUserManuallyCancelled,
                 "Matched currently-blacklisted configuration");
 
         registration.LastUpdated = DateTime.Now;
@@ -626,7 +626,7 @@ public partial class Leasing
 
         if (CheckBlacklist(Registrations[lease].ConfigurationsHash) &&
             Registrations[lease].SetsLeased > 4)
-            RemoveRegistration(lease, CancellationReason.WrathUserManuallyCancelled,
+            RemoveRegistration(lease, CancellationReasonEnum.WrathUserManuallyCancelled,
                 "Matched currently-blacklisted configuration");
 
         registration.LastUpdated = DateTime.Now;
@@ -669,13 +669,13 @@ public partial class Leasing
     ///     Suspend all leases. Called when IPC is disabled remotely.
     /// </summary>
     /// <param name="reason">
-    ///     The <see cref="CancellationReason">reason</see> for suspending leases.
+    ///     The <see cref="CancellationReasonEnum">reason</see> for suspending leases.
     /// </param>
     /// <seealso cref="Helper.IPCEnabled" />
     /// <seealso cref="RemoveRegistration" />
-    internal void SuspendLeases(CancellationReason? reason = null)
+    internal void SuspendLeases(CancellationReasonEnum? reason = null)
     {
-        var reasonToUse = reason ?? CancellationReason.AllServicesSuspended;
+        var reasonToUse = reason ?? CancellationReasonEnum.AllServicesSuspended;
 
         Logging.Warn("Suspending all leases.");
 
@@ -726,7 +726,7 @@ public partial class Leasing
         foreach (var (lease, registration) in leasesCopy)
             if (!plugins.Contains(registration.InternalPluginName))
                 RemoveRegistration(
-                    lease, CancellationReason.LeaseePluginDisabled
+                    lease, CancellationReasonEnum.LeaseePluginDisabled
                 );
 
         _checkingLeaseePluginsUnloaded = false;

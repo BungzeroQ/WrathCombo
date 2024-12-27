@@ -189,7 +189,7 @@ namespace WrathCombo.CustomComboNS.Functions
         public static bool HasCleansableDebuff(IGameObject? OurTarget = null)
         {
             OurTarget ??= CurrentTarget;
-            if (HasFriendlyTarget(OurTarget) && (OurTarget is IBattleChara chara))
+            if ((OurTarget is IBattleChara chara))
             {
                 foreach (Status status in chara.StatusList)
                 {

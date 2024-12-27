@@ -79,11 +79,26 @@ namespace WrathCombo.Combos.PvP
             {
                 if (actionID is Cure2)
                 {
-                    if (IsEnabled(CustomComboPreset.WHMPvP_Aquaveil) && IsOffCooldown(Aquaveil))
-                        return Aquaveil;
+                    bool aquaveil = IsEnabled(CustomComboPreset.WHMPvP_Aquaveil) && IsOffCooldown(Aquaveil);
+                    bool cure3 = IsEnabled(CustomComboPreset.WHMPvP_Cure3) && HasEffect(Buffs.Cure3Ready);
 
-                    if (IsEnabled(CustomComboPreset.WHMPvP_Cure3) && HasEffect(Buffs.Cure3Ready))
-                        return Cure3;
+                    if (Config.WHMPVP_HealOrder == 0)
+                    {
+                        if (aquaveil)
+                            return Aquaveil;
+
+                        if (cure3)
+                            return Cure3;
+                    }
+                    else
+                    {
+                        if (cure3)
+                            return Cure3;
+
+                        if (aquaveil)
+                            return Aquaveil;
+                    }
+                    
                 }
 
                 return actionID;

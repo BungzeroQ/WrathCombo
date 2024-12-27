@@ -39,7 +39,7 @@ namespace WrathCombo.Window.Tabs
             protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level) => actionID;
         }
 
-        internal static Lumina.Excel.Sheets.Action? debugSpell;
+        internal static Action? debugSpell;
         internal unsafe static new void Draw()
         {
             DebugCombo? comboClass = new();
@@ -157,7 +157,7 @@ namespace WrathCombo.Window.Tabs
                             var cjc = Svc.Data.Excel.GetRawSheet("ClassJobCategory");
                             var cjcColumIdx = cjc.Columns[(int)JobID.Value];
 
-                            foreach (var act in Svc.Data.GetExcelSheet<Action>()!.Where(x => x.IsPlayerAction && (x.ClassJob.RowId == classId || x.ClassJob.RowId == JobID.Value)).OrderBy(x => x.ClassJobLevel))
+                            foreach (var act in Svc.Data.GetExcelSheet<Action>()!.Where(x => x.IsPlayerAction && x.ClassJobCategory.Value.IsJobInCategory(Player.Job)).OrderBy(x => x.ClassJobLevel))
                             {
                                 if (ImGui.Selectable($"({act.RowId}) Lv.{act.ClassJobLevel}. {act.Name} - {(act.IsPvP ? "PvP" : "Normal")}", debugSpell?.RowId == act.RowId))
                                 {
@@ -179,6 +179,7 @@ namespace WrathCombo.Window.Tabs
                         if (debugSpell.Value.UnlockLink.RowId != 0)
                             CustomStyleText($"Quest:", $"{Svc.Data.GetExcelSheet<Quest>().GetRow(debugSpell.Value.UnlockLink.RowId).Name} ({(UIState.Instance()->IsUnlockLinkUnlockedOrQuestCompleted(debugSpell.Value.UnlockLink.RowId) ? "Completed" : "Not Completed")})");
                         CustomStyleText($"Base Recast:", $"{debugSpell.Value.Recast100ms / 10f}s");
+                        CustomStyleText("Original Hook:", OriginalHook(debugSpell.Value.RowId).ActionName());
                         CustomStyleText($"Cooldown Total:", $"{ActionManager.Instance()->GetRecastTime(ActionType.Action, debugSpell.Value.RowId)}");
                         CustomStyleText($"Current Cooldown:", GetCooldown(debugSpell.Value.RowId).CooldownRemaining);
                         CustomStyleText($"Current Cast Time:", ActionManager.GetAdjustedCastTime(ActionType.Action, debugSpell.Value.RowId));
@@ -371,13 +372,12 @@ namespace WrathCombo.Window.Tabs
                 if (ImGui.CollapsingHeader("Party Members"))
                 {
                     ImGui.Indent();
-                    for (int i = 1; i <= 8; i++)
+                    foreach (var member in GetPartyMembers())
                     {
-                        if (GetPartySlot(i) is not IBattleChara member || member is null) continue;
                         if (ImGui.CollapsingHeader(member.Name.ToString()))
                         {
-                            CustomStyleText("Slot:", i);
                             CustomStyleText("Job:", member.ClassJob.Value.Abbreviation);
+                            CustomStyleText($"HP:", $"{member.CurrentHp}/{member.MaxHp}");
                             CustomStyleText("Dead Timer:", TimeSpentDead(member.GameObjectId));
                         }
                     }

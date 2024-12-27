@@ -18,27 +18,27 @@ public class ContentCheck
     /// </summary>
     public enum ListSet
     {
-        /// <seealso cref="ContentCheck.IsInBottomHalfContent" />
-        /// <seealso cref="ContentCheck.IsInTopHalfContent" />
-        /// <seealso cref="ContentCheck.BottomHalfContent" />
-        /// <seealso cref="ContentCheck.TopHalfContent" />
+        /// <seealso cref="IsInBottomHalfContent" />
+        /// <seealso cref="IsInTopHalfContent" />
+        /// <seealso cref="BottomHalfContent" />
+        /// <seealso cref="TopHalfContent" />
         Halved,
 
-        /// <seealso cref="ContentCheck.IsInCasualContent" />
-        /// <seealso cref="ContentCheck.IsInHardContent" />
-        /// <seealso cref="ContentCheck.CasualContent" />
-        /// <seealso cref="ContentCheck.HardContent" />
+        /// <seealso cref="IsInCasualContent" />
+        /// <seealso cref="IsInHardContent" />
+        /// <seealso cref="CasualContent" />
+        /// <seealso cref="HardContent" />
         CasualVSHard,
 
-        /// <seealso cref="ContentCheck.IsInSoftCoreContent" />
-        /// <seealso cref="ContentCheck.IsInMidCoreContent" />
-        /// <seealso cref="ContentCheck.IsInHardCoreContent" />
-        /// <seealso cref="ContentCheck.SoftCoreContent" />
-        /// <seealso cref="ContentCheck.MidCoreContent" />
-        /// <seealso cref="ContentCheck.HardCoreContent" />
+        /// <seealso cref="IsInSoftCoreContent" />
+        /// <seealso cref="IsInMidCoreContent" />
+        /// <seealso cref="IsInHardCoreContent" />
+        /// <seealso cref="SoftCoreContent" />
+        /// <seealso cref="MidCoreContent" />
+        /// <seealso cref="HardCoreContent" />
         Cored,
 
-        /// <seealso cref="ContentCheck.IsInBossOnlyContent" />
+        /// <seealso cref="IsInBossOnlyContent" />
         BossOnly,
     }
 
@@ -131,7 +131,7 @@ public class ContentCheck
     /// </summary>
     /// <returns>
     ///     If the
-    ///     <see cref="ECommons.GameHelpers.Content.DetermineContentDifficulty">
+    ///     <see cref="Content.DetermineContentDifficulty">
     ///         determined difficulty
     ///     </see>
     ///     is in the list of <see cref="BottomHalfContent" />.
@@ -152,7 +152,7 @@ public class ContentCheck
     /// </summary>
     /// <returns>
     ///     If the
-    ///     <see cref="ECommons.GameHelpers.Content.DetermineContentDifficulty">
+    ///     <see cref="Content.DetermineContentDifficulty">
     ///         determined difficulty
     ///     </see>
     ///     is in the list of <see cref="TopHalfContent" />.
@@ -222,7 +222,7 @@ public class ContentCheck
     /// </summary>
     /// <returns>
     ///     If the
-    ///     <see cref="ECommons.GameHelpers.Content.DetermineContentDifficulty">
+    ///     <see cref="Content.DetermineContentDifficulty">
     ///         determined difficulty
     ///     </see>
     ///     is in the list of <see cref="CasualContent" />.
@@ -242,7 +242,7 @@ public class ContentCheck
     /// </summary>
     /// <returns>
     ///     If the
-    ///     <see cref="ECommons.GameHelpers.Content.DetermineContentDifficulty">
+    ///     <see cref="Content.DetermineContentDifficulty">
     ///         determined difficulty
     ///     </see>
     ///     is in the list of <see cref="HardContent" />.
@@ -310,7 +310,7 @@ public class ContentCheck
     /// </summary>
     /// <returns>
     ///     If the
-    ///     <see cref="ECommons.GameHelpers.Content.DetermineContentDifficulty">
+    ///     <see cref="Content.DetermineContentDifficulty">
     ///         determined difficulty
     ///     </see>
     ///     is in the list of <see cref="SoftCoreContent" />.
@@ -330,7 +330,7 @@ public class ContentCheck
     /// </summary>
     /// <returns>
     ///     If the
-    ///     <see cref="ECommons.GameHelpers.Content.DetermineContentDifficulty">
+    ///     <see cref="Content.DetermineContentDifficulty">
     ///         determined difficulty
     ///     </see>
     ///     is in the list of <see cref="MidCoreContent" />.
@@ -350,7 +350,7 @@ public class ContentCheck
     /// </summary>
     /// <returns>
     ///     If the
-    ///     <see cref="ECommons.GameHelpers.Content.DetermineContentDifficulty">
+    ///     <see cref="Content.DetermineContentDifficulty">
     ///         determined difficulty
     ///     </see>
     ///     is in the list of <see cref="HardCoreContent" />.
@@ -440,7 +440,7 @@ public class ContentCheck
     /// </summary>
     /// <returns>
     ///     If the
-    ///     <see cref="ECommons.GameHelpers.Content.ContentFinderConditionRow">
+    ///     <see cref="Content.ContentFinderConditionRow">
     ///         CFC
     ///     </see>
     ///     is in a static list of boss only content; as in, trash-less bosses.

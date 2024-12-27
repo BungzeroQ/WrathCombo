@@ -99,7 +99,7 @@ namespace WrathCombo.CustomComboNS.Functions
         public void Clear(int maxValues)
         {
             var array = PluginConfiguration.GetCustomIntArrayValue(this.pName);
-            Array.Resize<int>(ref array, maxValues);
+            Array.Resize(ref array, maxValues);
             PluginConfiguration.SetCustomIntArrayValue(this.pName, array);
             Service.Configuration.Save();
         }
