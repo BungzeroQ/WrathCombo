@@ -105,9 +105,8 @@ namespace WrathCombo.AutoRotation
                 if (ActionManager.Instance()->GetActionStatus(ActionType.Action, gameAct) == 639) continue;
                 var sheetAct = Svc.Data.GetExcelSheet<Action>().GetRow(gameAct);
 
-                var outAct = AutoRotationHelper.InvokeCombo(preset.Key, attributes);
+                var outAct = CustomComboFunctions.OriginalHook(AutoRotationHelper.InvokeCombo(preset.Key, attributes));
                 if (!CustomComboFunctions.CanQueue(outAct)) continue;
-
                 if (action.IsHeal)
                 {
                     AutomateHealing(preset.Key, attributes, gameAct);

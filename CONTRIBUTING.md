@@ -67,3 +67,7 @@ will need backed by a `User...`-Type option, e.g.
 [`UserBool`](/WrathCombo/CustomCombo/Functions/Config.cs#L64), etc, 
 which can then be referenced in [rotation](#rotations) code as
 `Config.<your config's name>`.
+
+# Guides on using specific parts of Wrath
+
+- [IPC](/docs/IPC.md) - for other plugins to control Wrath Combo settings.
