@@ -260,7 +260,7 @@ public class Search(ref Leasing leasing)
                 );
             _lastCacheUpdateForPresetStates = DateTime.Now;
             Svc.Framework.RunOnTick(() => UpdateActiveJobPresets(), TimeSpan.FromSeconds(1));
-            return field;
+            return _presetStates;
         }
     }
 
