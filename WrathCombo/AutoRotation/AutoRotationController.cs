@@ -113,6 +113,9 @@ namespace WrathCombo.AutoRotation
                     continue;
                 }
 
+                if (!action.IsHeal && CustomComboFunctions.HasEffect(418)) //Rez Invuln
+                    continue;
+
                 if (Player.Object.GetRole() is CombatRole.Tank)
                 {
                     AutomateTanking(preset.Key, attributes, gameAct);

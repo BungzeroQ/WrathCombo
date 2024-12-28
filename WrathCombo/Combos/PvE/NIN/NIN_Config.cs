@@ -30,12 +30,18 @@ internal partial class NIN
             BloodbathThresholdAoE = new("BloodbathThresholdAoE"),
             NIN_VariantCure = new("NIN_VariantCure"),
             NIN_Adv_Opener_Selection = new("NIN_Adv_Opener_Selection", 0),
-            NIN_Balance_Content = new("NIN_Balance_Content", 1);
+            NIN_Balance_Content = new("NIN_Balance_Content", 1),
+            Advanced_TrueNorth = new("Advanced_TrueNorth");
 
         internal static void Draw(CustomComboPreset preset)
         {
             switch (preset)
             {
+                case CustomComboPreset.NIN_ST_AdvancedMode_TrueNorth:
+                    UserConfig.DrawHorizontalRadioButton(Advanced_TrueNorth, "Dynamic Positionals", $"Dynamic choice of {ArmorCrush.ActionName()}/{AeolianEdge.ActionName()} based on position and available charges.\nGo to Flank to build charges, Rear to spend them. \nPrevents overcap or waste and will use true north as needed.", 0);
+                    UserConfig.DrawHorizontalRadioButton(Advanced_TrueNorth, $"Use Before {ArmorCrush.ActionName()} Only", $"Only triggers the use of True North before {ArmorCrush.ActionName()}.", 1);
+
+                    break;
                 case CustomComboPreset.NIN_ST_AdvancedMode_BalanceOpener:
                     UserConfig.DrawRadioButton(NIN_Adv_Opener_Selection, $"Standard Opener - 4th GCD {KunaisBane.ActionName()}", "", 0);
                     UserConfig.DrawRadioButton(NIN_Adv_Opener_Selection, $"Standard Opener - 3rd GCD {Dokumori.ActionName()}", "", 1);
@@ -45,11 +51,11 @@ internal partial class NIN
                     break;
                 case CustomComboPreset.NIN_Simple_Mudras:
                     UserConfig.DrawRadioButton(NIN_SimpleMudra_Choice, "Mudra Path Set 1",
-                        "1. Ten Mudras -> Fuma Shuriken, Raiton/Hyosho Ranryu, Suiton (Doton under Kassatsu).\nChi Mudras -> Fuma Shuriken, Hyoton, Huton.\nJin Mudras -> Fuma Shuriken, Katon/Goka Mekkyaku, Doton",
+                        $"1. {Ten.ActionName()} Mudras -> {FumaShuriken.ActionName()}, {Raiton.ActionName()}/{HyoshoRanryu.ActionName()}, {Suiton.ActionName()} ({Doton.ActionName()} under {Kassatsu.ActionName()}).\n{Chi.ActionName()} Mudras -> {FumaShuriken.ActionName()}, {Hyoton.ActionName()}, {Huton.ActionName()}.\n{Jin.ActionName()} Mudras -> {FumaShuriken.ActionName()}, {Katon.ActionName()}/{GokaMekkyaku.ActionName()}, {Doton.ActionName()}",
                         1);
 
                     UserConfig.DrawRadioButton(NIN_SimpleMudra_Choice, "Mudra Path Set 2",
-                        "2. Ten Mudras -> Fuma Shuriken, Hyoton/Hyosho Ranryu, Doton.\nChi Mudras -> Fuma Shuriken, Katon, Suiton.\nJin Mudras -> Fuma Shuriken, Raiton/Goka Mekkyaku, Huton (Doton under Kassatsu).",
+                        $"2. {Ten.ActionName()} Mudras -> {FumaShuriken.ActionName()}, {Hyoton.ActionName()}/{HyoshoRanryu.ActionName()}, {Doton.ActionName()}.\n{Chi.ActionName()} Mudras -> {FumaShuriken.ActionName()}, {Katon.ActionName()}, {Suiton.ActionName()}.\n{Jin.ActionName()} Mudras -> {FumaShuriken.ActionName()}, {Raiton.ActionName()}/{GokaMekkyaku.ActionName()}, {Huton.ActionName()} ({Doton.ActionName()} under {Kassatsu.ActionName()}).",
                         2);
 
                     break;

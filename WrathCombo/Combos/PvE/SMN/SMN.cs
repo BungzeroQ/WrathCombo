@@ -245,6 +245,9 @@ namespace WrathCombo.Combos.PvE
                         CanSpellWeave())
                         return Variant.VariantRampart;
 
+                    if (!HasPetPresent())
+                        return SummonCarbuncle;
+
                     if (CanSpellWeave())
                     {
                         if (IsOffCooldown(SearingLight) && LevelChecked(SearingLight) && ((!LevelChecked(SummonSolarBahamut) && OriginalHook(Ruin) is AstralImpulse) || OriginalHook(Ruin) is UmbralImpulse))
@@ -363,6 +366,9 @@ namespace WrathCombo.Combos.PvE
                         IsOffCooldown(Variant.VariantRampart) &&
                         CanSpellWeave())
                         return Variant.VariantRampart;
+
+                    if (!HasPetPresent())
+                        return SummonCarbuncle;
 
                     if (CanSpellWeave())
                     {

@@ -3150,12 +3150,6 @@ public enum CustomComboPreset
     [CustomComboInfo("True North Option", "Adds True North to Advanced Mode.", NIN.JobID)]
     NIN_ST_AdvancedMode_TrueNorth = 10030,
 
-    [ParentCombo(NIN_ST_AdvancedMode_TrueNorth)]
-    [ConflictingCombos(NIN_ST_AdvancedMode_Dynamic)]
-    [CustomComboInfo("Use Before Armor Crush Only Option", "Only triggers the use of True North before Armor Crush.",
-        NIN.JobID)]
-    NIN_ST_AdvancedMode_TrueNorth_ArmorCrush = 10031,
-
     [ParentCombo(NIN_ST_AdvancedMode)]
     [CustomComboInfo("Second Wind Option", "Adds Second Wind to Advanced Mode.", NIN.JobID)]
     NIN_ST_AdvancedMode_SecondWind = 10032,
@@ -3296,13 +3290,6 @@ public enum CustomComboPreset
     [ParentCombo(NIN_ST_AdvancedMode_Ninjitsus_Suiton)]
     [CustomComboInfo("Suiton Uptime Option", "Adds Suiton as an uptime feature.", NIN.JobID)]
     NIN_ST_AdvancedMode_Suiton_Uptime = 10067,
-
-    [ParentCombo(NIN_ST_AdvancedMode_TrueNorth)]
-    [ConflictingCombos(NIN_ST_AdvancedMode_TrueNorth_ArmorCrush)]
-    [CustomComboInfo("Dynamic Ninja Positional Option",
-        "Dynamic choice of Armor crush/Aeolian Edge based on position and available charges.\nGo to Flank to build charges, Rear to spend them. \nPrevents overcap or waste and will use true north as needed.",
-        NIN.JobID)]
-    NIN_ST_AdvancedMode_Dynamic = 10068,
 
     [Variant]
     [VariantParent(NIN_ST_SimpleMode, NIN_ST_AdvancedMode, NIN_AoE_SimpleMode, NIN_AoE_AdvancedMode)]
@@ -5277,6 +5264,99 @@ public enum CustomComboPreset
         SMN.JobID)]
     SMN_Advanced_Combo = 17000,
 
+
+    [AutoAction(true, false)]
+    [ReplaceSkill(SMN.Outburst)]
+    [ConflictingCombos(SMN_Simple_Combo_AoE)]
+    [CustomComboInfo("Advanced Mode - AoE",
+        "Replaces Outburst with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.",
+        SMN.JobID)]
+    SMN_Advanced_Combo_AoE = 17049,
+
+    [ParentCombo(SMN_Advanced_Combo_ESPainflare)]
+    [CustomComboInfo("Pooled oGCDs Option",
+        "Pools damage oGCDs for use inside the selected Demi phase while under the Searing Light buff.\nBahamut Burst becomes Solar Bahamut Burst at Lv100.",
+        SMN.JobID)]
+    SMN_DemiEgiMenu_oGCDPooling_AoE = 17050,
+
+    [ParentCombo(SMN_Advanced_Combo_AoE)]
+    [CustomComboInfo("Energy Attacks Combo Option",
+        "Adds Energy Siphon and Painflare to the AoE combo.\nWill be used on cooldown.", SMN.JobID)]
+    SMN_Advanced_Combo_ESPainflare = 17051,
+
+    [ParentCombo(SMN_DemiEgiMenu_oGCDPooling_AoE)]
+    [CustomComboInfo("Burst Delay Option",
+        "Only follows Burst Delay settings for the opener burst.\nThis Option is for high SPS builds.", SMN.JobID)]
+    SMN_Advanced_Burst_Delay_Option_AoE = 17052,
+
+    [ParentCombo(SMN_Advanced_Combo_AoE)]
+    [CustomComboInfo("Searing Light Combo Option", "Adds Searing Light to the AoE combo.\nWill be used on cooldown.",
+        SMN.JobID)]
+    SMN_SearingLight_AoE = 17053,
+
+    [ParentCombo(SMN_SearingLight_AoE)]
+    [CustomComboInfo("Searing Light Burst Option",
+        "Casts Searing Light only during Demi phases.\nReflects Demi choice selected under 'Pooled oGCDs Option'.\nNot recommended for SpS Builds.",
+        SMN.JobID)]
+    SMN_SearingLight_Burst_AoE = 17054,
+
+    [ParentCombo(SMN_Advanced_Combo_AoE)]
+    [CustomComboInfo("Demi Attacks Combo Option", "Adds Demi Summon oGCDs to the AoE combo.", SMN.JobID)]
+    SMN_Advanced_Combo_DemiSummons_Attacks_AoE = 17055,
+
+    [ParentCombo(SMN_Advanced_Combo_DemiSummons_Attacks_AoE)]
+    [CustomComboInfo("Rekindle Combo Option", "Adds Rekindle to the AoE combo.", SMN.JobID)]
+    SMN_Advanced_Combo_DemiSummons_Rekindle_AoE = 17056,
+
+    [ParentCombo(SMN_DemiEgiMenu_oGCDPooling_AoE)]
+    [CustomComboInfo("Any Searing Burst Option",
+        "Checks for any Searing light for bursting rather than just your own.\nUse this option if partied with multiple SMN and are worried about your Searing being overwritten.",
+        SMN.JobID)]
+    SMN_Advanced_Burst_Any_Option_AoE = 17057,
+
+    [ParentCombo(SMN_SearingLight_AoE)]
+    [CustomComboInfo("Searing Flash Combo Option", "Adds Searing Flash to the AoE combo.", SMN.JobID)]
+    SMN_SearingFlash_AoE = 17058,
+
+    [ParentCombo(SMN_Advanced_Combo_DemiSummons_Attacks_AoE)]
+    [CustomComboInfo("Lux Solaris Combo Option", "Adds Lux Solaris to the AoE combo.", SMN.JobID)]
+    SMN_Advanced_Combo_DemiSummons_LuxSolaris_AoE = 17059,
+
+    [ParentCombo(SMN_Advanced_Combo_AoE)]
+    [CustomComboInfo("Lucid Dreaming Option", "Adds Lucid Dreaming to the AoE combo when MP falls below the set value.",
+        SMN.JobID)]
+    SMN_Lucid_AoE = 17060,
+
+    [ParentCombo(SMN_Advanced_Combo_AoE)]
+    [CustomComboInfo("Demi Summons Combo Option", "Adds Demi summons to the AoE combo.", SMN.JobID)]
+    SMN_Advanced_Combo_DemiSummons_AoE = 17061,
+
+    [ParentCombo(SMN_Advanced_Combo_AoE)]
+    [CustomComboInfo("Ruin IV Combo Option",
+        "Adds Ruin IV to the AoE combo.\nUses when moving during Garuda Phase and you have no attunement, when moving during Ifrit phase, or when you have no active Egi or Demi summon.",
+        SMN.JobID)]
+    SMN_Advanced_Combo_Ruin4_AoE = 17062,
+
+    [ParentCombo(SMN_Advanced_Combo_AoE)]
+    [CustomComboInfo("Swiftcast Egi Ability Option", "Uses Swiftcast during the selected Egi summon.", SMN.JobID)]
+    SMN_DemiEgiMenu_SwiftcastEgi_AoE = 17063,
+
+    [ParentCombo(SMN_Advanced_Combo_AoE)]
+    [CustomComboInfo("Egi Attacks Combo Option", "Adds Precious Brilliance to the AoE combo.", SMN.JobID)]
+    SMN_Advanced_Combo_EgiSummons_Attacks_AoE = 17064,
+
+    [ParentCombo(SMN_Advanced_Combo_AoE)]
+    [CustomComboInfo("Egi Summons Combo Option",
+        "Adds Egi summons to the AoE combo.\nWill prioritise the Egi selected below.\nIf no option is selected, the feature will default to summoning Titan first.",
+        SMN.JobID)]
+    SMN_DemiEgiMenu_EgiOrder_AoE = 17065,
+
+    [ParentCombo(SMN_Advanced_Combo)]
+    [CustomComboInfo("Use Ruin III instead of Emerald Ruin III",
+        "Replaces Emerald Ruin III with Ruin III in the rotation when Ruin Mastery III is not active.",
+        SMN.JobID, 15)]
+    SMN_ST_Ruin3_Emerald_Ruin3 = 17067,
+
     [ParentCombo(SMN_Advanced_Combo)]
     [CustomComboInfo("Balance Opener (Level 100)", "Adds the Balance opener at level 100.", SMN.JobID)]
     SMN_Advanced_Combo_Balance_Opener = 170001,
@@ -5424,97 +5504,6 @@ public enum CustomComboPreset
     [CustomComboInfo("Cure Option", "Use Variant Cure when HP is below set threshold.", SMN.JobID)]
     SMN_Variant_Cure = 17047,
 
-    [AutoAction(true, false)]
-    [ReplaceSkill(SMN.Outburst)]
-    [ConflictingCombos(SMN_Simple_Combo_AoE)]
-    [CustomComboInfo("Advanced Mode - AoE",
-        "Replaces Outburst with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.",
-        SMN.JobID)]
-    SMN_Advanced_Combo_AoE = 17049,
-
-    [ParentCombo(SMN_Advanced_Combo_ESPainflare)]
-    [CustomComboInfo("Pooled oGCDs Option",
-        "Pools damage oGCDs for use inside the selected Demi phase while under the Searing Light buff.\nBahamut Burst becomes Solar Bahamut Burst at Lv100.",
-        SMN.JobID)]
-    SMN_DemiEgiMenu_oGCDPooling_AoE = 17050,
-
-    [ParentCombo(SMN_Advanced_Combo_AoE)]
-    [CustomComboInfo("Energy Attacks Combo Option",
-        "Adds Energy Siphon and Painflare to the AoE combo.\nWill be used on cooldown.", SMN.JobID)]
-    SMN_Advanced_Combo_ESPainflare = 17051,
-
-    [ParentCombo(SMN_DemiEgiMenu_oGCDPooling_AoE)]
-    [CustomComboInfo("Burst Delay Option",
-        "Only follows Burst Delay settings for the opener burst.\nThis Option is for high SPS builds.", SMN.JobID)]
-    SMN_Advanced_Burst_Delay_Option_AoE = 17052,
-
-    [ParentCombo(SMN_Advanced_Combo_AoE)]
-    [CustomComboInfo("Searing Light Combo Option", "Adds Searing Light to the AoE combo.\nWill be used on cooldown.",
-        SMN.JobID)]
-    SMN_SearingLight_AoE = 17053,
-
-    [ParentCombo(SMN_SearingLight_AoE)]
-    [CustomComboInfo("Searing Light Burst Option",
-        "Casts Searing Light only during Demi phases.\nReflects Demi choice selected under 'Pooled oGCDs Option'.\nNot recommended for SpS Builds.",
-        SMN.JobID)]
-    SMN_SearingLight_Burst_AoE = 17054,
-
-    [ParentCombo(SMN_Advanced_Combo_AoE)]
-    [CustomComboInfo("Demi Attacks Combo Option", "Adds Demi Summon oGCDs to the AoE combo.", SMN.JobID)]
-    SMN_Advanced_Combo_DemiSummons_Attacks_AoE = 17055,
-
-    [ParentCombo(SMN_Advanced_Combo_DemiSummons_Attacks_AoE)]
-    [CustomComboInfo("Rekindle Combo Option", "Adds Rekindle to the AoE combo.", SMN.JobID)]
-    SMN_Advanced_Combo_DemiSummons_Rekindle_AoE = 17056,
-
-    [ParentCombo(SMN_DemiEgiMenu_oGCDPooling_AoE)]
-    [CustomComboInfo("Any Searing Burst Option",
-        "Checks for any Searing light for bursting rather than just your own.\nUse this option if partied with multiple SMN and are worried about your Searing being overwritten.",
-        SMN.JobID)]
-    SMN_Advanced_Burst_Any_Option_AoE = 17057,
-
-    [ParentCombo(SMN_SearingLight_AoE)]
-    [CustomComboInfo("Searing Flash Combo Option", "Adds Searing Flash to the AoE combo.", SMN.JobID)]
-    SMN_SearingFlash_AoE = 17058,
-
-    [ParentCombo(SMN_Advanced_Combo_DemiSummons_Attacks_AoE)]
-    [CustomComboInfo("Lux Solaris Combo Option", "Adds Lux Solaris to the AoE combo.", SMN.JobID)]
-    SMN_Advanced_Combo_DemiSummons_LuxSolaris_AoE = 17059,
-
-    [ParentCombo(SMN_Advanced_Combo_AoE)]
-    [CustomComboInfo("Lucid Dreaming Option", "Adds Lucid Dreaming to the AoE combo when MP falls below the set value.",
-        SMN.JobID)]
-    SMN_Lucid_AoE = 17060,
-
-    [ParentCombo(SMN_Advanced_Combo_AoE)]
-    [CustomComboInfo("Demi Summons Combo Option", "Adds Demi summons to the AoE combo.", SMN.JobID)]
-    SMN_Advanced_Combo_DemiSummons_AoE = 17061,
-
-    [ParentCombo(SMN_Advanced_Combo_AoE)]
-    [CustomComboInfo("Ruin IV Combo Option",
-        "Adds Ruin IV to the AoE combo.\nUses when moving during Garuda Phase and you have no attunement, when moving during Ifrit phase, or when you have no active Egi or Demi summon.",
-        SMN.JobID)]
-    SMN_Advanced_Combo_Ruin4_AoE = 17062,
-
-    [ParentCombo(SMN_Advanced_Combo_AoE)]
-    [CustomComboInfo("Swiftcast Egi Ability Option", "Uses Swiftcast during the selected Egi summon.", SMN.JobID)]
-    SMN_DemiEgiMenu_SwiftcastEgi_AoE = 17063,
-
-    [ParentCombo(SMN_Advanced_Combo_AoE)]
-    [CustomComboInfo("Egi Attacks Combo Option", "Adds Precious Brilliance to the AoE combo.", SMN.JobID)]
-    SMN_Advanced_Combo_EgiSummons_Attacks_AoE = 17064,
-
-    [ParentCombo(SMN_Advanced_Combo_AoE)]
-    [CustomComboInfo("Egi Summons Combo Option",
-        "Adds Egi summons to the AoE combo.\nWill prioritise the Egi selected below.\nIf no option is selected, the feature will default to summoning Titan first.",
-        SMN.JobID)]
-    SMN_DemiEgiMenu_EgiOrder_AoE = 17065,
-
-    [ParentCombo(SMN_Advanced_Combo)]
-    [CustomComboInfo("Use Ruin III instead of Emerald Ruin III",
-        "Replaces Emerald Ruin III with Ruin III in the rotation when Ruin Mastery III is not active.",
-        SMN.JobID, 15)]
-    SMN_ST_Ruin3_Emerald_Ruin3 = 17067,
 
     #endregion
 
