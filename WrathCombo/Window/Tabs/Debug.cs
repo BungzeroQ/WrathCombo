@@ -36,7 +36,7 @@ namespace WrathCombo.Window.Tabs
         internal class DebugCombo : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; }
-            protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level) => actionID;
+            protected override uint Invoke(uint actionID) => actionID;
         }
 
         internal static Action? debugSpell;
@@ -237,6 +237,7 @@ namespace WrathCombo.Window.Tabs
                 CustomStyleText("LB Action:", LimitBreakAction.ActionName());
                 CustomStyleText("Animation Lock:", ActionManager.Instance()->AnimationLock);
                 CustomStyleText("Movement Timer:", TimeMoving.ToString("mm\\:ss\\:ff"));
+                CustomStyleText("Alliance Group:", GetAllianceGroup());
                 ImGui.Spacing();
 
                 ImGui.Spacing();

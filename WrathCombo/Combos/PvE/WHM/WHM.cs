@@ -98,7 +98,7 @@ internal partial class WHM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WHM_SolaceMisery;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             return actionID is AfflatusSolace && BloodLilies == 3
                 ? AfflatusMisery
@@ -110,7 +110,7 @@ internal partial class WHM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WHM_RaptureMisery;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             return actionID is AfflatusRapture && BloodLilies == 3
                 ? AfflatusMisery
@@ -122,7 +122,7 @@ internal partial class WHM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WHM_CureSync;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             return actionID is Cure2 && !LevelChecked(Cure2)
                 ? Cure
@@ -134,7 +134,7 @@ internal partial class WHM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WHM_Raise;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is All.Swiftcast)
             {
@@ -154,7 +154,7 @@ internal partial class WHM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WHM_ST_MainCombo;
         
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             bool ActionFound;
 
@@ -252,7 +252,7 @@ internal partial class WHM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WHM_AoEHeals;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is Medica1)
             {
@@ -322,7 +322,7 @@ internal partial class WHM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WHM_STHeals;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is Cure)
             {
@@ -378,7 +378,7 @@ internal partial class WHM
 
         internal static int AssizeCount => ActionWatching.CombatActions.Count(x => x == Assize);
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is Holy or Holy3)
             {

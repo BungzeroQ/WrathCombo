@@ -8,6 +8,7 @@ using WrathCombo.Combos.JobHelpers.Enums;
 using WrathCombo.CustomComboNS;
 using WrathCombo.CustomComboNS.Functions;
 using WrathCombo.Data;
+using WrathCombo.Extensions;
 using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions;
 
 namespace WrathCombo.Combos.PvE
@@ -154,25 +155,24 @@ namespace WrathCombo.Combos.PvE
             return false;
         }
 
-        private static bool TryLucidDreaming(uint actionID, int MPThreshold, uint lastComboMove)
+        private static bool TryLucidDreaming(uint actionID, int MPThreshold, uint ComboAction)
         {
             return
                 All.CanUseLucid(actionID, MPThreshold)
                 && InCombat()
                 && !HasEffect(Buffs.Dualcast)
-                && lastComboMove != EnchantedRiposte
-                && lastComboMove != EnchantedZwerchhau
-                && lastComboMove != EnchantedRedoublement
-                && lastComboMove != Verflare
-                && lastComboMove != Verholy
-                && lastComboMove != Scorch; // Change abilities to Lucid Dreaming for entire weave window
+                && ComboAction != EnchantedRiposte
+                && ComboAction != EnchantedZwerchhau
+                && ComboAction != EnchantedRedoublement
+                && ComboAction != Verflare
+                && ComboAction != Verholy
+                && ComboAction != Scorch; // Change abilities to Lucid Dreaming for entire weave window
         }
 
         private class MeleeCombo
         {
-            internal static bool TrySTManaEmbolden(uint actionID, uint lastComboMove, byte level, out uint newActionID,
-                //Simple Mode Values
-                bool ManaEmbolden = true, bool GapCloser = true, bool DoubleCombo = true, bool UnBalanceMana = true )
+            internal static bool TrySTManaEmbolden(uint actionID, out uint newActionID,                 //Simple Mode Values
+                bool ManaEmbolden = true, bool GapCloser = true, bool DoubleCombo = true, bool UnBalanceMana = true)
             {
                 //RDM_ST_MANAFICATIONEMBOLDEN
                 if (ManaEmbolden
@@ -185,11 +185,11 @@ namespace WrathCombo.Combos.PvE
                 {
                     //Situation 1: Manafication first
                     if (DoubleCombo
-                        && level >= 90
+                        && Resolution.LevelChecked()
                         && RDMMana.ManaStacks == 0
-                        && lastComboMove is not Verflare
-                        && lastComboMove is not Verholy
-                        && lastComboMove is not Scorch
+                        && ComboAction is not Verflare
+                        && ComboAction is not Verholy
+                        && ComboAction is not Scorch
                         && RDMMana.Max <= 50
                         && (RDMMana.Max >= 42
                             || (UnBalanceMana && RDMMana.Black == RDMMana.White && RDMMana.Black >= 38 && HasCharges(Acceleration)))
@@ -211,8 +211,8 @@ namespace WrathCombo.Combos.PvE
                         return true;
                     }
                     if (DoubleCombo
-                        && level >= 90
-                        && lastComboMove is Zwerchhau or EnchantedZwerchhau
+                        && Resolution.LevelChecked()
+                        && ComboAction is Zwerchhau or EnchantedZwerchhau
                         && RDMMana.Max >= 57
                         && RDMMana.Min >= 46
                         && GetCooldownRemainingTime(Manafication) >= 100
@@ -224,8 +224,8 @@ namespace WrathCombo.Combos.PvE
 
                     //Situation 2: Embolden first
                     if (DoubleCombo
-                        && level >= 90
-                        && lastComboMove is Zwerchhau or EnchantedZwerchhau
+                        && Resolution.LevelChecked()
+                        && ComboAction is Zwerchhau or EnchantedZwerchhau
                         && RDMMana.Max <= 57
                         && RDMMana.Min <= 46
                         && (GetCooldownRemainingTime(Manafication) <= 7 || IsOffCooldown(Manafication))
@@ -235,11 +235,11 @@ namespace WrathCombo.Combos.PvE
                         return true;
                     }
                     if (DoubleCombo
-                        && level >= 90
+                        && Resolution.LevelChecked()
                         && (RDMMana.ManaStacks == 0 || RDMMana.ManaStacks == 3)
-                        && lastComboMove is not Verflare
-                        && lastComboMove is not Verholy
-                        && lastComboMove is not Scorch
+                        && ComboAction is not Verflare
+                        && ComboAction is not Verholy
+                        && ComboAction is not Scorch
                         && RDMMana.Max <= 50
                         && (HasEffect(Buffs.Embolden) || WasLastAction(Embolden))
                         && IsOffCooldown(Manafication))
@@ -249,7 +249,7 @@ namespace WrathCombo.Combos.PvE
                     }
 
                     //Situation 3: Just use them together
-                    if ((!DoubleCombo || level < 90)
+                    if ((!DoubleCombo || !Resolution.LevelChecked())
                         && ActionReady(Embolden)
                         && RDMMana.ManaStacks == 0
                         && RDMMana.Max <= 50
@@ -268,12 +268,12 @@ namespace WrathCombo.Combos.PvE
                             return true;
                         }
                     }
-                    if ((!DoubleCombo || level < 90)
+                    if ((!DoubleCombo || !Resolution.LevelChecked())
                         && ActionReady(Manafication)
                         && (RDMMana.ManaStacks == 0 || RDMMana.ManaStacks == 3)
-                        && lastComboMove is not Verflare
-                        && lastComboMove is not Verholy
-                        && lastComboMove is not Scorch
+                        && ComboAction is not Verflare
+                        && ComboAction is not Verholy
+                        && ComboAction is not Scorch
                         && RDMMana.Max <= 50
                         && (HasEffect(Buffs.Embolden) || WasLastAction(Embolden)))
                     {
@@ -295,24 +295,23 @@ namespace WrathCombo.Combos.PvE
                 return false;
             }
 
-            internal static bool TrySTMeleeCombo(uint actionID, uint lastComboMove, float comboTime, out uint newActionID,
-                //Simple Mode Values
+            internal static bool TrySTMeleeCombo(uint actionID, out uint newActionID,                 //Simple Mode Values
                 bool MeleeEnforced = true, bool GapCloser = false, bool UnbalanceMana = true)
             {
                 //Normal Combo
                 if (GetTargetDistance() <= 3 || MeleeEnforced)
                 {
-                    if ((lastComboMove is Riposte or EnchantedRiposte)
+                    if ((ComboAction is Riposte or EnchantedRiposte)
                         && LevelChecked(Zwerchhau)
-                        && comboTime > 0f)
+                        && ComboTimer > 0f)
                     {
                         newActionID = OriginalHook(Zwerchhau);
                         return true;
                     }
 
-                    if (lastComboMove is Zwerchhau
+                    if (ComboAction is Zwerchhau
                         && LevelChecked(Redoublement)
-                        && comboTime > 0f)
+                        && ComboTimer > 0f)
                     { 
                         newActionID= OriginalHook(Redoublement);
                         return true;
@@ -374,8 +373,7 @@ namespace WrathCombo.Combos.PvE
                 return false;
             }
 
-            internal static bool TryAoEManaEmbolden(uint actionID, uint lastComboMove, out uint newActionID,
-                //Simple Mode Values
+            internal static bool TryAoEManaEmbolden(uint actionID, out uint newActionID,                 //Simple Mode Values
                 int MoulinetRange = 6)//idk just making this up
             {
                 if (InCombat()
@@ -395,9 +393,9 @@ namespace WrathCombo.Combos.PvE
                             return true;
                         }
                         if (((RDMMana.ManaStacks == 3 && RDMMana.Min >= 2) || (RDMMana.ManaStacks == 0 && RDMMana.Min >= 10))
-                            && lastComboMove is not Verflare
-                            && lastComboMove is not Verholy
-                            && lastComboMove is not Scorch
+                            && ComboAction is not Verflare
+                            && ComboAction is not Verholy
+                            && ComboAction is not Scorch
                             && RDMMana.Max <= 50
                             && (HasEffect(Buffs.Embolden) || WasLastAction(Embolden)))
                         {
@@ -407,9 +405,9 @@ namespace WrathCombo.Combos.PvE
 
                         //Situation 2: Embolden First (Single)
                         if (RDMMana.ManaStacks == 0
-                            && lastComboMove is not Verflare
-                            && lastComboMove is not Verholy
-                            && lastComboMove is not Scorch
+                            && ComboAction is not Verflare
+                            && ComboAction is not Verholy
+                            && ComboAction is not Scorch
                             && RDMMana.Max <= 50
                             && RDMMana.Min >= 10
                             && IsOffCooldown(Embolden))
@@ -418,9 +416,9 @@ namespace WrathCombo.Combos.PvE
                             return true;
                         }
                         if (RDMMana.ManaStacks == 0
-                            && lastComboMove is not Verflare
-                            && lastComboMove is not Verholy
-                            && lastComboMove is not Scorch
+                            && ComboAction is not Verflare
+                            && ComboAction is not Verholy
+                            && ComboAction is not Scorch
                             && RDMMana.Max <= 50
                             && RDMMana.Min >= 10
                             && (HasEffect(Buffs.Embolden) || WasLastAction(Embolden)))
@@ -443,18 +441,16 @@ namespace WrathCombo.Combos.PvE
                 return false;
             }
 
-            internal static bool TryAoEMeleeCombo(uint actionID, uint lastComboMove, float comboTime, out uint newActionID,
-                //Simple Mode Values
-                int MoulinetRange = 6,
-                bool GapCloser = false,
+            internal static bool TryAoEMeleeCombo(uint actionID, out uint newActionID,                 //Simple Mode Values
+                int MoulinetRange = 6, bool GapCloser = false,
                 bool MeleeEnforced = true)
             {
                 if (GetTargetDistance() <= MoulinetRange || MeleeEnforced)
                 {
                     //Finish the combo
                     if (LevelChecked(Moulinet)
-                    && lastComboMove is EnchantedMoulinet or EnchantedMoulinetDeux
-                    && comboTime > 0f)
+                    && ComboAction is EnchantedMoulinet or EnchantedMoulinetDeux
+                    && ComboTimer > 0f)
                     {
                         newActionID = OriginalHook(Moulinet);
                         return true;
@@ -488,7 +484,7 @@ namespace WrathCombo.Combos.PvE
                 return false;
             }
 
-            internal static bool TryMeleeFinisher(uint lastComboMove, out uint actionID)
+            internal static bool TryMeleeFinisher(out uint actionID)
             {
                 if (RDMMana.ManaStacks >= 3)
                 {
@@ -520,14 +516,14 @@ namespace WrathCombo.Combos.PvE
                         return true;
                     }
                 }
-                if ((lastComboMove is Verflare or Verholy)
+                if ((ComboAction is Verflare or Verholy)
                     && LevelChecked(Scorch))
                 {
                     actionID = Scorch;
                     return true;
                 }
 
-                if (lastComboMove is Scorch
+                if (ComboAction is Scorch
                     && LevelChecked(Resolution))
                 {
                     actionID = Resolution;
@@ -555,15 +551,15 @@ namespace WrathCombo.Combos.PvE
                 newActionID = actionID;
                 return false;
             }
-            internal static bool TryAcceleration(uint actionID, uint lastComboMove, out uint newActionID, bool swiftcast = true, bool AoEWeave = false)
+            internal static bool TryAcceleration(uint actionID, out uint newActionID, bool swiftcast = true, bool AoEWeave = false)
             {
                 //RDM_ST_ACCELERATION
                 if (InCombat()
                     && LocalPlayer.IsCasting == false
                     && RDMMana.ManaStacks == 0
-                    && lastComboMove is not Verflare //are these needed if the finisher is still going on?
-                    && lastComboMove is not Verholy
-                    && lastComboMove is not Scorch
+                    && ComboAction is not Verflare //are these needed if the finisher is still going on?
+                    && ComboAction is not Verholy
+                    && ComboAction is not Scorch
                     && !WasLastAction(Embolden)
                     && (!AoEWeave || CanSpellWeave())
                     && !HasEffect(Buffs.VerfireReady)

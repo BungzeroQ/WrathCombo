@@ -122,7 +122,7 @@ namespace WrathCombo.Combos.PvE
 
             protected internal static NINOpenerMaxLevel4thGCDKunai NINOpener = new();
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID == SpinningEdge)
                 {
@@ -369,12 +369,12 @@ namespace WrathCombo.Combos.PvE
                         PhantomKamaitachi.LevelChecked())
                         return OriginalHook(PhantomKamaitachi);
 
-                    if (comboTime > 1f)
+                    if (ComboTimer > 1f)
                     {
-                        if (lastComboMove == SpinningEdge && GustSlash.LevelChecked())
+                        if (ComboAction == SpinningEdge && GustSlash.LevelChecked())
                             return OriginalHook(GustSlash);
 
-                        if (lastComboMove == GustSlash && ArmorCrush.LevelChecked())
+                        if (ComboAction == GustSlash && ArmorCrush.LevelChecked())
                         {
                             if (gauge.Kazematoi == 0)
                             {
@@ -421,7 +421,7 @@ namespace WrathCombo.Combos.PvE
                                 return AeolianEdge;
                             }
                         }
-                        if (lastComboMove == GustSlash && !ArmorCrush.LevelChecked() && AeolianEdge.LevelChecked())
+                        if (ComboAction == GustSlash && !ArmorCrush.LevelChecked() && AeolianEdge.LevelChecked())
                         {
                             if (trueNorthEdge)
                                 return OriginalHook(All.TrueNorth);
@@ -441,7 +441,7 @@ namespace WrathCombo.Combos.PvE
 
             protected internal MudraCasting mudraState = new();
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID == DeathBlossom)
                 {
@@ -520,7 +520,7 @@ namespace WrathCombo.Combos.PvE
 
                         if (IsEnabled(CustomComboPreset.NIN_AoE_AdvancedMode_HellfrogMedium) && gauge.Ninki >= hellfrogPool && Hellfrog.LevelChecked())
                         {
-                            if (HasEffect(Buffs.Meisui) && level >= 88)
+                            if (HasEffect(Buffs.Meisui) && TraitLevelChecked(440))
                                 return OriginalHook(Bhavacakra);
 
                             return OriginalHook(Hellfrog);
@@ -593,9 +593,9 @@ namespace WrathCombo.Combos.PvE
                     if (IsEnabled(CustomComboPreset.NIN_AoE_AdvancedMode_Bunshin_Phantom) && HasEffect(Buffs.PhantomReady) && PhantomKamaitachi.LevelChecked())
                         return OriginalHook(PhantomKamaitachi);
 
-                    if (comboTime > 1f)
+                    if (ComboTimer > 1f)
                     {
-                        if (lastComboMove is DeathBlossom && HakkeMujinsatsu.LevelChecked())
+                        if (ComboAction is DeathBlossom && HakkeMujinsatsu.LevelChecked())
                             return OriginalHook(HakkeMujinsatsu);
                     }
 
@@ -614,7 +614,7 @@ namespace WrathCombo.Combos.PvE
 
             protected internal static NINOpenerMaxLevel4thGCDKunai NINOpener = new();
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID == SpinningEdge)
                 {
@@ -818,12 +818,12 @@ namespace WrathCombo.Combos.PvE
                         return actionID;
 
 
-                    if (comboTime > 1f)
+                    if (ComboTimer > 1f)
                     {
-                        if (lastComboMove == SpinningEdge && GustSlash.LevelChecked())
+                        if (ComboAction == SpinningEdge && GustSlash.LevelChecked())
                             return OriginalHook(GustSlash);
 
-                        if (lastComboMove == GustSlash && ArmorCrush.LevelChecked())
+                        if (ComboAction == GustSlash && ArmorCrush.LevelChecked())
                         {
                             if (gauge.Kazematoi == 0)
                             {
@@ -862,7 +862,7 @@ namespace WrathCombo.Combos.PvE
                                 return AeolianEdge;
                             }
                         }
-                        if (lastComboMove == GustSlash && !ArmorCrush.LevelChecked() && AeolianEdge.LevelChecked())
+                        if (ComboAction == GustSlash && !ArmorCrush.LevelChecked() && AeolianEdge.LevelChecked())
                         {
                             if (trueNorthEdge)
                                 return OriginalHook(All.TrueNorth);
@@ -882,7 +882,7 @@ namespace WrathCombo.Combos.PvE
 
             private MudraCasting mudraState = new();
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID == DeathBlossom)
                 {
@@ -984,9 +984,9 @@ namespace WrathCombo.Combos.PvE
                     if (mudraState.CastKaton(ref actionID))
                         return actionID;
 
-                    if (comboTime > 1f)
+                    if (ComboTimer > 1f)
                     {
-                        if (lastComboMove is DeathBlossom && HakkeMujinsatsu.LevelChecked())
+                        if (ComboAction is DeathBlossom && HakkeMujinsatsu.LevelChecked())
                             return OriginalHook(HakkeMujinsatsu);
                     }
 
@@ -1000,18 +1000,18 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.NIN_ArmorCrushCombo;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID == ArmorCrush)
                 {
-                    if (comboTime > 0f)
+                    if (ComboTimer > 0f)
                     {
-                        if (lastComboMove == SpinningEdge && GustSlash.LevelChecked())
+                        if (ComboAction == SpinningEdge && GustSlash.LevelChecked())
                         {
                             return GustSlash;
                         }
 
-                        if (lastComboMove == GustSlash && ArmorCrush.LevelChecked())
+                        if (ComboAction == GustSlash && ArmorCrush.LevelChecked())
                         {
                             return ArmorCrush;
                         }
@@ -1027,7 +1027,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.NIN_HideMug;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID == Hide)
                 {
@@ -1051,9 +1051,9 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.NIN_KassatsuChiJin;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
-                if (actionID == Chi && level >= 76 && HasEffect(Buffs.Kassatsu))
+                if (actionID == Chi && TraitLevelChecked(250) && HasEffect(Buffs.Kassatsu))
                 {
                     return Jin;
                 }
@@ -1065,7 +1065,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.NIN_KassatsuTrick;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID == Kassatsu)
                 {
@@ -1083,7 +1083,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset => CustomComboPreset.NIN_TCJMeisui;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID == TenChiJin)
                 {
@@ -1113,7 +1113,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.NIN_Simple_Mudras;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is Ten or Chi or Jin)
                 {

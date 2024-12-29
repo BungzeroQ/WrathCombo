@@ -60,7 +60,7 @@ namespace WrathCombo.Combos.PvP
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SAMPvP_Burst;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is Yukikaze or Gekko or Kasha)
                 {
@@ -81,7 +81,7 @@ namespace WrathCombo.Combos.PvP
                     bool targetHasKuzushi = TargetHasEffect(Debuffs.Kuzushi);
                     bool hasKaeshiNamikiri = OriginalHook(OgiNamikiri) is Kaeshi;
                     bool hasTendo = OriginalHook(MeikyoShisui) is TendoSetsugekka;
-                    bool isYukikazePrimed = ComboTimer == 0 || lastComboMove is Kasha;
+                    bool isYukikazePrimed = ComboTimer == 0 || ComboAction is Kasha;
                     bool hasTendoKaeshi = OriginalHook(MeikyoShisui) is TendoKaeshiSetsugekka;
                     bool hasPrioWeaponskill = hasTendo || hasTendoKaeshi || hasKaeshiNamikiri;
                     bool isMeikyoPrimed = IsOnCooldown(OgiNamikiri) && !hasKaeshiNamikiri && !hasKaiten && !isMoving;

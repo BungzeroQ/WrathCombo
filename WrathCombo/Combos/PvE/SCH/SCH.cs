@@ -101,7 +101,7 @@ namespace WrathCombo.Combos.PvE
         internal class SCH_Consolation : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SCH_Consolation;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
                 => actionID is FeyBlessing && LevelChecked(SummonSeraph) && Gauge.SeraphTimer > 0 ? Consolation : actionID;
         }
 
@@ -112,7 +112,7 @@ namespace WrathCombo.Combos.PvE
         internal class SCH_Lustrate : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SCH_Lustrate;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
                 => actionID is Lustrate && LevelChecked(Excogitation) && IsOffCooldown(Excogitation) ? Excogitation : actionID;
         }
 
@@ -123,7 +123,7 @@ namespace WrathCombo.Combos.PvE
         internal class SCH_Recitation : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SCH_Recitation;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is Recitation && HasEffect(Buffs.Recitation))
                 {
@@ -151,7 +151,7 @@ namespace WrathCombo.Combos.PvE
         internal class SCH_Aetherflow : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SCH_Aetherflow;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (AetherflowList.Contains(actionID) && LevelChecked(Aetherflow))
                 {
@@ -204,7 +204,7 @@ namespace WrathCombo.Combos.PvE
         internal class SCH_Raise : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SCH_Raise;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
                 => actionID is All.Swiftcast && IsOnCooldown(All.Swiftcast) ? Resurrection : actionID;
         }
 
@@ -212,7 +212,7 @@ namespace WrathCombo.Combos.PvE
         internal class SCH_FairyReminder : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SCH_FairyReminder;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
                 => FairyList.Contains(actionID) && !HasPetPresent() && Gauge.SeraphTimer == 0 ? SummonEos : actionID;
         }
 
@@ -225,7 +225,7 @@ namespace WrathCombo.Combos.PvE
         internal class SCH_DeploymentTactics : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SCH_DeploymentTactics;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is DeploymentTactics && ActionReady(DeploymentTactics))
                 {
@@ -257,7 +257,7 @@ namespace WrathCombo.Combos.PvE
 
             internal static int BroilCount => ActionWatching.CombatActions.Count(x => x == OriginalHook(Broil));
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 bool ActionFound;
 
@@ -365,7 +365,7 @@ namespace WrathCombo.Combos.PvE
         internal class SCH_AoE : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SCH_AoE;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is ArtOfWar or ArtOfWarII)
                 {
@@ -408,7 +408,7 @@ namespace WrathCombo.Combos.PvE
         internal class SCH_AoE_Heal : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SCH_AoE_Heal;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is Succor)
                 {
@@ -454,7 +454,7 @@ namespace WrathCombo.Combos.PvE
         internal class SCH_Fairy_Combo : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SCH_Fairy_Combo;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is WhisperingDawn)
                 {
@@ -485,7 +485,7 @@ namespace WrathCombo.Combos.PvE
         internal class SCH_ST_Heal : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SCH_ST_Heal;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is Physick)
                 {

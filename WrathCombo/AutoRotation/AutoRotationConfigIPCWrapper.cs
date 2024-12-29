@@ -61,6 +61,8 @@ public class AutoRotationConfigIPCWrapper(AutoRotationConfig config)
 
     public int CombatDelay => config.CombatDelay;
 
+    public int Throttler => config.Throttler;
+
     #endregion
 }
 

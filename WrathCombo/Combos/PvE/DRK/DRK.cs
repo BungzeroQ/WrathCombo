@@ -22,8 +22,7 @@ internal partial class DRK
         protected internal override CustomComboPreset Preset { get; } =
             CustomComboPreset.DRK_ST_Combo;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove,
-            float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             // Bail if not looking at the replaced action
             if (actionID != HardSlash) return actionID;
@@ -291,10 +290,10 @@ internal partial class DRK
             }
 
             // 1-2-3 combo
-            if (!(comboTime > 0)) return HardSlash;
-            if (lastComboMove == HardSlash && LevelChecked(SyphonStrike))
+            if (!(ComboTimer > 0)) return HardSlash;
+            if (ComboAction == HardSlash && LevelChecked(SyphonStrike))
                 return SyphonStrike;
-            if (lastComboMove == SyphonStrike && LevelChecked(Souleater))
+            if (ComboAction == SyphonStrike && LevelChecked(Souleater))
             {
                 // Blood management
                 if (IsEnabled(CustomComboPreset.DRK_ST_BloodOvercap)
@@ -313,8 +312,7 @@ internal partial class DRK
         protected internal override CustomComboPreset Preset { get; } =
             CustomComboPreset.DRK_AoE_Combo;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove,
-            float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             // Bail if not looking at the replaced action
             if (actionID != Unleash) return actionID;
@@ -470,8 +468,8 @@ internal partial class DRK
                 return OriginalHook(Quietus);
 
             // 1-2-3 combo
-            if (!(comboTime > 0)) return Unleash;
-            if (lastComboMove == Unleash && LevelChecked(StalwartSoul))
+            if (!(ComboTimer > 0)) return Unleash;
+            if (ComboAction == Unleash && LevelChecked(StalwartSoul))
             {
                 if (IsEnabled(CustomComboPreset.DRK_AoE_BloodOvercap)
                     && Gauge.Blood >= 90
@@ -489,8 +487,7 @@ internal partial class DRK
         protected internal override CustomComboPreset Preset { get; } =
             CustomComboPreset.DRK_oGCD;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove,
-            float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             var gauge = GetJobGauge<DRKGauge>();
 

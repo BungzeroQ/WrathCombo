@@ -254,6 +254,32 @@ namespace WrathCombo.CustomComboNS.Functions
             4175
         };
 
-        public static bool TargetIsInvincible(IGameObject target) => (target as IBattleChara).StatusList.Any(y => InvincibleStatuses.Any(x => x == y.StatusId));
+        public static bool TargetIsInvincible(IGameObject target)
+        {
+            var tar = (target as IBattleChara);
+            bool invinceStatus = tar.StatusList.Any(y => InvincibleStatuses.Any(x => x == y.StatusId));
+            if (invinceStatus)
+                return true;
+
+            //Jeuno Ark Angel Encounter
+            if ((HasEffect(4192) && !tar.StatusList.Any(x => x.StatusId == 4193)) ||
+                (HasEffect(4194) && !tar.StatusList.Any(x => x.StatusId == 4195)) ||
+                (HasEffect(4196) && !tar.StatusList.Any(x => x.StatusId == 4197)))
+                return true;
+
+            // Yorha raid encounter
+            if ((GetAllianceGroup() != AllianceGroup.GroupA && tar.StatusList.Any(x => x.StatusId == 2409)) ||
+                (GetAllianceGroup() != AllianceGroup.GroupB && tar.StatusList.Any(x => x.StatusId == 2410)) ||
+                (GetAllianceGroup() != AllianceGroup.GroupC && tar.StatusList.Any(x => x.StatusId == 2411)))
+                return true;
+
+            // Omega Normal
+            if ((tar.StatusList.Any(x => x.StatusId == 1674) && HasEffect(1660)) ||
+                (tar.StatusList.Any(x => x.StatusId == 1675) && HasEffect(1661)))
+                return true;
+
+
+            return false;
+        }
     }
 }

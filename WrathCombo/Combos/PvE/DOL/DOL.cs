@@ -63,7 +63,7 @@ namespace WrathCombo.Combos.PvE
         internal class DOL_Eureka : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.DOL_Eureka;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is SolidReason && HasEffect(Buffs.EurekaMoment)) return MinWiseToTheWorld;
                 if (actionID is AgelessWords && HasEffect(Buffs.EurekaMoment)) return BtnWiseToTheWorld;
@@ -74,7 +74,7 @@ namespace WrathCombo.Combos.PvE
         internal class DOL_NodeSearchingBuffs : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.DOL_NodeSearchingBuffs;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 //MIN
                 if (actionID is DOL.LayOfTheLand && !HasEffect(Buffs.Prospect)) return Prospect;
@@ -89,14 +89,14 @@ namespace WrathCombo.Combos.PvE
         internal class FSH_CastHook : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.FSH_CastHook;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
                 => actionID is Cast && HasCondition(ConditionFlag.Fishing) ? Hook : actionID;
         }
 
         internal class FSH_Swim : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.FSH_Swim;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (HasCondition(ConditionFlag.Diving))
                 {

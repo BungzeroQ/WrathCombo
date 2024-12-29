@@ -62,7 +62,7 @@ namespace WrathCombo.Combos.PvP
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RDMPvP_BurstMode;
 
-            protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is Jolt3)
                 {
@@ -177,7 +177,7 @@ namespace WrathCombo.Combos.PvP
         internal class RDMPvP_Dash_Feature : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RDMPvP_Dash_Feature;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is CorpsACorps)
                 {

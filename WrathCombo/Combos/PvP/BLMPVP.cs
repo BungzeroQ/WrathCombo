@@ -77,7 +77,7 @@ namespace WrathCombo.Combos.PvP
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLMPvP_BurstMode;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 bool actionIsFire = actionID is Fire or Fire3 or Fire4 or HighFire2 or Flare;
                 bool actionIsIce = actionID is Blizzard or Blizzard3 or Blizzard4 or HighBlizzard2 or Freeze;
@@ -185,7 +185,7 @@ namespace WrathCombo.Combos.PvP
         internal class BLMPvP_Manipulation_Feature : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLMPvP_Manipulation_Feature;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is AetherialManipulation)
                 {

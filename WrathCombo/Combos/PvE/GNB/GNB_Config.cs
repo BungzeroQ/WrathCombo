@@ -46,7 +46,7 @@ internal partial class GNB
             GNB_Mit_Superbolide_Health = new("GNB_Mit_Superbolide_Health", 30),
             GNB_Mit_Aurora_Charges = new("GNB_Mit_Aurora_Charges", 0),
             GNB_NM_Features_Weave = new("GNB_NM_Features_Weave", 0),
-            GNB_GF_Features_Choice = new("GNB_GF_Features_Choice", 0),
+            GNB_GF_Features_Choice = new("GNB_GF_Choice", 0),
             GNB_ST_Balance_Content = new("GNB_ST_Balance_Content", 1),
 
             //Bozja

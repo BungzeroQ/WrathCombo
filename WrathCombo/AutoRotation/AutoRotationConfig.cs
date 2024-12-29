@@ -11,6 +11,7 @@
         public HealerRotationMode HealerRotationMode;
         public HealerSettings HealerSettings = new();
         public DPSSettings DPSSettings = new();
+        public int Throttler = 50;
     }
 
     public class DPSSettings

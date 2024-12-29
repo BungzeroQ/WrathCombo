@@ -9,7 +9,7 @@ internal static partial class VPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_ST_SimpleMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is SteelFangs)
             {
@@ -161,9 +161,9 @@ internal static partial class VPR
                 }
 
                 //1-2-3 (4-5-6) Combo
-                if (comboTime > 0 && !HasEffect(Buffs.Reawakened))
+                if (ComboTimer > 0 && !HasEffect(Buffs.Reawakened))
                 {
-                    if (lastComboMove is ReavingFangs or SteelFangs)
+                    if (ComboAction is ReavingFangs or SteelFangs)
                     {
                         if (LevelChecked(HuntersSting) &&
                             (HasEffect(Buffs.FlankstungVenom) || HasEffect(Buffs.FlanksbaneVenom)))
@@ -175,7 +175,7 @@ internal static partial class VPR
                             return OriginalHook(ReavingFangs);
                     }
 
-                    if (lastComboMove is HuntersSting or SwiftskinsSting)
+                    if (ComboAction is HuntersSting or SwiftskinsSting)
                     {
                         if ((HasEffect(Buffs.FlankstungVenom) || HasEffect(Buffs.HindstungVenom)) &&
                             LevelChecked(FlanksbaneFang))
@@ -206,7 +206,7 @@ internal static partial class VPR
                         }
                     }
 
-                    if (lastComboMove is HindstingStrike or HindsbaneFang or FlankstingStrike or FlanksbaneFang)
+                    if (ComboAction is HindstingStrike or HindsbaneFang or FlankstingStrike or FlanksbaneFang)
                         return LevelChecked(ReavingFangs) && HasEffect(Buffs.HonedReavers)
                             ? OriginalHook(ReavingFangs)
                             : OriginalHook(SteelFangs);
@@ -225,7 +225,7 @@ internal static partial class VPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_ST_AdvancedMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is SteelFangs)
             {
@@ -407,9 +407,9 @@ internal static partial class VPR
                 }
 
                 //1-2-3 (4-5-6) Combo
-                if (comboTime > 0 && !HasEffect(Buffs.Reawakened))
+                if (ComboTimer > 0 && !HasEffect(Buffs.Reawakened))
                 {
-                    if (lastComboMove is ReavingFangs or SteelFangs)
+                    if (ComboAction is ReavingFangs or SteelFangs)
                     {
                         if (LevelChecked(HuntersSting) &&
                             (HasEffect(Buffs.FlankstungVenom) || HasEffect(Buffs.FlanksbaneVenom)))
@@ -421,7 +421,7 @@ internal static partial class VPR
                             return OriginalHook(ReavingFangs);
                     }
 
-                    if (lastComboMove is HuntersSting or SwiftskinsSting)
+                    if (ComboAction is HuntersSting or SwiftskinsSting)
                     {
                         if ((HasEffect(Buffs.FlankstungVenom) || HasEffect(Buffs.HindstungVenom)) &&
                             LevelChecked(FlanksbaneFang))
@@ -456,7 +456,7 @@ internal static partial class VPR
                         }
                     }
 
-                    if (lastComboMove is HindstingStrike or HindsbaneFang or FlankstingStrike or FlanksbaneFang)
+                    if (ComboAction is HindstingStrike or HindsbaneFang or FlankstingStrike or FlanksbaneFang)
                         return LevelChecked(ReavingFangs) && HasEffect(Buffs.HonedReavers)
                             ? OriginalHook(ReavingFangs)
                             : OriginalHook(SteelFangs);
@@ -475,7 +475,7 @@ internal static partial class VPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_AoE_SimpleMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is SteelMaw)
             {
@@ -620,9 +620,9 @@ internal static partial class VPR
                     return All.Bloodbath;
 
                 //1-2-3 (4-5-6) Combo
-                if (comboTime > 0 && !HasEffect(Buffs.Reawakened))
+                if (ComboTimer > 0 && !HasEffect(Buffs.Reawakened))
                 {
-                    if (lastComboMove is ReavingMaw or SteelMaw)
+                    if (ComboAction is ReavingMaw or SteelMaw)
                     {
                         if (LevelChecked(HuntersBite) &&
                             HasEffect(Buffs.GrimhuntersVenom))
@@ -634,7 +634,7 @@ internal static partial class VPR
                             return OriginalHook(ReavingMaw);
                     }
 
-                    if (lastComboMove is HuntersBite or SwiftskinsBite)
+                    if (ComboAction is HuntersBite or SwiftskinsBite)
                     {
                         if (HasEffect(Buffs.GrimhuntersVenom) && LevelChecked(JaggedMaw))
                             return OriginalHook(SteelMaw);
@@ -643,7 +643,7 @@ internal static partial class VPR
                             return OriginalHook(ReavingMaw);
                     }
 
-                    if (lastComboMove is BloodiedMaw or JaggedMaw)
+                    if (ComboAction is BloodiedMaw or JaggedMaw)
                         return LevelChecked(ReavingMaw) && HasEffect(Buffs.HonedReavers)
                             ? OriginalHook(ReavingMaw)
                             : OriginalHook(SteelMaw);
@@ -662,7 +662,7 @@ internal static partial class VPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_AoE_AdvancedMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
 
             if (actionID is SteelMaw)
@@ -834,9 +834,9 @@ internal static partial class VPR
                 }
 
                 //1-2-3 (4-5-6) Combo
-                if (comboTime > 0 && !HasEffect(Buffs.Reawakened))
+                if (ComboTimer > 0 && !HasEffect(Buffs.Reawakened))
                 {
-                    if (lastComboMove is ReavingMaw or SteelMaw)
+                    if (ComboAction is ReavingMaw or SteelMaw)
                     {
                         if (LevelChecked(HuntersBite) &&
                             HasEffect(Buffs.GrimhuntersVenom))
@@ -848,7 +848,7 @@ internal static partial class VPR
                             return OriginalHook(ReavingMaw);
                     }
 
-                    if (lastComboMove is HuntersBite or SwiftskinsBite)
+                    if (ComboAction is HuntersBite or SwiftskinsBite)
                     {
                         if (HasEffect(Buffs.GrimhuntersVenom) && LevelChecked(JaggedMaw))
                             return OriginalHook(SteelMaw);
@@ -857,7 +857,7 @@ internal static partial class VPR
                             return OriginalHook(ReavingMaw);
                     }
 
-                    if (lastComboMove is BloodiedMaw or JaggedMaw)
+                    if (ComboAction is BloodiedMaw or JaggedMaw)
                         return LevelChecked(ReavingMaw) && HasEffect(Buffs.HonedReavers)
                             ? OriginalHook(ReavingMaw)
                             : OriginalHook(SteelMaw);
@@ -877,7 +877,7 @@ internal static partial class VPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_VicewinderCoils;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             switch (actionID)
             {
@@ -916,7 +916,7 @@ internal static partial class VPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_VicepitDens;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             switch (actionID)
             {
@@ -949,7 +949,7 @@ internal static partial class VPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_UncoiledTwins;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             switch (actionID)
             {
@@ -969,7 +969,7 @@ internal static partial class VPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_ReawakenLegacy;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             int buttonChoice = Config.VPR_ReawakenLegacyButton;
 
@@ -1039,7 +1039,7 @@ internal static partial class VPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_TwinTails;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             switch (actionID)
             {
@@ -1078,7 +1078,7 @@ internal static partial class VPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_Legacies;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             //Reawaken combo
             if (HasEffect(Buffs.Reawakened))
@@ -1099,7 +1099,7 @@ internal static partial class VPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_SerpentsTail;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             switch (actionID)
             {

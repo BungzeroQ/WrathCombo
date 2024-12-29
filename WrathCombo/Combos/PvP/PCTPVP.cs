@@ -43,7 +43,7 @@ namespace WrathCombo.Combos.PvP
         internal class PCTPvP_Burst : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.PCTPvP_Burst;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 #region Variables
                 bool isMoving = IsMoving();

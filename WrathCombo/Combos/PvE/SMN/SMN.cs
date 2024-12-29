@@ -145,7 +145,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SMN_Raise;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID == All.Swiftcast)
                 {
@@ -163,7 +163,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SMN_RuinMobility;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID == Ruin4)
                 {
@@ -180,7 +180,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SMN_EDFester;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is Fester or Necrotize)
                 {
@@ -200,7 +200,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SMN_ESPainflare;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 var gauge = GetJobGauge<SMNGauge>();
 
@@ -224,7 +224,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SMN_Simple_Combo;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 var gauge = GetJobGauge<SMNGauge>();
                 var IsGarudaAttuned = OriginalHook(Gemshine) is EmeralRuin1 or EmeralRuin2 or EmeralRuin3 or EmeraldRite;
@@ -308,12 +308,12 @@ namespace WrathCombo.Combos.PvE
                             return All.Swiftcast;
                     }
 
-                    if (IsIfritAttuned && gauge.Attunement >= 1 && HasEffect(All.Buffs.Swiftcast) && lastComboMove is not CrimsonCyclone)
+                    if (IsIfritAttuned && gauge.Attunement >= 1 && HasEffect(All.Buffs.Swiftcast) && ComboAction is not CrimsonCyclone)
                         return OriginalHook(Gemshine);
 
                     if ((HasEffect(Buffs.GarudasFavor) && gauge.Attunement is 0) ||
-                        (HasEffect(Buffs.TitansFavor) && lastComboMove is TopazRite or TopazCata && CanSpellWeave()) ||
-                        (HasEffect(Buffs.IfritsFavor) && (IsMoving() || gauge.Attunement is 0)) || (lastComboMove == CrimsonCyclone && InMeleeRange()))
+                        (HasEffect(Buffs.TitansFavor) && ComboAction is TopazRite or TopazCata && CanSpellWeave()) ||
+                        (HasEffect(Buffs.IfritsFavor) && (IsMoving() || gauge.Attunement is 0)) || (ComboAction == CrimsonCyclone && InMeleeRange()))
                         return OriginalHook(AstralFlow);
 
                     if (HasEffect(Buffs.FurtherRuin) && ((!HasEffect(All.Buffs.Swiftcast) && IsIfritAttuned && IsMoving()) || (GetCooldownRemainingTime(OriginalHook(Aethercharge)) is < 2.5f and > 0)))
@@ -346,7 +346,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SMN_Simple_Combo_AoE;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 var gauge = GetJobGauge<SMNGauge>();
                 var IsGarudaAttuned = OriginalHook(Gemshine) is EmeralRuin1 or EmeralRuin2 or EmeralRuin3 or EmeraldRite;
@@ -437,13 +437,13 @@ namespace WrathCombo.Combos.PvE
                             return All.Swiftcast;
                     }
 
-                    if (IsIfritAttuned && gauge.Attunement >= 1 && HasEffect(All.Buffs.Swiftcast) && LevelChecked(PreciousBrilliance) && lastComboMove is not CrimsonCyclone)
+                    if (IsIfritAttuned && gauge.Attunement >= 1 && HasEffect(All.Buffs.Swiftcast) && LevelChecked(PreciousBrilliance) && ComboAction is not CrimsonCyclone)
                         return OriginalHook(PreciousBrilliance);
 
 
                     if ((HasEffect(Buffs.GarudasFavor) && gauge.Attunement is 0) ||
-                        (HasEffect(Buffs.TitansFavor) && lastComboMove is TopazRite or TopazCata && CanSpellWeave()) ||
-                        (HasEffect(Buffs.IfritsFavor) && (IsMoving() || gauge.Attunement is 0)) || (lastComboMove == CrimsonCyclone && InMeleeRange()))
+                        (HasEffect(Buffs.TitansFavor) && ComboAction is TopazRite or TopazCata && CanSpellWeave()) ||
+                        (HasEffect(Buffs.IfritsFavor) && (IsMoving() || gauge.Attunement is 0)) || (ComboAction == CrimsonCyclone && InMeleeRange()))
                         return OriginalHook(AstralFlow);
 
                     if (HasEffect(Buffs.FurtherRuin) && ((!HasEffect(All.Buffs.Swiftcast) && IsIfritAttuned && IsMoving()) || (GetCooldownRemainingTime(OriginalHook(Aethercharge)) is < 2.5f and > 0)))
@@ -477,7 +477,7 @@ namespace WrathCombo.Combos.PvE
             internal static bool UsedDemiAttack = false;
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SMN_Advanced_Combo;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is Ruin or Ruin2)
                 {
@@ -506,7 +506,7 @@ namespace WrathCombo.Combos.PvE
                     if (gauge.SummonTimerRemaining == 0 && !InCombat()) DemiAttackCount = 0;
 
                     //CHECK_DEMIATTACK_USE
-                    if (UsedDemiAttack == false && lastComboMove is AstralImpulse or UmbralImpulse or FountainOfFire or AstralFlare or UmbralFlare or BrandOfPurgatory && DemiAttackCount is not 6 && GetCooldownRemainingTime(AstralImpulse) > 1)
+                    if (UsedDemiAttack == false && ComboAction is AstralImpulse or UmbralImpulse or FountainOfFire or AstralFlare or UmbralFlare or BrandOfPurgatory && DemiAttackCount is not 6 && GetCooldownRemainingTime(AstralImpulse) > 1)
                     {
                         UsedDemiAttack = true;      // Registers that a Demi Attack was used and blocks further incrementation of DemiAttackCountCount
                         DemiAttackCount++;          // Increments DemiAttack counter
@@ -674,7 +674,7 @@ namespace WrathCombo.Combos.PvE
 
                     //Ruin4 in Egi Phases
                     if (IsEnabled(CustomComboPreset.SMN_Advanced_Combo_Ruin4) && HasEffect(Buffs.FurtherRuin) &&
-                        ((!HasEffect(All.Buffs.Swiftcast) && IsMoving() && ((HasEffect(Buffs.GarudasFavor) && !IsGarudaAttuned) || (IsIfritAttuned && lastComboMove is not CrimsonCyclone))) ||
+                        ((!HasEffect(All.Buffs.Swiftcast) && IsMoving() && ((HasEffect(Buffs.GarudasFavor) && !IsGarudaAttuned) || (IsIfritAttuned && ComboAction is not CrimsonCyclone))) ||
                          GetCooldownRemainingTime(OriginalHook(Aethercharge)) is < 2.5f and > 0))
                         return Ruin4;
 
@@ -695,7 +695,7 @@ namespace WrathCombo.Combos.PvE
                         // Swiftcast Ifrit Feature (Conditions to allow for SpS Ruins to still be under the effect of Swiftcast)
                         if (swiftcastPhase == 2)
                         {
-                            if (IsOffCooldown(All.Swiftcast) && IsIfritAttuned && lastComboMove is not CrimsonCyclone)
+                            if (IsOffCooldown(All.Swiftcast) && IsIfritAttuned && ComboAction is not CrimsonCyclone)
                             {
                                 if (!Config.SMN_ST_Egi_AstralFlow[1] || (Config.SMN_ST_Egi_AstralFlow[1] && gauge.Attunement >= 1))
                                     return All.Swiftcast;
@@ -716,7 +716,7 @@ namespace WrathCombo.Combos.PvE
                             }
 
                             // Swiftcast Ifrit Feature (Conditions to allow for SpS Ruins to still be under the effect of Swiftcast)
-                            if (IsOffCooldown(All.Swiftcast) && IsIfritAttuned && lastComboMove is not CrimsonCyclone)
+                            if (IsOffCooldown(All.Swiftcast) && IsIfritAttuned && ComboAction is not CrimsonCyclone)
                             {
                                 if (!Config.SMN_ST_Egi_AstralFlow[1] || (Config.SMN_ST_Egi_AstralFlow[1] && gauge.Attunement >= 1))
                                     return All.Swiftcast;
@@ -727,13 +727,13 @@ namespace WrathCombo.Combos.PvE
 
                     // Gemshine priority casting
                     if (IsEnabled(CustomComboPreset.SMN_Advanced_Combo_EgiSummons_Attacks) &&
-                        ((IsIfritAttuned && gauge.Attunement >= 1 && HasEffect(All.Buffs.Swiftcast) && lastComboMove is not CrimsonCyclone) ||
+                        ((IsIfritAttuned && gauge.Attunement >= 1 && HasEffect(All.Buffs.Swiftcast) && ComboAction is not CrimsonCyclone) ||
                          (HasEffect(Buffs.GarudasFavor) && gauge.Attunement >= 1 && !HasEffect(All.Buffs.Swiftcast) && IsMoving())))
                         return OriginalHook(Gemshine);
 
                     if ((Config.SMN_ST_Egi_AstralFlow[2] && HasEffect(Buffs.GarudasFavor) && (IsNotEnabled(CustomComboPreset.SMN_DemiEgiMenu_SwiftcastEgi) || swiftcastPhase == 2)) ||                 // Garuda
-                        (Config.SMN_ST_Egi_AstralFlow[0] && HasEffect(Buffs.TitansFavor) && lastComboMove is TopazRite or TopazCata && CanSpellWeave()) ||                                  // Titan
-                        (Config.SMN_ST_Egi_AstralFlow[1] && (HasEffect(Buffs.IfritsFavor) && !Config.SMN_ST_CrimsonCycloneMelee && (IsMoving() || gauge.Attunement == 0) || (lastComboMove is CrimsonCyclone && InMeleeRange()))) ||
+                        (Config.SMN_ST_Egi_AstralFlow[0] && HasEffect(Buffs.TitansFavor) && ComboAction is TopazRite or TopazCata && CanSpellWeave()) ||                                  // Titan
+                        (Config.SMN_ST_Egi_AstralFlow[1] && (HasEffect(Buffs.IfritsFavor) && !Config.SMN_ST_CrimsonCycloneMelee && (IsMoving() || gauge.Attunement == 0) || (ComboAction is CrimsonCyclone && InMeleeRange()))) ||
                         (Config.SMN_ST_Egi_AstralFlow[1] && HasEffect(Buffs.IfritsFavor) && Config.SMN_ST_CrimsonCycloneMelee && InMeleeRange()))  // Ifrit
                         return OriginalHook(AstralFlow);
 
@@ -790,7 +790,7 @@ namespace WrathCombo.Combos.PvE
             internal static bool UsedDemiAttack = false;
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SMN_Advanced_Combo_AoE;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 var gauge = GetJobGauge<SMNGauge>();
                 var summonerPrimalChoice = PluginConfiguration.GetCustomIntValue(Config.SMN_PrimalChoice);
@@ -815,7 +815,7 @@ namespace WrathCombo.Combos.PvE
                 if (gauge.SummonTimerRemaining == 0 && !InCombat()) DemiAttackCount = 0;
 
                 //CHECK_DEMIATTACK_USE
-                if (UsedDemiAttack == false && lastComboMove is AstralImpulse or UmbralImpulse or FountainOfFire or AstralFlare or UmbralFlare or BrandOfPurgatory && DemiAttackCount is not 6 && GetCooldownRemainingTime(AstralImpulse) > 1)
+                if (UsedDemiAttack == false && ComboAction is AstralImpulse or UmbralImpulse or FountainOfFire or AstralFlare or UmbralFlare or BrandOfPurgatory && DemiAttackCount is not 6 && GetCooldownRemainingTime(AstralImpulse) > 1)
                 {
                     UsedDemiAttack = true;      // Registers that a Demi Attack was used and blocks further incrementation of DemiAttackCountCount
                     DemiAttackCount++;          // Increments DemiAttack counter
@@ -980,7 +980,7 @@ namespace WrathCombo.Combos.PvE
 
                     //Ruin4 in Egi Phases
                     if (IsEnabled(CustomComboPreset.SMN_Advanced_Combo_Ruin4_AoE) && HasEffect(Buffs.FurtherRuin) &&
-                        ((!HasEffect(All.Buffs.Swiftcast) && IsMoving() && ((HasEffect(Buffs.GarudasFavor) && !IsGarudaAttuned) || (IsIfritAttuned && lastComboMove is not CrimsonCyclone))) ||
+                        ((!HasEffect(All.Buffs.Swiftcast) && IsMoving() && ((HasEffect(Buffs.GarudasFavor) && !IsGarudaAttuned) || (IsIfritAttuned && ComboAction is not CrimsonCyclone))) ||
                          GetCooldownRemainingTime(OriginalHook(Aethercharge)) is < 2.5f and > 0))
                         return Ruin4;
 
@@ -1001,7 +1001,7 @@ namespace WrathCombo.Combos.PvE
                         // Swiftcast Ifrit Feature (Conditions to allow for SpS Ruins to still be under the effect of Swiftcast)
                         if (swiftcastPhase == 2)
                         {
-                            if (IsOffCooldown(All.Swiftcast) && IsIfritAttuned && lastComboMove is not CrimsonCyclone)
+                            if (IsOffCooldown(All.Swiftcast) && IsIfritAttuned && ComboAction is not CrimsonCyclone)
                             {
                                 if (!Config.SMN_ST_Egi_AstralFlow[1] || (Config.SMN_ST_Egi_AstralFlow[1] && gauge.Attunement >= 1))
                                     return All.Swiftcast;
@@ -1023,7 +1023,7 @@ namespace WrathCombo.Combos.PvE
                             }
 
                             // Swiftcast Ifrit Feature (Conditions to allow for SpS Ruins to still be under the effect of Swiftcast)
-                            if (IsOffCooldown(All.Swiftcast) && IsIfritAttuned && lastComboMove is not CrimsonCyclone)
+                            if (IsOffCooldown(All.Swiftcast) && IsIfritAttuned && ComboAction is not CrimsonCyclone)
                             {
                                 if (!Config.SMN_ST_Egi_AstralFlow[1] || (Config.SMN_ST_Egi_AstralFlow[1] && gauge.Attunement >= 1))
                                     return All.Swiftcast;
@@ -1033,13 +1033,13 @@ namespace WrathCombo.Combos.PvE
 
                     // Precious Brilliance priority casting
                     if (IsEnabled(CustomComboPreset.SMN_Advanced_Combo_EgiSummons_Attacks_AoE) && LevelChecked(PreciousBrilliance) &&
-                        ((IsIfritAttuned && gauge.Attunement >= 1 && HasEffect(All.Buffs.Swiftcast) && lastComboMove is not CrimsonCyclone) ||
+                        ((IsIfritAttuned && gauge.Attunement >= 1 && HasEffect(All.Buffs.Swiftcast) && ComboAction is not CrimsonCyclone) ||
                          (HasEffect(Buffs.GarudasFavor) && gauge.Attunement >= 1 && !HasEffect(All.Buffs.Swiftcast) && IsMoving())))
                         return OriginalHook(PreciousBrilliance);
 
                     if ((Config.SMN_ST_Egi_AstralFlow[2] && HasEffect(Buffs.GarudasFavor) && (IsNotEnabled(CustomComboPreset.SMN_DemiEgiMenu_SwiftcastEgi_AoE) || swiftcastPhase == 2)) ||                 // Garuda
-                        (Config.SMN_ST_Egi_AstralFlow[0] && HasEffect(Buffs.TitansFavor) && lastComboMove is TopazRite or TopazCata && CanSpellWeave()) ||                                  // Titan
-                        (Config.SMN_ST_Egi_AstralFlow[1] && (HasEffect(Buffs.IfritsFavor) && !Config.SMN_ST_CrimsonCycloneMelee && (IsMoving() || gauge.Attunement == 0) || (lastComboMove is CrimsonCyclone && InMeleeRange()))) ||
+                        (Config.SMN_ST_Egi_AstralFlow[0] && HasEffect(Buffs.TitansFavor) && ComboAction is TopazRite or TopazCata && CanSpellWeave()) ||                                  // Titan
+                        (Config.SMN_ST_Egi_AstralFlow[1] && (HasEffect(Buffs.IfritsFavor) && !Config.SMN_ST_CrimsonCycloneMelee && (IsMoving() || gauge.Attunement == 0) || (ComboAction is CrimsonCyclone && InMeleeRange()))) ||
                         (Config.SMN_ST_Egi_AstralFlow[1] && HasEffect(Buffs.IfritsFavor) && Config.SMN_ST_CrimsonCycloneMelee && InMeleeRange()))  // Ifrit
                         return OriginalHook(AstralFlow);
 
@@ -1087,7 +1087,7 @@ namespace WrathCombo.Combos.PvE
             internal static DateTime noPetTime;
             internal static DateTime presentTime;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is Ruin or Ruin2 or Ruin3 or DreadwyrmTrance or AstralFlow or EnkindleBahamut or SearingLight or RadiantAegis or Outburst or Tridisaster or PreciousBrilliance or Gemshine)
                 {
@@ -1117,11 +1117,11 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset => CustomComboPreset.SMN_Egi_AstralFlow;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if ((actionID is SummonTopaz or SummonTitan or SummonTitan2 or SummonEmerald or SummonGaruda or SummonGaruda2 or SummonRuby or SummonIfrit or SummonIfrit2 && HasEffect(Buffs.TitansFavor)) ||
                     (actionID is SummonTopaz or SummonTitan or SummonTitan2 or SummonEmerald or SummonGaruda or SummonGaruda2 && HasEffect(Buffs.GarudasFavor)) ||
-                    (actionID is SummonTopaz or SummonTitan or SummonTitan2 or SummonRuby or SummonIfrit or SummonIfrit2 && (HasEffect(Buffs.IfritsFavor) || (lastComboMove == CrimsonCyclone && InMeleeRange()))))
+                    (actionID is SummonTopaz or SummonTitan or SummonTitan2 or SummonRuby or SummonIfrit or SummonIfrit2 && (HasEffect(Buffs.IfritsFavor) || (ComboAction == CrimsonCyclone && InMeleeRange()))))
                     return OriginalHook(AstralFlow);
 
                 return actionID;
@@ -1132,7 +1132,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset => CustomComboPreset.SMN_DemiAbilities;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is Aethercharge or DreadwyrmTrance or SummonBahamut or SummonPhoenix or SummonSolarBahamut)
                 {

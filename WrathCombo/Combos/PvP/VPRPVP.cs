@@ -64,7 +64,7 @@ namespace WrathCombo.Combos.PvP
         internal class VPRPvP_Burst : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPRPvP_Burst;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is SteelFangs or HuntersSting or BarbarousSlice or PiercingFangs or SwiftskinsSting or RavenousBite)
                 {
@@ -140,7 +140,7 @@ namespace WrathCombo.Combos.PvP
         internal class VPRPvP_SnakeScales_Feature : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPRPvP_SnakeScales_Feature;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is SnakeScales)
                 {

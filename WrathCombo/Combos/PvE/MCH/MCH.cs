@@ -11,7 +11,7 @@ internal static partial class MCH
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.MCH_ST_SimpleMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is SplitShot or HeatedSplitShot)
             {
@@ -133,16 +133,16 @@ internal static partial class MCH
                     return actionID;
 
                 // 1-2-3 Combo
-                if (comboTime > 0)
+                if (ComboTimer > 0)
                 {
-                    if (lastComboMove is SplitShot && LevelChecked(OriginalHook(SlugShot)))
+                    if (ComboAction is SplitShot && LevelChecked(OriginalHook(SlugShot)))
                         return OriginalHook(SlugShot);
 
-                    if (lastComboMove == OriginalHook(SlugShot) &&
+                    if (ComboAction == OriginalHook(SlugShot) &&
                         !LevelChecked(Drill) && !HasEffect(Buffs.Reassembled) && ActionReady(Reassemble))
                         return Reassemble;
 
-                    if (lastComboMove is SlugShot && LevelChecked(OriginalHook(CleanShot)))
+                    if (ComboAction is SlugShot && LevelChecked(OriginalHook(CleanShot)))
                         return OriginalHook(CleanShot);
                 }
             }
@@ -154,7 +154,7 @@ internal static partial class MCH
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.MCH_ST_AdvancedMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is SplitShot or HeatedSplitShot)
             {
@@ -299,17 +299,17 @@ internal static partial class MCH
                     return actionID;
 
                 // 1-2-3 Combo
-                if (comboTime > 0)
+                if (ComboTimer > 0)
                 {
-                    if (lastComboMove is SplitShot && LevelChecked(OriginalHook(SlugShot)))
+                    if (ComboAction is SplitShot && LevelChecked(OriginalHook(SlugShot)))
                         return OriginalHook(SlugShot);
 
                     if (IsEnabled(CustomComboPreset.MCH_ST_Adv_Reassemble) && Config.MCH_ST_Reassembled [4] &&
-                        lastComboMove == OriginalHook(SlugShot) &&
+                        ComboAction == OriginalHook(SlugShot) &&
                         !LevelChecked(Drill) && !HasEffect(Buffs.Reassembled) && ActionReady(Reassemble))
                         return Reassemble;
 
-                    if (lastComboMove is SlugShot && LevelChecked(OriginalHook(CleanShot)))
+                    if (ComboAction is SlugShot && LevelChecked(OriginalHook(CleanShot)))
                         return OriginalHook(CleanShot);
                 }
             }
@@ -321,7 +321,7 @@ internal static partial class MCH
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.MCH_AoE_SimpleMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is SpreadShot or Scattergun)
             {
@@ -431,7 +431,7 @@ internal static partial class MCH
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.MCH_AoE_AdvancedMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is SpreadShot or Scattergun)
             {
@@ -595,7 +595,7 @@ internal static partial class MCH
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.MCH_Heatblast;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is Heatblast or BlazingShot)
             {
@@ -639,7 +639,7 @@ internal static partial class MCH
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.MCH_AutoCrossbow;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is AutoCrossbow)
             {
@@ -679,7 +679,7 @@ internal static partial class MCH
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.MCH_GaussRoundRicochet;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is GaussRound or Ricochet or CheckMate or DoubleCheck)
             {
@@ -702,7 +702,7 @@ internal static partial class MCH
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.MCH_Overdrive;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is RookAutoturret or AutomatonQueen && Gauge.IsRobotActive
                 ? OriginalHook(QueenOverdrive)
                 : actionID;
@@ -712,7 +712,7 @@ internal static partial class MCH
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.MCH_HotShotDrillChainsawExcavator;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is Drill or HotShot or AirAnchor or Chainsaw
                 ? LevelChecked(Excavator) && HasEffect(Buffs.ExcavatorReady)
                     ? CalcBestAction(actionID, Excavator, Chainsaw, AirAnchor, Drill)
@@ -730,7 +730,7 @@ internal static partial class MCH
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.MCH_DismantleTactician;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is Dismantle &&
             (IsOnCooldown(Dismantle) || !LevelChecked(Dismantle)) &&
             ActionReady(Tactician) && !HasEffect(Buffs.Tactician)
@@ -742,7 +742,7 @@ internal static partial class MCH
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.All_PRanged_Dismantle;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is Dismantle && TargetHasEffectAny(Debuffs.Dismantled) && IsOffCooldown(Dismantle)
                 ? OriginalHook(11)
                 : actionID;

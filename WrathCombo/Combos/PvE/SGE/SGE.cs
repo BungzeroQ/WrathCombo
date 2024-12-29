@@ -114,7 +114,7 @@ internal partial class SGE
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SGE_Kardia;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             return actionID is Soteria && (!HasEffect(Buffs.Kardia) || IsOnCooldown(Soteria)) ? Kardia : actionID;
         }
@@ -129,7 +129,7 @@ internal partial class SGE
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SGE_Rhizo;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             return AddersgallList.Contains(actionID) && ActionReady(Rhizomata) && !Gauge.HasAddersgall() &&
                    IsOffCooldown(actionID)
@@ -148,7 +148,7 @@ internal partial class SGE
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SGE_TauroDruo;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             return actionID is Taurochole && IsOnCooldown(Taurochole) ? Druochole : actionID;
         }
@@ -162,7 +162,7 @@ internal partial class SGE
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SGE_ZoePneuma;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             return actionID is Pneuma && ActionReady(Pneuma) && IsOffCooldown(Zoe) ? Zoe : actionID;
         }
@@ -176,7 +176,7 @@ internal partial class SGE
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SGE_AoE_DPS;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (DyskrasiaList.Contains(actionID))
                 if (!HasEffect(Buffs.Eukrasia))
@@ -287,7 +287,7 @@ internal partial class SGE
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SGE_ST_DPS;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             bool ActionFound = actionID is Dosis2 || (!Config.SGE_ST_DPS_Adv && DosisList.ContainsKey(actionID));
 
@@ -410,7 +410,7 @@ internal partial class SGE
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SGE_Raise;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             return actionID is All.Swiftcast && IsOnCooldown(All.Swiftcast) ? Egeiro : actionID;
         }
@@ -425,7 +425,7 @@ internal partial class SGE
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SGE_Eukrasia;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is Eukrasia && HasEffect(Buffs.Eukrasia))
                 switch ((int)Config.SGE_Eukrasia_Mode)
@@ -452,7 +452,7 @@ internal partial class SGE
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SGE_ST_Heal;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is Diagnosis)
             {
@@ -510,7 +510,7 @@ internal partial class SGE
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SGE_AoE_Heal;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is Prognosis)
             {
@@ -545,7 +545,7 @@ internal partial class SGE
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SGE_OverProtect;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is Kerachole && IsEnabled(CustomComboPreset.SGE_OverProtect_Kerachole) &&
                 ActionReady(Kerachole))

@@ -13,7 +13,7 @@ internal static partial class BLM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_ST_SimpleMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is Fire)
             {
@@ -206,7 +206,7 @@ internal static partial class BLM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_ST_AdvancedMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is Fire)
             {
@@ -435,7 +435,7 @@ internal static partial class BLM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_AoE_SimpleMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is Blizzard2 or HighBlizzard2)
             {
@@ -576,7 +576,7 @@ internal static partial class BLM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_AoE_AdvancedMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is Blizzard2 or HighBlizzard2)
             {
@@ -733,7 +733,7 @@ internal static partial class BLM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_Variant_Raise;
 
-        protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is All.Swiftcast && HasEffect(All.Buffs.Swiftcast) && IsEnabled(Variant.VariantRaise)
                 ? Variant.VariantRaise
                 : actionID;
@@ -743,7 +743,7 @@ internal static partial class BLM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_Scathe_Xeno;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is Scathe && LevelChecked(Xenoglossy) && HasPolyglotStacks(Gauge)
                 ? Xenoglossy
                 : actionID;
@@ -753,7 +753,7 @@ internal static partial class BLM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_Blizzard_1to3;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             switch (actionID)
             {
@@ -773,7 +773,7 @@ internal static partial class BLM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_Fire_1to3;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is Fire &&
             ((LevelChecked(Fire3) && !Gauge.InAstralFire) ||
              HasEffect(Buffs.Firestarter))
@@ -785,7 +785,7 @@ internal static partial class BLM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_Between_The_LeyLines;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is LeyLines && HasEffect(Buffs.LeyLines) && LevelChecked(BetweenTheLines)
                 ? BetweenTheLines
                 : actionID;
@@ -795,7 +795,7 @@ internal static partial class BLM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_Aetherial_Manipulation;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is AetherialManipulation &&
             ActionReady(BetweenTheLines) &&
             HasEffect(Buffs.LeyLines) &&
@@ -809,7 +809,7 @@ internal static partial class BLM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_UmbralSoul;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is Transpose && Gauge.InUmbralIce && LevelChecked(UmbralSoul)
                 ? UmbralSoul
                 : actionID;
@@ -819,7 +819,7 @@ internal static partial class BLM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_TriplecastProtection;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is Triplecast && HasEffect(Buffs.Triplecast) && LevelChecked(Triplecast)
                 ? OriginalHook(11)
                 : actionID;
@@ -829,7 +829,7 @@ internal static partial class BLM
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_FireandIce;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             switch (actionID)
             {

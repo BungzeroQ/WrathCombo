@@ -11,6 +11,7 @@ using WrathCombo.CustomComboNS.Functions;
 using WrathCombo.Data;
 using WrathCombo.Extensions;
 using WrathCombo.Services;
+using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions;
 
 namespace WrathCombo.CustomComboNS
 {
@@ -154,7 +155,7 @@ namespace WrathCombo.CustomComboNS
                     return false;
                 }
 
-                while (CustomComboFunctions.GetCooldownChargeRemainingTime(CurrentOpenerAction) > 6 && !CustomComboFunctions.HasCharges(CurrentOpenerAction))
+                while (GetCooldownChargeRemainingTime(CurrentOpenerAction) > 6 && !HasCharges(CurrentOpenerAction))
                 {
                     Svc.Log.Debug($"Skipping {CurrentOpenerAction.ActionName()}");
                     OpenerStep++;
@@ -170,7 +171,7 @@ namespace WrathCombo.CustomComboNS
 
                     if (DelayedWeaveSteps.Any(x => x == OpenerStep))
                     {
-                        if (!CustomComboFunctions.CanDelayedWeave())
+                        if (!CanDelayedWeave())
                         {
                             actionID = 11;
                             return true;
@@ -196,15 +197,13 @@ namespace WrathCombo.CustomComboNS
                             DelayedStep = OpenerStep;
                         }
 
-                        if ((DateTime.Now - DelayedAt).TotalSeconds < HoldDelay && !CustomComboFunctions.InCombat())
+                        if ((DateTime.Now - DelayedAt).TotalSeconds < HoldDelay && !InCombat())
                         {
                             actionID = 11;
                             return true;
                         }
                     }
 
-                    if (Player.Object.IsCasting && ActionManager.Instance()->QueuedActionId > 0)
-                        ActionManager.Instance()->QueuedActionId = 0;
 
                     return true;
                 }
@@ -260,7 +259,7 @@ namespace WrathCombo.CustomComboNS
                 if (currentOpener != null && currentOpener != value)
                 {
                     Svc.Framework.Update -= currentOpener.UpdateOpener;
-                    CustomComboFunctions.OnCastInterrupted -= RevertInterruptedCasts;
+                    OnCastInterrupted -= RevertInterruptedCasts;
                     Svc.Log.Debug($"Removed update hook");
                 }
 
@@ -268,7 +267,7 @@ namespace WrathCombo.CustomComboNS
                 {
                     currentOpener = value;
                     Svc.Framework.Update += currentOpener.UpdateOpener;
-                    CustomComboFunctions.OnCastInterrupted += RevertInterruptedCasts;
+                    OnCastInterrupted += RevertInterruptedCasts;
                 }
             }
         }

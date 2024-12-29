@@ -9,7 +9,7 @@ internal partial class RPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RPR_ST_SimpleMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             // Don't change anything if not basic skill
             if (actionID is not Slice)
@@ -169,12 +169,12 @@ internal partial class RPR
                 return All.Bloodbath;
 
             //1-2-3 Combo
-            if (comboTime > 0)
+            if (ComboTimer > 0)
             {
-                if (lastComboMove == OriginalHook(Slice) && LevelChecked(WaxingSlice))
+                if (ComboAction == OriginalHook(Slice) && LevelChecked(WaxingSlice))
                     return OriginalHook(WaxingSlice);
 
-                if (lastComboMove == OriginalHook(WaxingSlice) && LevelChecked(InfernalSlice))
+                if (ComboAction == OriginalHook(WaxingSlice) && LevelChecked(InfernalSlice))
                     return OriginalHook(InfernalSlice);
             }
 
@@ -186,7 +186,7 @@ internal partial class RPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RPR_ST_AdvancedMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is Slice)
             {
@@ -381,12 +381,12 @@ internal partial class RPR
                 }
 
                 //1-2-3 Combo
-                if (comboTime > 0)
+                if (ComboTimer > 0)
                 {
-                    if (lastComboMove == OriginalHook(Slice) && LevelChecked(WaxingSlice))
+                    if (ComboAction == OriginalHook(Slice) && LevelChecked(WaxingSlice))
                         return OriginalHook(WaxingSlice);
 
-                    if (lastComboMove == OriginalHook(WaxingSlice) && LevelChecked(InfernalSlice))
+                    if (ComboAction == OriginalHook(WaxingSlice) && LevelChecked(InfernalSlice))
                         return OriginalHook(InfernalSlice);
                 }
             }
@@ -398,7 +398,7 @@ internal partial class RPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RPR_AoE_SimpleMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             // Don't change anything if not basic skill
             if (actionID is not SpinningScythe)
@@ -479,7 +479,7 @@ internal partial class RPR
                 (HasEffect(Buffs.Executioner) && !HasEffect(Buffs.Enshrouded) && LevelChecked(Guillotine)))
                 return OriginalHook(Guillotine);
 
-            return lastComboMove == OriginalHook(SpinningScythe) && LevelChecked(NightmareScythe)
+            return ComboAction == OriginalHook(SpinningScythe) && LevelChecked(NightmareScythe)
                 ? OriginalHook(NightmareScythe)
                 : actionID;
         }
@@ -489,7 +489,7 @@ internal partial class RPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RPR_AoE_AdvancedMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             // Don't change anything if not basic skill
             if (actionID is not SpinningScythe)
@@ -592,7 +592,7 @@ internal partial class RPR
                                                  && !HasEffect(Buffs.Enshrouded) && LevelChecked(Guillotine))))
                 return OriginalHook(Guillotine);
 
-            return lastComboMove == OriginalHook(SpinningScythe) && LevelChecked(NightmareScythe)
+            return ComboAction == OriginalHook(SpinningScythe) && LevelChecked(NightmareScythe)
                 ? OriginalHook(NightmareScythe)
                 : actionID;
         }
@@ -602,7 +602,7 @@ internal partial class RPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RPR_GluttonyBloodSwathe;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             switch (actionID)
             {
@@ -744,7 +744,7 @@ internal partial class RPR
         protected internal override CustomComboPreset Preset { get; } =
             CustomComboPreset.RPR_ArcaneCirclePlentifulHarvest;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) => 
+        protected override uint Invoke(uint actionID) => 
             actionID is ArcaneCircle &&
             HasEffect(Buffs.ImmortalSacrifice) && LevelChecked(PlentifulHarvest)
                 ? PlentifulHarvest
@@ -755,7 +755,7 @@ internal partial class RPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RPR_Regress;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is HellsEgress or HellsIngress && 
             FindEffect(Buffs.Threshold)?.RemainingTime <= 9
                 ? Regress
@@ -766,7 +766,7 @@ internal partial class RPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RPR_Soulsow;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             bool [] soulSowOptions = Config.RPR_SoulsowOptions;
             bool soulsowReady = LevelChecked(Soulsow) && !HasEffect(Buffs.Soulsow);
@@ -787,7 +787,7 @@ internal partial class RPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RPR_EnshroudProtection;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             switch (actionID)
             {
@@ -819,7 +819,7 @@ internal partial class RPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RPR_CommunioOnGGG;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             switch (actionID)
             {
@@ -856,7 +856,7 @@ internal partial class RPR
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RPR_EnshroudCommunio;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             switch (actionID)
             {

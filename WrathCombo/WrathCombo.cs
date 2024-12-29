@@ -18,7 +18,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using WrathCombo.Attributes;
 using WrathCombo.AutoRotation;
@@ -31,10 +30,10 @@ using WrathCombo.CustomComboNS.Functions;
 using WrathCombo.Data;
 using WrathCombo.Extensions;
 using WrathCombo.Services;
-using IPC = WrathCombo.Services.IPC;
 using WrathCombo.Window;
 using WrathCombo.Window.Functions;
 using WrathCombo.Window.Tabs;
+using IPC = WrathCombo.Services.IPC;
 using Status = Dalamud.Game.ClientState.Statuses.Status;
 
 namespace WrathCombo
@@ -94,10 +93,14 @@ namespace WrathCombo
             {
                 if (jobID != value && value != null)
                 {
-                    AST.QuickTargetCards.SelectedRandomMember = null;
-                    PvEFeatures.HasToOpenJob = true;
-                    WrathOpener.SelectOpener(value.Value);
-                    Svc.Framework.RunOnTick(() => P.IPCSearch.UpdateActiveJobPresets(), TimeSpan.FromSeconds(0.1));
+                    Svc.Framework.RunOnTick(() =>
+                    {
+                        Service.IconReplacer.UpdateFilteredCombos();
+                        AST.QuickTargetCards.SelectedRandomMember = null;
+                        PvEFeatures.HasToOpenJob = true;
+                        WrathOpener.SelectOpener(value.Value);
+                        P.IPCSearch.UpdateActiveJobPresets();
+                    }, TimeSpan.FromSeconds(0.1));
                 }
                 jobID = value;
             }
@@ -416,7 +419,7 @@ namespace WrathCombo
                             var controlled =
                                 IPC.UIHelper.PresetControlled(preset) is not null;
                             var ctrlText = controlled ? " " + OptionControlledByIPC : "";
-                            DuoLog.Information($"{preset} UNSET{ctrlText}");;
+                            DuoLog.Information($"{preset} UNSET{ctrlText}"); ;
                         }
 
                         Service.Configuration.Save();
@@ -496,7 +499,7 @@ namespace WrathCombo
                             int conflictingPluginsCount = conflictingPlugins?.Length ?? 0;
 
                             int leaseesCount = P.IPC.UIHelper.ShowNumberOfLeasees();
-                            (string pluginName, int configurationsCount)[] leasees =  P.IPC.UIHelper.ShowLeasees();
+                            (string pluginName, int configurationsCount)[] leasees = P.IPC.UIHelper.ShowLeasees();
 
                             string repoURL = RepoCheckFunctions.FetchCurrentRepo()?.InstalledFromUrl ?? "Unknown";
                             string currentZone = Svc.Data.GetExcelSheet<TerritoryType>()?

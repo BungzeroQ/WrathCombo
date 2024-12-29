@@ -232,6 +232,10 @@ namespace WrathCombo.Window.Tabs
 
             }
 
+            ImGuiEx.TextUnderlined("Advanced");
+            changed |= ImGui.InputInt("Throttle Delay (ms)", ref cfg.Throttler);
+            ImGuiComponents.HelpMarker("Auto-Rotation has a built in throttler to only run every so many milliseconds for performance reasons. If you experience issues with frame rate, try increasing this value. Do note this may have a side-effect of introducing clipping if set too high, so experiment with the value.");
+
             if (changed)
                 Service.Configuration.Save();
 

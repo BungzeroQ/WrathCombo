@@ -82,7 +82,7 @@ namespace WrathCombo.Combos.PvE
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.PLD_ST_SimpleMode;
             internal static int RoyalAuthorityCount => ActionWatching.CombatActions.Count(x => x == OriginalHook(RageOfHalone));
 
-            protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is FastBlade)
                 {
@@ -139,17 +139,17 @@ namespace WrathCombo.Combos.PvE
                                         if (!LevelChecked(RageOfHalone))
                                         {
                                             // Level 2-25
-                                            if (lastComboActionID is FastBlade)
+                                            if (ComboAction is FastBlade)
                                                 return FightOrFlight;
                                         }
 
                                         // Level 26-67
-                                        else if (lastComboActionID is RiotBlade)
+                                        else if (ComboAction is RiotBlade)
                                             return FightOrFlight;
                                     }
 
                                     // Level 68+
-                                    else if (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave && (lastComboActionID is RoyalAuthority || afterOpener))
+                                    else if (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave && (ComboAction is RoyalAuthority || afterOpener))
                                         return FightOrFlight;
                                 }
 
@@ -208,11 +208,11 @@ namespace WrathCombo.Combos.PvE
                         }
 
                         // Atonement: During Burst / Before Expiring / Spend Starter / Before Refreshing
-                        if (inAtonementPhase && InMeleeRange() && (inBurstWindow || isAtonementExpiring || inAtonementStarter || lastComboActionID is RiotBlade))
+                        if (inAtonementPhase && InMeleeRange() && (inBurstWindow || isAtonementExpiring || inAtonementStarter || ComboAction is RiotBlade))
                             return OriginalHook(Atonement);
 
                         // Holy Spirit: During Burst / Before Expiring / Outside Melee / Before Refreshing
-                        if (hasDivineMight && hasDivineMagicMP && (inBurstWindow || isDivineMightExpiring || !InMeleeRange() || lastComboActionID is RiotBlade))
+                        if (hasDivineMight && hasDivineMagicMP && (inBurstWindow || isDivineMightExpiring || !InMeleeRange() || ComboAction is RiotBlade))
                             return HolySpirit;
 
                         // Out of Range
@@ -221,12 +221,12 @@ namespace WrathCombo.Combos.PvE
                     }
 
                     // Basic Combo
-                    if (comboTime > 0)
+                    if (ComboTimer > 0)
                     {
-                        if (lastComboActionID is FastBlade && LevelChecked(RiotBlade))
+                        if (ComboAction is FastBlade && LevelChecked(RiotBlade))
                             return RiotBlade;
 
-                        if (lastComboActionID is RiotBlade && LevelChecked(RageOfHalone))
+                        if (ComboAction is RiotBlade && LevelChecked(RageOfHalone))
                             return OriginalHook(RageOfHalone);
                     }
                 }
@@ -239,7 +239,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.PLD_AoE_SimpleMode;
 
-            protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is TotalEclipse)
                 {
@@ -314,7 +314,7 @@ namespace WrathCombo.Combos.PvE
                         return HolyCircle;
 
                     // Basic Combo
-                    if (comboTime > 0 && lastComboActionID is TotalEclipse && LevelChecked(Prominence))
+                    if (ComboTimer > 0 && ComboAction is TotalEclipse && LevelChecked(Prominence))
                         return Prominence;
                 }
 
@@ -327,7 +327,7 @@ namespace WrathCombo.Combos.PvE
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.PLD_ST_AdvancedMode;
             internal static int RoyalAuthorityCount => ActionWatching.CombatActions.Count(x => x == OriginalHook(RageOfHalone));
 
-            protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is FastBlade)
                 {
@@ -390,17 +390,17 @@ namespace WrathCombo.Combos.PvE
                                         if (!LevelChecked(RageOfHalone))
                                         {
                                             // Level 2-25
-                                            if (lastComboActionID is FastBlade)
+                                            if (ComboAction is FastBlade)
                                                 return FightOrFlight;
                                         }
 
                                         // Level 26-67
-                                        else if (lastComboActionID is RiotBlade)
+                                        else if (ComboAction is RiotBlade)
                                             return FightOrFlight;
                                     }
 
                                     // Level 68+
-                                    else if (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave && (lastComboActionID is RoyalAuthority || afterOpener))
+                                    else if (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave && (ComboAction is RoyalAuthority || afterOpener))
                                         return FightOrFlight;
                                 }
 
@@ -495,12 +495,12 @@ namespace WrathCombo.Combos.PvE
 
                         // Atonement: During Burst / Before Expiring / Spend Starter / Before Refreshing
                         if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_Atonement) && inAtonementPhase && InMeleeRange() &&
-                            (inBurstWindow || isAtonementExpiring || inAtonementStarter || lastComboActionID is RiotBlade))
+                            (inBurstWindow || isAtonementExpiring || inAtonementStarter || ComboAction is RiotBlade))
                             return OriginalHook(Atonement);
 
                         // Holy Spirit: During Burst / Before Expiring / Outside Melee / Before Refreshing
                         if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_HolySpirit) && hasDivineMight && hasDivineMagicMP && isAboveMPReserve &&
-                            (inBurstWindow || isDivineMightExpiring || !InMeleeRange() || lastComboActionID is RiotBlade))
+                            (inBurstWindow || isDivineMightExpiring || !InMeleeRange() || ComboAction is RiotBlade))
                             return HolySpirit;
 
                         // Out of Range
@@ -517,12 +517,12 @@ namespace WrathCombo.Combos.PvE
                     }
 
                     // Basic Combo
-                    if (comboTime > 0)
+                    if (ComboTimer > 0)
                     {
-                        if (lastComboActionID is FastBlade && LevelChecked(RiotBlade))
+                        if (ComboAction is FastBlade && LevelChecked(RiotBlade))
                             return RiotBlade;
 
-                        if (lastComboActionID is RiotBlade && LevelChecked(RageOfHalone))
+                        if (ComboAction is RiotBlade && LevelChecked(RageOfHalone))
                             return OriginalHook(RageOfHalone);
                     }
                 }
@@ -535,7 +535,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.PLD_AoE_AdvancedMode;
 
-            protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is TotalEclipse)
                 {
@@ -652,7 +652,7 @@ namespace WrathCombo.Combos.PvE
                         return HolyCircle;
 
                     // Basic Combo
-                    if (comboTime > 0 && lastComboActionID is TotalEclipse && LevelChecked(Prominence))
+                    if (ComboTimer > 0 && ComboAction is TotalEclipse && LevelChecked(Prominence))
                         return Prominence;
                 }
 
@@ -664,7 +664,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.PLD_Requiescat_Options;
 
-            protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is Requiescat or Imperator)
                 {
@@ -695,7 +695,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.PLD_SpiritsWithin;
 
-            protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is SpiritsWithin or Expiacion)
                 {
@@ -714,7 +714,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.PLD_ShieldLob_Feature;
 
-            protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is ShieldLob)
                 {

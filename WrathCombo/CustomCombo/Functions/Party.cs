@@ -1,4 +1,5 @@
-﻿using Dalamud.Game.ClientState.Objects.Types;
+﻿using Dalamud.Game.ClientState.Objects.SubKinds;
+using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameFunctions;
@@ -34,7 +35,7 @@ namespace WrathCombo.CustomComboNS.Functions
             {
                 if (AutoRotationController.cfg.Enabled && AutoRotationController.cfg.HealerSettings.IncludeNPCs && Player.Job.IsHealer())
                 {
-                    foreach (var npc in Svc.Objects.Where(x => x is IBattleChara).Cast<IBattleChara>())
+                    foreach (var npc in Svc.Objects.Where(x => x is IBattleChara && x is not IPlayerCharacter).Cast<IBattleChara>())
                     {
                         if (ActionManager.CanUseActionOnTarget(All.Esuna, npc.GameObject()) && !output.Contains(npc))
                             output.Add(npc);
@@ -102,5 +103,13 @@ namespace WrathCombo.CustomComboNS.Functions
         }
 
         public static bool PartyInCombat() => PartyEngageDuration().Ticks > 0;
+    }
+
+    public enum AllianceGroup
+    {
+        GroupA,
+        GroupB,
+        GroupC,
+        NotInAlliance
     }
 }

@@ -10,22 +10,22 @@ internal partial class DRG
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.DRG_ST_FullThrustCombo;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is FullThrust or HeavensThrust)
             {
-                if (comboTime > 0)
+                if (ComboTimer > 0)
                 {
-                    if (lastComboMove is TrueThrust or RaidenThrust && LevelChecked(VorpalThrust))
+                    if (ComboAction is TrueThrust or RaidenThrust && LevelChecked(VorpalThrust))
                         return OriginalHook(VorpalThrust);
 
-                    if (lastComboMove == OriginalHook(VorpalThrust) && LevelChecked(FullThrust))
+                    if (ComboAction == OriginalHook(VorpalThrust) && LevelChecked(FullThrust))
                         return OriginalHook(FullThrust);
 
-                    if (lastComboMove == OriginalHook(FullThrust) && LevelChecked(FangAndClaw))
+                    if (ComboAction == OriginalHook(FullThrust) && LevelChecked(FangAndClaw))
                         return FangAndClaw;
 
-                    if (lastComboMove is FangAndClaw && LevelChecked(Drakesbane))
+                    if (ComboAction is FangAndClaw && LevelChecked(Drakesbane))
                         return Drakesbane;
                 }
 
@@ -40,22 +40,22 @@ internal partial class DRG
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.DRG_ST_ChaoticCombo;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte levels)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is ChaosThrust or ChaoticSpring)
             {
-                if (comboTime > 0)
+                if (ComboTimer > 0)
                 {
-                    if (lastComboMove is TrueThrust or RaidenThrust && LevelChecked(Disembowel))
+                    if (ComboAction is TrueThrust or RaidenThrust && LevelChecked(Disembowel))
                         return OriginalHook(Disembowel);
 
-                    if (lastComboMove == OriginalHook(Disembowel) && LevelChecked(ChaosThrust))
+                    if (ComboAction == OriginalHook(Disembowel) && LevelChecked(ChaosThrust))
                         return OriginalHook(ChaosThrust);
 
-                    if (lastComboMove == OriginalHook(ChaosThrust) && LevelChecked(WheelingThrust))
+                    if (ComboAction == OriginalHook(ChaosThrust) && LevelChecked(WheelingThrust))
                         return WheelingThrust;
 
-                    if (lastComboMove is WheelingThrust && LevelChecked(Drakesbane))
+                    if (ComboAction is WheelingThrust && LevelChecked(Drakesbane))
                         return Drakesbane;
                 }
 
@@ -70,7 +70,7 @@ internal partial class DRG
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.DRG_ST_SimpleMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             // Don't change anything if not basic skill
             if (actionID is not TrueThrust)
@@ -178,16 +178,16 @@ internal partial class DRG
             }
 
             //1-2-3 Combo
-            if (comboTime > 0)
+            if (ComboTimer > 0)
             {
-                if (lastComboMove is TrueThrust or RaidenThrust && LevelChecked(VorpalThrust))
+                if (ComboAction is TrueThrust or RaidenThrust && LevelChecked(VorpalThrust))
                     return LevelChecked(Disembowel) &&
                            ((ChaosDoTDebuff is null && LevelChecked(ChaosThrust)) ||
                             GetBuffRemainingTime(Buffs.PowerSurge) < 15)
                         ? OriginalHook(Disembowel)
                         : OriginalHook(VorpalThrust);
 
-                if (lastComboMove == OriginalHook(Disembowel) && LevelChecked(ChaosThrust))
+                if (ComboAction == OriginalHook(Disembowel) && LevelChecked(ChaosThrust))
                 {
                     if (trueNorthReady && CanDRGWeave(All.TrueNorth) &&
                         !OnTargetsRear())
@@ -196,7 +196,7 @@ internal partial class DRG
                     return OriginalHook(ChaosThrust);
                 }
 
-                if (lastComboMove == OriginalHook(ChaosThrust) && LevelChecked(WheelingThrust))
+                if (ComboAction == OriginalHook(ChaosThrust) && LevelChecked(WheelingThrust))
                 {
                     if (trueNorthReady && CanDRGWeave(All.TrueNorth) &&
                         !OnTargetsRear())
@@ -205,10 +205,10 @@ internal partial class DRG
                     return WheelingThrust;
                 }
 
-                if (lastComboMove == OriginalHook(VorpalThrust) && LevelChecked(FullThrust))
+                if (ComboAction == OriginalHook(VorpalThrust) && LevelChecked(FullThrust))
                     return OriginalHook(FullThrust);
 
-                if (lastComboMove == OriginalHook(FullThrust) && LevelChecked(FangAndClaw))
+                if (ComboAction == OriginalHook(FullThrust) && LevelChecked(FangAndClaw))
                 {
                     if (trueNorthReady && CanDRGWeave(All.TrueNorth) &&
                         !OnTargetsFlank())
@@ -217,7 +217,7 @@ internal partial class DRG
                     return FangAndClaw;
                 }
 
-                if (lastComboMove is WheelingThrust or FangAndClaw && LevelChecked(Drakesbane))
+                if (ComboAction is WheelingThrust or FangAndClaw && LevelChecked(Drakesbane))
                     return Drakesbane;
             }
 
@@ -229,7 +229,7 @@ internal partial class DRG
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.DRG_ST_AdvancedMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             // Don't change anything if not basic skill
             if (actionID is not TrueThrust)
@@ -372,16 +372,16 @@ internal partial class DRG
             }
 
             //1-2-3 Combo
-            if (comboTime > 0)
+            if (ComboTimer > 0)
             {
-                if (lastComboMove is TrueThrust or RaidenThrust && LevelChecked(VorpalThrust))
+                if (ComboAction is TrueThrust or RaidenThrust && LevelChecked(VorpalThrust))
                     return LevelChecked(Disembowel) &&
                            ((ChaosDoTDebuff is null && LevelChecked(ChaosThrust)) ||
                             GetBuffRemainingTime(Buffs.PowerSurge) < 15)
                         ? OriginalHook(Disembowel)
                         : OriginalHook(VorpalThrust);
 
-                if (lastComboMove == OriginalHook(Disembowel) && LevelChecked(ChaosThrust))
+                if (ComboAction == OriginalHook(Disembowel) && LevelChecked(ChaosThrust))
                 {
                     if (IsEnabled(CustomComboPreset.DRG_TrueNorthDynamic) &&
                         trueNorthReady && CanDRGWeave(All.TrueNorth) &&
@@ -391,7 +391,7 @@ internal partial class DRG
                     return OriginalHook(ChaosThrust);
                 }
 
-                if (lastComboMove == OriginalHook(ChaosThrust) && LevelChecked(WheelingThrust))
+                if (ComboAction == OriginalHook(ChaosThrust) && LevelChecked(WheelingThrust))
                 {
                     if (IsEnabled(CustomComboPreset.DRG_TrueNorthDynamic) &&
                         trueNorthReady && CanDRGWeave(All.TrueNorth) &&
@@ -401,10 +401,10 @@ internal partial class DRG
                     return WheelingThrust;
                 }
 
-                if (lastComboMove == OriginalHook(VorpalThrust) && LevelChecked(FullThrust))
+                if (ComboAction == OriginalHook(VorpalThrust) && LevelChecked(FullThrust))
                     return OriginalHook(FullThrust);
 
-                if (lastComboMove == OriginalHook(FullThrust) && LevelChecked(FangAndClaw))
+                if (ComboAction == OriginalHook(FullThrust) && LevelChecked(FangAndClaw))
                 {
                     if (IsEnabled(CustomComboPreset.DRG_TrueNorthDynamic) &&
                         trueNorthReady && CanDRGWeave(All.TrueNorth) &&
@@ -414,7 +414,7 @@ internal partial class DRG
                     return FangAndClaw;
                 }
 
-                if (lastComboMove is WheelingThrust or FangAndClaw && LevelChecked(Drakesbane))
+                if (ComboAction is WheelingThrust or FangAndClaw && LevelChecked(Drakesbane))
                     return Drakesbane;
             }
 
@@ -426,7 +426,7 @@ internal partial class DRG
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.DRG_AOE_SimpleMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             // Don't change anything if not basic skill
             if (actionID is not DoomSpike)
@@ -523,23 +523,23 @@ internal partial class DRG
                     return OriginalHook(Geirskogul);
             }
 
-            if (comboTime > 0)
+            if (ComboTimer > 0)
             {
                 if (!SonicThrust.LevelChecked())
                 {
-                    if (lastComboMove == TrueThrust && LevelChecked(Disembowel))
+                    if (ComboAction == TrueThrust && LevelChecked(Disembowel))
                         return Disembowel;
 
-                    if (lastComboMove == Disembowel && LevelChecked(ChaosThrust))
+                    if (ComboAction == Disembowel && LevelChecked(ChaosThrust))
                         return OriginalHook(ChaosThrust);
                 }
 
                 else
                 {
-                    if (lastComboMove is DoomSpike or DraconianFury && LevelChecked(SonicThrust))
+                    if (ComboAction is DoomSpike or DraconianFury && LevelChecked(SonicThrust))
                         return SonicThrust;
 
-                    if (lastComboMove == SonicThrust && LevelChecked(CoerthanTorment))
+                    if (ComboAction == SonicThrust && LevelChecked(CoerthanTorment))
                         return CoerthanTorment;
                 }
             }
@@ -554,7 +554,7 @@ internal partial class DRG
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.DRG_AOE_AdvancedMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             // Don't change anything if not basic skill
             if (actionID is not DoomSpike)
@@ -690,24 +690,24 @@ internal partial class DRG
                     return All.Bloodbath;
             }
 
-            if (comboTime > 0)
+            if (ComboTimer > 0)
             {
                 if (IsEnabled(CustomComboPreset.DRG_AoE_Disembowel) &&
                     !SonicThrust.LevelChecked())
                 {
-                    if (lastComboMove == TrueThrust && LevelChecked(Disembowel))
+                    if (ComboAction == TrueThrust && LevelChecked(Disembowel))
                         return Disembowel;
 
-                    if (lastComboMove == Disembowel && LevelChecked(ChaosThrust))
+                    if (ComboAction == Disembowel && LevelChecked(ChaosThrust))
                         return OriginalHook(ChaosThrust);
                 }
 
                 else
                 {
-                    if (lastComboMove is DoomSpike or DraconianFury && LevelChecked(SonicThrust))
+                    if (ComboAction is DoomSpike or DraconianFury && LevelChecked(SonicThrust))
                         return SonicThrust;
 
-                    if (lastComboMove == SonicThrust && LevelChecked(CoerthanTorment))
+                    if (ComboAction == SonicThrust && LevelChecked(CoerthanTorment))
                         return CoerthanTorment;
                 }
             }
@@ -723,7 +723,7 @@ internal partial class DRG
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.DRG_BurstCDFeature;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) => actionID is LanceCharge && IsOnCooldown(LanceCharge) && ActionReady(BattleLitany)
+        protected override uint Invoke(uint actionID) => actionID is LanceCharge && IsOnCooldown(LanceCharge) && ActionReady(BattleLitany)
                 ? BattleLitany
                 : actionID;
     }

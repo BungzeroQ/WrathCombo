@@ -105,7 +105,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WAR_ST_Simple;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID == StormsPath) //Our button
                 {
@@ -243,7 +243,7 @@ namespace WrathCombo.Combos.PvE
                         }
                     }
 
-                    if (comboTime > 0) //in combo window
+                    if (ComboTimer > 0) //in combo window
                     {
                         if (LevelChecked(InnerBeast) && //Inner Beast is available
                             gauge >= 90 && //gauge is greater than or equal to 90
@@ -251,11 +251,11 @@ namespace WrathCombo.Combos.PvE
                             return OriginalHook(InnerBeast);
 
                         if (LevelChecked(Maim) && //Maim is available
-                            lastComboMove == HeavySwing) //last combo move was Heavy Swing
+                            ComboAction == HeavySwing) //last combo move was Heavy Swing
                             return Maim;
 
                         if (LevelChecked(StormsPath) && //Storm's Path is available
-                            lastComboMove == Maim) //last combo move was Maim
+                            ComboAction == Maim) //last combo move was Maim
                         {
                             if (LevelChecked(StormsEye) && //Storm's Eye is available
                                 GetBuffRemainingTime(Buffs.SurgingTempest) <= 29) //Surging Tempest is about to expire
@@ -277,7 +277,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WAR_ST_Advanced;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID == StormsPath) //Our button
                 {
@@ -366,18 +366,18 @@ namespace WrathCombo.Combos.PvE
                     }
                     #endregion
 
+                    if (IsEnabled(CustomComboPreset.WAR_ST_Advanced_RangedUptime) && //Ranged uptime option is enabled
+                        LevelChecked(Tomahawk) && //Tomahawk is available
+                        !InMeleeRange() && //not in melee range
+                        HasBattleTarget()) //has a target
+                        return Tomahawk;
+
                     if (IsEnabled(CustomComboPreset.WAR_ST_Advanced_BalanceOpener) && 
                         ContentCheck.IsInConfiguredContent(Config.WAR_BalanceOpener_Content, ContentCheck.ListSet.BossOnly))
                     {
                         if (Opener().FullOpener(ref actionID))
                             return actionID;
                     }
-
-                    if (IsEnabled(CustomComboPreset.WAR_ST_Advanced_RangedUptime) && //Ranged uptime option is enabled
-                        LevelChecked(Tomahawk) && //Tomahawk is available
-                        !InMeleeRange() && //not in melee range
-                        HasBattleTarget()) //has a target
-                        return Tomahawk;
 
                     if (CanWeave()) //in weave window
                     {
@@ -460,7 +460,7 @@ namespace WrathCombo.Combos.PvE
                         }
                     }
 
-                    if (comboTime > 0) //in combo window
+                    if (ComboTimer > 0) //in combo window
                     {
                         if (IsEnabled(CustomComboPreset.WAR_ST_Advanced_FellCleave) && //Fell Cleave option is enabled
                             LevelChecked(InnerBeast) && //Inner Beast is available
@@ -469,12 +469,12 @@ namespace WrathCombo.Combos.PvE
                             return OriginalHook(InnerBeast);
 
                         if (LevelChecked(Maim) && //Maim is available
-                            lastComboMove == HeavySwing) //last combo move was Heavy Swing
+                            ComboAction == HeavySwing) //last combo move was Heavy Swing
                             return Maim;
 
                         if (IsEnabled(CustomComboPreset.WAR_ST_Advanced_StormsEye) && //Storm's Eye option is enabled
                             LevelChecked(StormsPath) &&  //Storm's Path is available
-                            lastComboMove == Maim) //last combo move was Maim
+                            ComboAction == Maim) //last combo move was Maim
                         {
                             if (LevelChecked(StormsEye) && //Storm's Eye is available
                                 GetBuffRemainingTime(Buffs.SurgingTempest) <= Config.WAR_SurgingRefreshRange) //Surging Tempest less than or equal to selected threshold
@@ -483,7 +483,7 @@ namespace WrathCombo.Combos.PvE
                         }
                         if (IsNotEnabled(CustomComboPreset.WAR_ST_Advanced_StormsEye) && //Storm's Eye option is disabled
                             LevelChecked(StormsPath) && //Storm's Path is available
-                            lastComboMove == Maim) //last combo move was Maim
+                            ComboAction == Maim) //last combo move was Maim
                             return StormsPath;
                     }
 
@@ -500,7 +500,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WAR_AoE_Simple;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID == Overpower) //Our button
                 {
@@ -614,10 +614,10 @@ namespace WrathCombo.Combos.PvE
                             return OriginalHook(SteelCyclone);
                     }
 
-                    if (comboTime > 0) //in combo window
+                    if (ComboTimer > 0) //in combo window
                     {
                         if (LevelChecked(MythrilTempest) && //Mythril Tempest is available
-                            lastComboMove == Overpower) //last combo move was Overpower
+                            ComboAction == Overpower) //last combo move was Overpower
                             return MythrilTempest;
                     }
 
@@ -634,7 +634,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WAR_AoE_Advanced;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID == Overpower) //Our button
                 {
@@ -774,10 +774,10 @@ namespace WrathCombo.Combos.PvE
                             return OriginalHook(SteelCyclone);
                     }
 
-                    if (comboTime > 0) //in combo window
+                    if (ComboTimer > 0) //in combo window
                     {
                         if (LevelChecked(MythrilTempest) && //Mythril Tempest is available
-                            lastComboMove == Overpower) //last combo move was Overpower
+                            ComboAction == Overpower) //last combo move was Overpower
                             return MythrilTempest;
                     }
 
@@ -794,7 +794,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WAR_EyePath;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID == StormsPath)
                 {
@@ -812,17 +812,17 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WAR_StormsEye;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID == StormsEye)
                 {
-                    if (comboTime > 0) //In combo
+                    if (ComboTimer > 0) //In combo
                     {
-                        if (lastComboMove == HeavySwing && //Last move was Heavy Swing
+                        if (ComboAction == HeavySwing && //Last move was Heavy Swing
                             LevelChecked(Maim)) //Maim is available
                             return Maim;
 
-                        if (lastComboMove == Maim && //Last move was Maim
+                        if (ComboAction == Maim && //Last move was Maim
                             LevelChecked(StormsEye)) //Storm's Eye is available
                             return StormsEye;
                     }
@@ -840,9 +840,9 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WAR_PrimalCombo_InnerRelease;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
-                if (actionID is Berserk) 
+                if (actionID == OriginalHook(Berserk))
                 {
                     if (LevelChecked(PrimalRend) && //Primal Rend is available
                         HasEffect(Buffs.PrimalRendReady)) //Primal Rend is ready
@@ -863,7 +863,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WAR_InfuriateFellCleave;
 
-            protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is InnerBeast or FellCleave or SteelCyclone or Decimate)
                 {
@@ -889,7 +889,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WAR_Mit_OneButton;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is ThrillOfBattle) //Our button
                 {
@@ -947,7 +947,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WAR_NascentFlash;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID == NascentFlash)
                 {
@@ -966,7 +966,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WAR_ThrillEquilibrium;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID == ThrillOfBattle)
                 {

@@ -53,7 +53,7 @@ namespace WrathCombo.Combos.PvP
         internal class RPRPvP_Burst : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RPRPvP_Burst;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is Slice or WaxingSlice or InfernalSlice)
                 {

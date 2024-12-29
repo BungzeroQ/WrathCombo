@@ -135,7 +135,7 @@ internal class All
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.ALL_IslandSanctuary_Sprint;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is Sprint && Svc.ClientState.TerritoryType is 1055
                 ? IsleSprint
                 : actionID;
@@ -146,7 +146,7 @@ internal class All
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.ALL_Tank_Interrupt;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             switch (actionID)
             {
@@ -167,7 +167,7 @@ internal class All
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.ALL_Tank_Reprisal;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is Reprisal && TargetHasEffectAny(Debuffs.Reprisal) && IsOffCooldown(Reprisal)
                 ? OriginalHook(11)
                 : actionID;
@@ -178,7 +178,7 @@ internal class All
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.ALL_Healer_Raise;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             switch (actionID)
             {
@@ -206,7 +206,7 @@ internal class All
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.ALL_Caster_Addle;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is Addle && TargetHasEffectAny(Debuffs.Addle) && IsOffCooldown(Addle)
                 ? OriginalHook(11)
                 : actionID;
@@ -216,7 +216,7 @@ internal class All
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.ALL_Caster_Raise;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             switch (actionID)
             {
@@ -246,7 +246,7 @@ internal class All
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.ALL_Melee_Feint;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is Feint && TargetHasEffectAny(Debuffs.Feint) && IsOffCooldown(Feint)
                 ? OriginalHook(11)
                 : actionID;
@@ -256,7 +256,7 @@ internal class All
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.ALL_Melee_TrueNorth;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is TrueNorth && HasEffect(Buffs.TrueNorth)
                 ? OriginalHook(11)
                 : actionID;
@@ -267,7 +267,7 @@ internal class All
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.ALL_Ranged_Mitigation;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is BRD.Troubadour or MCH.Tactician or DNC.ShieldSamba &&
             (HasEffectAny(BRD.Buffs.Troubadour) || HasEffectAny(MCH.Buffs.Tactician) ||
              HasEffectAny(DNC.Buffs.ShieldSamba)) &&
@@ -280,7 +280,7 @@ internal class All
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.ALL_Ranged_Interrupt;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is FootGraze && CanInterruptEnemy() && ActionReady(HeadGraze)
                 ? HeadGraze
                 : actionID;

@@ -92,7 +92,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RdmAny;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+            protected override uint Invoke(uint actionID) =>
                 actionID is Vercure && IsEnabled(CustomComboPreset.RDM_Variant_Cure2) && IsEnabled(Variant.VariantCure)
                     ? Variant.VariantCure : actionID;
         }
@@ -101,7 +101,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RDM_ST_SimpleMode;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is Jolt or Jolt2 or Jolt3)
                 {
@@ -125,18 +125,18 @@ namespace WrathCombo.Combos.PvE
                     if (TryOGCDs(actionID, true, out uint oGCDAction)) return oGCDAction;
 
                     //Lucid Dreaming
-                    if (TryLucidDreaming(actionID, 6500, lastComboMove)) return All.LucidDreaming;
+                    if (TryLucidDreaming(actionID, 6500, ComboAction)) return All.LucidDreaming;
 
                     //Melee Finisher
-                    if (MeleeCombo.TryMeleeFinisher(lastComboMove, out uint finisherAction)) return finisherAction;
+                    if (MeleeCombo.TryMeleeFinisher(out uint finisherAction)) return finisherAction;
 
                     //Melee Combo
                     //  Manafication/Embolden Code
-                    if (MeleeCombo.TrySTManaEmbolden(actionID, lastComboMove, level, out uint ManaEmbolden)) return ManaEmbolden;
-                    if (MeleeCombo.TrySTMeleeCombo(actionID, lastComboMove, comboTime, out uint MeleeID)) return MeleeID;
+                    if (MeleeCombo.TrySTManaEmbolden(actionID, out uint ManaEmbolden)) return ManaEmbolden;
+                    if (MeleeCombo.TrySTMeleeCombo(actionID, out uint MeleeID)) return MeleeID;
 
                     //Normal Spell Rotation
-                    if (SpellCombo.TryAcceleration(actionID, lastComboMove, out uint Accel)) return Accel;
+                    if (SpellCombo.TryAcceleration(actionID, out uint Accel)) return Accel;
                     if (SpellCombo.TrySTSpellRotation(actionID, out uint SpellID)) return SpellID;
                                         
                 }
@@ -150,7 +150,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RDM_ST_DPS;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is Jolt or Jolt2 or Jolt3)
                 {
@@ -197,7 +197,7 @@ namespace WrathCombo.Combos.PvE
                 //Lucid Dreaming
                 if (IsEnabled(CustomComboPreset.RDM_ST_Lucid)
                     && actionID is Jolt or Jolt2 or Jolt3
-                    && TryLucidDreaming(actionID, Config.RDM_ST_Lucid_Threshold, lastComboMove)) //Don't interupt certain combos
+                    && TryLucidDreaming(actionID, Config.RDM_ST_Lucid_Threshold, ComboAction)) //Don't interupt certain combos
                     return All.LucidDreaming;
 
                 //RDM_MELEEFINISHER
@@ -210,7 +210,7 @@ namespace WrathCombo.Combos.PvE
                              (Config.RDM_ST_MeleeFinisher_OnAction[1] && actionID is Riposte or EnchantedRiposte) ||
                              (Config.RDM_ST_MeleeFinisher_OnAction[2] && actionID is Veraero or Veraero3 or Verthunder or Verthunder3)));
 
-                    if (ActionFound && MeleeCombo.TryMeleeFinisher(lastComboMove, out uint finisherAction))
+                    if (ActionFound && MeleeCombo.TryMeleeFinisher(out uint finisherAction))
                         return finisherAction;
                 }
                 //END_RDM_MELEEFINISHER
@@ -228,16 +228,12 @@ namespace WrathCombo.Combos.PvE
                     if (ActionFound)
                     {
                         if (MeleeCombo.TrySTManaEmbolden(
-                            actionID, lastComboMove, level, out uint ManaEmboldenID,
-                            IsEnabled(CustomComboPreset.RDM_ST_MeleeCombo_ManaEmbolden),
-                            IsEnabled(CustomComboPreset.RDM_ST_MeleeCombo_CorpsGapCloser),
+                            actionID, out uint ManaEmboldenID, IsEnabled(CustomComboPreset.RDM_ST_MeleeCombo_ManaEmbolden), IsEnabled(CustomComboPreset.RDM_ST_MeleeCombo_CorpsGapCloser),
                             IsEnabled(CustomComboPreset.RDM_ST_MeleeCombo_ManaEmbolden_DoubleCombo),
                             IsEnabled(CustomComboPreset.RDM_ST_MeleeCombo_UnbalanceMana)))
                             return ManaEmboldenID;
 
-                        if (MeleeCombo.TrySTMeleeCombo(actionID, lastComboMove, comboTime, out uint MeleeID,
-                            Config.RDM_ST_MeleeEnforced,
-                            IsEnabled(CustomComboPreset.RDM_ST_MeleeCombo_CorpsGapCloser),
+                        if (MeleeCombo.TrySTMeleeCombo(actionID, out uint MeleeID, Config.RDM_ST_MeleeEnforced, IsEnabled(CustomComboPreset.RDM_ST_MeleeCombo_CorpsGapCloser),
                             IsEnabled(CustomComboPreset.RDM_ST_MeleeCombo_UnbalanceMana)))
                             return MeleeID;
                     }
@@ -247,8 +243,7 @@ namespace WrathCombo.Combos.PvE
                 if (IsEnabled(CustomComboPreset.RDM_ST_ThunderAero) && IsEnabled(CustomComboPreset.RDM_ST_ThunderAero_Accel)
                     && actionID is Jolt or Jolt2 or Jolt3)
                 {
-                    if (SpellCombo.TryAcceleration(actionID, lastComboMove, out uint AccID,
-                        IsEnabled(CustomComboPreset.RDM_ST_ThunderAero_Accel_Swiftcast))) 
+                    if (SpellCombo.TryAcceleration(actionID, out uint AccID, IsEnabled(CustomComboPreset.RDM_ST_ThunderAero_Accel_Swiftcast))) 
                         return AccID;
                 }
 
@@ -269,7 +264,7 @@ namespace WrathCombo.Combos.PvE
         internal class RDM_AoE_SimpleMode : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RDM_AoE_SimpleMode;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is Scatter or Impact)
                 { 
@@ -289,20 +284,20 @@ namespace WrathCombo.Combos.PvE
                     if (TryOGCDs(actionID, true, out uint oGCDAction, true)) return oGCDAction;
 
                     // LUCID
-                    if (TryLucidDreaming(actionID, 6500, lastComboMove))
+                    if (TryLucidDreaming(actionID, 6500, ComboAction))
                         return All.LucidDreaming;
 
                     //RDM_MELEEFINISHER
-                    if (MeleeCombo.TryMeleeFinisher(lastComboMove, out uint finisherAction))
+                    if (MeleeCombo.TryMeleeFinisher(out uint finisherAction))
                         return finisherAction;
                 
-                    if (MeleeCombo.TryAoEManaEmbolden(actionID, lastComboMove, out uint ManaEmbolden))
+                    if (MeleeCombo.TryAoEManaEmbolden(actionID, out uint ManaEmbolden))
                         return ManaEmbolden;
 
-                    if (MeleeCombo.TryAoEMeleeCombo(actionID, lastComboMove, comboTime, out uint AoEMeleeID))
+                    if (MeleeCombo.TryAoEMeleeCombo(actionID, out uint AoEMeleeID))
                         return AoEMeleeID;
                     
-                    if (SpellCombo.TryAcceleration(actionID, lastComboMove, out uint AccelID))
+                    if (SpellCombo.TryAcceleration(actionID, out uint AccelID))
                         return AccelID;
 
                     if (SpellCombo.TryAoESpellRotation(actionID, out uint SpellID))
@@ -315,7 +310,7 @@ namespace WrathCombo.Combos.PvE
         internal class RDM_AoE_DPS : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RDM_AoE_DPS;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is Scatter or Impact)
                 {
@@ -338,7 +333,7 @@ namespace WrathCombo.Combos.PvE
 
                     // LUCID
                     if (IsEnabled(CustomComboPreset.RDM_AoE_Lucid)
-                        && TryLucidDreaming(actionID, Config.RDM_AoE_Lucid_Threshold, lastComboMove))
+                        && TryLucidDreaming(actionID, Config.RDM_AoE_Lucid_Threshold, ComboAction))
                         return All.LucidDreaming;
                 }
 
@@ -353,7 +348,7 @@ namespace WrathCombo.Combos.PvE
                              (Config.RDM_AoE_MeleeFinisher_OnAction[2] && actionID is Veraero2 or Verthunder2)));
 
 
-                    if (ActionFound && MeleeCombo.TryMeleeFinisher(lastComboMove, out uint finisherAction))
+                    if (ActionFound && MeleeCombo.TryMeleeFinisher(out uint finisherAction))
                         return finisherAction;
                 }
                 //END_RDM_MELEEFINISHER
@@ -371,12 +366,10 @@ namespace WrathCombo.Combos.PvE
                     if (ActionFound)
                     {
                         if (IsEnabled(CustomComboPreset.RDM_AoE_MeleeCombo_ManaEmbolden) 
-                            && MeleeCombo.TryAoEManaEmbolden(actionID, lastComboMove, out uint ManaEmbolen, Config.RDM_AoE_MoulinetRange))
+                            && MeleeCombo.TryAoEManaEmbolden(actionID, out uint ManaEmbolen, Config.RDM_AoE_MoulinetRange))
                             return ManaEmbolen;
 
-                        if (MeleeCombo.TryAoEMeleeCombo(actionID, lastComboMove, comboTime, out uint AoEMelee, 
-                            Config.RDM_AoE_MoulinetRange, //Range
-                            IsEnabled(CustomComboPreset.RDM_AoE_MeleeCombo_CorpsGapCloser), //Gap Closer
+                        if (MeleeCombo.TryAoEMeleeCombo(actionID, out uint AoEMelee, Config.RDM_AoE_MoulinetRange, IsEnabled(CustomComboPreset.RDM_AoE_MeleeCombo_CorpsGapCloser),
                             false)) //Melee range enforced
                             return AoEMelee;
                     }
@@ -385,8 +378,8 @@ namespace WrathCombo.Combos.PvE
                 if (actionID is Scatter or Impact)
                 {
                     if (IsEnabled(CustomComboPreset.RDM_AoE_Accel) 
-                        && SpellCombo.TryAcceleration(actionID, lastComboMove, out uint AccelID, 
-                        IsEnabled(CustomComboPreset.RDM_AoE_Accel_Swiftcast), IsEnabled(CustomComboPreset.RDM_AoE_Accel_Weave)))
+                        && SpellCombo.TryAcceleration(actionID, out uint AccelID, IsEnabled(CustomComboPreset.RDM_AoE_Accel_Swiftcast),
+                        IsEnabled(CustomComboPreset.RDM_AoE_Accel_Weave)))
                         return AccelID;
                     
                     if (SpellCombo.TryAoESpellRotation(actionID, out uint SpellID)) 
@@ -409,7 +402,7 @@ namespace WrathCombo.Combos.PvE
         internal class RDM_Verraise : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RDM_Raise;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is All.Swiftcast)
                 {
@@ -437,7 +430,7 @@ namespace WrathCombo.Combos.PvE
         internal class RDM_CorpsDisplacement : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RDM_CorpsDisplacement;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+            protected override uint Invoke(uint actionID) =>
                 actionID is Displacement
                 && LevelChecked(Displacement)
                 && HasTarget()
@@ -447,7 +440,7 @@ namespace WrathCombo.Combos.PvE
         internal class RDM_EmboldenManafication : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RDM_EmboldenManafication;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+            protected override uint Invoke(uint actionID) =>
                 actionID is Embolden
                 && IsOnCooldown(Embolden)
                 && ActionReady(Manafication) ? Manafication : actionID;
@@ -456,7 +449,7 @@ namespace WrathCombo.Combos.PvE
         internal class RDM_MagickBarrierAddle : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RDM_MagickBarrierAddle;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+            protected override uint Invoke(uint actionID) =>
                 actionID is MagickBarrier
                 && (IsOnCooldown(MagickBarrier) || !LevelChecked(MagickBarrier))
                 && ActionReady(All.Addle)
@@ -466,7 +459,7 @@ namespace WrathCombo.Combos.PvE
         internal class RDM_EmboldenProtection : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RDM_EmboldenProtection;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+            protected override uint Invoke(uint actionID) =>
                 actionID is Embolden &&
                 ActionReady(Embolden) &&
                 HasEffectAny(Buffs.EmboldenOthers) ? OriginalHook(11) : actionID;
@@ -475,7 +468,7 @@ namespace WrathCombo.Combos.PvE
         internal class RDM_MagickProtection : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RDM_MagickProtection;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+            protected override uint Invoke(uint actionID) =>
                 actionID is MagickBarrier &&
                 ActionReady(MagickBarrier) &&
                 HasEffectAny(Buffs.MagickBarrier) ? OriginalHook(11) : actionID;

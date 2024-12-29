@@ -61,7 +61,7 @@ namespace WrathCombo.Combos.PvP
 
             float GCD = GetCooldown(KeenEdge).CooldownTotal; // 2.4 base in PvP
             
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is KeenEdge or BrutalShell or SolidBarrel or BurstStrike)
                 {
@@ -113,7 +113,7 @@ namespace WrathCombo.Combos.PvP
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.GNBPvP_GnashingFang;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+            protected override uint Invoke(uint actionID) =>
                 actionID is GnashingFang &&
                     CanWeave() && (HasEffect(Buffs.ReadyToRip) || HasEffect(Buffs.ReadyToTear) || HasEffect(Buffs.ReadyToGouge))
                     ? OriginalHook(Continuation)

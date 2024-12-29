@@ -130,7 +130,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.AST_Benefic;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
                 => actionID is Benefic2 && !ActionReady(Benefic2) ? Benefic : actionID;
         }
 
@@ -138,7 +138,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.AST_Raise_Alternative;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
                 => actionID is All.Swiftcast && IsOnCooldown(All.Swiftcast) ? Ascend : actionID;
         }
 
@@ -148,7 +148,7 @@ namespace WrathCombo.Combos.PvE
             internal static int MaleficCount => ActionWatching.CombatActions.Count(x => x == OriginalHook(Malefic));
             internal static int CombustCount => ActionWatching.CombatActions.Count(x => x == OriginalHook(Combust));
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 bool AlternateMode = GetIntOptionAsBool(Config.AST_DPS_AltMode); //(0 or 1 radio values)
                 bool actionFound = (!AlternateMode && MaleficList.Contains(actionID)) ||
@@ -271,7 +271,7 @@ namespace WrathCombo.Combos.PvE
         internal class AST_AOE_DPS : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.AST_AOE_DPS;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (GravityList.Contains(actionID))
                 {
@@ -350,7 +350,7 @@ namespace WrathCombo.Combos.PvE
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.AST_AoE_SimpleHeals_AspectedHelios;
 
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 bool NonaspectedMode = GetIntOptionAsBool(Config.AST_AoEHeals_AltMode); //(0 or 1 radio values)
 
@@ -409,7 +409,7 @@ namespace WrathCombo.Combos.PvE
         internal class AST_ST_SimpleHeals : CustomCombo
         {
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.AST_ST_SimpleHeals;
-            protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+            protected override uint Invoke(uint actionID)
             {
                 if (actionID is Benefic2)
                 {

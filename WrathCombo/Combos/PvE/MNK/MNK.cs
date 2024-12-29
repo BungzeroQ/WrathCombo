@@ -9,7 +9,7 @@ internal static partial class MNK
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.MNK_ST_SimpleMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is Bootshine or LeapingOpo)
             {
@@ -145,7 +145,7 @@ internal static partial class MNK
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.MNK_ST_AdvancedMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is Bootshine or LeapingOpo)
             {
@@ -306,7 +306,7 @@ internal static partial class MNK
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.MNK_AOE_SimpleMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is ArmOfTheDestroyer or ShadowOfTheDestroyer)
             {
@@ -436,7 +436,7 @@ internal static partial class MNK
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.MNK_AOE_AdvancedMode;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (actionID is ArmOfTheDestroyer or ShadowOfTheDestroyer)
             {
@@ -591,7 +591,7 @@ internal static partial class MNK
     {
         protected internal override CustomComboPreset Preset => CustomComboPreset.MNK_PerfectBalance;
 
-        protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is PerfectBalance && 
             OriginalHook(MasterfulBlitz) != MasterfulBlitz &&
             LevelChecked(MasterfulBlitz)
@@ -603,7 +603,7 @@ internal static partial class MNK
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.MNK_Riddle_Brotherhood;
 
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level) =>
+        protected override uint Invoke(uint actionID) =>
             actionID is RiddleOfFire && ActionReady(Brotherhood) && IsOnCooldown(RiddleOfFire)
                 ? Brotherhood
                 : actionID;
@@ -615,7 +615,7 @@ internal static partial class MNK
     {
         protected internal override CustomComboPreset Preset => CustomComboPreset.MNK_ST_BeastChakras;
 
-        protected override uint Invoke(uint actionID, uint lastComboActionID, float comboTime, byte level)
+        protected override uint Invoke(uint actionID)
         {
             if (IsEnabled(CustomComboPreset.MNK_BC_OPOOPO) &&
                 actionID is Bootshine or LeapingOpo)
