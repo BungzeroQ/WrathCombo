@@ -184,6 +184,7 @@ namespace WrathCombo.Window.Tabs
                         CustomStyleText($"Current Cooldown:", GetCooldown(debugSpell.Value.RowId).CooldownRemaining);
                         CustomStyleText($"Current Cast Time:", ActionManager.GetAdjustedCastTime(ActionType.Action, debugSpell.Value.RowId));
                         CustomStyleText($"Max Charges:", $"{debugSpell.Value.MaxCharges}");
+                        CustomStyleText($"Charges (Level):", $"{GetCooldown(debugSpell.Value.RowId).MaxCharges}");
                         CustomStyleText($"Range:", $"{ActionWatching.GetActionRange(debugSpell.Value.RowId)}");
                         CustomStyleText($"Effect Range:", $"{debugSpell.Value.EffectRange}");
                         CustomStyleText($"Can Target Hostile:", $"{debugSpell.Value.CanTargetHostile}");

@@ -154,8 +154,9 @@ namespace WrathCombo.CustomComboNS
                     return false;
                 }
 
-                while (CustomComboFunctions.GetCooldownRemainingTime(CurrentOpenerAction) > 6 && !CustomComboFunctions.HasCharges(CurrentOpenerAction))
+                while (CustomComboFunctions.GetCooldownChargeRemainingTime(CurrentOpenerAction) > 6 && !CustomComboFunctions.HasCharges(CurrentOpenerAction))
                 {
+                    Svc.Log.Debug($"Skipping {CurrentOpenerAction.ActionName()}");
                     OpenerStep++;
                     if (OpenerStep >= OpenerActions.Count)
                         break;
