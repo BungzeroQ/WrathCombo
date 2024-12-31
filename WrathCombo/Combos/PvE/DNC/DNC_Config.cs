@@ -102,6 +102,15 @@ internal partial class DNC
                         "(Yellow) Pirouette replacement Action ID",
                         ref actions[3], 0);
 
+                    ImGui.Dummy(new Vector2(0f, 12f.Scale()));
+                    ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudYellow);
+                    ImGui.TextWrapped(
+                        "This WILL let you set up a conflict!");
+                    ImGui.PopStyleColor();
+                    ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudGrey);
+                    ImGui.TextWrapped("Double check the actions you are setting do not conflict with other combos you are using!");
+                    ImGui.PopStyleColor();
+
                     if (inputChanged)
                     {
                         Service.Configuration.DancerDanceCompatActionIDs = actions
@@ -131,48 +140,54 @@ internal partial class DNC
 
                 case CustomComboPreset.DNC_ST_EspritOvercap:
                     UserConfig.DrawSliderInt(50, 100, DNCEspritThreshold_ST,
-                        "Esprit", 150,
-                        SliderIncrements.Fives);
+                        "Esprit",
+                        itemWidth: 150f, sliderIncrement: SliderIncrements.Fives);
 
                     break;
 
                 case CustomComboPreset.DNC_ST_Adv_SS:
-                    UserConfig.DrawSliderInt(0, 5, DNC_ST_Adv_SSBurstPercent,
-                        "Target HP% to stop using Standard Step below", 75);
+                    UserConfig.DrawSliderInt(0, 15, DNC_ST_Adv_SSBurstPercent,
+                        "Target HP% to stop using Standard Step below",
+                        itemWidth: 75f, sliderIncrement: SliderIncrements.Fives);
 
                     UserConfig.DrawHorizontalRadioButton(
                         DNC_ST_ADV_SS_IncludeSS,
                         "Include Standard Step",
                         "Will include Standard Step itself," +
                         "\ndance steps, and Finish into the rotation.",
-                        outputValue: (int)IncludeStep.Yes, itemWidth: 125f);
+                        outputValue: (int)IncludeStep.Yes,
+                        itemWidth: 125f);
                     UserConfig.DrawHorizontalRadioButton(
                         DNC_ST_ADV_SS_IncludeSS,
                         "Exclude Standard Step",
                         "Will ONLY include the dance steps, and Finish;" +
                         "\nYOU will need to manually press Standard Step.",
-                        outputValue: (int)IncludeStep.No, itemWidth: 125f);
+                        outputValue: (int)IncludeStep.No,
+                        itemWidth: 125f);
 
                     DrawAntiDriftOptions();
 
                     break;
 
                 case CustomComboPreset.DNC_ST_Adv_TS:
-                    UserConfig.DrawSliderInt(0, 5, DNC_ST_Adv_TSBurstPercent,
-                        "Target HP% to stop using Technical Step below", 75);
+                    UserConfig.DrawSliderInt(0, 15, DNC_ST_Adv_TSBurstPercent,
+                        "Target HP% to stop using Technical Step below",
+                        itemWidth: 75f, sliderIncrement: SliderIncrements.Fives);
 
                     UserConfig.DrawHorizontalRadioButton(
                         DNC_ST_ADV_TS_IncludeTS,
                         "Include Technical Step",
                         "Will include Technical Step itself," +
                         "\ndance steps, and Finish into the rotation.",
-                        outputValue: (int)IncludeStep.Yes, itemWidth: 125f);
+                        outputValue: (int)IncludeStep.Yes,
+                        itemWidth: 125f);
                     UserConfig.DrawHorizontalRadioButton(
                         DNC_ST_ADV_TS_IncludeTS,
                         "Exclude Technical Step",
                         "Will ONLY include the dance Steps, and Finish;" +
                         "\nYOU will need to manually press Technical Step.",
-                        outputValue: (int)IncludeStep.No, itemWidth: 125f);
+                        outputValue: (int)IncludeStep.No,
+                        itemWidth: 125f);
 
                     DrawAntiDriftOptions();
 
@@ -180,7 +195,8 @@ internal partial class DNC
 
                 case CustomComboPreset.DNC_ST_Adv_Feathers:
                     UserConfig.DrawSliderInt(0, 5, DNC_ST_Adv_FeatherBurstPercent,
-                        "Target HP% to dump all pooled feathers below", 75);
+                        "Target HP% to dump all pooled feathers below",
+                        itemWidth: 75f);
 
                     break;
 
@@ -190,7 +206,8 @@ internal partial class DNC
                         "Use Tillana Normally",
                         "Will use Tillana as recommended by The Balance" +
                         "\nCan allow Tillana to drift out of burst windows.",
-                        outputValue: (int)TillanaDriftProtection.None, itemWidth: 125f);
+                        outputValue: (int)TillanaDriftProtection.None,
+                        itemWidth: 125f);
                     UserConfig.DrawHorizontalRadioButton(
                         DNC_ST_ADV_TillanaUse,
                         "Favor Tillana over Esprit",
@@ -198,25 +215,28 @@ internal partial class DNC
                         "\nCan prevent Tillana from drifting out of burst windows." +
                         "\nShould be used with Saber Dance's Esprit slider being >50." +
                         "\nNOT recommended.",
-                        outputValue: (int)TillanaDriftProtection.Favor, itemWidth: 125f);
+                        outputValue: (int)TillanaDriftProtection.Favor,
+                        itemWidth: 125f);
 
                     break;
 
                 case CustomComboPreset.DNC_ST_Adv_SaberDance:
-                    UserConfig.DrawSliderInt(50, 100, DNC_ST_Adv_SaberThreshold,
-                        "Esprit", 150,
-                        SliderIncrements.Fives);
+                    UserConfig.DrawSliderInt(50, 100,
+                        DNC_ST_Adv_SaberThreshold,
+                        "Esprit",
+                        itemWidth: 150f, sliderIncrement: SliderIncrements.Fives);
 
                     break;
 
                 case CustomComboPreset.DNC_ST_Adv_PanicHeals:
-                    UserConfig.DrawSliderInt(0, 100,
-                        DNC_ST_Adv_PanicHealWaltzPercent, "Curing Waltz HP%",
-                        200);
+                    UserConfig.DrawSliderInt(0, 80,
+                        DNC_ST_Adv_PanicHealWaltzPercent,
+                        "Curing Waltz HP%",
+                        itemWidth: 200f, sliderIncrement: SliderIncrements.Fives);
 
-                    UserConfig.DrawSliderInt(0, 100, DNC_ST_Adv_PanicHealWindPercent,
+                    UserConfig.DrawSliderInt(0, 80, DNC_ST_Adv_PanicHealWindPercent,
                         "Second Wind HP%",
-                        200);
+                        itemWidth: 200f, sliderIncrement: SliderIncrements.Fives);
 
                     break;
 
@@ -226,71 +246,81 @@ internal partial class DNC
 
                 case CustomComboPreset.DNC_AoE_EspritOvercap:
                     UserConfig.DrawSliderInt(50, 100, DNCEspritThreshold_AoE,
-                        "Esprit", 150,
-                        SliderIncrements.Fives);
+                        "Esprit",
+                        itemWidth: 150f, sliderIncrement: SliderIncrements.Fives);
 
                     break;
 
                 case CustomComboPreset.DNC_AoE_Adv_SS:
-                    UserConfig.DrawSliderInt(0, 10, DNC_AoE_Adv_SSBurstPercent,
-                        "Target HP% to stop using Standard Step below", 75);
+                    UserConfig.DrawSliderInt(0, 60, DNC_AoE_Adv_SSBurstPercent,
+                        "Target HP% to stop using Standard Step below",
+                        itemWidth: 75f, sliderIncrement: SliderIncrements.Fives);
 
                     UserConfig.DrawHorizontalRadioButton(
                         DNC_AoE_Adv_SS_IncludeSS,
                         "Include Standard Step",
                         "Will include Standard Step itself," +
                         "\ndance steps, and Finish into the rotation.",
-                        outputValue: (int)IncludeStep.Yes, itemWidth: 125f);
+                        outputValue: (int)IncludeStep.Yes,
+                        itemWidth: 125f);
                     UserConfig.DrawHorizontalRadioButton(
                         DNC_AoE_Adv_SS_IncludeSS,
                         "Exclude Standard Step",
                         "Will ONLY include the dance steps, and Finish;" +
                         "\nYOU will need to manually press Standard Step.",
-                        outputValue: (int)IncludeStep.No, itemWidth: 125f);
+                        outputValue: (int)IncludeStep.No,
+                        itemWidth: 125f);
 
                     break;
 
                 case CustomComboPreset.DNC_AoE_Adv_TS:
-                    UserConfig.DrawSliderInt(0, 10, DNC_AoE_Adv_TSBurstPercent,
-                        "Target HP% to stop using Technical Step below", 75);
+                    UserConfig.DrawSliderInt(0, 60, DNC_AoE_Adv_TSBurstPercent,
+                        "Target HP% to stop using Technical Step below",
+                        itemWidth: 75f, sliderIncrement: SliderIncrements.Fives);
 
                     UserConfig.DrawHorizontalRadioButton(
                         DNC_AoE_Adv_TS_IncludeTS,
                         "Include Technical Step",
                         "Will include Technical Step itself," +
                         "\ndance steps, and Finish into the rotation.",
-                        outputValue: (int)IncludeStep.Yes, itemWidth: 125f);
+                        outputValue: (int)IncludeStep.Yes,
+                        itemWidth: 125f);
                     UserConfig.DrawHorizontalRadioButton(
                         DNC_AoE_Adv_TS_IncludeTS,
                         "Exclude Technical Step",
                         "Will ONLY include the dance steps, and Finish;" +
                         "\nYOU will need to manually press Technical Step.",
-                        outputValue: (int)IncludeStep.No, itemWidth: 125f);
+                        outputValue: (int)IncludeStep.No,
+                        itemWidth: 125f);
 
                     break;
 
                 case CustomComboPreset.DNC_AoE_Adv_SaberDance:
                     UserConfig.DrawSliderInt(50, 100, DNC_AoE_Adv_SaberThreshold,
-                        "Esprit", 150,
-                        SliderIncrements.Fives);
+                        "Esprit",
+                        itemWidth: 150f, sliderIncrement: SliderIncrements.Fives);
 
                     break;
 
                 case CustomComboPreset.DNC_AoE_Adv_PanicHeals:
-                    UserConfig.DrawSliderInt(0, 100,
-                        DNC_AoE_Adv_PanicHealWaltzPercent, "Curing Waltz HP%",
-                        200);
+                    UserConfig.DrawSliderInt(0, 80,
+                        DNC_AoE_Adv_PanicHealWaltzPercent,
+                        "Curing Waltz HP%",
+                        itemWidth: 200f, sliderIncrement: SliderIncrements.Fives);
 
-                    UserConfig.DrawSliderInt(0, 100,
-                        DNC_AoE_Adv_PanicHealWindPercent, "Second Wind HP%", 200);
+                    UserConfig.DrawSliderInt(0, 80,
+                        DNC_AoE_Adv_PanicHealWindPercent,
+                        "Second Wind HP%",
+                        itemWidth: 200f, sliderIncrement: SliderIncrements.Fives);
 
                     break;
 
                 #endregion
 
                 case CustomComboPreset.DNC_Variant_Cure:
-                    UserConfig.DrawSliderInt(1, 100, DNCVariantCurePercent,
-                        "HP% to be at or under", 200);
+                    UserConfig.DrawSliderInt(1, 80, DNCVariantCurePercent,
+                        "HP% to be at or under",
+                        itemWidth: 200f, sliderIncrement: SliderIncrements.Fives);
 
                     break;
 
@@ -315,6 +345,12 @@ internal partial class DNC
         }
 
         #region Constants
+
+        public enum Openers
+        {
+            FifteenSecond,
+            SevenSecond,
+        }
 
         public enum IncludeStep
         {
@@ -358,12 +394,12 @@ internal partial class DNC
         ///     Opener selection for Single Target.
         /// </summary>
         /// <value>
-        ///     <b>Default</b>: 0 <br />
-        ///     <b>Range</b>: 0 - 1 <br />
+        ///     <b>Default</b>: <see cref="Openers.FifteenSecond" /> <br />
+        ///     <b>Options</b>: <see cref="Openers">Openers Enum</see>
         /// </value>
         /// <seealso cref="CustomComboPreset.DNC_ST_BalanceOpener" />
         public static readonly UserInt DNC_ST_OpenerSelection =
-            new("DNC_ST_OpenerSelection", 0);
+            new("DNC_ST_OpenerSelection", (int)Openers.FifteenSecond);
 
         /// <summary>
         ///     Esprit threshold for Single Target.
@@ -382,7 +418,7 @@ internal partial class DNC
         /// </summary>
         /// <value>
         ///     <b>Default</b>: 0 <br />
-        ///     <b>Range</b>: 0 - 5 <br />
+        ///     <b>Range</b>: 0 - 15 <br />
         ///     <b>Step</b>: <see cref="SliderIncrements.Fives" />
         /// </value>
         /// <seealso cref="CustomComboPreset.DNC_ST_Adv_SS" />
@@ -427,7 +463,7 @@ internal partial class DNC
         /// </summary>
         /// <value>
         ///     <b>Default</b>: 0 <br />
-        ///     <b>Range</b>: 0 - 5 <br />
+        ///     <b>Range</b>: 0 - 15 <br />
         ///     <b>Step</b>: <see cref="SliderIncrements.Fives" />
         /// </value>
         /// <seealso cref="CustomComboPreset.DNC_ST_Adv_TS" />
@@ -440,7 +476,7 @@ internal partial class DNC
         /// <value>
         ///     <b>Default</b>: 0 <br />
         ///     <b>Range</b>: 0 - 5 <br />
-        ///     <b>Step</b>: <see cref="SliderIncrements.Fives" />
+        ///     <b>Step</b>: <see cref="SliderIncrements.Ones" />
         /// </value>
         /// <seealso cref="CustomComboPreset.DNC_ST_Adv_Feathers" />
         public static readonly UserInt DNC_ST_Adv_FeatherBurstPercent =
@@ -451,7 +487,7 @@ internal partial class DNC
         /// </summary>
         /// <value>
         ///     <b>Default</b>: <see cref="TillanaDriftProtection.None" /> <br />
-        ///     <b>Options</b>: <see cref="TillanaDriftProtection"/> Enum.
+        ///     <b>Options</b>: <see cref="TillanaDriftProtection" /> Enum.
         /// </value>
         /// <seealso cref="CustomComboPreset.DNC_ST_Adv_Tillana" />
         public static readonly UserInt DNC_ST_ADV_TillanaUse =
@@ -474,7 +510,7 @@ internal partial class DNC
         /// </summary>
         /// <value>
         ///     <b>Default</b>: 30 <br />
-        ///     <b>Range</b>: 0 - 100 <br />
+        ///     <b>Range</b>: 0 - 80 <br />
         ///     <b>Step</b>: <see cref="SliderIncrements.Fives" />
         /// </value>
         /// <seealso cref="CustomComboPreset.DNC_ST_Adv_PanicHeals" />
@@ -486,7 +522,7 @@ internal partial class DNC
         /// </summary>
         /// <value>
         ///     <b>Default</b>: 20 <br />
-        ///     <b>Range</b>: 0 - 100 <br />
+        ///     <b>Range</b>: 0 - 80 <br />
         ///     <b>Step</b>: <see cref="SliderIncrements.Fives" />
         /// </value>
         /// <seealso cref="CustomComboPreset.DNC_ST_Adv_PanicHeals" />
@@ -513,13 +549,13 @@ internal partial class DNC
         ///     Target HP% to use Standard Step above for AoE.
         /// </summary>
         /// <value>
-        ///     <b>Default</b>: 0 <br />
-        ///     <b>Range</b>: 0 - 10 <br />
+        ///     <b>Default</b>: 40 <br />
+        ///     <b>Range</b>: 0 - 60 <br />
         ///     <b>Step</b>: <see cref="SliderIncrements.Fives" />
         /// </value>
         /// <seealso cref="CustomComboPreset.DNC_AoE_Adv_SS" />
         public static readonly UserInt DNC_AoE_Adv_SSBurstPercent =
-            new("DNC_AoE_Adv_SSBurstPercent", 0);
+            new("DNC_AoE_Adv_SSBurstPercent", 40);
 
         /// <summary>
         ///     Include Standard Step in rotation for AoE.
@@ -536,13 +572,13 @@ internal partial class DNC
         ///     Target HP% to use Technical Step above for AoE.
         /// </summary>
         /// <value>
-        ///     <b>Default</b>: 0 <br />
-        ///     <b>Range</b>: 0 - 10 <br />
+        ///     <b>Default</b>: 40 <br />
+        ///     <b>Range</b>: 0 - 60 <br />
         ///     <b>Step</b>: <see cref="SliderIncrements.Fives" />
         /// </value>
         /// <seealso cref="CustomComboPreset.DNC_AoE_Adv_TS" />
         public static readonly UserInt DNC_AoE_Adv_TSBurstPercent =
-            new("DNC_AoE_Adv_TSBurstPercent", 0);
+            new("DNC_AoE_Adv_TSBurstPercent", 40);
 
         /// <summary>
         ///     Include Technical Step in rotation for AoE.
@@ -572,7 +608,7 @@ internal partial class DNC
         /// </summary>
         /// <value>
         ///     <b>Default</b>: 30 <br />
-        ///     <b>Range</b>: 0 - 100 <br />
+        ///     <b>Range</b>: 0 - 80 <br />
         ///     <b>Step</b>: <see cref="SliderIncrements.Fives" />
         /// </value>
         /// <seealso cref="CustomComboPreset.DNC_AoE_Adv_PanicHeals" />
@@ -584,7 +620,7 @@ internal partial class DNC
         /// </summary>
         /// <value>
         ///     <b>Default</b>: 20 <br />
-        ///     <b>Range</b>: 0 - 100 <br />
+        ///     <b>Range</b>: 0 - 80 <br />
         ///     <b>Step</b>: <see cref="SliderIncrements.Fives" />
         /// </value>
         /// <seealso cref="CustomComboPreset.DNC_AoE_Adv_PanicHeals" />
@@ -593,9 +629,16 @@ internal partial class DNC
 
         #endregion
 
-        public static readonly UserInt
-            DNCVariantCurePercent =
-                new("DNCVariantCurePercent"); // Variant Cure - player HP% threshold
+        /// <summary>
+        ///     HP% threshold for Variant Cure.
+        /// </summary>
+        /// <value>
+        ///     <b>Default</b>: 1 <br />
+        ///     <b>Range</b>: 1 - 80
+        /// </value>
+        /// <seealso cref="CustomComboPreset.DNC_Variant_Cure" />
+        public static readonly UserInt DNCVariantCurePercent =
+            new("DNCVariantCurePercent", 20);
 
         #endregion
     }

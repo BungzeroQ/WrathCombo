@@ -1,6 +1,5 @@
 ﻿#region
 
-using System.Linq;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using WrathCombo.Combos.PvE.Content;
 using WrathCombo.CustomComboNS;
@@ -95,6 +94,19 @@ internal partial class DNC
 
             #endregion
 
+            #region Dance Partner
+
+            // Dance Partner
+            if (IsEnabled(CustomComboPreset.DNC_ST_Adv_Partner) && !InCombat() &&
+                ActionReady(ClosedPosition) &&
+                !HasEffect(Buffs.ClosedPosition) &&
+                (GetPartyMembers().Count > 1 || HasCompanionPresent()) &&
+                !InAutoMode(true, false)) // Disabled in Auto-Rotation
+                // todo: do not disable for auto-rotation, provide targeting
+                return ClosedPosition;
+
+            #endregion
+
             #region Opener
 
             // Opener
@@ -108,18 +120,6 @@ internal partial class DNC
 
             if (!InCombat() && TargetIsHostile())
             {
-                // Dance Partner
-                var dpEnabled = P.IPC.GetComboState(
-                        CustomComboPreset.DNC_ST_AdvancedMode.ToString())!
-                    .Values.First();
-                if (IsEnabled(CustomComboPreset.DNC_ST_Adv_Partner) &&
-                    ActionReady(ClosedPosition) &&
-                    !HasEffect(Buffs.ClosedPosition) &&
-                    (GetPartyMembers().Count > 1 || HasCompanionPresent()) &&
-                    !(dpEnabled && P.IPC.GetAutoRotationState())) // Disable feature in Auto-Rotation
-                    // todo: do not disable for auto-rotation, provide targeting
-                    return ClosedPosition;
-
                 // ST Standard Step (Pre-pull)
                 if (IsEnabled(CustomComboPreset.DNC_ST_Adv_SS) &&
                     IsEnabled(CustomComboPreset.DNC_ST_Adv_SS_Prepull) &&
@@ -391,6 +391,289 @@ internal partial class DNC
         }
     }
 
+    internal class DNC_ST_SimpleMode : CustomCombo
+    {
+        protected internal override CustomComboPreset Preset =>
+            CustomComboPreset.DNC_ST_SimpleMode;
+
+        protected override uint Invoke(uint actionID)
+        {
+            if (actionID is not Cascade) return actionID;
+
+            #region Variables
+
+            var flow = HasEffect(Buffs.SilkenFlow) ||
+                       HasEffect(Buffs.FlourishingFlow);
+            var symmetry = HasEffect(Buffs.SilkenSymmetry) ||
+                           HasEffect(Buffs.FlourishingSymmetry);
+            var targetHpThresholdFeather = 10;
+            var targetHpThresholdStandard = 1;
+            var targetHpThresholdTechnical = 1;
+
+            // Thresholds to wait for TS/SS to come off CD
+            var longAlignmentThreshold = 0.3f;
+            var shortAlignmentThreshold = 0.1f;
+          
+            var needToTech =
+                GetCooldownRemainingTime(TechnicalStep) <
+                longAlignmentThreshold && // Up or about to be (some anti-drift)
+                !HasEffect(Buffs.StandardStep) && // After Standard
+                IsOnCooldown(StandardStep) &&
+                GetTargetHPPercent() > targetHpThresholdTechnical && // HP% check
+                LevelChecked(TechnicalStep);
+
+            var needToStandardOrFinish =
+                GetTargetHPPercent() > targetHpThresholdStandard && // HP% check
+                LevelChecked(StandardStep);
+
+            var needToFinish =
+                HasEffect(Buffs.FinishingMoveReady) &&
+                !HasEffect(Buffs.LastDanceReady) &&
+                ((GetCooldownRemainingTime(StandardStep) < longAlignmentThreshold &&
+                  HasEffect(Buffs.TechnicalFinish)) ||// Aggressive anti-drift
+                 (!HasEffect(Buffs.TechnicalFinish) && // Anti-Drift outside of Tech
+                  GetCooldownRemainingTime(StandardStep) <
+                  shortAlignmentThreshold));
+
+            var needToStandard =
+                GetCooldownRemainingTime(StandardStep) <
+                longAlignmentThreshold && // Up or about to be (some anti-drift)
+                !HasEffect(Buffs.FinishingMoveReady) &&
+                (IsOffCooldown(Flourish) ||
+                 GetCooldownRemainingTime(Flourish) > 5) &&
+                !HasEffect(Buffs.TechnicalFinish);
+
+            #endregion
+
+            #region Pre-pull
+
+            if (!InCombat())
+            {
+                // Dance Partner
+                if (ActionReady(ClosedPosition) &&
+                    !HasEffect(Buffs.ClosedPosition) &&
+                    (GetPartyMembers().Count > 1 || HasCompanionPresent()) &&
+                    !InAutoMode(true, true)) // Disabled in Auto-Rotation
+                    // todo: do not disable for auto-rotation, provide targeting
+                    return ClosedPosition;
+
+                if (TargetIsHostile())
+                {
+                    // ST Standard Step (Pre-pull)
+                    if (ActionReady(StandardStep) &&
+                        !HasEffect(Buffs.FinishingMoveReady) &&
+                        !HasEffect(Buffs.TechnicalFinish) &&
+                        IsOffCooldown(TechnicalStep) &&
+                        IsOffCooldown(StandardStep))
+                        return StandardStep;
+
+                    // ST Standard Steps (Pre-pull)
+                    if (HasEffect(Buffs.StandardStep) &&
+                        Gauge.CompletedSteps < 2)
+                        return Gauge.NextStep;
+                }
+            }
+
+            #endregion
+
+            #region Dance Fills
+
+            // ST Standard (Dance) Steps & Fill
+            if (HasEffect(Buffs.StandardStep))
+                return Gauge.CompletedSteps < 2
+                    ? Gauge.NextStep
+                    : StandardFinish2;
+
+            // ST Technical (Dance) Steps & Fill
+            if (HasEffect(Buffs.TechnicalStep))
+                return Gauge.CompletedSteps < 4
+                    ? Gauge.NextStep
+                    : TechnicalFinish4;
+
+            #endregion
+
+            #region Weaves
+
+            // ST Devilment
+            if (CanWeave() &&
+                LevelChecked(Devilment) &&
+                GetCooldownRemainingTime(Devilment) < 0.05 &&
+                (HasEffect(Buffs.TechnicalFinish) ||
+                 WasLastAction(TechnicalFinish4) ||
+                 !LevelChecked(TechnicalStep)))
+                return Devilment;
+
+            // ST Flourish
+            if (CanWeave() &&
+                ActionReady(Flourish) &&
+                !WasLastWeaponskill(TechnicalFinish4) &&
+                IsOnCooldown(Devilment) &&
+                (GetCooldownRemainingTime(Devilment) > 50 ||
+                 (HasEffect(Buffs.Devilment) &&
+                  GetBuffRemainingTime(Buffs.Devilment) < 19)) &&
+                !HasEffect(Buffs.ThreeFoldFanDance) &&
+                !HasEffect(Buffs.FourFoldFanDance) &&
+                !HasEffect(Buffs.FlourishingSymmetry) &&
+                !HasEffect(Buffs.FlourishingFlow) &&
+                !HasEffect(Buffs.FinishingMoveReady) &&
+                ((CombatEngageDuration().TotalSeconds < 20 &&
+                  HasEffect(Buffs.TechnicalFinish)) ||
+                 CombatEngageDuration().TotalSeconds > 20))
+                return Flourish;
+
+            if ((HasEffect(Buffs.ThreeFoldFanDance) ||
+                 HasEffect(Buffs.FourFoldFanDance)) &&
+                CombatEngageDuration().TotalSeconds > 20 &&
+                HasEffect(Buffs.TechnicalFinish) &&
+                GetCooldownRemainingTime(Flourish) > 58)
+            {
+                if (HasEffect(Buffs.ThreeFoldFanDance) &&
+                    CanDelayedWeave())
+                    return FanDance3;
+                if (HasEffect(Buffs.FourFoldFanDance))
+                    return FanDance4;
+            }
+
+            // ST Interrupt
+            if (CanInterruptEnemy() &&
+                ActionReady(All.HeadGraze) &&
+                !HasEffect(Buffs.TechnicalFinish))
+                return All.HeadGraze;
+
+            // Variant Cure
+            if (IsEnabled(Variant.VariantCure) &&
+                PlayerHealthPercentageHp() <= 50)
+                return Variant.VariantCure;
+
+            // Variant Rampart
+            if (IsEnabled(Variant.VariantRampart) &&
+                IsOffCooldown(Variant.VariantRampart) &&
+                CanWeave())
+                return Variant.VariantRampart;
+
+            if (CanWeave() && !WasLastWeaponskill(TechnicalFinish4))
+            {
+                if (HasEffect(Buffs.ThreeFoldFanDance))
+                    return FanDance3;
+
+                if (HasEffect(Buffs.FourFoldFanDance))
+                    return FanDance4;
+
+                // ST Feathers & Fans
+                if (LevelChecked(FanDance1))
+                {
+                    // FD1 HP% Dump
+                    if (GetTargetHPPercent() <= targetHpThresholdFeather &&
+                        Gauge.Feathers > 0)
+                        return FanDance1;
+
+                    if (LevelChecked(TechnicalStep))
+                    {
+                        // Burst FD1
+                        if (HasEffect(Buffs.TechnicalFinish) &&
+                            Gauge.Feathers > 0)
+                            return FanDance1;
+
+                        // FD1 Pooling
+                        if (Gauge.Feathers > 3 &&
+                            (HasEffect(Buffs.SilkenSymmetry) ||
+                             HasEffect(Buffs.SilkenFlow))
+                           )
+
+                            return FanDance1;
+                    }
+
+                    // FD1 Non-pooling & under burst level
+                    if (!LevelChecked(TechnicalStep) && Gauge.Feathers > 0)
+                        return FanDance1;
+                }
+
+                // ST Panic Heals
+
+               if (ActionReady(All.SecondWind) &&
+                    PlayerHealthPercentageHp() < 40)
+                    return All.SecondWind;
+            }
+
+            #endregion
+
+            #region GCD
+
+            // ST Technical Step
+            if (needToTech)
+                return TechnicalStep;
+
+            // ST Last Dance
+            if (HasEffect(Buffs.LastDanceReady) && // Ready
+                (HasEffect(Buffs.TechnicalFinish) || // Has Tech
+                 !(IsOnCooldown(TechnicalStep) && // Or can't hold it for tech
+                   GetCooldownRemainingTime(TechnicalStep) < 20 &&
+                   GetBuffRemainingTime(Buffs.LastDanceReady) >
+                   GetCooldownRemainingTime(TechnicalStep) + 4) ||
+                 GetBuffRemainingTime(Buffs.LastDanceReady) <
+                 4)) // Or last second
+                return LastDance;
+
+            // ST Standard Step (Finishing Move)
+            if (needToStandardOrFinish && needToFinish)
+                return OriginalHook(FinishingMove);
+
+            // ST Standard Step
+            if (needToStandardOrFinish && needToStandard)
+                return StandardStep;
+
+            // Emergency Starfall usage
+            if (HasEffect(Buffs.FlourishingStarfall) &&
+                GetBuffRemainingTime(Buffs.FlourishingStarfall) < 4)
+                return StarfallDance;
+
+            // ST Dance of the Dawn
+            if (HasEffect(Buffs.DanceOfTheDawnReady) &&
+                LevelChecked(DanceOfTheDawn) &&
+                (GetCooldownRemainingTime(TechnicalStep) > 5 ||
+                 IsOffCooldown(TechnicalStep)) && // Tech is up
+                (Gauge.Esprit >= Config.DNC_ST_Adv_SaberThreshold || // >esprit threshold use
+                 (HasEffect(Buffs.TechnicalFinish) && // will overcap with Tillana if not used
+                  Gauge.Esprit >= 50) ||
+                 (GetBuffRemainingTime(Buffs.DanceOfTheDawnReady) < 5 &&
+                  Gauge.Esprit >= 50))) // emergency use
+                return OriginalHook(DanceOfTheDawn);
+
+            // ST Saber Dance
+            if (LevelChecked(SaberDance) &&
+                Gauge.Esprit >= 50)
+                return LevelChecked(DanceOfTheDawn) &&
+                       HasEffect(Buffs.DanceOfTheDawnReady)
+                    ? OriginalHook(DanceOfTheDawn)
+                    : SaberDance;
+
+            if (HasEffect(Buffs.FlourishingStarfall))
+                return StarfallDance;
+
+            // ST Tillana
+            if (HasEffect(Buffs.FlourishingFinish))
+                return Tillana;
+
+            // ST combos and burst attacks
+            if (LevelChecked(Fountain) &&
+                ComboAction is Cascade &&
+                ComboTimer is < 2 and > 0)
+                return Fountain;
+
+            if (LevelChecked(Fountainfall) && flow)
+                return Fountainfall;
+            if (LevelChecked(ReverseCascade) && symmetry)
+                return ReverseCascade;
+            if (LevelChecked(Fountain) && ComboAction is Cascade &&
+                ComboTimer > 0)
+                return Fountain;
+
+            #endregion
+
+            return actionID;
+        }
+    }
+
     internal class DNC_AoE_AdvancedMode : CustomCombo
     {
         protected internal override CustomComboPreset Preset =>
@@ -445,15 +728,11 @@ internal partial class DNC
 
             // Dance Partner
             if (!InCombat() &&
-                TargetIsHostile() &&
                 IsEnabled(CustomComboPreset.DNC_AoE_Adv_Partner) &&
                 ActionReady(ClosedPosition) &&
                 !HasEffect(Buffs.ClosedPosition) &&
                 (GetPartyMembers().Count > 1 || HasCompanionPresent()) &&
-                !(Service.Configuration.AutoActions[
-                      CustomComboPreset.DNC_AoE_AdvancedMode] &&
-                  Service.Configuration.RotationConfig
-                      .Enabled)) // Disabled in Auto-Rotation
+                !InAutoMode(false, false)) // Disabled in Auto-Rotation
                 // todo: do not disable for auto-rotation, provide targeting
                 return ClosedPosition;
 
@@ -664,6 +943,238 @@ internal partial class DNC
                 (GetCooldownRemainingTime(TechnicalStep) > 5 ||
                  IsOffCooldown(TechnicalStep))) // Tech is up
                 return SaberDance;
+
+            // AoE combos and burst attacks
+            if (LevelChecked(Bladeshower) &&
+                ComboAction is Windmill &&
+                ComboTimer is < 2 and > 0)
+                return Bladeshower;
+
+            if (LevelChecked(Bloodshower) && flow)
+                return Bloodshower;
+            if (LevelChecked(RisingWindmill) && symmetry)
+                return RisingWindmill;
+            if (LevelChecked(Bladeshower) && ComboAction is Windmill &&
+                ComboTimer > 0)
+                return Bladeshower;
+
+            #endregion
+
+            return actionID;
+        }
+    }
+
+    internal class DNC_AoE_SimpleMode : CustomCombo
+    {
+        protected internal override CustomComboPreset Preset =>
+            CustomComboPreset.DNC_AoE_SimpleMode;
+
+        protected override uint Invoke(uint actionID)
+        {
+            if (actionID is not Windmill) return actionID;
+
+            #region Variables
+
+            bool flow = HasEffect(Buffs.SilkenFlow) ||
+                        HasEffect(Buffs.FlourishingFlow);
+            bool symmetry = HasEffect(Buffs.SilkenSymmetry) ||
+                            HasEffect(Buffs.FlourishingSymmetry);
+            var targetHpThresholdStandard = 25;
+            var targetHpThresholdTechnical = 25;
+
+            var needToTech =
+                ActionReady(TechnicalStep) && // Up
+                !HasEffect(Buffs.StandardStep) && // After Standard
+                IsOnCooldown(StandardStep) &&
+                GetTargetHPPercent() > targetHpThresholdTechnical && // HP% check
+                LevelChecked(TechnicalStep);
+
+            var needToStandardOrFinish =
+                ActionReady(StandardStep) && // Up
+                GetTargetHPPercent() > targetHpThresholdStandard && // HP% check
+                (IsOffCooldown(
+                     TechnicalStep) || // Checking burst is ready for standard
+                 GetCooldownRemainingTime(TechnicalStep) > 5) && // Don't mangle
+                LevelChecked(StandardStep);
+
+            var needToFinish =
+                HasEffect(Buffs.FinishingMoveReady) &&
+                !HasEffect(Buffs.LastDanceReady);
+
+            var needToStandard =
+                !HasEffect(Buffs.FinishingMoveReady) &&
+                (IsOffCooldown(Flourish) ||
+                 GetCooldownRemainingTime(Flourish) > 5) &&
+                !HasEffect(Buffs.TechnicalFinish);
+
+            #endregion
+
+            #region Prepull
+
+            // Dance Partner
+            if (!InCombat() &&
+                ActionReady(ClosedPosition) &&
+                !HasEffect(Buffs.ClosedPosition) &&
+                (GetPartyMembers().Count > 1 || HasCompanionPresent()) &&
+                !InAutoMode(false, true)) // Disabled in Auto-Rotation
+                // todo: do not disable for auto-rotation, provide targeting
+                return ClosedPosition;
+
+            #endregion
+
+            #region Dance Fills
+
+            // AoE Standard (Dance) Steps & Fill
+            if (HasEffect(Buffs.StandardStep))
+                return Gauge.CompletedSteps < 2
+                    ? Gauge.NextStep
+                    : StandardFinish2;
+
+            // AoE Technical (Dance) Steps & Fill
+            if (HasEffect(Buffs.TechnicalStep))
+                return Gauge.CompletedSteps < 4
+                    ? Gauge.NextStep
+                    : TechnicalFinish4;
+
+            #endregion
+
+            #region Weaves
+
+            // AoE Devilment
+            if (CanWeave() &&
+                LevelChecked(Devilment) &&
+                GetCooldownRemainingTime(Devilment) < 0.05 &&
+                (HasEffect(Buffs.TechnicalFinish) ||
+                 WasLastAction(TechnicalFinish4) ||
+                 !LevelChecked(TechnicalStep)))
+                return Devilment;
+
+            // AoE Flourish
+            if (CanWeave() &&
+                ActionReady(Flourish) &&
+                !WasLastWeaponskill(TechnicalFinish4) &&
+                IsOnCooldown(Devilment) &&
+                (GetCooldownRemainingTime(Devilment) > 50 ||
+                 (HasEffect(Buffs.Devilment) &&
+                  GetBuffRemainingTime(Buffs.Devilment) < 19)) &&
+                !HasEffect(Buffs.ThreeFoldFanDance) &&
+                !HasEffect(Buffs.FourFoldFanDance) &&
+                !HasEffect(Buffs.FlourishingSymmetry) &&
+                !HasEffect(Buffs.FlourishingFlow) &&
+                !HasEffect(Buffs.FinishingMoveReady))
+                return Flourish;
+
+            // AoE Interrupt
+            if (CanInterruptEnemy() && ActionReady(All.HeadGraze) &&
+                !HasEffect(Buffs.TechnicalFinish))
+                return All.HeadGraze;
+
+            if (IsEnabled(Variant.VariantCure) &&
+                PlayerHealthPercentageHp() <= 50)
+                return Variant.VariantCure;
+
+            if (IsEnabled(Variant.VariantRampart) &&
+                IsOffCooldown(Variant.VariantRampart) &&
+                CanWeave())
+                return Variant.VariantRampart;
+
+            if (CanWeave() && !WasLastWeaponskill(TechnicalFinish4))
+            {
+                // AoE Feathers & Fans
+                if (LevelChecked(FanDance1))
+                {
+                    // FD3
+                    if (HasEffect(Buffs.ThreeFoldFanDance))
+                        return FanDance3;
+
+                    if (LevelChecked(FanDance2))
+                    {
+                        if (LevelChecked(TechnicalStep))
+                        {
+                            // Burst FD2
+                            if (HasEffect(Buffs.TechnicalFinish) &&
+                                Gauge.Feathers > 0)
+                                return FanDance2;
+
+                            // FD2 Pooling
+                            if (Gauge.Feathers > 3 &&
+                                (HasEffect(Buffs.SilkenSymmetry) ||
+                                 HasEffect(Buffs.SilkenFlow)))
+                                return FanDance2;
+                        }
+
+                        // FD2 Non-pooling & under burst level
+                        if (!LevelChecked(TechnicalStep) &&
+                            Gauge.Feathers > 0)
+                            return FanDance2;
+                    }
+
+                    // FD1 Replacement for Lv.30-49
+                    if (!LevelChecked(FanDance2) &&
+                        Gauge.Feathers > 0)
+                        return FanDance1;
+                }
+
+                if (HasEffect(Buffs.FourFoldFanDance))
+                    return FanDance4;
+
+                // AoE Panic Heals
+                if (ActionReady(All.SecondWind) &&
+                    PlayerHealthPercentageHp() < 40)
+                    return All.SecondWind;  
+            }
+
+            #endregion
+
+            #region GCD
+
+            // AoE Technical Step
+            if (needToTech)
+                return TechnicalStep;
+
+            // AoE Last Dance
+            if (HasEffect(Buffs.LastDanceReady) && // Ready
+                (HasEffect(Buffs.TechnicalFinish) || // Has Tech
+                 !(IsOnCooldown(TechnicalStep) && // Or can't hold it for tech
+                   GetCooldownRemainingTime(TechnicalStep) < 20 &&
+                   GetBuffRemainingTime(Buffs.LastDanceReady) >
+                   GetCooldownRemainingTime(TechnicalStep) + 4) ||
+                 GetBuffRemainingTime(Buffs.LastDanceReady) <
+                 4)) // Or last second
+                return LastDance;
+
+            // AoE Standard Step (Finishing Move)
+            if (needToStandardOrFinish && needToFinish)
+                return OriginalHook(FinishingMove);
+
+            // AoE Standard Step
+            if (needToStandardOrFinish && needToStandard)
+                return StandardStep;
+
+            // Emergency Starfall usage
+            if (HasEffect(Buffs.FlourishingStarfall) &&
+                GetBuffRemainingTime(Buffs.FlourishingStarfall) < 4)
+                return StarfallDance;
+
+            // AoE Dance of the Dawn
+            if (HasEffect(Buffs.DanceOfTheDawnReady) &&
+                LevelChecked(DanceOfTheDawn) &&
+                (GetCooldownRemainingTime(TechnicalStep) > 5 ||
+                 IsOffCooldown(TechnicalStep)) && // Tech is up
+                (Gauge.Esprit >= 50))
+                return OriginalHook(DanceOfTheDawn);
+
+            // AoE Saber Dance
+            if (ActionReady(SaberDance) &&
+                Gauge.Esprit >= 50)
+                return SaberDance;
+
+            if (HasEffect(Buffs.FlourishingStarfall))
+                return StarfallDance;
+
+            // AoE Tillana
+            if (HasEffect(Buffs.FlourishingFinish))
+                return Tillana;
 
             // AoE combos and burst attacks
             if (LevelChecked(Bladeshower) &&

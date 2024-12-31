@@ -84,8 +84,8 @@ internal static partial class VPR
                     DrawRadioButton(VPR_ReawakenLegacyButton, $"Replaces {Reawaken.ActionName()}",
                         $"Replaces {Reawaken.ActionName()} with Full Generation - Legacy combo.", 0);
 
-                    DrawRadioButton(VPR_ReawakenLegacyButton, $"Replaces {SteelFangs.ActionName()}",
-                        $"Replaces {SteelFangs.ActionName()} with Full Generation - Legacy combo.", 1);
+                    DrawRadioButton(VPR_ReawakenLegacyButton, $"Replaces {ReavingFangs.ActionName()}",
+                        $"Replaces {ReavingFangs.ActionName()} with Full Generation - Legacy combo.", 1);
 
                     break;
 

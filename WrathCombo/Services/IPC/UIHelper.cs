@@ -133,7 +133,8 @@ public class UIHelper(ref Leasing leasing, ref Search search)
                 ? _leasing.CombosUpdated
                 : _leasing.OptionsUpdated ?? DateTime.MinValue);
 
-        if (_presetsUpdated != presetsUpdated)
+        if (_presetsUpdated != presetsUpdated &&
+            _presetsUpdated is not null)
             PresetsControlled.Clear();
 
         // Return the cached value if it is valid, fastest

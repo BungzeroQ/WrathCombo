@@ -1,6 +1,10 @@
 #region
 
+using System.Numerics;
+using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
+using ECommons.ImGuiMethods;
+using ImGuiNET;
 using WrathCombo.Combos.PvP;
 using WrathCombo.CustomComboNS.Functions;
 using WrathCombo.Data;
@@ -185,10 +189,147 @@ internal partial class DRK
                     break;
 
                 #endregion
+
+                #region One-Button Mitigation
+
+                case CustomComboPreset.DRK_Mit_LivingDead_Max:
+                    UserConfig.DrawDifficultyMultiChoice(
+                        DRK_Mit_LivingDead_Difficulty,
+                        DRK_Mit_LivingDead_DifficultyListSet,
+                        "Select what difficulties Living Dead should be used in:"
+                    );
+
+                    UserConfig.DrawSliderInt(5, 30, DRK_Mit_LivingDead_Health,
+                        startUsingAtDescription,
+                        itemWidth: medium, sliderIncrement: SliderIncrements.Fives);
+
+                    ImGui.BeginDisabled();
+                    UserConfig.DrawPriorityInput(DRK_Mit_Priorities,
+                        numberMitigationOptions, 0,
+                        "Emergency Living Dead Priority:");
+                    ImGui.EndDisabled();
+                    if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
+                        ImGui.SetTooltip("Should always be 1, the highest priority");
+
+                    break;
+
+                case CustomComboPreset.DRK_Mit_TheBlackestNight:
+                    UserConfig.DrawPriorityInput(DRK_Mit_Priorities,
+                        numberMitigationOptions, 1,
+                        "The Blackest Night Priority:");
+
+                    break;
+
+                case CustomComboPreset.DRK_Mit_Oblation:
+                    UserConfig.DrawSliderInt(0, 1, DRK_Mit_Oblation_Charges,
+                        "How many charges to keep ready? (0 = Use All)",
+                        itemWidth: little, sliderIncrement: SliderIncrements.Ones);
+
+                    UserConfig.DrawPriorityInput(DRK_Mit_Priorities,
+                        numberMitigationOptions, 2,
+                        "Oblation Priority:");
+
+                    break;
+
+                case CustomComboPreset.DRK_Mit_Reprisal:
+                    UserConfig.DrawPriorityInput(DRK_Mit_Priorities,
+                        numberMitigationOptions, 3,
+                        "Reprisal Priority:");
+
+                    break;
+
+                case CustomComboPreset.DRK_Mit_DarkMissionary:
+                    ImGui.Dummy(new Vector2(15f.Scale(), 0f));
+                    ImGui.SameLine();
+                    UserConfig.DrawHorizontalRadioButton(
+                        DRK_Mit_DarkMissionary_PartyRequirement,
+                        "Require party",
+                        "Will not use Dark Missionary unless there are 2 or more party members.",
+                        outputValue: (int)PartyRequirement.Yes, itemWidth: medium);
+                    UserConfig.DrawHorizontalRadioButton(
+                        DRK_Mit_DarkMissionary_PartyRequirement,
+                        "Use Always",
+                        "Will not require a party for Dark Missionary.",
+                        outputValue: (int)PartyRequirement.No, itemWidth: medium);
+
+                    UserConfig.DrawPriorityInput(DRK_Mit_Priorities,
+                        numberMitigationOptions, 4,
+                        "Dark Missionary Priority:");
+
+                    break;
+
+                case CustomComboPreset.DRK_Mit_Rampart:
+                    UserConfig.DrawPriorityInput(DRK_Mit_Priorities,
+                        numberMitigationOptions, 5,
+                        "Rampart Priority:");
+
+                    break;
+
+                case CustomComboPreset.DRK_Mit_DarkMind:
+                    UserConfig.DrawPriorityInput(DRK_Mit_Priorities,
+                        numberMitigationOptions, 6,
+                        "Dark Mind Priority:");
+
+                    break;
+
+                case CustomComboPreset.DRK_Mit_ArmsLength:
+                    ImGui.Dummy(new Vector2(15f.Scale(), 0f));
+                    ImGui.SameLine();
+                    UserConfig.DrawHorizontalRadioButton(
+                        DRK_Mit_ArmsLength_Boss, "All Enemies",
+                        "Will use Arm's Length regardless of the type of enemy.",
+                        outputValue: (int)BossAvoidance.Off, itemWidth: 125f);
+                    UserConfig.DrawHorizontalRadioButton(
+                        DRK_Mit_ArmsLength_Boss, "Avoid Bosses",
+                        "Will try not to use Arm's Length when in a boss fight.",
+                        outputValue: (int)BossAvoidance.On, itemWidth: 125f);
+
+                    UserConfig.DrawSliderInt(0, 3, DRK_Mit_ArmsLength_EnemyCount,
+                        "How many enemies should be nearby? (0 = No Requirement)",
+                        itemWidth: little, sliderIncrement: SliderIncrements.Ones);
+
+                    UserConfig.DrawPriorityInput(DRK_Mit_Priorities,
+                        numberMitigationOptions, 7,
+                        "Arm's Length Priority:");
+
+                    break;
+
+                case CustomComboPreset.DRK_Mit_ShadowWall:
+                    UserConfig.DrawPriorityInput(DRK_Mit_Priorities,
+                        numberMitigationOptions, 8,
+                        "Shadow Wall / Vigil Priority:");
+
+                    break;
+
+                case CustomComboPreset.DRK_Mit_LivingDead:
+                    if (CustomComboFunctions.IsEnabled(CustomComboPreset.DRK_Mit_LivingDead_Max))
+                    {
+                        ImGui.TextColored(ImGuiColors.DalamudYellow,
+                            "Select what difficulties Living Dead should be used in above,");
+                        ImGui.TextColored(ImGuiColors.DalamudYellow,
+                            "under the 'Emergency Living Dead' option.");
+                    }
+                    else
+                        UserConfig.DrawDifficultyMultiChoice(
+                            DRK_Mit_LivingDead_Difficulty,
+                            DRK_Mit_LivingDead_DifficultyListSet,
+                            "Select what difficulties Living Dead should be used in:"
+                        );
+
+                    UserConfig.DrawPriorityInput(DRK_Mit_Priorities,
+                        numberMitigationOptions, 9,
+                        "Living Dead Priority:");
+
+                    break;
+
+                #endregion
             }
         }
 
         #region Constants
+
+        /// Number of Mitigation Options
+        private const int numberMitigationOptions = 10;
 
         /// Smallest bar width
         private const float little = 100f;
@@ -219,6 +360,12 @@ internal partial class DRK
         {
             Off = 1,
             On = 2
+        }
+
+        internal enum PartyRequirement
+        {
+            No,
+            Yes
         }
 
         #endregion
@@ -548,6 +695,100 @@ internal partial class DRK
         /// <seealso cref="CustomComboPreset.DRK_Variant_Cure" />
         public static readonly UserInt DRK_VariantCure =
             new("DRKVariantCure", 30);
+
+        #region One-Button Mitigation
+
+        /// <summary>
+        ///    Mitigation Ability Priority List.
+        /// </summary>
+        public static readonly UserIntArray
+            DRK_Mit_Priorities =
+                new("DRK_Mit_Priorities");
+
+        /// <summary>
+        ///     Party requirement for using Dark Missionary in the Mitigation Rotation.
+        /// </summary>
+        /// <value>
+        ///     <b>Default</b>: <see cref="PartyRequirement.Yes" /> <br />
+        ///     <b>Options</b>: <see cref="PartyRequirement">PartyRequirement Enum</see>
+        /// </value>
+        public static readonly UserInt
+            DRK_Mit_DarkMissionary_PartyRequirement =
+                new("DRK_Mit_DarkMissionary_PartyRequirement",
+                    (int)PartyRequirement.Yes);
+
+        /// <summary>
+        ///     Arm's Length Boss Restriction for Mitigation.
+        /// </summary>
+        /// <value>
+        ///     <b>Default</b>: <see cref="BossAvoidance.On" /> <br />
+        ///     <b>Options</b>: <see cref="BossAvoidance">BossAvoidance Enum</see>
+        /// </value>
+        /// <seealso cref="CustomComboPreset.DRK_Mit_ArmsLength" />
+        public static readonly UserInt DRK_Mit_ArmsLength_Boss =
+            new("DRK_Mit_ArmsLength_Boss", (int)BossAvoidance.On);
+
+        /// <summary>
+        ///     The number of enemies to be nearby for Arm's Length.
+        /// </summary>
+        /// <value>
+        ///     <b>Default</b>: 0 <br />
+        ///     <b>Range</b>: 0 - 3 <br />
+        ///     <b>Step</b>: <see cref="SliderIncrements.Ones" />
+        /// </value>
+        /// <seealso cref="CustomComboPreset.DRK_Mit_ArmsLength" />
+        public static UserInt DRK_Mit_ArmsLength_EnemyCount =
+            new("DRK_Mit_ArmsLength_EnemyCount", 0);
+
+        /// <summary>
+        ///     Difficulty of Living Dead for Mitigation.
+        /// </summary>
+        /// <value>
+        ///     <b>Default</b>: <see cref="ContentCheck.BottomHalfContent" /> <br />
+        ///     <b>Options</b>: <see cref="ContentCheck.BottomHalfContent" />
+        ///     and/or <see cref="ContentCheck.TopHalfContent" />
+        /// </value>
+        /// <seealso cref="CustomComboPreset.DRK_Mit_LivingDead_Max" />
+        /// <seealso cref="CustomComboPreset.DRK_Mit_LivingDead" />
+        public static readonly UserBoolArray
+            DRK_Mit_LivingDead_Difficulty =
+                new("DRK_Mit_LivingDead_Difficulty", [true, false]);
+
+        /// <summary>
+        ///     What Difficulty List Set
+        ///     <see cref="DRK_Mit_LivingDead_Difficulty" /> is set to.
+        /// </summary>
+        /// <seealso cref="CustomComboPreset.DRK_Mit_LivingDead_Max" />
+        /// <seealso cref="CustomComboPreset.DRK_Mit_LivingDead" />
+        public static readonly ContentCheck.ListSet
+            DRK_Mit_LivingDead_DifficultyListSet =
+                ContentCheck.ListSet.Halved;
+
+        /// <summary>
+        ///     Self HP% to use Living Dead below in the Mitigation Rotation.
+        /// </summary>
+        /// <value>
+        ///     <b>Default</b>: 20 <br />
+        ///     <b>Range</b>: 5 - 30 <br />
+        ///     <b>Step</b>: <see cref="SliderIncrements.Fives" />
+        /// </value>
+        /// <seealso cref="CustomComboPreset.DRK_Mit_LivingDead_Max" />
+        public static UserInt DRK_Mit_LivingDead_Health =
+            new("DRK_Mit_LivingDead_Health", 20);
+
+        /// <summary>
+        ///     The number of Oblation charges to keep for manual use.
+        /// </summary>
+        /// <value>
+        ///     <b>Default</b>: 0 <br />
+        ///     <b>Range</b>: 0 - 1 <br />
+        ///     <b>Step</b>: <see cref="SliderIncrements.Ones" />
+        /// </value>
+        /// <seealso cref="CustomComboPreset.DRK_Mit_Oblation" />
+        public static UserInt DRK_Mit_Oblation_Charges =
+            new("DRK_Mit_Oblation_Charges", 0);
+
+        #endregion
 
         #endregion
     }

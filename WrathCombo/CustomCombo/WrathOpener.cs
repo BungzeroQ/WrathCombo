@@ -1,7 +1,7 @@
-﻿using ECommons.DalamudServices;
+﻿using Dalamud.Game.ClientState.Conditions;
+using ECommons.DalamudServices;
 using ECommons.GameHelpers;
 using ECommons.Logging;
-using FFXIVClientStructs.FFXIV.Client.Game;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,27 +59,33 @@ namespace WrathCombo.CustomComboNS
                         Svc.Log.Debug($"Opener Not Ready");
 
                     if (value == OpenerState.OpenerReady)
+                    {
                         if (Service.Configuration.OutputOpenerLogs)
                             DuoLog.Information("Opener Now Ready");
                         else
                             Svc.Log.Debug($"Opener Now Ready");
+                    }
 
-                    if (value == OpenerState.OpenerFinished || value == OpenerState.FailedOpener)
+                    if (value == OpenerState.FailedOpener)
                     {
-                        if (value == OpenerState.FailedOpener)
-                            if (Service.Configuration.OutputOpenerLogs)
-                                DuoLog.Error($"Opener Failed at step {OpenerStep}, {CurrentOpenerAction.ActionName()}");
-                            else
-                                Svc.Log.Information($"Opener Failed at step {OpenerStep}, {CurrentOpenerAction.ActionName()}");
+                        if (Service.Configuration.OutputOpenerLogs)
+                            DuoLog.Error($"Opener Failed at step {OpenerStep}, {CurrentOpenerAction.ActionName()}");
+                        else
+                            Svc.Log.Information($"Opener Failed at step {OpenerStep}, {CurrentOpenerAction.ActionName()}");
 
                         ResetOpener();
                     }
 
                     if (value == OpenerState.OpenerFinished)
+                    {
                         if (Service.Configuration.OutputOpenerLogs)
                             DuoLog.Information("Opener Finished");
                         else
                             Svc.Log.Debug($"Opener Finished");
+
+                        if (AllowReopener)
+                            ResetOpener();
+                    }
                 }
             }
         }
@@ -115,6 +121,8 @@ namespace WrathCombo.CustomComboNS
 
         public abstract int MaxOpenerLevel { get; }
 
+        public virtual bool AllowReopener { get; set; } = false;
+
         internal abstract UserData? ContentCheckConfig { get; }
 
         public bool LevelChecked => Player.Level >= MinOpenerLevel && Player.Level <= MaxOpenerLevel;
@@ -149,7 +157,7 @@ namespace WrathCombo.CustomComboNS
                     return false;
                 }
 
-                if (OpenerStep > 1 && ActionWatching.TimeSinceLastAction.TotalSeconds >= 5 && !PrepullDelays.Any(x => x.Steps.Any(y => y == OpenerStep)))
+                if (OpenerStep > 1 && InCombat() && ActionWatching.TimeSinceLastAction.TotalSeconds >= 5 && !PrepullDelays.Any(x => x.Steps.Any(y => y == OpenerStep)))
                 {
                     CurrentState = OpenerState.FailedOpener;
                     return false;
@@ -260,6 +268,7 @@ namespace WrathCombo.CustomComboNS
                 {
                     Svc.Framework.Update -= currentOpener.UpdateOpener;
                     OnCastInterrupted -= RevertInterruptedCasts;
+                    Svc.Condition.ConditionChange -= ResetAfterCombat;
                     Svc.Log.Debug($"Removed update hook");
                 }
 
@@ -268,8 +277,15 @@ namespace WrathCombo.CustomComboNS
                     currentOpener = value;
                     Svc.Framework.Update += currentOpener.UpdateOpener;
                     OnCastInterrupted += RevertInterruptedCasts;
+                    Svc.Condition.ConditionChange += ResetAfterCombat;
                 }
             }
+        }
+
+        private static void ResetAfterCombat(ConditionFlag flag, bool value)
+        {
+            if (flag == ConditionFlag.InCombat && !value)
+                CurrentOpener.ResetOpener();
         }
 
         private static void RevertInterruptedCasts(uint interruptedAction)

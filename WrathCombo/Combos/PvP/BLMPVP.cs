@@ -171,7 +171,7 @@ namespace WrathCombo.Combos.PvP
 
 
                     // Basic Spells
-                    return isMovingAdjusted && Config.BLMPVP_BurstButtonOption == 0 && hasAstralFire
+                    return isMovingAdjusted && Config.BLMPVP_BurstButtonOption == 0
                         ? OriginalHook(Blizzard)
                         : OriginalHook(actionID);
 

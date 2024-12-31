@@ -56,14 +56,17 @@ public partial class Provider : IDisposable
     {
         _leasing = new Leasing();
         P.IPCSearch = new Search(ref _leasing);
-        _helper = new Helper(ref _leasing, ref P.IPCSearch);
+        _helper = new Helper(ref _leasing);
         UIHelper = new UIHelper(ref _leasing, ref P.IPCSearch);
         EzIPC.Init(this, prefix: "WrathCombo");
 
         Task.Run(() =>
         {
-            var _ = P.IPCSearch.ComboStatesByJobCategorized["DRK"];
+            _ = P.IPCSearch.ComboStatesByJobCategorized["DRK"];
             Logging.Log("Job Auto-Rotation Ready cache built");
+            _ = P.IPC.UIHelper.PresetControlled(CustomComboPreset.DRK_ST_Combo);
+            _ = P.IPCSearch.AllPresetsControlled[CustomComboPreset.DRK_ST_Combo];
+            Logging.Log("Presets-Controlled cache built");
         });
     }
 

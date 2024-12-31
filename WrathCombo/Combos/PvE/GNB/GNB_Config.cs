@@ -1,4 +1,9 @@
+using System.Numerics;
+using Dalamud.Interface.Colors;
+using ECommons.ImGuiMethods;
+using ImGuiNET;
 using WrathCombo.CustomComboNS.Functions;
+using WrathCombo.Data;
 using WrathCombo.Extensions;
 using WrathCombo.Window.Functions;
 
@@ -8,6 +13,19 @@ internal partial class GNB
 {
     internal static class Config
     {
+        private const int numberMitigationOptions = 10;
+
+        internal enum PartyRequirement
+        {
+            No,
+            Yes
+        }
+        internal enum BossAvoidance
+        {
+            Off = 1,
+            On = 2
+        }
+
         public const string
             GNB_VariantCure = "GNB_VariantCure",
             GNBPvP_Corundum = "GNBPvP_Corundum";
@@ -27,6 +45,9 @@ internal partial class GNB
             GNB_ST_Nebula_SubOption = new("GNB_ST_Nebula_Option", 0),
             GNB_ST_Superbolide_Health = new("GNB_ST_Superbolide_Health", 30),
             GNB_ST_Superbolide_SubOption = new("GNB_ST_Superbolide_Option", 0),
+            GNB_ST_Reprisal_Health = new("GNB_ST_Reprisal_Health", 0),
+            GNB_ST_Reprisal_SubOption = new("GNB_ST_Reprisal_Option", 0),
+            GNB_ST_ArmsLength_Health = new("GNB_ST_ArmsLength_Health", 0),
             GNB_ST_NoMercyStop = new("GNB_ST_NoMercyStop", 5),
             GNB_AoE_MitsOptions = new("GNB_AoE_MitsOptions", 0),
             GNB_AoE_Corundum_Health = new("GNB_AoE_CorundumOption", 90),
@@ -42,12 +63,20 @@ internal partial class GNB
             GNB_AoE_Nebula_SubOption = new("GNB_AoE_Nebula_Option", 0),
             GNB_AoE_Superbolide_Health = new("GNB_AoE_Superbolide_Health", 30),
             GNB_AoE_Superbolide_SubOption = new("GNB_AoE_Superbolide_Option", 0),
+            GNB_AoE_Reprisal_Health = new("GNB_ST_Reprisal_Health", 0),
+            GNB_AoE_Reprisal_SubOption = new("GNB_ST_Reprisal_Option", 0),
+            GNB_AoE_ArmsLength_Health = new("GNB_ST_ArmsLength_Health", 0),
             GNB_AoE_NoMercyStop = new("GNB_AoE_NoMercyStop", 5),
-            GNB_Mit_Superbolide_Health = new("GNB_Mit_Superbolide_Health", 30),
-            GNB_Mit_Aurora_Charges = new("GNB_Mit_Aurora_Charges", 0),
             GNB_NM_Features_Weave = new("GNB_NM_Features_Weave", 0),
             GNB_GF_Features_Choice = new("GNB_GF_Choice", 0),
             GNB_ST_Balance_Content = new("GNB_ST_Balance_Content", 1),
+
+            //One-Button Mitigation
+            GNB_Mit_Superbolide_Health = new("GNB_Mit_Superbolide_Health", 30),
+            GNB_Mit_Aurora_Charges = new("GNB_Mit_Aurora_Charges", 0),
+            GNB_Mit_HeartOfLight_PartyRequirement = new("GNB_Mit_HeartOfLight_PartyRequirement", (int)PartyRequirement.Yes),
+            GNB_Mit_ArmsLength_Boss = new("GNB_Mit_ArmsLength_Boss", (int)BossAvoidance.On),
+            GNB_Mit_ArmsLength_EnemyCount = new("GNB_Mit_ArmsLength_EnemyCount", 0),
 
             //Bozja
             GNB_Bozja_LostCure_Health = new("GNB_Bozja_LostCure_Health", 50),
@@ -56,6 +85,17 @@ internal partial class GNB
             GNB_Bozja_LostCure4_Health = new("GNB_Bozja_LostCure_Health", 50),
             GNB_Bozja_LostAethershield_Health = new("GNB_Bozja_LostAethershield_Health", 70),
             GNB_Bozja_LostReraise_Health = new("GNB_Bozja_LostReraise_Health", 10);
+
+        public static UserIntArray
+            GNB_Mit_Priorities = new("GNB_Mit_Priorities");
+
+        public static UserBoolArray
+            GNB_Mit_Superbolide_Difficulty = new("GNB_Mit_Superbolide_Difficulty",
+                [true, false]);
+
+        public static readonly ContentCheck.ListSet
+            GNB_Mit_Superbolide_DifficultyListSet =
+                ContentCheck.ListSet.Halved;
 
         internal static void Draw(CustomComboPreset preset)
         {
@@ -193,11 +233,6 @@ internal partial class GNB
 
                     break;
 
-                case CustomComboPreset.GNB_Mit_Aurora:
-                    UserConfig.DrawSliderInt(0, 1, GNB_Mit_Aurora_Charges,
-                        "How many charges to keep ready?\n (0 = Use All)");
-                    break;
-
                 case CustomComboPreset.GNB_ST_Rampart:
                     UserConfig.DrawSliderInt(1, 100, GNB_ST_Rampart_Health,
                         "Player HP% to be \nless than or equal to:", 200);
@@ -310,10 +345,152 @@ internal partial class GNB
 
                     break;
 
+                #region One-Button Mitigation
+
+                case CustomComboPreset.GNB_Mit_Superbolide_Max:
+                    UserConfig.DrawDifficultyMultiChoice(
+                        GNB_Mit_Superbolide_Difficulty,
+                        GNB_Mit_Superbolide_DifficultyListSet,
+                        "Select what difficulties Superbolide should be used in:"
+                    );
+
+                    UserConfig.DrawSliderInt(5, 30, GNB_Mit_Superbolide_Health,
+                        "Player HP% to be \nless than or equal to:",
+                        200, SliderIncrements.Fives);
+
+                    ImGui.BeginDisabled();
+                    UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
+                        numberMitigationOptions, 0,
+                        "Emergency Superbolide Priority:");
+                    ImGui.EndDisabled();
+                    if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
+                        ImGui.SetTooltip("Should always be 1, the highest priority");
+                    break;
+
+                case CustomComboPreset.GNB_Mit_Corundum:
+                    UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
+                        numberMitigationOptions, 1,
+                        "Heart of Corundum Priority:");
+                    break;
+
+                case CustomComboPreset.GNB_Mit_Aurora:
+                    UserConfig.DrawSliderInt(0, 1, GNB_Mit_Aurora_Charges,
+                        "How many charges to keep ready?\n (0 = Use All)");
+
+                    UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
+                        numberMitigationOptions, 2,
+                        "Aurora Priority:");
+                    break;
+
+                case CustomComboPreset.GNB_Mit_Camouflage:
+                    UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
+                        numberMitigationOptions, 3,
+                        "Camouflage Priority:");
+                    break;
+
+                case CustomComboPreset.GNB_Mit_Reprisal:
+                    UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
+                        numberMitigationOptions, 4,
+                        "Reprisal Priority:");
+                    break;
+
+                case CustomComboPreset.GNB_Mit_HeartOfLight:
+                    ImGui.Dummy(new Vector2(15f.Scale(), 0f));
+                    ImGui.SameLine();
+                    UserConfig.DrawHorizontalRadioButton(
+                        GNB_Mit_HeartOfLight_PartyRequirement,
+                        "Require party",
+                        "Will not use Heart of Light unless there are 2 or more party members.",
+                        outputValue: (int)PartyRequirement.Yes);
+                    UserConfig.DrawHorizontalRadioButton(
+                        GNB_Mit_HeartOfLight_PartyRequirement,
+                        "Use Always",
+                        "Will not require a party for Heart of Light.",
+                        outputValue: (int)PartyRequirement.No);
+
+                    UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
+                        numberMitigationOptions, 5,
+                        "Heart of Light Priority:");
+                    break;
+
+                case CustomComboPreset.GNB_Mit_Rampart:
+                    UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
+                        numberMitigationOptions, 6,
+                        "Rampart Priority:");
+                    break;
+
+                case CustomComboPreset.GNB_Mit_ArmsLength:
+                    ImGui.Dummy(new Vector2(15f.Scale(), 0f));
+                    ImGui.SameLine();
+                    UserConfig.DrawHorizontalRadioButton(
+                        GNB_Mit_ArmsLength_Boss, "All Enemies",
+                        "Will use Arm's Length regardless of the type of enemy.",
+                        outputValue: (int)BossAvoidance.Off, itemWidth: 125f);
+                    UserConfig.DrawHorizontalRadioButton(
+                        GNB_Mit_ArmsLength_Boss, "Avoid Bosses",
+                        "Will try not to use Arm's Length when in a boss fight.",
+                        outputValue: (int)BossAvoidance.On, itemWidth: 125f);
+
+                    UserConfig.DrawSliderInt(0, 3, GNB_Mit_ArmsLength_EnemyCount,
+                        "How many enemies should be nearby? (0 = No Requirement)");
+
+                    UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
+                        numberMitigationOptions, 7,
+                        "Arm's Length Priority:");
+                    break;
+
+                case CustomComboPreset.GNB_Mit_Nebula:
+                    UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
+                        numberMitigationOptions, 8,
+                        "Arm's Length Priority:");
+                    break;
+
                 case CustomComboPreset.GNB_Mit_Superbolide:
-                    UserConfig.DrawSliderInt(1, 100, GNB_Mit_Superbolide_Health,
+                    if (CustomComboFunctions.IsEnabled(CustomComboPreset.GNB_Mit_Superbolide_Max))
+                    {
+                        ImGui.TextColored(ImGuiColors.DalamudYellow,
+                            "Select what difficulties Superbolide should be used in above,");
+                        ImGui.TextColored(ImGuiColors.DalamudYellow,
+                            "under the 'Emergency Superbolide' option.");
+                    }
+                    else
+                        UserConfig.DrawDifficultyMultiChoice(
+                            GNB_Mit_Superbolide_Difficulty,
+                            GNB_Mit_Superbolide_DifficultyListSet,
+                            "Select what difficulties Superbolide should be used in:"
+                        );
+
+                    UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
+                        numberMitigationOptions, 9,
+                        "Superbolide Priority:");
+                    break;
+
+                #endregion
+
+                case CustomComboPreset.GNB_ST_Reprisal:
+                    UserConfig.DrawSliderInt(1, 100, GNB_ST_Reprisal_Health,
                         "Player HP% to be \nless than or equal to:", 200);
 
+                    UserConfig.DrawHorizontalRadioButton(GNB_ST_Reprisal_SubOption,
+                        "All Enemies",
+                        $"Uses {All.Reprisal.ActionName()} regardless of targeted enemy type.", 0);
+
+                    UserConfig.DrawHorizontalRadioButton(GNB_ST_Reprisal_SubOption,
+                        "Bosses Only",
+                        $"Only uses {All.Reprisal.ActionName()} when the targeted enemy is a boss.", 1);
+                    break;
+
+                case CustomComboPreset.GNB_AoE_Reprisal:
+                    UserConfig.DrawSliderInt(1, 100, GNB_AoE_Reprisal_Health,
+                        "Player HP% to be \nless than or equal to:", 200);
+
+                    UserConfig.DrawHorizontalRadioButton(GNB_AoE_Reprisal_SubOption,
+                        "All Enemies",
+                        $"Uses {All.Reprisal.ActionName()} regardless of targeted enemy type.", 0);
+
+                    UserConfig.DrawHorizontalRadioButton(GNB_AoE_Reprisal_SubOption,
+                        "Bosses Only",
+                        $"Only uses {All.Reprisal.ActionName()} when the targeted enemy is a boss.", 1);
                     break;
 
                 case CustomComboPreset.GNB_NM_Features:

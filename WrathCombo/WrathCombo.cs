@@ -148,7 +148,7 @@ namespace WrathCombo
                 ToggleAutorot(!Service.Configuration.RotationConfig.Enabled);
             };
             DtrBarEntry.Tooltip = new SeString(
-            new TextPayload("Click to toggle Auto-Rotation Enabled.\n"),
+            new TextPayload("Click to toggle Wrath Combo's Auto-Rotation.\n"),
             new TextPayload("Disable this icon in /xlsettings -> Server Info Bar"));
 
             Svc.ClientState.Login += PrintLoginMessage;
@@ -234,11 +234,25 @@ namespace WrathCombo
             BlueMageService.PopulateBLUSpells();
             TargetHelper.Draw();
             AutoRotationController.Run();
+
+            // Skip the IPC checking if hidden
+            if (DtrBarEntry.UserHidden) return;
+
             var autoOn = IPC.GetAutoRotationState();
-            DtrBarEntry.Text = new SeString(
-                new IconPayload(autoOn ? BitmapFontIcon.SwordUnsheathed : BitmapFontIcon.SwordSheathed),
-                new TextPayload($"{(autoOn ? $": On ({P.IPCSearch.ActiveJobPresets} active)" : ": Off")}")
-                );
+            var icon = new IconPayload(autoOn
+                ? BitmapFontIcon.SwordUnsheathed
+                : BitmapFontIcon.SwordSheathed);
+
+            var text = autoOn ? ": On" : ": Off";
+            if (!Service.Configuration.ShortDTRText && autoOn)
+                text += $" ({P.IPCSearch.ActiveJobPresets} active)";
+            var ipcControlledText =
+                IPC.UIHelper.AutoRotationStateControlled() is not null
+                    ? " (Locked)"
+                    : "";
+
+            var payloadText = new TextPayload(text + ipcControlledText);
+            DtrBarEntry.Text = new SeString(icon, payloadText);
         }
 
         private static void KillRedundantIDs()

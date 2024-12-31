@@ -1,4 +1,5 @@
-﻿using Dalamud.Game.ClientState.Conditions;
+﻿using System;
+using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Memory;
@@ -10,9 +11,9 @@ using FFXIVClientStructs.FFXIV.Client.Game.Group;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Info;
-using Lumina.Excel.Sheets;
 using System.Linq;
 using WrathCombo.Combos.PvE;
+using Action = Lumina.Excel.Sheets.Action;
 using GameMain = FFXIVClientStructs.FFXIV.Client.Game.GameMain;
 
 namespace WrathCombo.CustomComboNS.Functions
@@ -97,7 +98,8 @@ namespace WrathCombo.CustomComboNS.Functions
                 {
                     'A' => AllianceGroup.GroupA,
                     'B' => AllianceGroup.GroupB,
-                    'C' => AllianceGroup.GroupC
+                    'C' => AllianceGroup.GroupC,
+                    _ => throw new ArgumentOutOfRangeException()
                 };
             }
             return AllianceGroup.NotInAlliance;

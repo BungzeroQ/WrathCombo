@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using WrathCombo.CustomComboNS;
 using WrathCombo.CustomComboNS.Functions;
+using WrathCombo.Data;
 using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -15,14 +16,6 @@ namespace WrathCombo.Combos.PvE;
 
 internal partial class DRK
 {
-    internal static WrathOpener Opener()
-    {
-        if (Opener1.LevelChecked)
-            return Opener1;
-
-        return WrathOpener.Dummy;
-    }
-
     private static DRKGauge Gauge => GetJobGauge<DRKGauge>();
 
     /// <summary>
@@ -59,6 +52,14 @@ internal partial class DRK
 
             return has;
         }
+    }
+
+    internal static WrathOpener Opener()
+    {
+        if (Opener1.LevelChecked)
+            return Opener1;
+
+        return WrathOpener.Dummy;
     }
 
     /// <summary>
@@ -122,6 +123,87 @@ internal partial class DRK
         return true;
     }
 
+    #region Mitigation Priority
+
+    /// <summary>
+    ///     The list of Mitigations to use in the One-Button Mitigation combo.<br />
+    ///     The order of the list needs to match the order in
+    ///     <see cref="CustomComboPreset" />.
+    /// </summary>
+    /// <value>
+    ///     <c>Action</c> is the action to use.<br />
+    ///     <c>Preset</c> is the preset to check if the action is enabled.<br />
+    ///     <c>Logic</c> is the logic for whether to use the action.
+    /// </value>
+    /// <remarks>
+    ///     Each logic check is already combined with checking if the preset
+    ///     <see cref="IsEnabled(uint)">is enabled</see>
+    ///     and if the action is <see cref="ActionReady(uint)">ready</see> and
+    ///     <see cref="LevelChecked(uint)">level-checked</see>.<br />
+    ///     Do not add any of these checks to <c>Logic</c>.
+    /// </remarks>
+    private static (uint Action, CustomComboPreset Preset, System.Func<bool> Logic)[]
+        PrioritizedMitigation =>
+    [
+        (LivingDead, CustomComboPreset.DRK_Mit_LivingDead_Max,
+            () => PlayerHealthPercentageHp() <= Config.DRK_Mit_LivingDead_Health &&
+                  ContentCheck.IsInConfiguredContent(
+                      Config.DRK_Mit_LivingDead_Difficulty,
+                      Config.DRK_Mit_LivingDead_DifficultyListSet
+                  )),
+        (BlackestNight, CustomComboPreset.DRK_Mit_TheBlackestNight,
+            () => !HasAnyTBN && LocalPlayer.CurrentMp > 3000),
+        (Oblation, CustomComboPreset.DRK_Mit_Oblation,
+            () => (!((HasFriendlyTarget() && TargetHasEffectAny(Buffs.Oblation)) ||
+                     (!HasFriendlyTarget() && HasEffectAny(Buffs.Oblation)))) &&
+                  GetRemainingCharges(Oblation) > Config.DRK_Mit_Oblation_Charges),
+        (All.Reprisal, CustomComboPreset.DRK_Mit_Reprisal,
+            () => InActionRange(All.Reprisal)),
+        (DarkMissionary, CustomComboPreset.DRK_Mit_DarkMissionary,
+            () => Config.DRK_Mit_DarkMissionary_PartyRequirement ==
+                  (int)Config.PartyRequirement.No ||
+                  IsInParty()),
+        (All.Rampart, CustomComboPreset.DRK_Mit_Rampart, () => true),
+        (DarkMind, CustomComboPreset.DRK_Mit_DarkMind, () => true),
+        (All.ArmsLength, CustomComboPreset.DRK_Mit_ArmsLength,
+            () => CanCircleAoe(7) >= Config.DRK_Mit_ArmsLength_EnemyCount &&
+                  (Config.DRK_Mit_ArmsLength_Boss == (int)Config.BossAvoidance.Off ||
+                   InBossEncounter())),
+        (OriginalHook(ShadowWall), CustomComboPreset.DRK_Mit_ShadowWall, () => true),
+        (LivingDead, CustomComboPreset.DRK_Mit_LivingDead,
+            () => ContentCheck.IsInConfiguredContent(
+                Config.DRK_Mit_LivingDead_Difficulty,
+                Config.DRK_Mit_LivingDead_DifficultyListSet
+            )),
+    ];
+
+    /// <summary>
+    ///     Given the index of a mitigation in <see cref="PrioritizedMitigation" />,
+    ///     checks if the mitigation is ready and meets the provided requirements.
+    /// </summary>
+    /// <param name="index">
+    ///     The index of the mitigation in <see cref="PrioritizedMitigation" />,
+    ///     which is the order of the mitigation in <see cref="CustomComboPreset" />.
+    /// </param>
+    /// <param name="action">
+    ///     The variable to set to the action to, if the mitigation is set to be
+    ///     used.
+    /// </param>
+    /// <returns>
+    ///     Whether the mitigation is ready, enabled, and passes the provided logic
+    ///     check.
+    /// </returns>
+    private static bool CheckMitigationConfigMeetsRequirements
+        (int index, out uint action)
+    {
+        action = PrioritizedMitigation[index].Action;
+        return ActionReady(action) && LevelChecked(action) &&
+               PrioritizedMitigation[index].Logic() &&
+               IsEnabled(PrioritizedMitigation[index].Preset);
+    }
+
+    #endregion
+
     #region Openers
 
     internal static DRKOpenerMaxLevel1 Opener1 = new();
@@ -155,7 +237,9 @@ internal partial class DRK
             Bloodspiller,
             SaltAndDarkness,
         ];
-        internal override UserData? ContentCheckConfig => Config.DRK_ST_OpenerDifficulty;
+
+        internal override UserData? ContentCheckConfig =>
+            Config.DRK_ST_OpenerDifficulty;
 
         public override bool HasCooldowns()
         {

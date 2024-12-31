@@ -740,9 +740,10 @@ namespace WrathCombo.Combos.PvE
                     if (IsGarudaAttuned)
                     {
                         // Use Ruin III instead of Emerald Ruin III if enabled and Ruin Mastery III is not active
-                        if (IsEnabled(CustomComboPreset.SMN_ST_Ruin3_Emerald_Ruin3) && !TraitLevelChecked(Traits.RuinMastery3))
+                        if (IsEnabled(CustomComboPreset.SMN_ST_Ruin3_Emerald_Ruin3) && !TraitLevelChecked(Traits.RuinMastery3) && LevelChecked(Ruin3)) 
                         {
-                            return Ruin3;
+                            if (!IsMoving())
+                                return Ruin3;
                         }
                     }
 

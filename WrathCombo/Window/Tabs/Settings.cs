@@ -137,6 +137,28 @@ namespace WrathCombo.Window.Tabs
                 if (ImGui.Checkbox($"Output opener status to chat", ref Service.Configuration.OutputOpenerLogs))
                     Service.Configuration.Save();
 
+                #region Shorten DTR bar text
+
+                bool shortDTRText = Service.Configuration.ShortDTRText;
+
+                if (ImGui.Checkbox("Shorten Server Info Bar Text", ref shortDTRText))
+                {
+                    Service.Configuration.ShortDTRText = shortDTRText;
+                    Service.Configuration.Save();
+                }
+
+                if (ImGui.IsItemHovered())
+                {
+                    ImGui.BeginTooltip();
+                    ImGui.TextUnformatted(
+                        "By default, the Server Info Bar for Wrath Combo shows whether Auto-Rotation is on or off, " +
+                        "\nthen -if on- it will show how many active Auto-Mode combos you have enabled. " +
+                        "\nAnd finally, it will also show if another plugin is controlling that value." +
+                        "\nThis option will make the number of active Auto-Mode combos not show.");
+                    ImGui.EndTooltip();
+                }
+                #endregion
+
                 if (ImGui.InputFloat("Movement check delay", ref Service.Configuration.MovementLeeway))
                     Service.Configuration.Save();
 

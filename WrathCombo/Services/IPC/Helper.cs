@@ -14,10 +14,9 @@ using WrathCombo.CustomComboNS.Functions;
 
 namespace WrathCombo.Services.IPC;
 
-public partial class Helper(ref Leasing leasing, ref Search search)
+public partial class Helper(ref Leasing leasing)
 {
     private readonly Leasing _leasing = leasing;
-    private readonly Search _search = search;
 
     /// <summary>
     ///     Checks for typical bail conditions at the time of a set.
@@ -65,6 +64,8 @@ public partial class Helper(ref Leasing leasing, ref Search search)
         return false;
     }
 
+    #region Auto-Rotation Ready
+
     /// <summary>
     ///     Checks the current job to see whatever specified mode is enabled
     ///     (enabled and enabled in Auto-Mode).
@@ -84,15 +85,22 @@ public partial class Helper(ref Leasing leasing, ref Search search)
     internal bool CheckCurrentJobModeIsEnabled
         (ComboTargetTypeKeys mode, ComboStateKeys enabledStateToCheck)
     {
-        var properJob = (Job)CustomComboFunctions.LocalPlayer!.ClassJob.RowId;
-        if (_search.AllJobsControlled.ContainsKey(properJob))
-            return true;
-        var jobName = CustomComboFunctions.JobIDs.JobIDToShorthand(
-            (byte)CustomComboFunctions.LocalPlayer.ClassJob.RowId);
+        if (CustomComboFunctions.LocalPlayer is null)
+            return false;
+
+        // Convert current job/class to a job, if it is a class
+        var currentJobRow = CustomComboFunctions.LocalPlayer.ClassJob;
+        var currentRealJob = currentJobRow.Value.RowId;
+        if (currentJobRow.Value.ClassJobParent.RowId != currentJobRow.Value.RowId)
+            currentRealJob =
+                CustomComboFunctions.JobIDs.ClassToJob(currentJobRow.RowId);
+
+        var properJob = (Job)currentRealJob;
+        var jobName = properJob.ToString();
 
         P.IPCSearch.ComboStatesByJobCategorized.TryGetValue(jobName,
-                out var comboStates);
-         if (comboStates is null)
+            out var comboStates);
+        if (comboStates is null)
             return false;
 
         comboStates[mode]
@@ -106,7 +114,11 @@ public partial class Helper(ref Leasing leasing, ref Search search)
                advanced[enabledStateToCheck];
     }
 
-    private static Dictionary<string, List<string>> _combosForARCache = new();
+    /// <summary>
+    ///     Cache of the combos to set the current job to be Auto-Rotation ready.
+    /// </summary>
+    private static readonly Dictionary<string, List<string>>
+        CombosForARCache = new();
 
     /// <summary>
     ///     Gets the combos to set the current job to be Auto-Rotation ready.
@@ -126,7 +138,7 @@ public partial class Helper(ref Leasing leasing, ref Search search)
 
         job = job.ToUpperInvariant();
 
-        if (_combosForARCache.TryGetValue(job, out var value))
+        if (CombosForARCache.TryGetValue(job, out var value))
             return value;
 
         P.IPCSearch.ComboStatesByJobCategorized.TryGetValue(job,
@@ -206,9 +218,13 @@ public partial class Helper(ref Leasing leasing, ref Search search)
         #endregion
 
         if (includeOptions)
-            _combosForARCache[job] = combos;
+            CombosForARCache[job] = combos;
         return combos;
     }
+
+    #endregion
+
+    #region IPC Callback
 
     public static string? PrefixForIPC;
 
@@ -233,6 +249,8 @@ public partial class Helper(ref Leasing leasing, ref Search search)
             Logging.Error("Failed to call IPC callback with IPC prefix: " + prefix);
         }
     }
+
+    #endregion
 
     #region Checking the repo for live IPC status
 

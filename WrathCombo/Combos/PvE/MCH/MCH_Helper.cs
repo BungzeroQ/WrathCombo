@@ -93,7 +93,7 @@ internal static partial class MCH
             if (LevelChecked(FullMetalField))
             {
                 //1min
-                if ((BSUsed == 1) & (gauge.Battery >= 90))
+                if (BSUsed == 1 && gauge.Battery >= 90)
                     return true;
 
                 //even mins
@@ -117,9 +117,10 @@ internal static partial class MCH
                     return true;
             }
 
-            if (!LevelChecked(FullMetalField))
-                if (gauge.Battery == 100)
-                    return true;
+            if (!LevelChecked(FullMetalField) &&
+                LevelChecked(BarrelStabilizer) &&
+                gauge.Battery == 100)
+                return true;
 
             if (!LevelChecked(BarrelStabilizer))
                 return true;

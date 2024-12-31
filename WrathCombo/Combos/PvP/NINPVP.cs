@@ -89,9 +89,8 @@ namespace WrathCombo.Combos.PvP
                     {
 
                         // Seiton Tenchu priority for targets below 50% HP
-                        if (IsEnabled(CustomComboPreset.NINPvP_ST_SeitonTenchu) && 
-                            (GetTargetHPPercent() < GetOptionValue(Config.NINPVP_SeitonTenchu) && IsLB1Ready || //Limit Break
-                            HasEffect(Buffs.SeitonUnsealed)))  // Limit Break followup not tied to health slider
+                        if (IsEnabled(CustomComboPreset.NINPvP_ST_SeitonTenchu) && GetTargetHPPercent() < GetOptionValue(Config.NINPVP_SeitonTenchu) &&
+                            (IsLB1Ready || HasEffect(Buffs.SeitonUnsealed)))  // Limit Break or Unsealed buff
                             return OriginalHook(SeitonTenchu);
 
                         // Zesho Meppo

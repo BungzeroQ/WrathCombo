@@ -447,23 +447,23 @@ namespace WrathCombo.Combos.PvE
 
                     if (IsEnabled(CustomComboPreset.BRD_AoE_Adv_Buffs) && (!songNone || !LevelChecked(MagesBallad)) && isEnemyHealthHigh)
                     {
-                        float battleVoiceCD = GetCooldownRemainingTime(BattleVoice);
                         float ragingCD = GetCooldownRemainingTime(RagingStrikes);
 
-                        // Radiant Finale logic to start in wanderers with delayed weave
-                        if (canWeaveDelayed && ActionReady(RadiantFinale) &&
-                           (Array.TrueForAll(gauge.Coda, SongIsNotNone) || Array.Exists(gauge.Coda, SongIsWandererMinuet))
-                           && (battleVoiceCD < 3 || ActionReady(BattleVoice)) && (ragingCD < 3 || ActionReady(RagingStrikes)))
+                        // Late weave Battle voice logic first, timed with raging strikes cd to keep buffs tight. 
+                        if (canWeaveDelayed && ActionReady(BattleVoice) && songWanderer && (ragingCD < 3 || ActionReady(RagingStrikes)))
+                            return BattleVoice;
+
+                        // Radiant next, must have battlevoice buff for it to fire
+                        if (canWeave && ActionReady(RadiantFinale) &&
+                           (Array.TrueForAll(gauge.Coda, SongIsNotNone) || Array.Exists(gauge.Coda, SongIsWandererMinuet)) &&
+                           HasEffect(Buffs.BattleVoice))
                             return RadiantFinale;
 
-                        // BV and RS will wait for next weave window after radiant putting buffs tight togetehr and minimize drift
-                        if (canWeave && ActionReady(BattleVoice) && (HasEffect(Buffs.RadiantFinale) || !LevelChecked(RadiantFinale)))
-                            return BattleVoice;
-                        if (canWeave && ActionReady(RagingStrikes) && (HasEffect(Buffs.RadiantFinale) || !LevelChecked(RadiantFinale)))
+                        // Late weave Raging last, must have battle voice buff OR not be high enough level for Battlecoice
+                        if (canWeave && ActionReady(RagingStrikes) && (HasEffect(Buffs.BattleVoice) || !LevelChecked(BattleVoice)))
                             return RagingStrikes;
 
-
-                        // Barrage Logic to check for Buffs, removed the other buff level checks because raging goes last anyway
+                        // Barrage Logic to check for raging for low level reasons and it doesn't really need to check for the other buffs
                         if (canWeave && ActionReady(Barrage) && HasEffect(Buffs.RagingStrikes))
                             return Barrage;
                     }
@@ -723,23 +723,23 @@ namespace WrathCombo.Combos.PvE
 
                     if (IsEnabled(CustomComboPreset.BRD_Adv_Buffs) && (!songNone || !LevelChecked(MagesBallad)) && isEnemyHealthHigh)
                     {
-                        bool radiantReady = LevelChecked(RadiantFinale) && IsOffCooldown(RadiantFinale) && TargetHasEffect(Debuffs.CausticBite) && TargetHasEffect(Debuffs.Stormbite);
-                        float battleVoiceCD = GetCooldownRemainingTime(BattleVoice);
                         float ragingCD = GetCooldownRemainingTime(RagingStrikes);
 
-                        // Radiant Delayed weave into BV and Raging to ensure tight buff timing and minimize drift
-                        if (canWeaveDelayed && IsEnabled(CustomComboPreset.BRD_Adv_BuffsRadiant) && radiantReady &&
-                           (Array.TrueForAll(gauge.Coda, SongIsNotNone) || Array.Exists(gauge.Coda, SongIsWandererMinuet))
-                           && (battleVoiceCD < 3 || ActionReady(BattleVoice)) && (ragingCD < 3 || ActionReady(RagingStrikes)))
+                        // Late weave Battle voice logic first, timed with raging strikes cd to keep buffs tight. 
+                        if (canWeaveDelayed && ActionReady(BattleVoice) && songWanderer && (ragingCD < 3 || ActionReady(RagingStrikes)))
+                            return BattleVoice;
+
+                        // Radiant next, must have battlevoice buff for it to fire
+                        if (canWeave && ActionReady(RadiantFinale) &&
+                           (Array.TrueForAll(gauge.Coda, SongIsNotNone) || Array.Exists(gauge.Coda, SongIsWandererMinuet)) &&
+                           HasEffect(Buffs.BattleVoice))
                             return RadiantFinale;
 
-                        // BV and Raging will wait for radiant only when high enough level
-                        if (canWeave && ActionReady(BattleVoice) && (HasEffect(Buffs.RadiantFinale) || !LevelChecked(RadiantFinale)))
-                            return BattleVoice;
-                        if (canWeave && ActionReady(RagingStrikes) && (HasEffect(Buffs.RadiantFinale) || !LevelChecked(RadiantFinale)))
+                        // Late weave Raging last, must have battle voice buff OR not be high enough level for Battlecoice
+                        if (canWeave && ActionReady(RagingStrikes) && (HasEffect(Buffs.BattleVoice) || !LevelChecked(BattleVoice)))
                             return RagingStrikes;
 
-                        // Barrage Logic to check for Buffs, removed the other buff level checks because raging goes last anyway
+                        // Barrage Logic to check for raging for low level reasons and it doesn't really need to check for the other buffs
                         if (canWeave && ActionReady(Barrage) && HasEffect(Buffs.RagingStrikes))
                             return Barrage;
 
@@ -844,14 +844,7 @@ namespace WrathCombo.Combos.PvE
                         int ragingJawsRenewTime = PluginConfiguration.GetCustomIntValue(Config.BRD_RagingJawsRenewTime);
 
                         if (IsEnabled(CustomComboPreset.BRD_Adv_DoT))
-                        {
-                            if (IsEnabled(CustomComboPreset.BRD_Adv_RagingJaws) && ActionReady(IronJaws) && HasEffect(Buffs.RagingStrikes) &&
-                            ragingStrikesDuration < ragingJawsRenewTime && // Raging Jaws Slider Check
-                            purpleRemaining < 35 && blueRemaining < 35)    // Prevention of double refreshing dots
-                            {
-                                return IronJaws;
-                            }
-
+                        {                            
                             if (purple is not null && purpleRemaining < 4)
                                 return canIronJaws ? IronJaws : VenomousBite;
                             if (blue is not null && blueRemaining < 4)
@@ -860,6 +853,13 @@ namespace WrathCombo.Combos.PvE
                                 return OriginalHook(Windbite);
                             if (purple is null && LevelChecked(VenomousBite))
                                 return OriginalHook(VenomousBite);
+
+                            if (IsEnabled(CustomComboPreset.BRD_Adv_RagingJaws) && ActionReady(IronJaws) && HasEffect(Buffs.RagingStrikes) &&
+                            ragingStrikesDuration < ragingJawsRenewTime && // Raging Jaws Slider Check
+                            purpleRemaining < 35 && blueRemaining < 35)    // Prevention of double refreshing dots
+                            {
+                                return IronJaws;
+                            }
 
                         }
                     }
@@ -1007,24 +1007,26 @@ namespace WrathCombo.Combos.PvE
 
                     if ((!songNone || !LevelChecked(MagesBallad)) && isEnemyHealthHigh)
                     {
-                        float battleVoiceCD = GetCooldownRemainingTime(BattleVoice);
                         float ragingCD = GetCooldownRemainingTime(RagingStrikes);
 
-                        // Start with radiant in a delayed weave when BV and RS are ready or will be in next window
-                        if (canWeaveDelayed && ActionReady(RadiantFinale) &&
-                           (Array.TrueForAll(gauge.Coda, SongIsNotNone) || Array.Exists(gauge.Coda, SongIsWandererMinuet))
-                           && (battleVoiceCD < 3 || ActionReady(BattleVoice)) && (ragingCD < 3 || ActionReady(RagingStrikes)))
-                            return RadiantFinale;
-
-                        if (canWeave && ActionReady(BattleVoice) && (HasEffect(Buffs.RadiantFinale) || !LevelChecked(RadiantFinale)))
+                        // Late weave Battle voice logic first, timed with raging strikes cd to keep buffs tight. 
+                        if (canWeaveDelayed && ActionReady(BattleVoice) && songWanderer && (ragingCD < 3 || ActionReady(RagingStrikes)))
                             return BattleVoice;
 
-                        if (canWeave && ActionReady(RagingStrikes) && (HasEffect(Buffs.RadiantFinale) || !LevelChecked(RadiantFinale)))
+                        // Radiant next, must have battlevoice buff for it to fire
+                        if (canWeave && ActionReady(RadiantFinale) &&
+                           (Array.TrueForAll(gauge.Coda, SongIsNotNone) || Array.Exists(gauge.Coda, SongIsWandererMinuet)) &&
+                           HasEffect(Buffs.BattleVoice))
+                            return RadiantFinale;
+
+                        // Late weave Raging last, must have battle voice buff OR not be high enough level for Battlecoice
+                        if (canWeave && ActionReady(RagingStrikes) && (HasEffect(Buffs.BattleVoice) || !LevelChecked(BattleVoice)))
                             return RagingStrikes;
 
-                        if (canWeave && ActionReady(Barrage) && HasEffect(Buffs.RagingStrikes)) // Only requires ragin because it is last buff to go out and it is lowest level buff
+                        // Barrage Logic to check for raging for low level reasons and it doesn't really need to check for the other buffs
+                        if (canWeave && ActionReady(Barrage) && HasEffect(Buffs.RagingStrikes))
                             return Barrage;
-                            
+
                     }
 
                     #endregion
@@ -1229,26 +1231,26 @@ namespace WrathCombo.Combos.PvE
 
                     if ((!songNone || !LevelChecked(MagesBallad)) && isEnemyHealthHigh)
                     {
-                        bool radiantReady = LevelChecked(RadiantFinale) && IsOffCooldown(RadiantFinale) && TargetHasEffect(Debuffs.CausticBite) && TargetHasEffect(Debuffs.Stormbite);
-                        float battleVoiceCD = GetCooldownRemainingTime(BattleVoice);
                         float ragingCD = GetCooldownRemainingTime(RagingStrikes);
 
-                        // Start with radiant delayed weave when BV and RS are ready or will be in one gcd
-                        if (canWeaveDelayed && radiantReady &&
-                           (Array.TrueForAll(gauge.Coda, SongIsNotNone) || Array.Exists(gauge.Coda, SongIsWandererMinuet))
-                           && (battleVoiceCD < 3 || ActionReady(BattleVoice)) && (ragingCD < 3 || ActionReady(RagingStrikes)))
+                        // Late weave Battle voice logic first, timed with raging strikes cd to keep buffs tight. 
+                        if (canWeaveDelayed && ActionReady(BattleVoice) && songWanderer && (ragingCD < 3 || ActionReady(RagingStrikes)))
+                            return BattleVoice;
+
+                        // Radiant next, must have battlevoice buff for it to fire
+                        if (canWeave && ActionReady(RadiantFinale) &&
+                           (Array.TrueForAll(gauge.Coda, SongIsNotNone) || Array.Exists(gauge.Coda, SongIsWandererMinuet)) &&
+                           HasEffect(Buffs.BattleVoice))
                             return RadiantFinale;
 
-                        // Buffs to follow Radiant weaved together
-                        if (canWeave && ActionReady(BattleVoice) && (HasEffect(Buffs.RadiantFinale) || !LevelChecked(RadiantFinale)))
-                            return BattleVoice;
-                        if (canWeave && ActionReady(RagingStrikes) && (HasEffect(Buffs.RadiantFinale) || !LevelChecked(RadiantFinale)))
+                        // Late weave Raging last, must have battle voice buff OR not be high enough level for Battlecoice
+                        if (canWeave && ActionReady(RagingStrikes) && (HasEffect(Buffs.BattleVoice) || !LevelChecked(BattleVoice)))
                             return RagingStrikes;
 
-                        // Only checks raging because that is last buff in order
+                        // Barrage Logic to check for raging for low level reasons and it doesn't really need to check for the other buffs
                         if (canWeave && ActionReady(Barrage) && HasEffect(Buffs.RagingStrikes))
                             return Barrage;
-                        
+
                     }
 
                     #endregion

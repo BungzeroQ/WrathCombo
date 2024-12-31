@@ -10,7 +10,6 @@ namespace WrathCombo.Combos.PvE;
 
 internal static partial class VPR
 {
-    // VPR Gauge & Extensions
     internal static VPROpenerMaxLevel1 Opener1 = new();
     internal static VPRGauge gauge = GetJobGauge<VPRGauge>();
 
@@ -18,9 +17,15 @@ internal static partial class VPR
 
     internal static float IreCD => GetCooldownRemainingTime(SerpentsIre);
 
-    internal static bool TrueNorthReady =>
-        TargetNeedsPositionals() && ActionReady(All.TrueNorth) &&
-        !HasEffect(All.Buffs.TrueNorth);
+    internal static bool In5y => HasBattleTarget() && GetTargetDistance() <= 5;
+
+    internal static bool TrueNorthReady => TargetNeedsPositionals() && ActionReady(All.TrueNorth) && !HasEffect(All.Buffs.TrueNorth);
+
+    internal static bool CappedOnCoils =>
+        (TraitLevelChecked(Traits.EnhancedVipersRattle) && gauge.RattlingCoilStacks > 2) ||
+        (!TraitLevelChecked(Traits.EnhancedVipersRattle) && gauge.RattlingCoilStacks > 1);
+
+    internal static bool HasRattlingCoilStack(VPRGauge Gauge) => gauge.RattlingCoilStacks > 0;
 
     internal static bool VicewinderReady => gauge.DreadCombo == DreadCombo.Dreadwinder;
 
@@ -33,12 +38,6 @@ internal static partial class VPR
     internal static bool SwiftskinsDenReady => gauge.DreadCombo == DreadCombo.SwiftskinsDen;
 
     internal static bool HuntersDenReady => gauge.DreadCombo == DreadCombo.HuntersDen;
-
-    internal static bool CappedOnCoils =>
-        (TraitLevelChecked(Traits.EnhancedVipersRattle) && gauge.RattlingCoilStacks > 2) ||
-        (!TraitLevelChecked(Traits.EnhancedVipersRattle) && gauge.RattlingCoilStacks > 1);
-
-    internal static bool HasRattlingCoilStack(VPRGauge Gauge) => gauge.RattlingCoilStacks > 0;
 
     internal static WrathOpener Opener()
     {

@@ -1,8 +1,9 @@
-﻿using ECommons.DalamudServices;
-using FFXIVClientStructs.FFXIV.Client.Game;
+﻿using FFXIVClientStructs.FFXIV.Client.Game;
 using System.Collections.Generic;
 using WrathCombo.CustomComboNS;
 using WrathCombo.CustomComboNS.Functions;
+using WrathCombo.Data;
+using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions;
 
 namespace WrathCombo.Combos.PvE;
 
@@ -24,6 +25,97 @@ internal partial class GNB
         return WrathOpener.Dummy;
     }
 
+    #region Mitigation Priority
+
+    /// <summary>
+    ///     The list of Mitigations to use in the One-Button Mitigation combo.<br />
+    ///     The order of the list needs to match the order in
+    ///     <see cref="CustomComboPreset" />.
+    /// </summary>
+    /// <value>
+    ///     <c>Action</c> is the action to use.<br />
+    ///     <c>Preset</c> is the preset to check if the action is enabled.<br />
+    ///     <c>Logic</c> is the logic for whether to use the action.
+    /// </value>
+    /// <remarks>
+    ///     Each logic check is already combined with checking if the preset
+    ///     <see cref="IsEnabled(uint)">is enabled</see>
+    ///     and if the action is <see cref="ActionReady(uint)">ready</see> and
+    ///     <see cref="LevelChecked(uint)">level-checked</see>.<br />
+    ///     Do not add any of these checks to <c>Logic</c>.
+    /// </remarks>
+    private static (uint Action, CustomComboPreset Preset, System.Func<bool> Logic)[]
+        PrioritizedMitigation =>
+    [
+        //Emergency Superbolide
+        (Superbolide, CustomComboPreset.GNB_Mit_Superbolide_Max,
+            () => PlayerHealthPercentageHp() <= Config.GNB_Mit_Superbolide_Health &&
+                  ContentCheck.IsInConfiguredContent(
+                      Config.GNB_Mit_Superbolide_Difficulty,
+                      Config.GNB_Mit_Superbolide_DifficultyListSet
+                  )),
+        //Heart of Corundum
+        (OriginalHook(HeartOfStone), CustomComboPreset.GNB_Mit_Corundum,
+            () => FindEffect(Buffs.HeartOfCorundum) is null &&
+                  FindEffect(Buffs.HeartOfStone) is null),
+        //Aurora
+        (Aurora, CustomComboPreset.GNB_Mit_Aurora,
+            () => (!((HasFriendlyTarget() && TargetHasEffectAny(Buffs.Aurora)) ||
+                     (!HasFriendlyTarget() && HasEffectAny(Buffs.Aurora)))) &&
+                  GetRemainingCharges(Aurora) > Config.GNB_Mit_Aurora_Charges),
+        //Camouflage
+        (Camouflage, CustomComboPreset.GNB_Mit_Camouflage, () => true),
+        // Reprisal
+        (All.Reprisal, CustomComboPreset.GNB_Mit_Reprisal,
+            () => InActionRange(All.Reprisal)),
+        //Heart of Light
+        (HeartOfLight, CustomComboPreset.GNB_Mit_HeartOfLight,
+            () => Config.GNB_Mit_HeartOfLight_PartyRequirement ==
+                  (int)Config.PartyRequirement.No ||
+                  IsInParty()),
+        //Rampart
+        (All.Rampart, CustomComboPreset.GNB_Mit_Rampart, () => true),
+        //Arm's Length
+        (All.ArmsLength, CustomComboPreset.GNB_Mit_ArmsLength,
+            () => CanCircleAoe(7) >= Config.GNB_Mit_ArmsLength_EnemyCount &&
+                  (Config.GNB_Mit_ArmsLength_Boss == (int)Config.BossAvoidance.Off ||
+                   InBossEncounter())),
+        //Nebula
+        (OriginalHook(Nebula), CustomComboPreset.GNB_Mit_Nebula, () => true),
+        //Superbolide
+        (Superbolide, CustomComboPreset.GNB_Mit_Superbolide,
+            () => ContentCheck.IsInConfiguredContent(
+                Config.GNB_Mit_Superbolide_Difficulty,
+                Config.GNB_Mit_Superbolide_DifficultyListSet
+            )),
+    ];
+
+    /// <summary>
+    ///     Given the index of a mitigation in <see cref="PrioritizedMitigation" />,
+    ///     checks if the mitigation is ready and meets the provided requirements.
+    /// </summary>
+    /// <param name="index">
+    ///     The index of the mitigation in <see cref="PrioritizedMitigation" />,
+    ///     which is the order of the mitigation in <see cref="CustomComboPreset" />.
+    /// </param>
+    /// <param name="action">
+    ///     The variable to set to the action to, if the mitigation is set to be
+    ///     used.
+    /// </param>
+    /// <returns>
+    ///     Whether the mitigation is ready, enabled, and passes the provided logic
+    ///     check.
+    /// </returns>
+    private static bool CheckMitigationConfigMeetsRequirements
+        (int index, out uint action)
+    {
+        action = PrioritizedMitigation[index].Action;
+        return ActionReady(action) && LevelChecked(action) &&
+               PrioritizedMitigation[index].Logic() &&
+               IsEnabled(PrioritizedMitigation[index].Preset);
+    }
+
+    #endregion
 
     internal class GNBOpenerMaxLevel1 : WrathOpener
     {

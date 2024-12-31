@@ -5,7 +5,6 @@ using WrathCombo.Combos.PvE.Content;
 using WrathCombo.CustomComboNS;
 using WrathCombo.CustomComboNS.Functions;
 using WrathCombo.Data;
-using WrathCombo.Extensions;
 
 namespace WrathCombo.Combos.PvE
 {
@@ -49,7 +48,8 @@ namespace WrathCombo.Combos.PvE
             Sepulchre = 36919, // Third Atonement
             Intervene = 16461,
             BladeOfHonor = 36922,
-            Sheltron = 3542;
+            Sheltron = 3542,
+            Clemency = 3541;
 
         public static class Buffs
         {
@@ -107,12 +107,61 @@ namespace WrathCombo.Combos.PvE
                     bool isAtonementExpiring = (HasEffect(Buffs.AtonementReady) && GetBuffRemainingTime(Buffs.AtonementReady) < 6) ||
                                                 (HasEffect(Buffs.SupplicationReady) && GetBuffRemainingTime(Buffs.SupplicationReady) < 6) ||
                                                 (HasEffect(Buffs.SepulchreReady) && GetBuffRemainingTime(Buffs.SepulchreReady) < 6);
+                    var justMitted = JustUsed(OriginalHook(Sheltron), 3f) ||
+                                     JustUsed(OriginalHook(Sentinel), 4f) ||
+                                     JustUsed(DivineVeil, 4f) ||
+                                     JustUsed(All.Rampart, 4f) ||
+                                     JustUsed(HallowedGround, 9f);
                     #endregion
 
                     // Variant Cure
                     if (IsEnabled(CustomComboPreset.PLD_Variant_Cure) && IsEnabled(Variant.VariantCure) &&
                         PlayerHealthPercentageHp() <= Config.PLD_VariantCure)
                         return Variant.VariantCure;
+
+                    #region Mitigations
+
+                    if (Config.PLD_ST_MitsOptions != 1)
+                    {
+                        if (InCombat() && //Player is in combat
+                        !justMitted) //Player has not used a mitigation ability in the last 4-9 seconds
+                        {
+                            //HallowedGround
+                            if (ActionReady(HallowedGround) && //HallowedGround is ready
+                                PlayerHealthPercentageHp() < 30) //Player's health is below 30%
+                                return HallowedGround;
+
+                            if (IsPlayerTargeted())
+                            {
+                                //Sentinel / Damnation
+                                if (ActionReady(OriginalHook(Sentinel)) && //Sentinel is ready
+                                    PlayerHealthPercentageHp() < 60) //Player's health is below 60%
+                                    return OriginalHook(Sentinel);
+
+                                //Rampart
+                                if (ActionReady(All.Rampart) && //Rampart is ready
+                                    PlayerHealthPercentageHp() < 80) //Player's health is below 80%
+                                    return All.Rampart;
+
+                                //Reprisal
+                                if (ActionReady(All.Reprisal) && //Reprisal is ready
+                                    InActionRange(All.Reprisal) && //Target is within range of Reprisal
+                                    PlayerHealthPercentageHp() < 90) //Player's health is below 80%
+                                    return All.Reprisal;
+                            }
+
+                            //Bulwark
+                            if (ActionReady(Bulwark) && //Bulwark is ready
+                                PlayerHealthPercentageHp() < 70) //Player's health is below 80%
+                                return Bulwark;
+
+                            //Sheltron
+                            if (ActionReady(OriginalHook(Sheltron)) && //Sheltron
+                                PlayerHealthPercentageHp() < 90) //Player's health is below 95%
+                                return OriginalHook(Sheltron);
+                        }
+                    }
+                    #endregion 
 
                     if (Opener().FullOpener(ref actionID))
                         return actionID;
@@ -253,12 +302,58 @@ namespace WrathCombo.Combos.PvE
                     bool hasDivineMight = HasEffect(Buffs.DivineMight);
                     bool hasDivineMagicMP = playerMP >= GetResourceCost(HolySpirit);
                     bool hasRequiescatMP = playerMP >= GetResourceCost(HolySpirit) * 3.6;
+                    var justMitted = JustUsed(OriginalHook(Sheltron), 3f) ||
+                                     JustUsed(OriginalHook(Sentinel), 4f) ||
+                                     JustUsed(DivineVeil, 4f) ||
+                                     JustUsed(All.Rampart, 4f) ||
+                                     JustUsed(HallowedGround, 9f);
                     #endregion
 
                     // Variant Cure
                     if (IsEnabled(CustomComboPreset.PLD_Variant_Cure) && IsEnabled(Variant.VariantCure) &&
                         PlayerHealthPercentageHp() <= Config.PLD_VariantCure)
                         return Variant.VariantCure;
+
+                    if (Config.PLD_AoE_MitsOptions != 1)
+                    {
+                        if (InCombat() && //Player is in combat
+                        !justMitted) //Player has not used a mitigation ability in the last 4-9 seconds
+                        {
+                            //Hallowed Ground
+                            if (ActionReady(HallowedGround) && //Hallowed Ground is ready
+                                PlayerHealthPercentageHp() < 30) //Player's health is below 30%
+                                return HallowedGround;
+
+                            if (IsPlayerTargeted())
+                            {
+                                //Sentinel / Guardian
+                                if (ActionReady(OriginalHook(Sentinel)) && //Sentinel is ready
+                                    PlayerHealthPercentageHp() < 60) //Player's health is below 60%
+                                    return OriginalHook(Sentinel);
+
+                                //Rampart
+                                if (ActionReady(All.Rampart) && //Rampart is ready
+                                    PlayerHealthPercentageHp() < 80) //Player's health is below 80%
+                                    return All.Rampart;
+
+                                //Reprisal
+                                if (ActionReady(All.Reprisal) && //Reprisal is ready
+                                    InActionRange(All.Reprisal) && //Target is within range of Reprisal
+                                    PlayerHealthPercentageHp() < 90) //Player's health is below 80%
+                                    return All.Reprisal;
+                            }
+
+                            //Bulwark
+                            if (ActionReady(Bulwark) && //Bulwark is ready
+                                PlayerHealthPercentageHp() < 70) //Player's health is below 80%
+                                return Bulwark;
+
+                            //Sheltron
+                            if (ActionReady(OriginalHook(Sheltron)) && //Sheltron
+                                PlayerHealthPercentageHp() < 90) //Player's health is below 95%
+                                return OriginalHook(Sheltron);
+                        }
+                    }
 
                     if (HasBattleTarget())
                     {
@@ -725,5 +820,27 @@ namespace WrathCombo.Combos.PvE
                 return actionID;
             }
         }
+
+        #region One-Button Mitigation
+        internal class PLD_Mit_OneButton : CustomCombo
+        {
+            protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.PLD_Mit_OneButton;
+
+            protected override uint Invoke(uint actionID)
+            {
+                if (actionID is not Bulwark) return actionID;
+
+                foreach (var priority in Config.PLD_Mit_Priorities.Items.OrderBy(x => x))
+                {
+                    var index = Config.PLD_Mit_Priorities.IndexOf(priority);
+                    if (CheckMitigationConfigMeetsRequirements(index, out var action))
+                        return action;
+                }
+
+                return actionID;
+            }
+        }
+        #endregion
+
     }
 }
