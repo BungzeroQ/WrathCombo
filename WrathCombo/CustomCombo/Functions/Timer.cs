@@ -4,6 +4,7 @@ using ECommons.DalamudServices;
 using ECommons.GameFunctions;
 using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -109,5 +110,10 @@ namespace WrathCombo.CustomComboNS.Functions
             if (flag == ConditionFlag.InCombat && value)
                 combatStart = DateTime.Now;
         }
+
+        public unsafe static float CountdownRemaining => MathF.Max(0, AgentCountDownSettingDialog.Instance()->TimeRemaining);
+
+        public unsafe static bool CountdownActive => AgentCountDownSettingDialog.Instance()->Active;
+       
     }
 }

@@ -78,7 +78,7 @@ namespace WrathCombo.Window.Tabs
                         // Null Check (Status Name)
                         if (!string.IsNullOrEmpty(ActionWatching.GetStatusName(status.StatusId)))
                         {
-                            CustomStyleText(ActionWatching.GetStatusName(status.StatusId) + ":", status.StatusId);
+                            CustomStyleText(ActionWatching.GetStatusName(status.StatusId) + ":", $"{status.StatusId} P: {status.Param}");
                         }
                         else CustomStyleText("", status.StatusId);
 
@@ -409,6 +409,8 @@ namespace WrathCombo.Window.Tabs
                         CustomStyleText($"Can Delayed Weave:", CanDelayedWeave(end: 0.1));
                     }
                 }
+
+                CustomStyleText("Countdown Remaining:", $"{CountdownActive} {CountdownRemaining}");
             }
 
             else
