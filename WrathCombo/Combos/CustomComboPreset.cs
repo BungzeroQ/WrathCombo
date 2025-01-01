@@ -2701,7 +2701,7 @@ public enum CustomComboPreset
     [ParentCombo(MCH_ST_AdvancedMode)]
     [CustomComboInfo("Rook Autoturret/Automaton Queen Option",
         "Adds Rook Autoturret or Automaton Queen to the rotation.", MCH.JobID)]
-    MCH_Adv_TurretQueen = 8107,
+    MCH_ST_Adv_TurretQueen = 8107,
 
     [ParentCombo(MCH_ST_AdvancedMode)]
     [CustomComboInfo("Rook / Queen Overdrive Option", "Adds Rook or Queen Overdrive to the rotation.", MCH.JobID)]

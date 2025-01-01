@@ -74,8 +74,7 @@ internal static partial class MCH
                             }
 
                             //Queen
-                            if (UseQueen(Gauge) &&
-                                (GetCooldownRemainingTime(Wildfire) > GCD || !LevelChecked(Wildfire)))
+                            if (UseQueen(Gauge))
                                 return OriginalHook(RookAutoturret);
 
                             // Reassemble
@@ -230,9 +229,8 @@ internal static partial class MCH
                             }
 
                             // Queen
-                            if (IsEnabled(CustomComboPreset.MCH_Adv_TurretQueen) &&
-                                UseQueen(Gauge) &&
-                                (GetCooldownRemainingTime(Wildfire) > GCD || !LevelChecked(Wildfire)))
+                            if (IsEnabled(CustomComboPreset.MCH_ST_Adv_TurretQueen) &&
+                                UseQueen(Gauge))
                                 return OriginalHook(RookAutoturret);
 
                             // Reassemble
