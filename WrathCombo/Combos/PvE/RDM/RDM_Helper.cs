@@ -1,13 +1,10 @@
 ﻿using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.JobGauge.Types;
-using ECommons.DalamudServices;
 using ECommons.GameHelpers;
 using System;
 using System.Collections.Generic;
-using WrathCombo.Combos.JobHelpers.Enums;
 using WrathCombo.CustomComboNS;
 using WrathCombo.CustomComboNS.Functions;
-using WrathCombo.Data;
 using WrathCombo.Extensions;
 using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions;
 

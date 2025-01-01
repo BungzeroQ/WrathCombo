@@ -43,6 +43,12 @@ namespace WrathCombo.CustomComboNS
 
                 PreviousOpenerAction = CurrentOpenerAction;
                 CurrentOpenerAction = OpenerActions[OpenerStep - 1];
+
+                if (CurrentOpenerAction == All.TrueNorth && !TargetNeedsPositionals())
+                {
+                    OpenerStep++;
+                    CurrentOpenerAction = OpenerActions[OpenerStep - 1];
+                }
             }
         }
 
@@ -230,9 +236,9 @@ namespace WrathCombo.CustomComboNS
             CurrentState = OpenerState.OpenerNotReady;
         }
 
-        internal static void SelectOpener(uint jobId)
+        internal static void SelectOpener()
         {
-            CurrentOpener = jobId switch
+            CurrentOpener = Player.JobId switch
             {
                 AST.JobID => AST.Opener(),
                 BLM.JobID => BLM.Opener(),

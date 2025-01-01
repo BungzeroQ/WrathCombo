@@ -4,8 +4,6 @@ using WrathCombo.CustomComboNS.Functions;
 using static WrathCombo.Extensions.UIntExtensions;
 using static WrathCombo.Window.Functions.UserConfig;
 using static WrathCombo.Window.Functions.SliderIncrements;
-using WrathCombo.Window.Functions;
-using WrathCombo.Data;
 using WrathCombo.Combos.PvP;
 
 namespace WrathCombo.Combos.PvE

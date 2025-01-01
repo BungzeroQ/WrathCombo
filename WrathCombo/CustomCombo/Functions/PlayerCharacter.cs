@@ -1,16 +1,13 @@
 ﻿using System;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.SubKinds;
-using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Memory;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
-using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.Game.Fate;
 using FFXIVClientStructs.FFXIV.Client.Game.Group;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI;
-using FFXIVClientStructs.FFXIV.Client.UI.Info;
 using System.Linq;
 using WrathCombo.Combos.PvE;
 using Action = Lumina.Excel.Sheets.Action;

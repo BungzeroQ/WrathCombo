@@ -1,11 +1,5 @@
-﻿using ECommons.ImGuiMethods;
-using ImGuiNET;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using ImGuiNET;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WrathCombo.Extensions
 {

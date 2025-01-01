@@ -12,27 +12,25 @@ internal partial class DRG
 
         protected override uint Invoke(uint actionID)
         {
-            if (actionID is FullThrust or HeavensThrust)
+            if (actionID is not (FullThrust or HeavensThrust)) return actionID;
+
+            if (ComboTimer > 0)
             {
-                if (ComboTimer > 0)
-                {
-                    if (ComboAction is TrueThrust or RaidenThrust && LevelChecked(VorpalThrust))
-                        return OriginalHook(VorpalThrust);
+                if (ComboAction is TrueThrust or RaidenThrust && LevelChecked(VorpalThrust))
+                    return OriginalHook(VorpalThrust);
 
-                    if (ComboAction == OriginalHook(VorpalThrust) && LevelChecked(FullThrust))
-                        return OriginalHook(FullThrust);
+                if (ComboAction == OriginalHook(VorpalThrust) && LevelChecked(FullThrust))
+                    return OriginalHook(FullThrust);
 
-                    if (ComboAction == OriginalHook(FullThrust) && LevelChecked(FangAndClaw))
-                        return FangAndClaw;
+                if (ComboAction == OriginalHook(FullThrust) && LevelChecked(FangAndClaw))
+                    return FangAndClaw;
 
-                    if (ComboAction is FangAndClaw && LevelChecked(Drakesbane))
-                        return Drakesbane;
-                }
-
-                return OriginalHook(TrueThrust);
+                if (ComboAction is FangAndClaw && LevelChecked(Drakesbane))
+                    return Drakesbane;
             }
 
-            return actionID;
+            return OriginalHook(TrueThrust);
+
         }
     }
 
@@ -42,27 +40,25 @@ internal partial class DRG
 
         protected override uint Invoke(uint actionID)
         {
-            if (actionID is ChaosThrust or ChaoticSpring)
+            if (actionID is not (ChaosThrust or ChaoticSpring)) return actionID;
+
+            if (ComboTimer > 0)
             {
-                if (ComboTimer > 0)
-                {
-                    if (ComboAction is TrueThrust or RaidenThrust && LevelChecked(Disembowel))
-                        return OriginalHook(Disembowel);
+                if (ComboAction is TrueThrust or RaidenThrust && LevelChecked(Disembowel))
+                    return OriginalHook(Disembowel);
 
-                    if (ComboAction == OriginalHook(Disembowel) && LevelChecked(ChaosThrust))
-                        return OriginalHook(ChaosThrust);
+                if (ComboAction == OriginalHook(Disembowel) && LevelChecked(ChaosThrust))
+                    return OriginalHook(ChaosThrust);
 
-                    if (ComboAction == OriginalHook(ChaosThrust) && LevelChecked(WheelingThrust))
-                        return WheelingThrust;
+                if (ComboAction == OriginalHook(ChaosThrust) && LevelChecked(WheelingThrust))
+                    return WheelingThrust;
 
-                    if (ComboAction is WheelingThrust && LevelChecked(Drakesbane))
-                        return Drakesbane;
-                }
-
-                return OriginalHook(TrueThrust);
+                if (ComboAction is WheelingThrust && LevelChecked(Drakesbane))
+                    return Drakesbane;
             }
 
-            return actionID;
+            return OriginalHook(TrueThrust);
+
         }
     }
 

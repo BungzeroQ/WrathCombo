@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text;
-using Dalamud.Interface.Utility;
 using WrathCombo.Attributes;
 using WrathCombo.Combos;
 using WrathCombo.Combos.PvE;
@@ -40,6 +39,7 @@ namespace WrathCombo.Window.Functions
             public ReplaceSkillAttribute? ReplaceSkill;
             public CustomComboInfoAttribute? CustomComboInfo;
             public AutoActionAttribute? AutoAction;
+            public RoleAttribute? RoleAttribute;
 
             public PresetAttributes(CustomComboPreset preset)
             {
@@ -55,6 +55,7 @@ namespace WrathCombo.Window.Functions
                 ReplaceSkill = preset.GetAttribute<ReplaceSkillAttribute>();
                 CustomComboInfo = preset.GetAttribute<CustomComboInfoAttribute>();
                 AutoAction = preset.GetAttribute<AutoActionAttribute>();
+                RoleAttribute = preset.GetAttribute<RoleAttribute>();
             }
         }
 

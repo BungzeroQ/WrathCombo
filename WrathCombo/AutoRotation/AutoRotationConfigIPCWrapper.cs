@@ -6,11 +6,12 @@ using System;
 
 namespace WrathCombo.AutoRotation;
 
-public class AutoRotationConfigIPCWrapper(AutoRotationConfig config)
+public class AutoRotationConfigIPCWrapper(AutoRotationConfig? config)
 {
     public bool Enabled =>
-        P.IPC.UIHelper.AutoRotationStateControlled()?.state ??
-        config.Enabled;
+        P.IPC?.UIHelper?.AutoRotationStateControlled()?.state ??
+        config?.Enabled ??
+        false;
 
     public bool InCombatOnly
     {

@@ -1,4 +1,3 @@
-using WrathCombo.Core;
 using WrathCombo.CustomComboNS;
 
 namespace WrathCombo.Combos.PvP

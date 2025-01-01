@@ -1,5 +1,4 @@
 using System.Numerics;
-using Dalamud.Interface.Colors;
 using ECommons.ImGuiMethods;
 using ImGuiNET;
 using WrathCombo.CustomComboNS.Functions;
@@ -12,7 +11,7 @@ internal partial class PLD
 {
     internal static class Config
     {
-        private const int numberMitigationOptions = 10;
+        private const int numberMitigationOptions = 9;
 
         internal enum PartyRequirement
         {
@@ -59,21 +58,30 @@ internal partial class PLD
             PLD_AoE_MitsOptions = new("PLD_AoE_MitsOptions", 0),
 
             //One-Button Mitigation
+            PLD_Mit_HallowedGround_Max_Health = new("PLD_Mit_HallowedGround_Max_Health", 20),
             PLD_Mit_DivineVeil_PartyRequirement = new("PLD_Mit_DivineVeil_PartyRequirement", (int)PartyRequirement.Yes),
+            PLD_Mit_Rampart_Health = new("PLD_Mit_Rampart_Health", 65),
+            PLD_Mit_Sentinel_Health = new("PLD_Mit_Sentinel_Health", 60),
             PLD_Mit_ArmsLength_Boss = new("PLD_Mit_ArmsLength_Boss", (int)BossAvoidance.On),
             PLD_Mit_ArmsLength_EnemyCount = new("PLD_Mit_ArmsLength_EnemyCount", 0),
-            PLD_Mit_HallowedGround_Health = new("PLD_Mit_HallowedGround_Health", 30);
+            PLD_Mit_Bulwark_Health = new("PLD_Mit_Bulwark_Health", 50),
+            PLD_Mit_HallowedGround_Health = new("PLD_Mit_HallowedGround_Health", 35),
+            PLD_Mit_Clemency_Health = new("PLD_Mit_Clemency_Health", 40);
 
         public static UserIntArray
             PLD_Mit_Priorities = new("PLD_Mit_Priorities");
 
         public static UserBoolArray
-            PLD_Mit_HallowedGround_Difficulty = new("PLD_Mit_HallowedGround_Difficulty",
+            PLD_Mit_HallowedGround_Max_Difficulty = new(
+                "PLD_Mit_HallowedGround_Max_Difficulty",
+                [true, true]),
+            PLD_Mit_HallowedGround_Difficulty = new(
+                "PLD_Mit_HallowedGround_Difficulty",
                 [true, false]);
 
         public static readonly ContentCheck.ListSet
-            PLD_Mit_HallowedGround_DifficultyListSet =
-                ContentCheck.ListSet.Halved;
+            PLD_Mit_HallowedGround_Max_DifficultyListSet = ContentCheck.ListSet.Halved,
+            PLD_Mit_HallowedGround_DifficultyListSet = ContentCheck.ListSet.Halved;
 
         internal static void Draw(CustomComboPreset preset)
         {
@@ -282,33 +290,25 @@ internal partial class PLD
 
                 case CustomComboPreset.PLD_Mit_HallowedGround_Max:
                     UserConfig.DrawDifficultyMultiChoice(
-                        PLD_Mit_HallowedGround_Difficulty,
-                        PLD_Mit_HallowedGround_DifficultyListSet,
+                        PLD_Mit_HallowedGround_Max_Difficulty,
+                        PLD_Mit_HallowedGround_Max_DifficultyListSet,
                         "Select what difficulties Hallowed Ground should be used in:"
                     );
 
-                    UserConfig.DrawSliderInt(5, 30, PLD_Mit_HallowedGround_Health,
+                    UserConfig.DrawSliderInt(5, 30, PLD_Mit_HallowedGround_Max_Health,
                         "Player HP% to be \nless than or equal to:",
                         200, SliderIncrements.Fives);
-
-                    ImGui.BeginDisabled();
-                    UserConfig.DrawPriorityInput(PLD_Mit_Priorities,
-                        numberMitigationOptions, 0,
-                        "Emergency Hallowed Ground Priority:");
-                    ImGui.EndDisabled();
-                    if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
-                        ImGui.SetTooltip("Should always be 1, the highest priority");
                     break;
 
                 case CustomComboPreset.PLD_Mit_Sheltron:
                     UserConfig.DrawPriorityInput(PLD_Mit_Priorities,
-                        numberMitigationOptions, 1,
+                        numberMitigationOptions, 0,
                         "Sheltron Priority:");
                     break;
 
                 case CustomComboPreset.PLD_Mit_Reprisal:
                     UserConfig.DrawPriorityInput(PLD_Mit_Priorities,
-                        numberMitigationOptions, 2,
+                        numberMitigationOptions, 1,
                         "Reprisal Priority:");
                     break;
 
@@ -327,19 +327,27 @@ internal partial class PLD
                         outputValue: (int)PartyRequirement.No);
 
                     UserConfig.DrawPriorityInput(PLD_Mit_Priorities,
-                        numberMitigationOptions, 3,
+                        numberMitigationOptions, 2,
                         "Divine Veil Priority:");
                     break;
 
                 case CustomComboPreset.PLD_Mit_Rampart:
+                    UserConfig.DrawSliderInt(40, 100, PLD_Mit_Rampart_Health,
+                        "HP% to use at or below (100 = Disable check)",
+                        sliderIncrement: SliderIncrements.Fives);
+
                     UserConfig.DrawPriorityInput(PLD_Mit_Priorities,
-                        numberMitigationOptions, 4,
+                        numberMitigationOptions, 3,
                         "Rampart Priority:");
                     break;
 
                 case CustomComboPreset.PLD_Mit_Sentinel:
+                    UserConfig.DrawSliderInt(40, 100, PLD_Mit_Sentinel_Health,
+                        "HP% to use at or below (100 = Disable check)",
+                        sliderIncrement: SliderIncrements.Fives);
+
                     UserConfig.DrawPriorityInput(PLD_Mit_Priorities,
-                        numberMitigationOptions, 5,
+                        numberMitigationOptions, 4,
                         "Sentinel Priority:");
                     break;
 
@@ -359,39 +367,43 @@ internal partial class PLD
                         "How many enemies should be nearby? (0 = No Requirement)");
 
                     UserConfig.DrawPriorityInput(PLD_Mit_Priorities,
-                        numberMitigationOptions, 6,
+                        numberMitigationOptions, 5,
                         "Arm's Length Priority:");
                     break;
 
                 case CustomComboPreset.PLD_Mit_Bulwark:
+                    UserConfig.DrawSliderInt(40, 100, PLD_Mit_Bulwark_Health,
+                        "HP% to use at or below (100 = Disable check)",
+                        sliderIncrement: SliderIncrements.Fives);
+
                     UserConfig.DrawPriorityInput(PLD_Mit_Priorities,
-                        numberMitigationOptions, 7,
+                        numberMitigationOptions, 6,
                         "Bulwark Priority:");
                     break;
 
                 case CustomComboPreset.PLD_Mit_HallowedGround:
-                    if (CustomComboFunctions.IsEnabled(CustomComboPreset.PLD_Mit_HallowedGround_Max))
-                    {
-                        ImGui.TextColored(ImGuiColors.DalamudYellow,
-                            "Select what difficulties Hallowed Ground should be used in above,");
-                        ImGui.TextColored(ImGuiColors.DalamudYellow,
-                            "under the 'Emergency Hallowed Ground' option.");
-                    }
-                    else
-                        UserConfig.DrawDifficultyMultiChoice(
-                            PLD_Mit_HallowedGround_Difficulty,
-                            PLD_Mit_HallowedGround_DifficultyListSet,
-                            "Select what difficulties Hallowed Ground should be used in:"
-                        );
+                    UserConfig.DrawDifficultyMultiChoice(
+                        PLD_Mit_HallowedGround_Difficulty,
+                        PLD_Mit_HallowedGround_DifficultyListSet,
+                        "Select what difficulties Hallowed Ground should be used in:"
+                    );
+
+                    UserConfig.DrawSliderInt(30, 80, PLD_Mit_HallowedGround_Health,
+                        "HP% to use at or below",
+                        sliderIncrement: SliderIncrements.Fives);
 
                     UserConfig.DrawPriorityInput(PLD_Mit_Priorities,
-                        numberMitigationOptions, 8,
+                        numberMitigationOptions, 7,
                         "Hallowed Ground Priority:");
                     break;
 
                 case CustomComboPreset.PLD_Mit_Clemency:
+                    UserConfig.DrawSliderInt(20, 100, PLD_Mit_Clemency_Health,
+                        "HP% to use at or below (100 = Disable check)",
+                        sliderIncrement: SliderIncrements.Fives);
+
                     UserConfig.DrawPriorityInput(PLD_Mit_Priorities,
-                        numberMitigationOptions, 9,
+                        numberMitigationOptions, 8,
                         "Clemency Priority:");
                     break;
 

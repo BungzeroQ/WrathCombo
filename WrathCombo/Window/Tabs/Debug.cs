@@ -16,9 +16,7 @@ using ImGuiNET;
 using Lumina.Excel.Sheets;
 using System;
 using System.Linq;
-using WrathCombo.Combos;
 using WrathCombo.CustomComboNS;
-using WrathCombo.CustomComboNS.Functions;
 using WrathCombo.Data;
 using WrathCombo.Services;
 using WrathCombo.Extensions;
@@ -33,16 +31,9 @@ namespace WrathCombo.Window.Tabs
     {
         public static int debugNum = 0;
 
-        internal class DebugCombo : CustomCombo
-        {
-            protected internal override CustomComboPreset Preset { get; }
-            protected override uint Invoke(uint actionID) => actionID;
-        }
-
         internal static Action? debugSpell;
         internal unsafe static new void Draw()
         {
-            DebugCombo? comboClass = new();
             IPlayerCharacter? LocalPlayer = Svc.ClientState.LocalPlayer;
             uint[] statusBlacklist = { 360, 361, 362, 363, 364, 365, 366, 367, 368 }; // Duration will not be displayed for these status effects
             var target = Svc.Targets.Target;

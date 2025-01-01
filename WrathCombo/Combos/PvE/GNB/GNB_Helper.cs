@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using WrathCombo.CustomComboNS;
 using WrathCombo.CustomComboNS.Functions;
-using WrathCombo.Data;
 using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions;
 
 namespace WrathCombo.Combos.PvE;
@@ -47,22 +46,17 @@ internal partial class GNB
     private static (uint Action, CustomComboPreset Preset, System.Func<bool> Logic)[]
         PrioritizedMitigation =>
     [
-        //Emergency Superbolide
-        (Superbolide, CustomComboPreset.GNB_Mit_Superbolide_Max,
-            () => PlayerHealthPercentageHp() <= Config.GNB_Mit_Superbolide_Health &&
-                  ContentCheck.IsInConfiguredContent(
-                      Config.GNB_Mit_Superbolide_Difficulty,
-                      Config.GNB_Mit_Superbolide_DifficultyListSet
-                  )),
         //Heart of Corundum
         (OriginalHook(HeartOfStone), CustomComboPreset.GNB_Mit_Corundum,
             () => FindEffect(Buffs.HeartOfCorundum) is null &&
-                  FindEffect(Buffs.HeartOfStone) is null),
+                  FindEffect(Buffs.HeartOfStone) is null &&
+                  PlayerHealthPercentageHp() <= Config.GNB_Mit_Corundum_Health),
         //Aurora
         (Aurora, CustomComboPreset.GNB_Mit_Aurora,
             () => (!((HasFriendlyTarget() && TargetHasEffectAny(Buffs.Aurora)) ||
                      (!HasFriendlyTarget() && HasEffectAny(Buffs.Aurora)))) &&
-                  GetRemainingCharges(Aurora) > Config.GNB_Mit_Aurora_Charges),
+                  GetRemainingCharges(Aurora) > Config.GNB_Mit_Aurora_Charges &&
+                  PlayerHealthPercentageHp() <= Config.GNB_Mit_Aurora_Health),
         //Camouflage
         (Camouflage, CustomComboPreset.GNB_Mit_Camouflage, () => true),
         // Reprisal
@@ -74,20 +68,16 @@ internal partial class GNB
                   (int)Config.PartyRequirement.No ||
                   IsInParty()),
         //Rampart
-        (All.Rampart, CustomComboPreset.GNB_Mit_Rampart, () => true),
+        (All.Rampart, CustomComboPreset.GNB_Mit_Rampart,
+            () => PlayerHealthPercentageHp() <= Config.GNB_Mit_Rampart_Health),
         //Arm's Length
         (All.ArmsLength, CustomComboPreset.GNB_Mit_ArmsLength,
             () => CanCircleAoe(7) >= Config.GNB_Mit_ArmsLength_EnemyCount &&
                   (Config.GNB_Mit_ArmsLength_Boss == (int)Config.BossAvoidance.Off ||
                    InBossEncounter())),
         //Nebula
-        (OriginalHook(Nebula), CustomComboPreset.GNB_Mit_Nebula, () => true),
-        //Superbolide
-        (Superbolide, CustomComboPreset.GNB_Mit_Superbolide,
-            () => ContentCheck.IsInConfiguredContent(
-                Config.GNB_Mit_Superbolide_Difficulty,
-                Config.GNB_Mit_Superbolide_DifficultyListSet
-            )),
+        (OriginalHook(Nebula), CustomComboPreset.GNB_Mit_Nebula,
+            () => PlayerHealthPercentageHp() <= Config.GNB_Mit_Nebula_Health),
     ];
 
     /// <summary>

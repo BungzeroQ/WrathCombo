@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using WrathCombo.CustomComboNS;
 using WrathCombo.CustomComboNS.Functions;
-using WrathCombo.Data;
 using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -145,14 +144,9 @@ internal partial class DRK
     private static (uint Action, CustomComboPreset Preset, System.Func<bool> Logic)[]
         PrioritizedMitigation =>
     [
-        (LivingDead, CustomComboPreset.DRK_Mit_LivingDead_Max,
-            () => PlayerHealthPercentageHp() <= Config.DRK_Mit_LivingDead_Health &&
-                  ContentCheck.IsInConfiguredContent(
-                      Config.DRK_Mit_LivingDead_Difficulty,
-                      Config.DRK_Mit_LivingDead_DifficultyListSet
-                  )),
         (BlackestNight, CustomComboPreset.DRK_Mit_TheBlackestNight,
-            () => !HasAnyTBN && LocalPlayer.CurrentMp > 3000),
+            () => !HasAnyTBN && LocalPlayer.CurrentMp > 3000 &&
+                  PlayerHealthPercentageHp() <= Config.DRK_Mit_TBN_Health),
         (Oblation, CustomComboPreset.DRK_Mit_Oblation,
             () => (!((HasFriendlyTarget() && TargetHasEffectAny(Buffs.Oblation)) ||
                      (!HasFriendlyTarget() && HasEffectAny(Buffs.Oblation)))) &&
@@ -163,18 +157,15 @@ internal partial class DRK
             () => Config.DRK_Mit_DarkMissionary_PartyRequirement ==
                   (int)Config.PartyRequirement.No ||
                   IsInParty()),
-        (All.Rampart, CustomComboPreset.DRK_Mit_Rampart, () => true),
+        (All.Rampart, CustomComboPreset.DRK_Mit_Rampart,
+            () => PlayerHealthPercentageHp() <= Config.DRK_Mit_Rampart_Health),
         (DarkMind, CustomComboPreset.DRK_Mit_DarkMind, () => true),
         (All.ArmsLength, CustomComboPreset.DRK_Mit_ArmsLength,
             () => CanCircleAoe(7) >= Config.DRK_Mit_ArmsLength_EnemyCount &&
                   (Config.DRK_Mit_ArmsLength_Boss == (int)Config.BossAvoidance.Off ||
                    InBossEncounter())),
-        (OriginalHook(ShadowWall), CustomComboPreset.DRK_Mit_ShadowWall, () => true),
-        (LivingDead, CustomComboPreset.DRK_Mit_LivingDead,
-            () => ContentCheck.IsInConfiguredContent(
-                Config.DRK_Mit_LivingDead_Difficulty,
-                Config.DRK_Mit_LivingDead_DifficultyListSet
-            )),
+        (OriginalHook(ShadowWall), CustomComboPreset.DRK_Mit_ShadowWall,
+            () => PlayerHealthPercentageHp() <= Config.DRK_Mit_ShadowWall_Health),
     ];
 
     /// <summary>
@@ -197,7 +188,7 @@ internal partial class DRK
         (int index, out uint action)
     {
         action = PrioritizedMitigation[index].Action;
-        return ActionReady(action) && LevelChecked(action) &&
+        return ActionReady(action) &&
                PrioritizedMitigation[index].Logic() &&
                IsEnabled(PrioritizedMitigation[index].Preset);
     }

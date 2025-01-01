@@ -7,8 +7,10 @@ using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using ECommons;
+using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
+using ECommons.GameHelpers;
 using ECommons.Logging;
 using Lumina.Excel.Sheets;
 using PunishLib;
@@ -43,6 +45,7 @@ namespace WrathCombo
     {
         private const string Command = "/wrath";
 
+        private static TaskManager? TM;
         private readonly ConfigWindow ConfigWindow;
         private readonly SettingChangeWindow SettingChangeWindow;
         private readonly TargetHelper TargetHelper;
@@ -93,17 +96,28 @@ namespace WrathCombo
             {
                 if (jobID != value && value != null)
                 {
-                    Svc.Framework.RunOnTick(() =>
-                    {
-                        Service.IconReplacer.UpdateFilteredCombos();
-                        AST.QuickTargetCards.SelectedRandomMember = null;
-                        PvEFeatures.HasToOpenJob = true;
-                        WrathOpener.SelectOpener(value.Value);
-                        P.IPCSearch.UpdateActiveJobPresets();
-                    }, TimeSpan.FromSeconds(0.1));
+                    UpdateCaches();
                 }
                 jobID = value;
             }
+        }
+
+        private static void UpdateCaches()
+        {
+            TM.DelayNext(1000);
+            TM.Enqueue(() =>
+            {
+                if (!Player.Available)
+                    return false;
+
+                Service.IconReplacer.UpdateFilteredCombos();
+                AST.QuickTargetCards.SelectedRandomMember = null;
+                PvEFeatures.HasToOpenJob = true;
+                WrathOpener.SelectOpener();
+                P.IPCSearch.UpdateActiveJobPresets();
+
+                return true;
+            }, "UpdateCaches");
         }
 
         /// <summary> Initializes a new instance of the <see cref="WrathCombo"/> class. </summary>
@@ -115,6 +129,7 @@ namespace WrathCombo
             ECommonsMain.Init(pluginInterface, this);
             PunishLibMain.Init(pluginInterface, "Wrath Combo");
 
+            TM = new();
             Service.Configuration = pluginInterface.GetPluginConfig() as PluginConfiguration ?? new PluginConfiguration();
             Service.Address = new PluginAddressResolver();
             Service.Address.Setup(Svc.SigScanner);
@@ -124,6 +139,7 @@ namespace WrathCombo
             Service.IconReplacer = new IconReplacer();
             ActionWatching.Enable();
             AST.InitCheckCards();
+            IPC = new IPC.Provider();
 
             ConfigWindow = new ConfigWindow();
             SettingChangeWindow = new SettingChangeWindow();
@@ -162,7 +178,6 @@ namespace WrathCombo
             HandleConflictedCombos();
             CustomComboFunctions.TimerSetup();
 
-            IPC = new IPC.Provider();
 
 #if DEBUG
             ConfigWindow.IsOpen = true;
@@ -171,7 +186,7 @@ namespace WrathCombo
 
         private void ClientState_TerritoryChanged(ushort obj)
         {
-            Svc.Framework.RunOnTick(() => P.IPCSearch.UpdateActiveJobPresets(), TimeSpan.FromSeconds(1));
+            UpdateCaches();
         }
 
         private const string OptionControlledByIPC =

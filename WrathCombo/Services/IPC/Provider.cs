@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using ECommons.DalamudServices;
 using ECommons.EzIpcManager;
 using WrathCombo.Attributes;
 using WrathCombo.Combos;
@@ -60,14 +61,11 @@ public partial class Provider : IDisposable
         UIHelper = new UIHelper(ref _leasing, ref P.IPCSearch);
         EzIPC.Init(this, prefix: "WrathCombo");
 
-        Task.Run(() =>
+        Svc.Framework.RunOnTick(() =>
         {
             _ = P.IPCSearch.ComboStatesByJobCategorized["DRK"];
             Logging.Log("Job Auto-Rotation Ready cache built");
-            _ = P.IPC.UIHelper.PresetControlled(CustomComboPreset.DRK_ST_Combo);
-            _ = P.IPCSearch.AllPresetsControlled[CustomComboPreset.DRK_ST_Combo];
-            Logging.Log("Presets-Controlled cache built");
-        });
+        }, TimeSpan.FromSeconds(1));
     }
 
     /// <summary>

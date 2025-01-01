@@ -1,5 +1,4 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
-using ECommons.DalamudServices;
 using ECommons.GameFunctions;
 using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.Game;
@@ -8,10 +7,6 @@ using System;
 using System.Linq;
 using WrathCombo.Data;
 using WrathCombo.Services;
-using WrathCombo.Extensions;
-using System.Runtime.InteropServices;
-using InteropGenerator.Runtime;
-using System.Reflection.Metadata.Ecma335;
 
 namespace WrathCombo.CustomComboNS.Functions
 {
@@ -206,6 +201,13 @@ namespace WrathCombo.CustomComboNS.Functions
             return (RemainingGCD > weaveTime) || (HasSilence() && HasPacification());
         }
 
+        // This overload exists to prevent actionID uint from compiling
+        [Obsolete("ActionID (uint) is not allowed. Use time (double) instead.", true)]
+        public static bool CanWeave(uint value)
+        {
+            return false;
+        }
+
         /// <summary> Checks if the provided actionID has enough cooldown remaining to weave against it without causing clipping and checks if you're casting a spell. </summary>
         /// <param name="weaveTime"> Time when weaving window is over. Defaults to 0.6. </param>
         /// 
@@ -221,6 +223,13 @@ namespace WrathCombo.CustomComboNS.Functions
             return false;
         }
 
+        // This overload exists to prevent actionID uint from compiling
+        [Obsolete("ActionID (uint) is not allowed. Use time (double) instead.", true)]
+        public static bool CanSpellWeave(uint value)
+        {
+            return false;
+        }
+
         /// <summary> Checks if the provided actionID has enough cooldown remaining to weave against it in the later portion of the GCD without causing clipping. </summary>
         /// <param name="start"> Time (in seconds) to start to check for the weave window. If this value is greater than half of a GCD, it will instead use half a GCD instead to ensure it lands in the latter half.</param>
         /// <param name="end"> Time (in seconds) to end the check for the weave window. </param>
@@ -230,6 +239,13 @@ namespace WrathCombo.CustomComboNS.Functions
         {
             var halfGCD = GCDTotal / 2f;
             return RemainingGCD <= (start > halfGCD ? halfGCD : start) && RemainingGCD >= end;
+        }
+
+        // This overload exists to prevent actionID uint from compiling
+        [Obsolete("ActionID (uint) is not allowed. Use time (double) instead.", true)]
+        public static unsafe bool CanDelayedWeave(uint value)
+        {
+            return false;
         }
 
         /// <summary>

@@ -1,11 +1,11 @@
 #region
 
 using System.Linq;
-using Dalamud.Game.ClientState.JobGauge.Types;
 using WrathCombo.Combos.PvE.Content;
 using WrathCombo.CustomComboNS;
 using WrathCombo.Data;
 
+// ReSharper disable UnusedType.Global
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable InconsistentNaming
 // ReSharper disable CheckNamespace
@@ -26,7 +26,7 @@ internal partial class DRK
         protected override uint Invoke(uint actionID)
         {
             // Bail if not looking at the replaced action
-            if (actionID != HardSlash) return actionID;
+            if (actionID is not HardSlash) return actionID;
 
             #region Variables
 
@@ -316,7 +316,7 @@ internal partial class DRK
         protected override uint Invoke(uint actionID)
         {
             // Bail if not looking at the replaced action
-            if (actionID != Unleash) return actionID;
+            if (actionID is not Unleash) return actionID;
 
             var hpRemainingShadow = Config.DRK_AoE_LivingShadowThreshold;
             var hpRemainingDelirium = Config.DRK_AoE_DeliriumThreshold;
@@ -490,33 +490,30 @@ internal partial class DRK
 
         protected override uint Invoke(uint actionID)
         {
-            var gauge = GetJobGauge<DRKGauge>();
+            if (actionID is not (CarveAndSpit or AbyssalDrain)) return actionID;
 
-            if (actionID == CarveAndSpit || actionID == AbyssalDrain)
-            {
-                if (IsOffCooldown(LivingShadow)
-                    && LevelChecked(LivingShadow))
-                    return LivingShadow;
+            if (IsOffCooldown(LivingShadow)
+                && LevelChecked(LivingShadow))
+                return LivingShadow;
 
-                if (IsOffCooldown(SaltedEarth)
-                    && LevelChecked(SaltedEarth))
-                    return SaltedEarth;
+            if (IsOffCooldown(SaltedEarth)
+                && LevelChecked(SaltedEarth))
+                return SaltedEarth;
 
-                if (IsOffCooldown(CarveAndSpit)
-                    && LevelChecked(AbyssalDrain))
-                    return actionID;
+            if (IsOffCooldown(CarveAndSpit)
+                && LevelChecked(AbyssalDrain))
+                return actionID;
 
-                if (IsOffCooldown(SaltAndDarkness)
-                    && HasEffect(Buffs.SaltedEarth)
-                    && LevelChecked(SaltAndDarkness))
-                    return SaltAndDarkness;
+            if (IsOffCooldown(SaltAndDarkness)
+                && HasEffect(Buffs.SaltedEarth)
+                && LevelChecked(SaltAndDarkness))
+                return SaltAndDarkness;
 
-                if (IsEnabled(CustomComboPreset.DRK_Shadowbringer_oGCD)
-                    && GetCooldownRemainingTime(Shadowbringer) < 60
-                    && LevelChecked(Shadowbringer)
-                    && gauge.DarksideTimeRemaining > 0)
-                    return Shadowbringer;
-            }
+            if (IsEnabled(CustomComboPreset.DRK_Shadowbringer_oGCD)
+                && GetCooldownRemainingTime(Shadowbringer) < 60
+                && LevelChecked(Shadowbringer)
+                && Gauge.DarksideTimeRemaining > 0)
+                return Shadowbringer;
 
             return actionID;
         }
@@ -531,6 +528,15 @@ internal partial class DRK
         protected override uint Invoke(uint actionID)
         {
             if (actionID is not DarkMind) return actionID;
+
+            if (IsEnabled(CustomComboPreset.DRK_Mit_LivingDead_Max) &&
+                ActionReady(LivingDead) &&
+                PlayerHealthPercentageHp() <= Config.DRK_Mit_LivingDead_Health &&
+                ContentCheck.IsInConfiguredContent(
+                    Config.DRK_Mit_EmergencyLivingDead_Difficulty,
+                    Config.DRK_Mit_EmergencyLivingDead_DifficultyListSet
+                ))
+                return LivingDead;
 
             foreach (var priority in Config.DRK_Mit_Priorities.Items.OrderBy(x => x))
             {

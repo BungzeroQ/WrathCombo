@@ -1,5 +1,4 @@
 using System.Numerics;
-using Dalamud.Interface.Colors;
 using ECommons.ImGuiMethods;
 using ImGuiNET;
 using WrathCombo.CustomComboNS.Functions;
@@ -13,7 +12,7 @@ internal partial class GNB
 {
     internal static class Config
     {
-        private const int numberMitigationOptions = 10;
+        private const int numberMitigationOptions = 8;
 
         internal enum PartyRequirement
         {
@@ -73,10 +72,14 @@ internal partial class GNB
 
             //One-Button Mitigation
             GNB_Mit_Superbolide_Health = new("GNB_Mit_Superbolide_Health", 30),
+            GNB_Mit_Corundum_Health = new("GNB_Mit_Corundum_Health", 60),
             GNB_Mit_Aurora_Charges = new("GNB_Mit_Aurora_Charges", 0),
+            GNB_Mit_Aurora_Health = new("GNB_Mit_Aurora_Health", 60),
             GNB_Mit_HeartOfLight_PartyRequirement = new("GNB_Mit_HeartOfLight_PartyRequirement", (int)PartyRequirement.Yes),
+            GNB_Mit_Rampart_Health = new("GNB_Mit_Rampart_Health", 65),
             GNB_Mit_ArmsLength_Boss = new("GNB_Mit_ArmsLength_Boss", (int)BossAvoidance.On),
             GNB_Mit_ArmsLength_EnemyCount = new("GNB_Mit_ArmsLength_EnemyCount", 0),
+            GNB_Mit_Nebula_Health = new("GNB_Mit_Nebula_Health", 50),
 
             //Bozja
             GNB_Bozja_LostCure_Health = new("GNB_Bozja_LostCure_Health", 50),
@@ -357,19 +360,15 @@ internal partial class GNB
                     UserConfig.DrawSliderInt(5, 30, GNB_Mit_Superbolide_Health,
                         "Player HP% to be \nless than or equal to:",
                         200, SliderIncrements.Fives);
-
-                    ImGui.BeginDisabled();
-                    UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
-                        numberMitigationOptions, 0,
-                        "Emergency Superbolide Priority:");
-                    ImGui.EndDisabled();
-                    if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
-                        ImGui.SetTooltip("Should always be 1, the highest priority");
                     break;
 
                 case CustomComboPreset.GNB_Mit_Corundum:
+                    UserConfig.DrawSliderInt(60, 100, GNB_Mit_Corundum_Health,
+                        "HP% to use at or below (100 = Disable check)",
+                        sliderIncrement: SliderIncrements.Fives);
+
                     UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
-                        numberMitigationOptions, 1,
+                        numberMitigationOptions, 0,
                         "Heart of Corundum Priority:");
                     break;
 
@@ -377,20 +376,24 @@ internal partial class GNB
                     UserConfig.DrawSliderInt(0, 1, GNB_Mit_Aurora_Charges,
                         "How many charges to keep ready?\n (0 = Use All)");
 
+                    UserConfig.DrawSliderInt(40, 100, GNB_Mit_Aurora_Health,
+                        "HP% to use at or below (100 = Disable check)",
+                        sliderIncrement: SliderIncrements.Fives);
+
                     UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
-                        numberMitigationOptions, 2,
+                        numberMitigationOptions, 1,
                         "Aurora Priority:");
                     break;
 
                 case CustomComboPreset.GNB_Mit_Camouflage:
                     UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
-                        numberMitigationOptions, 3,
+                        numberMitigationOptions, 2,
                         "Camouflage Priority:");
                     break;
 
                 case CustomComboPreset.GNB_Mit_Reprisal:
                     UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
-                        numberMitigationOptions, 4,
+                        numberMitigationOptions, 3,
                         "Reprisal Priority:");
                     break;
 
@@ -409,13 +412,17 @@ internal partial class GNB
                         outputValue: (int)PartyRequirement.No);
 
                     UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
-                        numberMitigationOptions, 5,
+                        numberMitigationOptions, 4,
                         "Heart of Light Priority:");
                     break;
 
                 case CustomComboPreset.GNB_Mit_Rampart:
+                    UserConfig.DrawSliderInt(40, 100, GNB_Mit_Rampart_Health,
+                        "HP% to use at or below (100 = Disable check)",
+                        sliderIncrement: SliderIncrements.Fives);
+
                     UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
-                        numberMitigationOptions, 6,
+                        numberMitigationOptions, 5,
                         "Rampart Priority:");
                     break;
 
@@ -435,34 +442,18 @@ internal partial class GNB
                         "How many enemies should be nearby? (0 = No Requirement)");
 
                     UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
-                        numberMitigationOptions, 7,
+                        numberMitigationOptions, 6,
                         "Arm's Length Priority:");
                     break;
 
                 case CustomComboPreset.GNB_Mit_Nebula:
+                    UserConfig.DrawSliderInt(40, 100, GNB_Mit_Nebula_Health,
+                        "HP% to use at or below (100 = Disable check)",
+                        sliderIncrement: SliderIncrements.Fives);
+
                     UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
-                        numberMitigationOptions, 8,
+                        numberMitigationOptions, 7,
                         "Arm's Length Priority:");
-                    break;
-
-                case CustomComboPreset.GNB_Mit_Superbolide:
-                    if (CustomComboFunctions.IsEnabled(CustomComboPreset.GNB_Mit_Superbolide_Max))
-                    {
-                        ImGui.TextColored(ImGuiColors.DalamudYellow,
-                            "Select what difficulties Superbolide should be used in above,");
-                        ImGui.TextColored(ImGuiColors.DalamudYellow,
-                            "under the 'Emergency Superbolide' option.");
-                    }
-                    else
-                        UserConfig.DrawDifficultyMultiChoice(
-                            GNB_Mit_Superbolide_Difficulty,
-                            GNB_Mit_Superbolide_DifficultyListSet,
-                            "Select what difficulties Superbolide should be used in:"
-                        );
-
-                    UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
-                        numberMitigationOptions, 9,
-                        "Superbolide Priority:");
                     break;
 
                 #endregion

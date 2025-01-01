@@ -1,6 +1,5 @@
 ﻿using ImGuiNET;
 using WrathCombo.CustomComboNS.Functions;
-using WrathCombo.Window.Functions;
 using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions;
 using static WrathCombo.Extensions.UIntExtensions;
 using static WrathCombo.Window.Functions.UserConfig;

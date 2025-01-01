@@ -90,10 +90,10 @@ namespace WrathCombo.Combos.PvE
 
         internal class RDM_VariantVerCure : CustomCombo
         {
-            protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RdmAny;
+            protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RDM_Variant_Cure2;
 
             protected override uint Invoke(uint actionID) =>
-                actionID is Vercure && IsEnabled(CustomComboPreset.RDM_Variant_Cure2) && IsEnabled(Variant.VariantCure)
+                actionID is Vercure && IsEnabled(Variant.VariantCure)
                     ? Variant.VariantCure : actionID;
         }
 
@@ -103,43 +103,41 @@ namespace WrathCombo.Combos.PvE
 
             protected override uint Invoke(uint actionID)
             {
-                if (actionID is Jolt or Jolt2 or Jolt3)
-                {
-                    //VARIANTS
-                    if (IsEnabled(CustomComboPreset.RDM_Variant_Cure) &&
-                        IsEnabled(Variant.VariantCure) &&
-                        PlayerHealthPercentageHp() <= GetOptionValue(Config.RDM_VariantCure))
-                        return Variant.VariantCure;
+                if (actionID is not (Jolt or Jolt2 or Jolt3)) return actionID;
 
-                    if (IsEnabled(CustomComboPreset.RDM_Variant_Rampart) &&
-                        IsEnabled(Variant.VariantRampart) &&
-                        IsOffCooldown(Variant.VariantRampart) &&
-                        CanSpellWeave())
-                        return Variant.VariantRampart;
+                //VARIANTS
+                if (IsEnabled(CustomComboPreset.RDM_Variant_Cure) &&
+                    IsEnabled(Variant.VariantCure) &&
+                    PlayerHealthPercentageHp() <= GetOptionValue(Config.RDM_VariantCure))
+                    return Variant.VariantCure;
 
-                    // Opener for RDM
-                    if (Opener().FullOpener(ref actionID))
-                        return actionID;
+                if (IsEnabled(CustomComboPreset.RDM_Variant_Rampart) &&
+                    IsEnabled(Variant.VariantRampart) &&
+                    IsOffCooldown(Variant.VariantRampart) &&
+                    CanSpellWeave())
+                    return Variant.VariantRampart;
 
-                    //oGCDs
-                    if (TryOGCDs(actionID, true, out uint oGCDAction)) return oGCDAction;
+                // Opener for RDM
+                if (Opener().FullOpener(ref actionID))
+                    return actionID;
 
-                    //Lucid Dreaming
-                    if (TryLucidDreaming(actionID, 6500, ComboAction)) return All.LucidDreaming;
+                //oGCDs
+                if (TryOGCDs(actionID, true, out uint oGCDAction)) return oGCDAction;
 
-                    //Melee Finisher
-                    if (MeleeCombo.TryMeleeFinisher(out uint finisherAction)) return finisherAction;
+                //Lucid Dreaming
+                if (TryLucidDreaming(actionID, 6500, ComboAction)) return All.LucidDreaming;
 
-                    //Melee Combo
-                    //  Manafication/Embolden Code
-                    if (MeleeCombo.TrySTManaEmbolden(actionID, out uint ManaEmbolden)) return ManaEmbolden;
-                    if (MeleeCombo.TrySTMeleeCombo(actionID, out uint MeleeID)) return MeleeID;
+                //Melee Finisher
+                if (MeleeCombo.TryMeleeFinisher(out uint finisherAction)) return finisherAction;
 
-                    //Normal Spell Rotation
-                    if (SpellCombo.TryAcceleration(actionID, out uint Accel)) return Accel;
-                    if (SpellCombo.TrySTSpellRotation(actionID, out uint SpellID)) return SpellID;
-                                        
-                }
+                //Melee Combo
+                //  Manafication/Embolden Code
+                if (MeleeCombo.TrySTManaEmbolden(actionID, out uint ManaEmbolden)) return ManaEmbolden;
+                if (MeleeCombo.TrySTMeleeCombo(actionID, out uint MeleeID)) return MeleeID;
+
+                //Normal Spell Rotation
+                if (SpellCombo.TryAcceleration(actionID, out uint Accel)) return Accel;
+                if (SpellCombo.TrySTSpellRotation(actionID, out uint SpellID)) return SpellID;
 
                 //NO_CONDITIONS_MET
                 return actionID;
@@ -152,6 +150,9 @@ namespace WrathCombo.Combos.PvE
 
             protected override uint Invoke(uint actionID)
             {
+                if (actionID is not (Jolt or Jolt2 or Jolt3) &&
+                    actionID is not (Fleche or Riposte or Reprise)) return actionID;
+
                 if (actionID is Jolt or Jolt2 or Jolt3)
                 {
                     //VARIANTS
@@ -266,43 +267,42 @@ namespace WrathCombo.Combos.PvE
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RDM_AoE_SimpleMode;
             protected override uint Invoke(uint actionID)
             {
-                if (actionID is Scatter or Impact)
-                { 
-                    //VARIANTS
-                    if (IsEnabled(CustomComboPreset.RDM_Variant_Cure) &&
-                        IsEnabled(Variant.VariantCure) &&
-                        PlayerHealthPercentageHp() <= GetOptionValue(Config.RDM_VariantCure))
-                        return Variant.VariantCure;
+                if (actionID is not (Scatter or Impact)) return actionID;
 
-                    if (IsEnabled(CustomComboPreset.RDM_Variant_Rampart) &&
-                        IsEnabled(Variant.VariantRampart) &&
-                        IsOffCooldown(Variant.VariantRampart) &&
-                        CanSpellWeave())
-                        return Variant.VariantRampart;
+                //VARIANTS
+                if (IsEnabled(CustomComboPreset.RDM_Variant_Cure) &&
+                    IsEnabled(Variant.VariantCure) &&
+                    PlayerHealthPercentageHp() <= GetOptionValue(Config.RDM_VariantCure))
+                    return Variant.VariantCure;
 
-                    //RDM_OGCD
-                    if (TryOGCDs(actionID, true, out uint oGCDAction, true)) return oGCDAction;
+                if (IsEnabled(CustomComboPreset.RDM_Variant_Rampart) &&
+                    IsEnabled(Variant.VariantRampart) &&
+                    IsOffCooldown(Variant.VariantRampart) &&
+                    CanSpellWeave())
+                    return Variant.VariantRampart;
 
-                    // LUCID
-                    if (TryLucidDreaming(actionID, 6500, ComboAction))
-                        return All.LucidDreaming;
+                //RDM_OGCD
+                if (TryOGCDs(actionID, true, out uint oGCDAction, true)) return oGCDAction;
 
-                    //RDM_MELEEFINISHER
-                    if (MeleeCombo.TryMeleeFinisher(out uint finisherAction))
-                        return finisherAction;
-                
-                    if (MeleeCombo.TryAoEManaEmbolden(actionID, out uint ManaEmbolden))
-                        return ManaEmbolden;
+                // LUCID
+                if (TryLucidDreaming(actionID, 6500, ComboAction))
+                    return All.LucidDreaming;
 
-                    if (MeleeCombo.TryAoEMeleeCombo(actionID, out uint AoEMeleeID))
-                        return AoEMeleeID;
-                    
-                    if (SpellCombo.TryAcceleration(actionID, out uint AccelID))
-                        return AccelID;
+                //RDM_MELEEFINISHER
+                if (MeleeCombo.TryMeleeFinisher(out uint finisherAction))
+                    return finisherAction;
 
-                    if (SpellCombo.TryAoESpellRotation(actionID, out uint SpellID))
-                        return SpellID;
-                }
+                if (MeleeCombo.TryAoEManaEmbolden(actionID, out uint ManaEmbolden))
+                    return ManaEmbolden;
+
+                if (MeleeCombo.TryAoEMeleeCombo(actionID, out uint AoEMeleeID))
+                    return AoEMeleeID;
+
+                if (SpellCombo.TryAcceleration(actionID, out uint AccelID))
+                    return AccelID;
+
+                if (SpellCombo.TryAoESpellRotation(actionID, out uint SpellID))
+                    return SpellID;
                 return actionID;
             }
         }
@@ -404,22 +404,20 @@ namespace WrathCombo.Combos.PvE
             protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.RDM_Raise;
             protected override uint Invoke(uint actionID)
             {
-                if (actionID is All.Swiftcast)
+                if (actionID is not All.Swiftcast) return actionID;
+
+                if (HasEffect(All.Buffs.Swiftcast) && IsEnabled(CustomComboPreset.SMN_Variant_Raise) && IsEnabled(Variant.VariantRaise))
+                    return Variant.VariantRaise;
+
+                if (LevelChecked(Verraise))
                 {
-                    if (HasEffect(All.Buffs.Swiftcast) && IsEnabled(CustomComboPreset.SMN_Variant_Raise) && IsEnabled(Variant.VariantRaise))
-                        return Variant.VariantRaise;
-
-                    if (LevelChecked(Verraise))
-                    {
-                        bool schwifty = HasEffect(All.Buffs.Swiftcast);
-                        if (schwifty || HasEffect(Buffs.Dualcast)) return Verraise;
-                        if (IsEnabled(CustomComboPreset.RDM_Raise_Vercure) &&
-                            !schwifty &&
-                            ActionReady(Vercure) &&
-                            IsOnCooldown(All.Swiftcast))
-                            return Vercure;
-                    }
-
+                    bool schwifty = HasEffect(All.Buffs.Swiftcast);
+                    if (schwifty || HasEffect(Buffs.Dualcast)) return Verraise;
+                    if (IsEnabled(CustomComboPreset.RDM_Raise_Vercure) &&
+                        !schwifty &&
+                        ActionReady(Vercure) &&
+                        IsOnCooldown(All.Swiftcast))
+                        return Vercure;
                 }
 
                 // Else we just exit normally and return Swiftcast

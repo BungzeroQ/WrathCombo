@@ -11,7 +11,6 @@ using WrathCombo.CustomComboNS;
 using WrathCombo.CustomComboNS.Functions;
 using WrathCombo.Extensions;
 using WrathCombo.Services;
-using WrathCombo.Window.Functions;
 
 namespace WrathCombo.Core
 {
@@ -62,7 +61,8 @@ namespace WrathCombo.Core
 
         public void UpdateFilteredCombos()
         {
-            _filteredCombos = CustomCombos.Where(x => x.Preset.Attributes() is not null && (x.Preset.Attributes().CustomComboInfo.JobID == 0 || x.Preset.Attributes().CustomComboInfo.JobID == Player.JobId || x.Preset.Attributes().CustomComboInfo.JobID == CustomComboFunctions.JobIDs.ClassToJob(Player.JobId)));
+            _filteredCombos = CustomCombos.Where(x => x.Preset.Attributes() is not null && x.Preset.Attributes().IsPvP == CustomComboFunctions.InPvP() && ((x.Preset.Attributes().RoleAttribute is not null && x.Preset.Attributes().RoleAttribute.PlayerIsRole()) || x.Preset.Attributes().CustomComboInfo.JobID == Player.JobId || x.Preset.Attributes().CustomComboInfo.JobID == CustomComboFunctions.JobIDs.ClassToJob(Player.JobId)));
+            Svc.Log.Debug($"Now running {_filteredCombos.Count()} combos\n{string.Join("\n", _filteredCombos.Select(x => x.Preset.Attributes().CustomComboInfo.Name))}");
         }
 
         private unsafe uint GetIconDetour(IntPtr actionManager, uint actionID)

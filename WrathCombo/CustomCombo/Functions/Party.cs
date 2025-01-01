@@ -4,12 +4,12 @@ using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameFunctions;
 using ECommons.GameHelpers;
+using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using System.Collections.Generic;
 using System.Linq;
 using WrathCombo.AutoRotation;
 using WrathCombo.Combos.PvE;
-using WrathCombo.Services;
 
 namespace WrathCombo.CustomComboNS.Functions
 {
@@ -23,12 +23,15 @@ namespace WrathCombo.CustomComboNS.Functions
         /// <returns> Current party list. </returns>
         public unsafe static List<IBattleChara> GetPartyMembers()
         {
-            var output = new List<IBattleChara>();
+            if (!EzThrottler.Throttle("PartyUpdateThrottle", 2000))
+                return _partyList;
+
+            _partyList.Clear();
             for (int i = 1; i <= 8; i++)
             {
                 var member = GetPartySlot(i);
                 if (member != null)
-                    output.Add((IBattleChara)member);
+                    _partyList.Add((IBattleChara)member);
             }
 
             if (AutoRotationController.cfg is not null)
@@ -37,14 +40,16 @@ namespace WrathCombo.CustomComboNS.Functions
                 {
                     foreach (var npc in Svc.Objects.Where(x => x is IBattleChara && x is not IPlayerCharacter).Cast<IBattleChara>())
                     {
-                        if (ActionManager.CanUseActionOnTarget(All.Esuna, npc.GameObject()) && !output.Contains(npc))
-                            output.Add(npc);
+                        if (ActionManager.CanUseActionOnTarget(All.Esuna, npc.GameObject()) && !_partyList.Contains(npc))
+                            _partyList.Add(npc);
                     }
                 }
             }
 
-            return output;
+            return _partyList;
         }
+
+        private static List<IBattleChara> _partyList = new();
 
         public unsafe static IGameObject? GetPartySlot(int slot)
         {

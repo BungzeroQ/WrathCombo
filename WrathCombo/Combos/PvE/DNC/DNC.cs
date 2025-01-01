@@ -1205,55 +1205,54 @@ internal partial class DNC
 
         protected override uint Invoke(uint actionID)
         {
-            if (actionID is Cascade)
+            if (actionID is not Cascade) return actionID;
+
+            #region Types
+
+            bool flow = HasEffect(Buffs.SilkenFlow) ||
+                        HasEffect(Buffs.FlourishingFlow);
+            bool symmetry = HasEffect(Buffs.SilkenSymmetry) ||
+                            HasEffect(Buffs.FlourishingSymmetry);
+
+            #endregion
+
+            // ST Esprit overcap protection
+            if (IsEnabled(CustomComboPreset.DNC_ST_EspritOvercap) &&
+                LevelChecked(DanceOfTheDawn) &&
+                HasEffect(Buffs.DanceOfTheDawnReady) &&
+                Gauge.Esprit >= Config.DNCEspritThreshold_ST)
+                return OriginalHook(DanceOfTheDawn);
+            if (IsEnabled(CustomComboPreset.DNC_ST_EspritOvercap) &&
+                LevelChecked(SaberDance) &&
+                Gauge.Esprit >= Config.DNCEspritThreshold_ST)
+                return SaberDance;
+
+            if (CanWeave())
             {
-                #region Types
+                // ST Fan Dance overcap protection
+                if (IsEnabled(CustomComboPreset.DNC_ST_FanDanceOvercap) &&
+                    LevelChecked(FanDance1) && Gauge.Feathers is 4 &&
+                    (HasEffect(Buffs.SilkenSymmetry) ||
+                     HasEffect(Buffs.SilkenFlow)))
+                    return FanDance1;
 
-                bool flow = HasEffect(Buffs.SilkenFlow) ||
-                            HasEffect(Buffs.FlourishingFlow);
-                bool symmetry = HasEffect(Buffs.SilkenSymmetry) ||
-                                HasEffect(Buffs.FlourishingSymmetry);
-
-                #endregion
-
-                // ST Esprit overcap protection
-                if (IsEnabled(CustomComboPreset.DNC_ST_EspritOvercap) &&
-                    LevelChecked(DanceOfTheDawn) &&
-                    HasEffect(Buffs.DanceOfTheDawnReady) &&
-                    Gauge.Esprit >= Config.DNCEspritThreshold_ST)
-                    return OriginalHook(DanceOfTheDawn);
-                if (IsEnabled(CustomComboPreset.DNC_ST_EspritOvercap) &&
-                    LevelChecked(SaberDance) &&
-                    Gauge.Esprit >= Config.DNCEspritThreshold_ST)
-                    return SaberDance;
-
-                if (CanWeave())
+                // ST Fan Dance 3/4 on combo
+                if (IsEnabled(CustomComboPreset.DNC_ST_FanDance34))
                 {
-                    // ST Fan Dance overcap protection
-                    if (IsEnabled(CustomComboPreset.DNC_ST_FanDanceOvercap) &&
-                        LevelChecked(FanDance1) && Gauge.Feathers is 4 &&
-                        (HasEffect(Buffs.SilkenSymmetry) ||
-                         HasEffect(Buffs.SilkenFlow)))
-                        return FanDance1;
-
-                    // ST Fan Dance 3/4 on combo
-                    if (IsEnabled(CustomComboPreset.DNC_ST_FanDance34))
-                    {
-                        if (HasEffect(Buffs.ThreeFoldFanDance))
-                            return FanDance3;
-                        if (HasEffect(Buffs.FourFoldFanDance))
-                            return FanDance4;
-                    }
+                    if (HasEffect(Buffs.ThreeFoldFanDance))
+                        return FanDance3;
+                    if (HasEffect(Buffs.FourFoldFanDance))
+                        return FanDance4;
                 }
-
-                // ST base combos
-                if (LevelChecked(Fountainfall) && flow)
-                    return Fountainfall;
-                if (LevelChecked(ReverseCascade) && symmetry)
-                    return ReverseCascade;
-                if (LevelChecked(Fountain) && ComboAction is Cascade)
-                    return Fountain;
             }
+
+            // ST base combos
+            if (LevelChecked(Fountainfall) && flow)
+                return Fountainfall;
+            if (LevelChecked(ReverseCascade) && symmetry)
+                return ReverseCascade;
+            if (LevelChecked(Fountain) && ComboAction is Cascade)
+                return Fountain;
 
             return actionID;
         }
@@ -1266,55 +1265,54 @@ internal partial class DNC
 
         protected override uint Invoke(uint actionID)
         {
-            if (actionID is Windmill)
+            if (actionID is not Windmill) return actionID;
+
+            #region Types
+
+            bool flow = HasEffect(Buffs.SilkenFlow) ||
+                        HasEffect(Buffs.FlourishingFlow);
+            bool symmetry = HasEffect(Buffs.SilkenSymmetry) ||
+                            HasEffect(Buffs.FlourishingSymmetry);
+
+            #endregion
+
+            // AoE Esprit overcap protection
+            if (IsEnabled(CustomComboPreset.DNC_AoE_EspritOvercap) &&
+                LevelChecked(DanceOfTheDawn) &&
+                HasEffect(Buffs.DanceOfTheDawnReady) &&
+                Gauge.Esprit >= Config.DNCEspritThreshold_ST)
+                return OriginalHook(DanceOfTheDawn);
+            if (IsEnabled(CustomComboPreset.DNC_AoE_EspritOvercap) &&
+                LevelChecked(SaberDance) &&
+                Gauge.Esprit >= Config.DNCEspritThreshold_AoE)
+                return SaberDance;
+
+            if (CanWeave())
             {
-                #region Types
+                // AoE Fan Dance overcap protection
+                if (IsEnabled(CustomComboPreset.DNC_AoE_FanDanceOvercap) &&
+                    LevelChecked(FanDance2) && Gauge.Feathers is 4 &&
+                    (HasEffect(Buffs.SilkenSymmetry) ||
+                     HasEffect(Buffs.SilkenFlow)))
+                    return FanDance2;
 
-                bool flow = HasEffect(Buffs.SilkenFlow) ||
-                            HasEffect(Buffs.FlourishingFlow);
-                bool symmetry = HasEffect(Buffs.SilkenSymmetry) ||
-                                HasEffect(Buffs.FlourishingSymmetry);
-
-                #endregion
-
-                // AoE Esprit overcap protection
-                if (IsEnabled(CustomComboPreset.DNC_AoE_EspritOvercap) &&
-                    LevelChecked(DanceOfTheDawn) &&
-                    HasEffect(Buffs.DanceOfTheDawnReady) &&
-                    Gauge.Esprit >= Config.DNCEspritThreshold_ST)
-                    return OriginalHook(DanceOfTheDawn);
-                if (IsEnabled(CustomComboPreset.DNC_AoE_EspritOvercap) &&
-                    LevelChecked(SaberDance) &&
-                    Gauge.Esprit >= Config.DNCEspritThreshold_AoE)
-                    return SaberDance;
-
-                if (CanWeave())
+                // AoE Fan Dance 3/4 on combo
+                if (IsEnabled(CustomComboPreset.DNC_AoE_FanDance34))
                 {
-                    // AoE Fan Dance overcap protection
-                    if (IsEnabled(CustomComboPreset.DNC_AoE_FanDanceOvercap) &&
-                        LevelChecked(FanDance2) && Gauge.Feathers is 4 &&
-                        (HasEffect(Buffs.SilkenSymmetry) ||
-                         HasEffect(Buffs.SilkenFlow)))
-                        return FanDance2;
-
-                    // AoE Fan Dance 3/4 on combo
-                    if (IsEnabled(CustomComboPreset.DNC_AoE_FanDance34))
-                    {
-                        if (HasEffect(Buffs.ThreeFoldFanDance))
-                            return FanDance3;
-                        if (HasEffect(Buffs.FourFoldFanDance))
-                            return FanDance4;
-                    }
+                    if (HasEffect(Buffs.ThreeFoldFanDance))
+                        return FanDance3;
+                    if (HasEffect(Buffs.FourFoldFanDance))
+                        return FanDance4;
                 }
-
-                // AoE base combos
-                if (LevelChecked(Bloodshower) && flow)
-                    return Bloodshower;
-                if (LevelChecked(RisingWindmill) && symmetry)
-                    return RisingWindmill;
-                if (LevelChecked(Bladeshower) && ComboAction is Windmill)
-                    return Bladeshower;
             }
+
+            // AoE base combos
+            if (LevelChecked(Bloodshower) && flow)
+                return Bloodshower;
+            if (LevelChecked(RisingWindmill) && symmetry)
+                return RisingWindmill;
+            if (LevelChecked(Bladeshower) && ComboAction is Windmill)
+                return Bladeshower;
 
             return actionID;
         }
@@ -1331,6 +1329,8 @@ internal partial class DNC
 
         protected override uint Invoke(uint actionID)
         {
+            if (actionID is not (StandardStep or TechnicalStep)) return actionID;
+
             // Standard Step
             if (actionID is StandardStep && Gauge.IsDancing &&
                 HasEffect(Buffs.StandardStep))
@@ -1412,29 +1412,26 @@ internal partial class DNC
 
         protected override uint Invoke(uint actionID)
         {
-            // FD 1 --> 3, FD 1 --> 4
-            if (actionID is FanDance1)
-            {
-                if (IsEnabled(CustomComboPreset.DNC_FanDance_1to3_Combo) &&
-                    HasEffect(Buffs.ThreeFoldFanDance))
-                    return FanDance3;
-                if (IsEnabled(CustomComboPreset.DNC_FanDance_1to4_Combo) &&
-                    HasEffect(Buffs.FourFoldFanDance))
-                    return FanDance4;
-            }
+            if (actionID is not (FanDance1 or FanDance2)) return actionID;
 
-            // FD 2 --> 3, FD 2 --> 4
-            if (actionID is FanDance2)
+            return actionID switch
             {
-                if (IsEnabled(CustomComboPreset.DNC_FanDance_2to3_Combo) &&
-                    HasEffect(Buffs.ThreeFoldFanDance))
-                    return FanDance3;
-                if (IsEnabled(CustomComboPreset.DNC_FanDance_2to4_Combo) &&
-                    HasEffect(Buffs.FourFoldFanDance))
-                    return FanDance4;
-            }
-
-            return actionID;
+                // FD 1 --> 3, FD 1 --> 4
+                FanDance1 when
+                    IsEnabled(CustomComboPreset.DNC_FanDance_1to3_Combo) &&
+                    HasEffect(Buffs.ThreeFoldFanDance) => FanDance3,
+                FanDance1 when
+                    IsEnabled(CustomComboPreset.DNC_FanDance_1to4_Combo) &&
+                    HasEffect(Buffs.FourFoldFanDance) => FanDance4,
+                // FD 2 --> 3, FD 2 --> 4
+                FanDance2 when
+                    IsEnabled(CustomComboPreset.DNC_FanDance_2to3_Combo) &&
+                    HasEffect(Buffs.ThreeFoldFanDance) => FanDance3,
+                FanDance2 when
+                    IsEnabled(CustomComboPreset.DNC_FanDance_2to4_Combo) &&
+                    HasEffect(Buffs.FourFoldFanDance) => FanDance4,
+                _ => actionID
+            };
         }
     }
 

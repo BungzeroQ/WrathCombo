@@ -11,101 +11,12 @@ public enum CustomComboPreset
 
     #region Misc
 
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        ADV.JobID)]
-    AdvAny = 0,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        AST.JobID)]
-    AstAny = AdvAny + AST.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        BLM.JobID)]
-    BlmAny = AdvAny + BLM.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        BRD.JobID)]
-    BrdAny = AdvAny + BRD.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        DNC.JobID)]
-    DncAny = AdvAny + DNC.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        DOH.JobID)]
-    DohAny = AdvAny + DOH.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        DOL.JobID)]
-    DolAny = AdvAny + DOL.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        DRG.JobID)]
-    DrgAny = AdvAny + DRG.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        DRK.JobID)]
-    DrkAny = AdvAny + DRK.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        GNB.JobID)]
-    GnbAny = AdvAny + GNB.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        MCH.JobID)]
-    MchAny = AdvAny + MCH.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        MNK.JobID)]
-    MnkAny = AdvAny + MNK.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        NIN.JobID)]
-    NinAny = AdvAny + NIN.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        PLD.JobID)]
-    PldAny = AdvAny + PLD.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        RDM.JobID)]
-    RdmAny = AdvAny + RDM.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        RPR.JobID)]
-    RprAny = AdvAny + RPR.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        SAM.JobID)]
-    SamAny = AdvAny + SAM.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        SCH.JobID)]
-    SchAny = AdvAny + SCH.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        SGE.JobID)]
-    SgeAny = AdvAny + SGE.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        SMN.JobID)]
-    SmnAny = AdvAny + SMN.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        WAR.JobID)]
-    WarAny = AdvAny + WAR.JobID,
-
-    [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.",
-        WHM.JobID)]
-    WhmAny = AdvAny + WHM.JobID,
-
-    [CustomComboInfo("Disabled", "This should not be used.", ADV.JobID)]
-    Disabled = 99999,
 
     #endregion
 
     #region GLOBAL FEATURES
 
+    [Role(JobRole.All)]
     [ReplaceSkill(All.Sprint)]
     [CustomComboInfo("Island Sanctuary Sprint Feature",
         "Replaces Sprint with Isle Sprint.\nOnly works at the Island Sanctuary. Icon does not change.\nDo not use with SimpleTweaks' Island Sanctuary Sprint fix.",
@@ -114,11 +25,13 @@ public enum CustomComboPreset
 
     #region Global Tank Features
 
+    [Role(JobRole.Tank)]
     [CustomComboInfo("Global Tank Features",
         "Features and options involving shared role actions for Tanks.\nCollapsing this category does NOT disable the features inside.",
         ADV.JobID)]
     ALL_Tank_Menu = 100099,
 
+    [Role(JobRole.Tank)]
     [ReplaceSkill(All.LowBlow, PLD.ShieldBash)]
     [ParentCombo(ALL_Tank_Menu)]
     [CustomComboInfo("Tank: Interrupt Feature",
@@ -126,6 +39,7 @@ public enum CustomComboPreset
         ADV.JobID)]
     ALL_Tank_Interrupt = 100000,
 
+    [Role(JobRole.Tank)]
     [ReplaceSkill(All.Reprisal)]
     [ParentCombo(ALL_Tank_Menu)]
     [CustomComboInfo("Tank: Double Reprisal Protection",
@@ -136,11 +50,13 @@ public enum CustomComboPreset
 
     #region Global Healer Features
 
+    [Role(JobRole.Healer)]
     [CustomComboInfo("Global Healer Features",
         "Features and options involving shared role actions for Healers.\nCollapsing this category does NOT disable the features inside.",
         ADV.JobID)]
     ALL_Healer_Menu = 100098,
 
+    [Role(JobRole.Healer)]
     [ReplaceSkill(AST.Ascend, WHM.Raise, SCH.Resurrection, SGE.Egeiro)]
     [ConflictingCombos(AST_Raise_Alternative, SCH_Raise, SGE_Raise, WHM_Raise)]
     [ParentCombo(ALL_Healer_Menu)]
@@ -151,17 +67,20 @@ public enum CustomComboPreset
 
     #region Global Magical Ranged Features
 
+    [Role(JobRole.MagicalDPS)]
     [CustomComboInfo("Global Magical Ranged Features",
         "Features and options involving shared role actions for Magical Ranged DPS.\nCollapsing this category does NOT disable the features inside.",
         ADV.JobID)]
     ALL_Caster_Menu = 100097,
 
+    [Role(JobRole.MagicalDPS)]
     [ReplaceSkill(All.Addle)]
     [ParentCombo(ALL_Caster_Menu)]
     [CustomComboInfo("Magical Ranged DPS: Double Addle Protection",
         "Prevents the use of Addle when target already has the effect by replacing it with Fell Cleave.", ADV.JobID)]
     ALL_Caster_Addle = 100020,
 
+    [Role(JobRole.MagicalDPS)]
     [ReplaceSkill(RDM.Verraise, SMN.Resurrection, BLU.AngelWhisper)]
     [ConflictingCombos(SMN_Raise, RDM_Raise)]
     [ParentCombo(ALL_Caster_Menu)]
@@ -174,17 +93,20 @@ public enum CustomComboPreset
 
     #region Global Melee Features
 
+    [Role(JobRole.MeleeDPS)]
     [CustomComboInfo("Global Melee DPS Features",
         "Features and options involving shared role actions for Melee DPS.\nCollapsing this category does NOT disable the features inside.",
         ADV.JobID)]
     ALL_Melee_Menu = 100096,
 
+    [Role(JobRole.MeleeDPS)]
     [ReplaceSkill(All.Feint)]
     [ParentCombo(ALL_Melee_Menu)]
     [CustomComboInfo("Melee DPS: Double Feint Protection",
         "Prevents the use of Feint when target already has the effect by replacing it with Fire.", ADV.JobID)]
     ALL_Melee_Feint = 100030,
 
+    [Role(JobRole.MeleeDPS)]
     [ReplaceSkill(All.TrueNorth)]
     [ParentCombo(ALL_Melee_Menu)]
     [CustomComboInfo("Melee DPS: True North Protection",
@@ -195,11 +117,13 @@ public enum CustomComboPreset
 
     #region Global Ranged Physical Features
 
+    [Role(JobRole.RangedDPS)]
     [CustomComboInfo("Global Physical Ranged Features",
         "Features and options involving shared role actions for Physical Ranged DPS.\nCollapsing this category does NOT disable the features inside.",
         ADV.JobID)]
     ALL_Ranged_Menu = 100095,
 
+    [Role(JobRole.RangedDPS)]
     [ReplaceSkill(MCH.Tactician, BRD.Troubadour, DNC.ShieldSamba)]
     [ParentCombo(ALL_Ranged_Menu)]
     [CustomComboInfo("Physical Ranged DPS: Double Mitigation Protection",
@@ -207,6 +131,7 @@ public enum CustomComboPreset
         ADV.JobID)]
     ALL_Ranged_Mitigation = 100040,
 
+    [Role(JobRole.RangedDPS)]
     [ReplaceSkill(All.FootGraze)]
     [ParentCombo(ALL_Ranged_Menu)]
     [CustomComboInfo("Physical Ranged DPS: Ranged Interrupt Feature",
@@ -1718,10 +1643,6 @@ public enum CustomComboPreset
     [CustomComboInfo("Shadow Wall / Vigil Option", "Adds Shadow Wall / Vigil to the one-button mitigation.", DRK.JobID)]
     DRK_Mit_ShadowWall = 5051,
 
-    [ParentCombo(DRK_Mit_OneButton)]
-    [CustomComboInfo("Living Dead Option", "Adds Living Dead to the one-button mitigation.", DRK.JobID)]
-    DRK_Mit_LivingDead = 5052,
-
     #endregion
 
     // Last value = 5052
@@ -2319,10 +2240,6 @@ public enum CustomComboPreset
     [ParentCombo(GNB_Mit_OneButton)]
     [CustomComboInfo("Nebula Option", "Adds Nebula to the one-button mitigation.", GNB.JobID)]
     GNB_Mit_Nebula = 7083,
-
-    [ParentCombo(GNB_Mit_OneButton)]
-    [CustomComboInfo("Superbolide Option", "Adds Superbolide to the one-button mitigation.", GNB.JobID)]
-    GNB_Mit_Superbolide = 7084,
     #endregion
 
     #region Gnashing Fang
@@ -6110,10 +6027,6 @@ public enum CustomComboPreset
     [ParentCombo(WAR_Mit_OneButton)]
     [CustomComboInfo("Vengeance Option", "Adds Vengeance to the one-button mitigation.", WAR.JobID)]
     WAR_Mit_Vengeance = 18054,
-
-    [ParentCombo(WAR_Mit_OneButton)]
-    [CustomComboInfo("Holmgang Option", "Adds Holmgang to the one-button mitigation.", WAR.JobID)]
-    WAR_Mit_Holmgang = 18059,
     #endregion
 
     #region Misc
@@ -6482,24 +6395,29 @@ public enum CustomComboPreset
 
     #region PvP GLOBAL FEATURES
 
+    [Role(JobRole.All)]
     [PvPCustomCombo]
     [CustomComboInfo("Emergency Heals Feature",
         "Uses Recuperate when your HP is under the set threshold and you have sufficient MP.", ADV.JobID)]
     PvP_EmergencyHeals = 1100000,
 
+    [Role(JobRole.All)]
     [PvPCustomCombo]
     [CustomComboInfo("Emergency Guard Feature", "Uses Guard when your HP is under the set threshold.", ADV.JobID)]
     PvP_EmergencyGuard = 1100010,
 
+    [Role(JobRole.All)]
     [PvPCustomCombo]
     [CustomComboInfo("Quick Purify Feature", "Uses Purify when afflicted with any selected debuff.", ADV.JobID)]
     PvP_QuickPurify = 1100020,
 
+    [Role(JobRole.All)]
     [PvPCustomCombo]
     [CustomComboInfo("Prevent Mash Cancelling Feature",
         "Stops you cancelling your guard if you're pressing buttons quickly.", ADV.JobID)]
     PvP_MashCancel = 1100030,
 
+    [Role(JobRole.All)]
     [ParentCombo(PvP_MashCancel)]
     [CustomComboInfo("Recuperate Option",
         "Allows you to cancel your guard with Recuperate on the Guard button if health is low enough to not waste it.",

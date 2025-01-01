@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using WrathCombo.CustomComboNS;
 using WrathCombo.CustomComboNS.Functions;
-using WrathCombo.Data;
 using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions;
 
 namespace WrathCombo.Combos.PvE;
@@ -38,26 +37,23 @@ internal partial class WAR
     private static (uint Action, CustomComboPreset Preset, System.Func<bool> Logic)[]
         PrioritizedMitigation =>
     [
-        //Emergency Holmgang
-        (Holmgang, CustomComboPreset.WAR_Mit_Holmgang_Max,
-            () => PlayerHealthPercentageHp() <= Config.WAR_Mit_Holmgang_Health &&
-                  ContentCheck.IsInConfiguredContent(
-                      Config.WAR_Mit_Holmgang_Difficulty,
-                      Config.WAR_Mit_Holmgang_DifficultyListSet
-                  )),
         //Bloodwhetting
         (OriginalHook(RawIntuition), CustomComboPreset.WAR_Mit_Bloodwhetting,
             () => FindEffect(Buffs.RawIntuition) is null &&
-                  FindEffect(Buffs.BloodwhettingDefenseLong) is null),
+                  FindEffect(Buffs.BloodwhettingDefenseLong) is null &&
+                  PlayerHealthPercentageHp() <= Config.WAR_Mit_Bloodwhetting_Health),
         //Equilibrium
-        (Equilibrium, CustomComboPreset.WAR_Mit_Equilibrium, () => true),
+        (Equilibrium, CustomComboPreset.WAR_Mit_Equilibrium,
+            () => PlayerHealthPercentageHp() <= Config.WAR_Mit_Equilibrium_Health),
         // Reprisal
         (All.Reprisal, CustomComboPreset.WAR_Mit_Reprisal,
             () => InActionRange(All.Reprisal)),
         //Thrill of Battle
-        (ThrillOfBattle, CustomComboPreset.WAR_Mit_ThrillOfBattle, () => true),
+        (ThrillOfBattle, CustomComboPreset.WAR_Mit_ThrillOfBattle,
+            () => PlayerHealthPercentageHp() <= Config.WAR_Mit_ThrillOfBattle_Health),
         //Rampart
-        (All.Rampart, CustomComboPreset.WAR_Mit_Rampart, () => true),
+        (All.Rampart, CustomComboPreset.WAR_Mit_Rampart,
+            () => PlayerHealthPercentageHp() <= Config.WAR_Mit_Rampart_Health),
         //Shake it Off
         (ShakeItOff, CustomComboPreset.WAR_Mit_ShakeItOff,
             () => FindEffect(Buffs.ShakeItOff) is null &&
@@ -70,13 +66,8 @@ internal partial class WAR
                   (Config.WAR_Mit_ArmsLength_Boss == (int)Config.BossAvoidance.Off ||
                    InBossEncounter())),
         //Vengeance
-        (OriginalHook(Vengeance), CustomComboPreset.WAR_Mit_Vengeance, () => true),
-        //Holmgang
-        (Holmgang, CustomComboPreset.WAR_Mit_Holmgang,
-            () => ContentCheck.IsInConfiguredContent(
-                Config.WAR_Mit_Holmgang_Difficulty,
-                Config.WAR_Mit_Holmgang_DifficultyListSet
-            )),
+        (OriginalHook(Vengeance), CustomComboPreset.WAR_Mit_Vengeance,
+            () => PlayerHealthPercentageHp() <= Config.WAR_Mit_Vengeance_Health),
     ];
 
     /// <summary>

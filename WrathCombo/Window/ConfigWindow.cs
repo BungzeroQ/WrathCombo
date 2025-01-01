@@ -30,7 +30,7 @@ namespace WrathCombo.Window
         {
             return Enum
             .GetValues<CustomComboPreset>()
-            .Where(preset => (int)preset > 100 && preset != CustomComboPreset.Disabled)
+            .Where(preset => (int)preset > 100)
             .Select(preset => (Preset: preset, Info: preset.GetAttribute<CustomComboInfoAttribute>()))
             .Where(tpl => tpl.Info != null && PresetStorage.GetParent(tpl.Preset) == null)
             .OrderByDescending(tpl => tpl.Info.JobID == 0)

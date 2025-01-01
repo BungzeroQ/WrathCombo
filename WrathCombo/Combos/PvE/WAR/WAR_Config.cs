@@ -1,5 +1,4 @@
 using System.Numerics;
-using Dalamud.Interface.Colors;
 using ECommons.ImGuiMethods;
 using ImGuiNET;
 using WrathCombo.Combos.PvP;
@@ -14,7 +13,7 @@ internal partial class WAR
 {
     internal static class Config
     {
-        private const int numberMitigationOptions = 10;
+        private const int numberMitigationOptions = 8;
 
         internal enum PartyRequirement
         {
@@ -74,9 +73,14 @@ internal partial class WAR
 
             //One-Button Mitigation
             WAR_Mit_Holmgang_Health = new("WAR_Mit_Holmgang_Health", 30),
+            WAR_Mit_Bloodwhetting_Health = new("WAR_Mit_Bloodwhetting_Health", 70),
+            WAR_Mit_Equilibrium_Health = new("WAR_Mit_Equilibrium_Health", 45),
+            WAR_Mit_ThrillOfBattle_Health = new("WAR_Mit_ThrillOfBattle_Health", 60),
+            WAR_Mit_Rampart_Health = new("WAR_Mit_Rampart_Health", 65),
             WAR_Mit_ShakeItOff_PartyRequirement = new("WAR_Mit_ShakeItOff_PartyRequirement", (int)PartyRequirement.Yes),
             WAR_Mit_ArmsLength_Boss = new("WAR_Mit_ArmsLength_Boss", (int)BossAvoidance.On),
-            WAR_Mit_ArmsLength_EnemyCount = new("WAR_Mit_ArmsLength_EnemyCount", 0);
+            WAR_Mit_ArmsLength_EnemyCount = new("WAR_Mit_ArmsLength_EnemyCount", 0),
+            WAR_Mit_Vengeance_Health = new("WAR_Mit_Vengeance_Health", 50);
 
         public static UserIntArray
             WAR_Mit_Priorities = new("WAR_Mit_Priorities");
@@ -382,43 +386,51 @@ internal partial class WAR
                     UserConfig.DrawSliderInt(5, 30, WAR_Mit_Holmgang_Health,
                         "Player HP% to be \nless than or equal to:",
                         200, SliderIncrements.Fives);
-
-                    ImGui.BeginDisabled();
-                    UserConfig.DrawPriorityInput(WAR_Mit_Priorities,
-                        numberMitigationOptions, 0,
-                        "Emergency Holmgang Priority:");
-                    ImGui.EndDisabled();
-                    if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
-                        ImGui.SetTooltip("Should always be 1, the highest priority");
                     break;
 
                 case CustomComboPreset.WAR_Mit_Bloodwhetting:
+                    UserConfig.DrawSliderInt(40, 85, WAR_Mit_Bloodwhetting_Health,
+                        "HP% to use at or below",
+                        sliderIncrement: SliderIncrements.Fives);
+
                     UserConfig.DrawPriorityInput(WAR_Mit_Priorities,
-                        numberMitigationOptions, 1,
+                        numberMitigationOptions, 0,
                         "Bloodwhetting Priority:");
                     break;
 
                 case CustomComboPreset.WAR_Mit_Equilibrium:
+                    UserConfig.DrawSliderInt(15, 75, WAR_Mit_Equilibrium_Health,
+                        "HP% to use at or below",
+                        sliderIncrement: SliderIncrements.Fives);
+
                     UserConfig.DrawPriorityInput(WAR_Mit_Priorities,
-                        numberMitigationOptions, 2,
+                        numberMitigationOptions, 1,
                         "Equilibrium Priority:");
                     break;
 
                 case CustomComboPreset.WAR_Mit_Reprisal:
                     UserConfig.DrawPriorityInput(WAR_Mit_Priorities,
-                        numberMitigationOptions, 3,
+                        numberMitigationOptions, 2,
                         "Reprisal Priority:");
                     break;
 
                 case CustomComboPreset.WAR_Mit_ThrillOfBattle:
+                    UserConfig.DrawSliderInt(40, 100, WAR_Mit_ThrillOfBattle_Health,
+                        "HP% to use at or below (100 = Disable check)",
+                        sliderIncrement: SliderIncrements.Fives);
+
                     UserConfig.DrawPriorityInput(WAR_Mit_Priorities,
-                        numberMitigationOptions, 4,
+                        numberMitigationOptions, 3,
                         "Thrill Of Battle Priority:");
                     break;
 
                 case CustomComboPreset.WAR_Mit_Rampart:
+                    UserConfig.DrawSliderInt(40, 100, WAR_Mit_Rampart_Health,
+                        "HP% to use at or below (100 = Disable check)",
+                        sliderIncrement: SliderIncrements.Fives);
+
                     UserConfig.DrawPriorityInput(WAR_Mit_Priorities,
-                        numberMitigationOptions, 5,
+                        numberMitigationOptions, 4,
                         "Rampart Priority:");
                     break;
 
@@ -437,7 +449,7 @@ internal partial class WAR
                         outputValue: (int)PartyRequirement.No);
 
                     UserConfig.DrawPriorityInput(WAR_Mit_Priorities,
-                        numberMitigationOptions, 6,
+                        numberMitigationOptions, 5,
                         "Shake It Off Priority:");
                     break;
 
@@ -457,34 +469,18 @@ internal partial class WAR
                         "How many enemies should be nearby? (0 = No Requirement)");
 
                     UserConfig.DrawPriorityInput(WAR_Mit_Priorities,
-                        numberMitigationOptions, 7,
+                        numberMitigationOptions, 6,
                         "Arm's Length Priority:");
                     break;
 
                 case CustomComboPreset.WAR_Mit_Vengeance:
+                    UserConfig.DrawSliderInt(40, 100, WAR_Mit_Vengeance_Health,
+                        "HP% to use at or below (100 = Disable check)",
+                        sliderIncrement: SliderIncrements.Fives);
+
                     UserConfig.DrawPriorityInput(WAR_Mit_Priorities,
-                        numberMitigationOptions, 8,
+                        numberMitigationOptions, 7,
                         "Vengeance Priority:");
-                    break;
-
-                case CustomComboPreset.WAR_Mit_Holmgang:
-                    if (CustomComboFunctions.IsEnabled(CustomComboPreset.WAR_Mit_Holmgang_Max))
-                    {
-                        ImGui.TextColored(ImGuiColors.DalamudYellow,
-                            "Select what difficulties Holmgang should be used in above,");
-                        ImGui.TextColored(ImGuiColors.DalamudYellow,
-                            "under the 'Emergency Holmgang' option.");
-                    }
-                    else
-                        UserConfig.DrawDifficultyMultiChoice(
-                            WAR_Mit_Holmgang_Difficulty,
-                            WAR_Mit_Holmgang_DifficultyListSet,
-                            "Select what difficulties Holmgang should be used in:"
-                        );
-
-                    UserConfig.DrawPriorityInput(WAR_Mit_Priorities,
-                        numberMitigationOptions, 9,
-                        "Holmgang Priority:");
                     break;
 
                 #endregion
