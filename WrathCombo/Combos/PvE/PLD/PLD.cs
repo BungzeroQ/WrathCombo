@@ -493,7 +493,8 @@ namespace WrathCombo.Combos.PvE
                                 }
 
                                 // Level 68+
-                                else if (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave && (ComboAction is RoyalAuthority || afterOpener))
+                                //else if (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave && (ComboAction is RoyalAuthority || afterOpener))
+                                else if (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave && true)
                                     return FightOrFlight;
                             }
 
