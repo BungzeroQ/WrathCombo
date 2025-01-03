@@ -1,4 +1,5 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
+using ECommons.DalamudServices;
 using ECommons.GameFunctions;
 using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.Game;
@@ -275,6 +276,23 @@ namespace WrathCombo.CustomComboNS.Functions
             var ret = !alreadyQueued && inSlidecast && !animLocked && recast && classCheck;
             var status = ActionManager.Instance()->GetActionStatus(ActionType.Action, actionID);
             return ret && status is 0 or 582;
+        }
+
+        public unsafe static bool RaidWideCasting()
+        {
+            foreach (var caster in Svc.Objects.Where(x => x is IBattleChara chara && chara.IsHostile() && chara.IsCasting()).Cast<IBattleChara>())
+            {
+                if (Svc.Data.Excel.GetSheet<Lumina.Excel.Sheets.Action>().TryGetRow(caster.CastActionId, out var spell))
+                {
+                    var type = spell.CastType;
+                    var range = spell.EffectRange;
+
+                    if (type is 2 or 5 && range >= 30)
+                        return true;
+                }
+            }
+
+            return false;
         }
     }
 }

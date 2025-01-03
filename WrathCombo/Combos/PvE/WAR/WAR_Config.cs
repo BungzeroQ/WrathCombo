@@ -383,15 +383,15 @@ internal partial class WAR
                         "Select what difficulties Holmgang should be used in:"
                     );
 
-                    UserConfig.DrawSliderInt(5, 30, WAR_Mit_Holmgang_Health,
+                    UserConfig.DrawSliderInt(1, 100, WAR_Mit_Holmgang_Health,
                         "Player HP% to be \nless than or equal to:",
                         200, SliderIncrements.Fives);
                     break;
 
                 case CustomComboPreset.WAR_Mit_Bloodwhetting:
-                    UserConfig.DrawSliderInt(40, 85, WAR_Mit_Bloodwhetting_Health,
+                    UserConfig.DrawSliderInt(1, 100, WAR_Mit_Bloodwhetting_Health,
                         "HP% to use at or below",
-                        sliderIncrement: SliderIncrements.Fives);
+                        sliderIncrement: SliderIncrements.Ones);
 
                     UserConfig.DrawPriorityInput(WAR_Mit_Priorities,
                         numberMitigationOptions, 0,
@@ -399,9 +399,9 @@ internal partial class WAR
                     break;
 
                 case CustomComboPreset.WAR_Mit_Equilibrium:
-                    UserConfig.DrawSliderInt(15, 75, WAR_Mit_Equilibrium_Health,
+                    UserConfig.DrawSliderInt(1, 100, WAR_Mit_Equilibrium_Health,
                         "HP% to use at or below",
-                        sliderIncrement: SliderIncrements.Fives);
+                        sliderIncrement: SliderIncrements.Ones);
 
                     UserConfig.DrawPriorityInput(WAR_Mit_Priorities,
                         numberMitigationOptions, 1,
@@ -415,9 +415,9 @@ internal partial class WAR
                     break;
 
                 case CustomComboPreset.WAR_Mit_ThrillOfBattle:
-                    UserConfig.DrawSliderInt(40, 100, WAR_Mit_ThrillOfBattle_Health,
+                    UserConfig.DrawSliderInt(1, 100, WAR_Mit_ThrillOfBattle_Health,
                         "HP% to use at or below (100 = Disable check)",
-                        sliderIncrement: SliderIncrements.Fives);
+                        sliderIncrement: SliderIncrements.Ones);
 
                     UserConfig.DrawPriorityInput(WAR_Mit_Priorities,
                         numberMitigationOptions, 3,
@@ -425,9 +425,9 @@ internal partial class WAR
                     break;
 
                 case CustomComboPreset.WAR_Mit_Rampart:
-                    UserConfig.DrawSliderInt(40, 100, WAR_Mit_Rampart_Health,
+                    UserConfig.DrawSliderInt(1, 100, WAR_Mit_Rampart_Health,
                         "HP% to use at or below (100 = Disable check)",
-                        sliderIncrement: SliderIncrements.Fives);
+                        sliderIncrement: SliderIncrements.Ones);
 
                     UserConfig.DrawPriorityInput(WAR_Mit_Priorities,
                         numberMitigationOptions, 4,
@@ -474,9 +474,9 @@ internal partial class WAR
                     break;
 
                 case CustomComboPreset.WAR_Mit_Vengeance:
-                    UserConfig.DrawSliderInt(40, 100, WAR_Mit_Vengeance_Health,
+                    UserConfig.DrawSliderInt(1, 100, WAR_Mit_Vengeance_Health,
                         "HP% to use at or below (100 = Disable check)",
-                        sliderIncrement: SliderIncrements.Fives);
+                        sliderIncrement: SliderIncrements.Ones);
 
                     UserConfig.DrawPriorityInput(WAR_Mit_Priorities,
                         numberMitigationOptions, 7,

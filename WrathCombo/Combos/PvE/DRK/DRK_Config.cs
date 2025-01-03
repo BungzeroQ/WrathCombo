@@ -198,14 +198,14 @@ internal partial class DRK
                         "Select what difficulties Emergency Living Dead should be used in:"
                     );
 
-                    UserConfig.DrawSliderInt(5, 30, DRK_Mit_LivingDead_Health,
+                    UserConfig.DrawSliderInt(1, 100, DRK_Mit_LivingDead_Health,
                         startUsingAtDescription,
-                        itemWidth: medium, sliderIncrement: SliderIncrements.Fives);
+                        itemWidth: medium, sliderIncrement: SliderIncrements.Ones);
 
                     break;
 
                 case CustomComboPreset.DRK_Mit_TheBlackestNight:
-                    UserConfig.DrawSliderInt(10, 100, DRK_Mit_TBN_Health,
+                    UserConfig.DrawSliderInt(1, 100, DRK_Mit_TBN_Health,
                         startUsingAtDescription + " (100 = Disable check)",
                         itemWidth: medium, sliderIncrement: SliderIncrements.Tens);
 
@@ -254,9 +254,9 @@ internal partial class DRK
                     break;
 
                 case CustomComboPreset.DRK_Mit_Rampart:
-                    UserConfig.DrawSliderInt(40, 100, DRK_Mit_Rampart_Health,
+                    UserConfig.DrawSliderInt(1, 100, DRK_Mit_Rampart_Health,
                         startUsingAtDescription + " (100 = Disable check)",
-                        itemWidth: medium, sliderIncrement: SliderIncrements.Fives);
+                        itemWidth: medium, sliderIncrement: SliderIncrements.Ones);
 
                     UserConfig.DrawPriorityInput(DRK_Mit_Priorities,
                         numberMitigationOptions, 4,
@@ -294,9 +294,9 @@ internal partial class DRK
                     break;
 
                 case CustomComboPreset.DRK_Mit_ShadowWall:
-                    UserConfig.DrawSliderInt(30, 100, DRK_Mit_ShadowWall_Health,
+                    UserConfig.DrawSliderInt(1, 100, DRK_Mit_ShadowWall_Health,
                         startUsingAtDescription + " (100 = Disable check)",
-                        itemWidth: medium, sliderIncrement: SliderIncrements.Fives);
+                        itemWidth: medium, sliderIncrement: SliderIncrements.Ones);
 
                     UserConfig.DrawPriorityInput(DRK_Mit_Priorities,
                         numberMitigationOptions, 7,

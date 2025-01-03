@@ -24,6 +24,7 @@ using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions;
 using Action = Lumina.Excel.Sheets.Action;
 using ObjectKind = Dalamud.Game.ClientState.Objects.Enums.ObjectKind;
 using Status = Dalamud.Game.ClientState.Statuses.Status;
+using ECommons;
 
 namespace WrathCombo.Window.Tabs
 {
@@ -393,7 +394,7 @@ namespace WrathCombo.Window.Tabs
                     CustomStyleText("Opener State:", WrathOpener.CurrentOpener?.CurrentState);
                     CustomStyleText("Current Opener Action:", WrathOpener.CurrentOpener?.CurrentOpenerAction.ActionName());
                     CustomStyleText("Current Opener Step:", WrathOpener.CurrentOpener?.OpenerStep);
-                    if (WrathOpener.CurrentOpener.OpenerActions.Count > 0)
+                    if (WrathOpener.CurrentOpener.OpenerActions.Count > 0 && WrathOpener.CurrentOpener.OpenerStep < WrathOpener.CurrentOpener.OpenerActions.Count)
                     {
                         CustomStyleText("Next Action:", WrathOpener.CurrentOpener?.OpenerActions[WrathOpener.CurrentOpener.OpenerStep].ActionName());
                         CustomStyleText("Is Delayed Weave:", WrathOpener.CurrentOpener?.DelayedWeaveSteps.Any(x => x == WrathOpener.CurrentOpener?.OpenerStep));
@@ -402,6 +403,7 @@ namespace WrathCombo.Window.Tabs
                 }
 
                 CustomStyleText("Countdown Remaining:", $"{CountdownActive} {CountdownRemaining}");
+                CustomStyleText("Raidwide Inc:", $"{RaidWideCasting()}");
             }
 
             else

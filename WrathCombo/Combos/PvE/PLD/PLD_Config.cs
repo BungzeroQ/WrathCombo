@@ -295,7 +295,7 @@ internal partial class PLD
                         "Select what difficulties Hallowed Ground should be used in:"
                     );
 
-                    UserConfig.DrawSliderInt(5, 30, PLD_Mit_HallowedGround_Max_Health,
+                    UserConfig.DrawSliderInt(1, 100, PLD_Mit_HallowedGround_Max_Health,
                         "Player HP% to be \nless than or equal to:",
                         200, SliderIncrements.Fives);
                     break;
@@ -332,9 +332,9 @@ internal partial class PLD
                     break;
 
                 case CustomComboPreset.PLD_Mit_Rampart:
-                    UserConfig.DrawSliderInt(40, 100, PLD_Mit_Rampart_Health,
+                    UserConfig.DrawSliderInt(1, 100, PLD_Mit_Rampart_Health,
                         "HP% to use at or below (100 = Disable check)",
-                        sliderIncrement: SliderIncrements.Fives);
+                        sliderIncrement: SliderIncrements.Ones);
 
                     UserConfig.DrawPriorityInput(PLD_Mit_Priorities,
                         numberMitigationOptions, 3,
@@ -342,9 +342,9 @@ internal partial class PLD
                     break;
 
                 case CustomComboPreset.PLD_Mit_Sentinel:
-                    UserConfig.DrawSliderInt(40, 100, PLD_Mit_Sentinel_Health,
+                    UserConfig.DrawSliderInt(1, 100, PLD_Mit_Sentinel_Health,
                         "HP% to use at or below (100 = Disable check)",
-                        sliderIncrement: SliderIncrements.Fives);
+                        sliderIncrement: SliderIncrements.Ones);
 
                     UserConfig.DrawPriorityInput(PLD_Mit_Priorities,
                         numberMitigationOptions, 4,
@@ -372,9 +372,9 @@ internal partial class PLD
                     break;
 
                 case CustomComboPreset.PLD_Mit_Bulwark:
-                    UserConfig.DrawSliderInt(40, 100, PLD_Mit_Bulwark_Health,
+                    UserConfig.DrawSliderInt(1, 100, PLD_Mit_Bulwark_Health,
                         "HP% to use at or below (100 = Disable check)",
-                        sliderIncrement: SliderIncrements.Fives);
+                        sliderIncrement: SliderIncrements.Ones);
 
                     UserConfig.DrawPriorityInput(PLD_Mit_Priorities,
                         numberMitigationOptions, 6,
@@ -388,9 +388,9 @@ internal partial class PLD
                         "Select what difficulties Hallowed Ground should be used in:"
                     );
 
-                    UserConfig.DrawSliderInt(30, 80, PLD_Mit_HallowedGround_Health,
+                    UserConfig.DrawSliderInt(1, 100, PLD_Mit_HallowedGround_Health,
                         "HP% to use at or below",
-                        sliderIncrement: SliderIncrements.Fives);
+                        sliderIncrement: SliderIncrements.Ones);
 
                     UserConfig.DrawPriorityInput(PLD_Mit_Priorities,
                         numberMitigationOptions, 7,
@@ -398,9 +398,9 @@ internal partial class PLD
                     break;
 
                 case CustomComboPreset.PLD_Mit_Clemency:
-                    UserConfig.DrawSliderInt(20, 100, PLD_Mit_Clemency_Health,
+                    UserConfig.DrawSliderInt(1, 100, PLD_Mit_Clemency_Health,
                         "HP% to use at or below (100 = Disable check)",
-                        sliderIncrement: SliderIncrements.Fives);
+                        sliderIncrement: SliderIncrements.Ones);
 
                     UserConfig.DrawPriorityInput(PLD_Mit_Priorities,
                         numberMitigationOptions, 8,

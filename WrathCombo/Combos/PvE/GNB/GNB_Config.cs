@@ -357,15 +357,15 @@ internal partial class GNB
                         "Select what difficulties Superbolide should be used in:"
                     );
 
-                    UserConfig.DrawSliderInt(5, 30, GNB_Mit_Superbolide_Health,
+                    UserConfig.DrawSliderInt(1, 100, GNB_Mit_Superbolide_Health,
                         "Player HP% to be \nless than or equal to:",
                         200, SliderIncrements.Fives);
                     break;
 
                 case CustomComboPreset.GNB_Mit_Corundum:
-                    UserConfig.DrawSliderInt(60, 100, GNB_Mit_Corundum_Health,
+                    UserConfig.DrawSliderInt(1, 100, GNB_Mit_Corundum_Health,
                         "HP% to use at or below (100 = Disable check)",
-                        sliderIncrement: SliderIncrements.Fives);
+                        sliderIncrement: SliderIncrements.Ones);
 
                     UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
                         numberMitigationOptions, 0,
@@ -376,9 +376,9 @@ internal partial class GNB
                     UserConfig.DrawSliderInt(0, 1, GNB_Mit_Aurora_Charges,
                         "How many charges to keep ready?\n (0 = Use All)");
 
-                    UserConfig.DrawSliderInt(40, 100, GNB_Mit_Aurora_Health,
+                    UserConfig.DrawSliderInt(1, 100, GNB_Mit_Aurora_Health,
                         "HP% to use at or below (100 = Disable check)",
-                        sliderIncrement: SliderIncrements.Fives);
+                        sliderIncrement: SliderIncrements.Ones);
 
                     UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
                         numberMitigationOptions, 1,
@@ -417,9 +417,9 @@ internal partial class GNB
                     break;
 
                 case CustomComboPreset.GNB_Mit_Rampart:
-                    UserConfig.DrawSliderInt(40, 100, GNB_Mit_Rampart_Health,
+                    UserConfig.DrawSliderInt(1, 100, GNB_Mit_Rampart_Health,
                         "HP% to use at or below (100 = Disable check)",
-                        sliderIncrement: SliderIncrements.Fives);
+                        sliderIncrement: SliderIncrements.Ones);
 
                     UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
                         numberMitigationOptions, 5,
@@ -447,9 +447,9 @@ internal partial class GNB
                     break;
 
                 case CustomComboPreset.GNB_Mit_Nebula:
-                    UserConfig.DrawSliderInt(40, 100, GNB_Mit_Nebula_Health,
+                    UserConfig.DrawSliderInt(1, 100, GNB_Mit_Nebula_Health,
                         "HP% to use at or below (100 = Disable check)",
-                        sliderIncrement: SliderIncrements.Fives);
+                        sliderIncrement: SliderIncrements.Ones);
 
                     UserConfig.DrawPriorityInput(GNB_Mit_Priorities,
                         numberMitigationOptions, 7,
