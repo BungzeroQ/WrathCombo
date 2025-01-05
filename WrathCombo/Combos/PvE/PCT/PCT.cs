@@ -84,14 +84,6 @@ namespace WrathCombo.Combos.PvE
                 PCTGauge gauge = GetJobGauge<PCTGauge>();
                 bool canWeave = CanSpellWeave() || CanSpellWeave();
 
-
-
-                // Lvl 100 Opener
-                if (StarPrism.LevelChecked())
-                {
-                    if (Opener().FullOpener(ref actionID))
-                        return actionID;
-                }
                 /* Lvl 92 Opener
                     else if (!StarPrism.LevelChecked() && RainbowDrip.LevelChecked())
                     {
@@ -335,17 +327,15 @@ namespace WrathCombo.Combos.PvE
                     return Variant.VariantRampart;
 
                 // Prepull logic
-                if (IsEnabled(CustomComboPreset.PCT_ST_AdvancedMode_PrePullMotifs))
+                if ((IsEnabled(CustomComboPreset.PCT_ST_AdvancedMode_PrePullMotifs) && !InCombat()) || (IsEnabled(CustomComboPreset.PCT_ST_AdvancedMode_NoTargetMotifs) && InCombat() && CurrentTarget == null))
                 {
-                    if (!InCombat() || (IsEnabled(CustomComboPreset.PCT_ST_AdvancedMode_NoTargetMotifs) && InCombat() && CurrentTarget == null))
-                    {
-                        if (CreatureMotif.LevelChecked() && !gauge.CreatureMotifDrawn)
-                            return OriginalHook(CreatureMotif);
-                        if (WeaponMotif.LevelChecked() && !gauge.WeaponMotifDrawn && !HasEffect(Buffs.HammerTime))
-                            return OriginalHook(WeaponMotif);
-                        if (LandscapeMotif.LevelChecked() && !gauge.LandscapeMotifDrawn && !HasEffect(Buffs.StarryMuse))
-                            return OriginalHook(LandscapeMotif);
-                    }
+                    if (CreatureMotif.LevelChecked() && !gauge.CreatureMotifDrawn)
+                        return OriginalHook(CreatureMotif);
+                    if (WeaponMotif.LevelChecked() && !gauge.WeaponMotifDrawn && !HasEffect(Buffs.HammerTime))
+                        return OriginalHook(WeaponMotif);
+                    if (LandscapeMotif.LevelChecked() && !gauge.LandscapeMotifDrawn && !HasEffect(Buffs.StarryMuse))
+                        return OriginalHook(LandscapeMotif);
+
                 }
 
                 // Check if Openers are enabled and determine which opener to execute based on current level

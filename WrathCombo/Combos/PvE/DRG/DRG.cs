@@ -83,10 +83,6 @@ internal partial class DRG
                  CanDRGWeave(Variant.VariantRampart))
                 return Variant.VariantRampart;
 
-            // Opener for DRG
-            if (Opener().FullOpener(ref actionID))
-                return actionID;
-
             // Piercing Talon Uptime Option
             if (LevelChecked(PiercingTalon) &&
                 !InMeleeRange() &&

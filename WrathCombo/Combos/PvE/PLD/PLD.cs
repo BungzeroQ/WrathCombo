@@ -163,8 +163,6 @@ namespace WrathCombo.Combos.PvE
                 }
                 #endregion
 
-                if (Opener().FullOpener(ref actionID))
-                    return actionID;
 
                 if (HasBattleTarget())
                 {

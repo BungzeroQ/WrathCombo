@@ -110,7 +110,10 @@ namespace WrathCombo.Data
                     ActionTimestamps[actionId] = Environment.TickCount64;
 
                 CheckForChangedTarget(actionId, ref targetObjectId);
+
+                if (GetAttackType(actionId) != ActionAttackType.Spell) 
                 TimeLastActionUsed = DateTime.Now;
+
                 LastAction = actionId;
                 ActionType = actionType;
                 WrathOpener.CurrentOpener?.ProgressOpener(actionId);

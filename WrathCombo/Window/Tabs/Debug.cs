@@ -343,6 +343,7 @@ namespace WrathCombo.Window.Tabs
                 ImGui.Text("Action Info");
                 ImGui.Separator();
                 CustomStyleText("GCD Total:", GCDTotal);
+                CustomStyleText("Time Since Last Action:", $"{ActionWatching.TimeSinceLastAction}");
                 CustomStyleText("Last Action:", ActionWatching.LastAction == 0 ? string.Empty : $"{(string.IsNullOrEmpty(ActionWatching.GetActionName(ActionWatching.LastAction)) ? "Unknown" : ActionWatching.GetActionName(ActionWatching.LastAction))} (ID: {ActionWatching.LastAction})");
                 CustomStyleText("Last Action Cost:", GetResourceCost(ActionWatching.LastAction));
                 CustomStyleText("Last Action Type:", ActionWatching.GetAttackType(ActionWatching.LastAction));

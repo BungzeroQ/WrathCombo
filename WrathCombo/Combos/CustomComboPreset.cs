@@ -3057,16 +3057,12 @@ public enum CustomComboPreset
 
     [ParentCombo(NIN_ST_AdvancedMode)]
     [CustomComboInfo("Trick Attack/Kunai's Bane Option", "Adds Trick Attack/Kunai's Bane to Advanced Mode.", NIN.JobID)]
-
-    //Has Config
     NIN_ST_AdvancedMode_TrickAttack = 10008,
 
     [ParentCombo(NIN_ST_AdvancedMode_TrickAttack)]
     [CustomComboInfo("Save Cooldowns Before Trick Attack/Kunai's Bane Option",
         "Stops using abilities with longer cooldowns up to 15 seconds before Trick Attack/Kunai's Bane comes off cooldown.",
         NIN.JobID)]
-
-    //HasConfig
     NIN_ST_AdvancedMode_TrickAttack_Cooldowns = 10009,
 
     [ParentCombo(NIN_ST_AdvancedMode_TrickAttack)]
@@ -3341,7 +3337,7 @@ public enum CustomComboPreset
     [CustomComboInfo("Prepull Motifs Feature", "Adds missing Motifs to the combo while out of combat.", PCT.JobID)]
     PCT_ST_AdvancedMode_PrePullMotifs = 20008,
 
-    [ParentCombo(PCT_ST_AdvancedMode_PrePullMotifs)]
+    [ParentCombo(PCT_ST_AdvancedMode)]
     [CustomComboInfo("Downtime Motifs Option", "Adds missing Motifs to the combo while no target is present in combat.",
         PCT.JobID)]
     PCT_ST_AdvancedMode_NoTargetMotifs = 20009,

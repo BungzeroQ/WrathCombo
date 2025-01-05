@@ -28,9 +28,6 @@ internal partial class RPR
                 CanWeave())
                 return Variant.VariantRampart;
 
-            //RPR Opener
-            if (Opener().FullOpener(ref actionID))
-                return actionID;
 
             //All Weaves
             if (CanWeave())

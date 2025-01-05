@@ -111,10 +111,6 @@ internal partial class SAM
                 CanSpellWeave())
                 return Variant.VariantRampart;
 
-            // Opener for SAM
-            if (Opener().FullOpener(ref actionID))
-                return actionID;
-
             //Meikyo to start before combat
             if (!HasEffect(Buffs.MeikyoShisui) && ActionReady(MeikyoShisui) &&
                 !InCombat() && TargetIsHostile())

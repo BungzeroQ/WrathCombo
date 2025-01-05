@@ -23,16 +23,6 @@ internal static partial class MNK
                 !HasEffect(Buffs.FormlessFist) && !HasEffect(Buffs.PerfectBalance))
                 return FormShift;
 
-            if (Opener().FullOpener(ref actionID))
-            {
-                if (IsOnCooldown(RiddleOfWind) &&
-                    CanWeave() &&
-                    Gauge.Chakra >= 5)
-                    return TheForbiddenChakra;
-
-                return actionID;
-            }
-
             //Variant Cure
             if (IsEnabled(CustomComboPreset.MNK_Variant_Cure) &&
                 IsEnabled(Variant.VariantCure) &&

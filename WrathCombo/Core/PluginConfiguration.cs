@@ -53,6 +53,8 @@ namespace WrathCombo.Core
 
         public float MovementLeeway = 0f;
 
+        public float OpenerTimeout = 4f;
+
         #endregion
 
         #region AutoAction Settings

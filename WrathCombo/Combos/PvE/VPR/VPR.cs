@@ -26,10 +26,6 @@ internal static partial class VPR
                 CanWeave())
                 return Variant.VariantRampart;
 
-            // Opener for VPR
-            if (Opener().FullOpener(ref actionID))
-                return actionID;
-
             //oGCDs
             if (CanWeave())
             {

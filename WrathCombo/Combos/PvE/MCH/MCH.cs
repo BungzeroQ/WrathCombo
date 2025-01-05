@@ -26,11 +26,6 @@ internal static partial class MCH
                 CanWeave())
                 return Variant.VariantRampart;
 
-            // Opener
-            if (TargetIsHostile())
-                if (Opener().FullOpener(ref actionID))
-                    return actionID;
-
             //Reassemble to start before combat
             if (!HasEffect(Buffs.Reassembled) && ActionReady(Reassemble) &&
                 !InCombat() && TargetIsHostile())

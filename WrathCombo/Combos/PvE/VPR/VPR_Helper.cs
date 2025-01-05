@@ -149,6 +149,9 @@ internal static partial class VPR
 
         public override bool HasCooldowns()
         {
+            if (!IsOriginal(ReavingFangs))
+                return false;
+
             if (GetRemainingCharges(Vicewinder) < 2)
                 return false;
 

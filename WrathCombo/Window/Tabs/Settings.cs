@@ -159,10 +159,15 @@ namespace WrathCombo.Window.Tabs
                 }
                 #endregion
 
-                if (ImGui.InputFloat("Movement check delay", ref Service.Configuration.MovementLeeway))
+                if (ImGui.InputFloat("Movement Check Delay", ref Service.Configuration.MovementLeeway))
                     Service.Configuration.Save();
 
                 ImGuiComponents.HelpMarker("Many features check if you are moving to decide actions. This will allow you to set a delay on how long you need to be moving before it recognizes you as moving.");
+
+                if (ImGui.InputFloat("Opener Failure Timeout", ref Service.Configuration.OpenerTimeout))
+                    Service.Configuration.Save();
+
+                ImGuiComponents.HelpMarker("During an opener, if this amount of seconds has passed since your last action, it will fail the opener and resume with non-opener functionality.");
             }
         }
     }

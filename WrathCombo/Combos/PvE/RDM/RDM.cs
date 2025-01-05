@@ -117,10 +117,6 @@ namespace WrathCombo.Combos.PvE
                     CanSpellWeave())
                     return Variant.VariantRampart;
 
-                // Opener for RDM
-                if (Opener().FullOpener(ref actionID))
-                    return actionID;
-
                 //oGCDs
                 if (TryOGCDs(actionID, true, out uint oGCDAction)) return oGCDAction;
 

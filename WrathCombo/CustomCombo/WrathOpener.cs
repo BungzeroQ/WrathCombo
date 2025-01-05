@@ -79,6 +79,7 @@ namespace WrathCombo.CustomComboNS
                         else
                             Svc.Log.Information($"Opener Failed at step {OpenerStep}, {CurrentOpenerAction.ActionName()}");
 
+                        if (AllowReopener)
                         ResetOpener();
                     }
 
@@ -166,7 +167,7 @@ namespace WrathCombo.CustomComboNS
                 if (OpenerStep > 1)
                 {
                     var delay = PrepullDelays.FindFirst(x => x.Steps.Any(y => y == DelayedStep && y == OpenerStep), out var hold);
-                    if ((!delay && InCombat() && ActionWatching.TimeSinceLastAction.TotalSeconds >= 5) || (delay && (DateTime.Now - DelayedAt).TotalSeconds > hold.HoldDelay + 5))
+                    if ((!delay && InCombat() && ActionWatching.TimeSinceLastAction.TotalSeconds >= Service.Configuration.OpenerTimeout) || (delay && (DateTime.Now - DelayedAt).TotalSeconds > hold.HoldDelay + Service.Configuration.OpenerTimeout))
                     {
                         CurrentState = OpenerState.FailedOpener;
                         return false; 
