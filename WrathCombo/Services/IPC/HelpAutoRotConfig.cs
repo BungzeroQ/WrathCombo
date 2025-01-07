@@ -45,6 +45,9 @@ public partial class Leasing
     {
         var registration = Registrations[lease];
 
+        if (registration.AutoRotationConfigsControlled.ContainsKey(option) && registration.AutoRotationConfigsControlled[option] == value)
+            return;
+
         registration.AutoRotationConfigsControlled[option] = value;
 
         registration.LastUpdated = DateTime.Now;

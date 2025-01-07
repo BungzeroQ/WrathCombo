@@ -145,80 +145,45 @@ public enum CancellationReason
 public enum AutoRotationConfigOption
 {
     /// <seealso cref="AutoRotationConfig.InCombatOnly" />
-    [ConfigValueType(typeof(bool))] InCombatOnly,
+    [ConfigValueType(typeof(bool))] InCombatOnly = 0,
 
     /// <seealso cref="AutoRotationConfig.DPSRotationMode" />
-    [ConfigValueType(typeof(AutoRotationConfigDPSRotationSubset))]
-    DPSRotationMode,
+    [ConfigValueType(typeof(DPSRotationMode))]
+    DPSRotationMode = 1,
 
     /// <seealso cref="AutoRotationConfig.HealerRotationMode" />
-    [ConfigValueType(typeof(AutoRotationConfigHealerRotationSubset))]
-    HealerRotationMode,
+    [ConfigValueType(typeof(HealerRotationMode))]
+    HealerRotationMode = 2,
 
     /// <seealso cref="DPSSettings.FATEPriority" />
-    [ConfigValueType(typeof(bool))] FATEPriority,
+    [ConfigValueType(typeof(bool))] FATEPriority = 3,
 
     /// <seealso cref="DPSSettings.QuestPriority" />
-    [ConfigValueType(typeof(bool))] QuestPriority,
+    [ConfigValueType(typeof(bool))] QuestPriority = 4,
 
     /// <seealso cref="HealerSettings.SingleTargetHPP" />
-    [ConfigValueType(typeof(int))] SingleTargetHPP,
+    [ConfigValueType(typeof(int))] SingleTargetHPP = 5,
 
     /// <seealso cref="HealerSettings.AoETargetHPP" />
-    [ConfigValueType(typeof(int))] AoETargetHPP,
+    [ConfigValueType(typeof(int))] AoETargetHPP = 6,
 
     /// <seealso cref="HealerSettings.SingleTargetRegenHPP" />
-    [ConfigValueType(typeof(int))] SingleTargetRegenHPP,
+    [ConfigValueType(typeof(int))] SingleTargetRegenHPP = 7,
 
     /// <seealso cref="HealerSettings.ManageKardia" />
-    [ConfigValueType(typeof(bool))] ManageKardia,
+    [ConfigValueType(typeof(bool))] ManageKardia = 8,
 
     /// <seealso cref="HealerSettings.AutoRez" />
-    [ConfigValueType(typeof(bool))] AutoRez,
+    [ConfigValueType(typeof(bool))] AutoRez = 9,
 
     /// <seealso cref="HealerSettings.AutoRezDPSJobs" />
-    [ConfigValueType(typeof(bool))] AutoRezDPSJobs,
+    [ConfigValueType(typeof(bool))] AutoRezDPSJobs = 10,
 
     /// <seealso cref="HealerSettings.AutoCleanse" />
-    [ConfigValueType(typeof(bool))] AutoCleanse,
+    [ConfigValueType(typeof(bool))] AutoCleanse = 11,
 
     /// <seealso cref="HealerSettings.IncludeNPCs"/>
-    [ConfigValueType(typeof(bool))] IncludeNPCs,
-}
-
-/// <summary>
-///     The subset of <see cref="AutoRotationConfig.DPSRotationMode" /> options
-///     that can be set via IPC.
-/// </summary>
-public enum AutoRotationConfigDPSRotationSubset
-{
-    /// <seealso cref="DPSRotationMode.Manual" />
-    Manual,
-
-    /// <seealso cref="DPSRotationMode.Lowest_Current" />
-    Lowest_Current,
-
-    /// <seealso cref="DPSRotationMode.Highest_Max" />
-    Highest_Max,
-
-    /// <seealso cref="DPSRotationMode.Tank_Target" />
-    Tank_Target,
-
-    /// <seealso cref="DPSRotationMode.Nearest" />
-    Nearest,
-}
-
-/// <summary>
-///     The subset of <see cref="AutoRotationConfig.HealerRotationMode" /> options
-///     that can be set via IPC.
-/// </summary>
-public enum AutoRotationConfigHealerRotationSubset
-{
-    /// <seealso cref="HealerRotationMode.Manual" />
-    Manual,
-
-    /// <seealso cref="HealerRotationMode.Highest_Current" />
-    Lowest_Current,
+    [ConfigValueType(typeof(bool))] IncludeNPCs = 12,
 }
 
 #region Type Attribute

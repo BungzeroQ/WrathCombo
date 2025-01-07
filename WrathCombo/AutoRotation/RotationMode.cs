@@ -2,21 +2,21 @@
 {
     public enum DPSRotationMode
     {
-        Manual,
-        Highest_Max,
-        Lowest_Max,
-        Highest_Current,
-        Lowest_Current,
-        Tank_Target,
-        Nearest,
-        Furthest,
+        Manual = 0,
+        Highest_Max = 1,
+        Lowest_Max = 2,
+        Highest_Current = 3,
+        Lowest_Current = 4,
+        Tank_Target = 5,
+        Nearest = 6,
+        Furthest = 7,
     }
 
     public enum HealerRotationMode
     {
-        Manual,
-        Highest_Current,
-        Lowest_Current,
+        Manual = 0,
+        Highest_Current = 1,
+        Lowest_Current = 2,
         //Self_Priority,
         //Tank_Priority,
         //Healer_Priority,

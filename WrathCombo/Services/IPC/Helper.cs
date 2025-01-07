@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.EzIpcManager;
+using ECommons.GameHelpers;
 using ECommons.Logging;
 using WrathCombo.CustomComboNS.Functions;
 
@@ -95,11 +97,9 @@ public partial class Helper(ref Leasing leasing)
             currentRealJob =
                 CustomComboFunctions.JobIDs.ClassToJob(currentJobRow.RowId);
 
-        var properJob = (Job)currentRealJob;
-        var jobName = properJob.ToString();
-
-        P.IPCSearch.ComboStatesByJobCategorized.TryGetValue(jobName,
+        P.IPCSearch.ComboStatesByJobCategorized.TryGetValue(Player.Job,
             out var comboStates);
+
         if (comboStates is null)
             return false;
 
@@ -117,7 +117,7 @@ public partial class Helper(ref Leasing leasing)
     /// <summary>
     ///     Cache of the combos to set the current job to be Auto-Rotation ready.
     /// </summary>
-    private static readonly Dictionary<string, List<string>>
+    private static readonly Dictionary<Job, List<string>>
         CombosForARCache = new();
 
     /// <summary>
@@ -132,11 +132,9 @@ public partial class Helper(ref Leasing leasing)
     /// </returns>
     /// <seealso cref="Provider.SetCurrentJobAutoRotationReady" />
     internal static List<string>? GetCombosToSetJobAutoRotationReady
-        (string job, bool includeOptions = true)
+        (Job job, bool includeOptions = true)
     {
         #region Getting Combo data
-
-        job = job.ToUpperInvariant();
 
         if (CombosForARCache.TryGetValue(job, out var value))
             return value;

@@ -2,6 +2,7 @@
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
 using ECommons.GameHelpers;
+using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using System;
@@ -26,7 +27,7 @@ namespace WrathCombo.CustomComboNS.Functions
         /// <summary> Checks if the player is high enough level to use the passed Action ID. </summary>
         /// <param name="actionid"> ID of the action. </param>
         /// <returns></returns>
-        public static bool LevelChecked(uint actionid) =>  LocalPlayer.Level >= GetLevel(actionid) && NoBlockingStatuses(actionid) && IsActionUnlocked(actionid);
+        public static bool LevelChecked(uint actionid) => LocalPlayer.Level >= GetLevel(actionid) && NoBlockingStatuses(actionid) && IsActionUnlocked(actionid);
 
         /// <summary> Checks if the player is high enough level to use the passed Trait ID. </summary>
         /// <param name="traitid"> ID of the action. </param>
@@ -93,7 +94,7 @@ namespace WrathCombo.CustomComboNS.Functions
         {
             foreach (var id in ids)
                 if (!ActionReady(id)) return false;
-                
+
             return true;
         }
 
@@ -278,8 +279,12 @@ namespace WrathCombo.CustomComboNS.Functions
             return ret && status is 0 or 582;
         }
 
-        public unsafe static bool RaidWideCasting()
+        private static bool _raidwideInc;
+        public static unsafe bool RaidWideCasting(float timeRemaining = 0f)
         {
+            if (!EzThrottler.Throttle("RaidWideCheck", 100))
+                return _raidwideInc;
+
             foreach (var caster in Svc.Objects.Where(x => x is IBattleChara chara && chara.IsHostile() && chara.IsCasting()).Cast<IBattleChara>())
             {
                 if (Svc.Data.Excel.GetSheet<Lumina.Excel.Sheets.Action>().TryGetRow(caster.CastActionId, out var spell))
@@ -288,11 +293,30 @@ namespace WrathCombo.CustomComboNS.Functions
                     var range = spell.EffectRange;
 
                     if (type is 2 or 5 && range >= 30)
-                        return true;
+                    {
+                        if (timeRemaining == 0f)
+                            return _raidwideInc = true;
+
+                        if ((caster.TotalCastTime - caster.CurrentCastTime) <= timeRemaining)
+                        return _raidwideInc = true;
+
+                    }
                 }
             }
 
-            return false;
+            return _raidwideInc = false;
+        }
+
+        private static bool _beingTargetedHostile;
+        public static bool BeingTargetedHostile
+        {
+            get
+            {
+                if (!EzThrottler.Throttle("BeingTargetedHostile", 100))
+                    return _beingTargetedHostile;
+
+                return _beingTargetedHostile = Svc.Objects.Any(x => x.IsHostile() && x is IBattleChara chara && chara.CastTargetObjectId == LocalPlayer.GameObjectId);
+            }
         }
     }
 }

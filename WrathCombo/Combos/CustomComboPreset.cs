@@ -5061,6 +5061,10 @@ public enum CustomComboPreset
     SCH_DPS_Balance_Opener = 16009,
 
     [ParentCombo(SCH_DPS)]
+    [CustomComboInfo("Fairy Reminder", "Adds Summon Eos whenever you've not summoned your fairy.", SCH.JobID)]
+    SCH_DPS_FairyReminder = 16048,
+
+    [ParentCombo(SCH_DPS)]
     [CustomComboInfo("Lucid Dreaming Weave Option", "Adds Lucid Dreaming when MP drops below slider value:", SCH.JobID)]
     SCH_DPS_Lucid = 16002,
 
@@ -5096,6 +5100,10 @@ public enum CustomComboPreset
     [ReplaceSkill(SCH.ArtOfWar, SCH.ArtOfWarII)]
     [CustomComboInfo("AoE DPS Feature", "Replaces Art of War with options below.", SCH.JobID)]
     SCH_AoE = 16010,
+
+    [ParentCombo(SCH_AoE)]
+    [CustomComboInfo("Fairy Reminder", "Adds Summon Eos whenever you've not summoned your fairy.", SCH.JobID)]
+    SCH_AoE_FairyReminder = 16049,
 
     [ParentCombo(SCH_AoE)]
     [CustomComboInfo("Lucid Dreaming Weave Option", "Adds Lucid Dreaming when MP drops below slider value:", SCH.JobID)]

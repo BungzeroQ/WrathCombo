@@ -9,7 +9,7 @@ namespace WrathCombo.AutoRotation;
 public class AutoRotationConfigIPCWrapper(AutoRotationConfig? config)
 {
     public bool Enabled =>
-        P.IPC?.UIHelper?.AutoRotationStateControlled()?.state ??
+        P?.UIHelper?.AutoRotationStateControlled()?.state ??
         config?.Enabled ??
         false;
 
@@ -18,7 +18,7 @@ public class AutoRotationConfigIPCWrapper(AutoRotationConfig? config)
         get
         {
             var checkControlled =
-                P.IPC.UIHelper.AutoRotationConfigControlled("InCombatOnly");
+                P.UIHelper.AutoRotationConfigControlled("InCombatOnly");
             return checkControlled is not null
                 ? checkControlled.Value.state == 1
                 : config.InCombatOnly;
@@ -30,7 +30,7 @@ public class AutoRotationConfigIPCWrapper(AutoRotationConfig? config)
         get
         {
             var checkControlled =
-                P.IPC.UIHelper.AutoRotationConfigControlled("DPSRotationMode");
+                P.UIHelper.AutoRotationConfigControlled("DPSRotationMode");
             return checkControlled is not null
                 ? Enum.Parse<DPSRotationMode>(checkControlled.Value.state.ToString())
                 : config.DPSRotationMode;
@@ -42,7 +42,7 @@ public class AutoRotationConfigIPCWrapper(AutoRotationConfig? config)
         get
         {
             var checkControlled =
-                P.IPC.UIHelper.AutoRotationConfigControlled("HealerRotationMode");
+                P.UIHelper.AutoRotationConfigControlled("HealerRotationMode");
             return checkControlled is not null
                 ? Enum.Parse<HealerRotationMode>(
                     checkControlled.Value.state.ToString())
@@ -74,7 +74,7 @@ public class DPSSettingsIPCWrapper(DPSSettings settings)
         get
         {
             var checkControlled =
-                P.IPC.UIHelper.AutoRotationConfigControlled("FATEPriority");
+                P.UIHelper.AutoRotationConfigControlled("FATEPriority");
             return checkControlled is not null
                 ? checkControlled.Value.state == 1
                 : settings.FATEPriority;
@@ -86,7 +86,7 @@ public class DPSSettingsIPCWrapper(DPSSettings settings)
         get
         {
             var checkControlled =
-                P.IPC.UIHelper.AutoRotationConfigControlled("QuestPriority");
+                P.UIHelper.AutoRotationConfigControlled("QuestPriority");
             return checkControlled is not null
                 ? checkControlled.Value.state == 1
                 : settings.QuestPriority;
@@ -109,15 +109,15 @@ public class DPSSettingsIPCWrapper(DPSSettings settings)
 public class HealerSettingsIPCWrapper(HealerSettings settings)
 {
     public int SingleTargetHPP =>
-        P.IPC.UIHelper.AutoRotationConfigControlled("SingleTargetHPP")?.state
+        P.UIHelper.AutoRotationConfigControlled("SingleTargetHPP")?.state
         ?? settings.SingleTargetHPP;
 
     public int AoETargetHPP =>
-        P.IPC.UIHelper.AutoRotationConfigControlled("AoETargetHPP")?.state
+        P.UIHelper.AutoRotationConfigControlled("AoETargetHPP")?.state
         ?? settings.AoETargetHPP;
 
     public int SingleTargetRegenHPP =>
-        P.IPC.UIHelper.AutoRotationConfigControlled("SingleTargetRegenHPP")?.state
+        P.UIHelper.AutoRotationConfigControlled("SingleTargetRegenHPP")?.state
         ?? settings.SingleTargetRegenHPP;
 
     public bool ManageKardia
@@ -125,7 +125,7 @@ public class HealerSettingsIPCWrapper(HealerSettings settings)
         get
         {
             var checkControlled =
-                P.IPC.UIHelper.AutoRotationConfigControlled("ManageKardia");
+                P.UIHelper.AutoRotationConfigControlled("ManageKardia");
             return checkControlled is not null
                 ? checkControlled.Value.state == 1
                 : settings.ManageKardia;
@@ -137,7 +137,7 @@ public class HealerSettingsIPCWrapper(HealerSettings settings)
         get
         {
             var checkControlled =
-                P.IPC.UIHelper.AutoRotationConfigControlled("AutoRez");
+                P.UIHelper.AutoRotationConfigControlled("AutoRez");
             return checkControlled is not null
                 ? checkControlled.Value.state == 1
                 : settings.AutoRez;
@@ -149,7 +149,7 @@ public class HealerSettingsIPCWrapper(HealerSettings settings)
         get
         {
             var checkControlled =
-                P.IPC.UIHelper.AutoRotationConfigControlled("AutoRezDPSJobs");
+                P.UIHelper.AutoRotationConfigControlled("AutoRezDPSJobs");
             return checkControlled is not null
                 ? checkControlled.Value.state == 1
                 : settings.AutoRezDPSJobs;
@@ -161,7 +161,7 @@ public class HealerSettingsIPCWrapper(HealerSettings settings)
         get
         {
             var checkControlled =
-                P.IPC.UIHelper.AutoRotationConfigControlled("AutoCleanse");
+                P.UIHelper.AutoRotationConfigControlled("AutoCleanse");
             return checkControlled is not null
                 ? checkControlled.Value.state == 1
                 : settings.AutoCleanse;
@@ -173,7 +173,7 @@ public class HealerSettingsIPCWrapper(HealerSettings settings)
         get
         {
             var checkControlled =
-                P.IPC.UIHelper.AutoRotationConfigControlled("IncludeNPCs");
+                P.UIHelper.AutoRotationConfigControlled("IncludeNPCs");
             return checkControlled is not null
                 ? checkControlled.Value.state == 1
                 : settings.IncludeNPCs;

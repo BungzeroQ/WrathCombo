@@ -1,10 +1,13 @@
 ﻿using Dalamud.Utility;
+using ECommons;
+using ECommons.DalamudServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using WrathCombo.Attributes;
 using WrathCombo.Combos;
 using WrathCombo.Services;
+using WrathCombo.Window.Functions;
 
 namespace WrathCombo.Core
 {
@@ -16,6 +19,8 @@ namespace WrathCombo.Core
         private static HashSet<CustomComboPreset>? EurekaCombos;
         private static Dictionary<CustomComboPreset, CustomComboPreset[]>? ConflictingCombos;
         private static Dictionary<CustomComboPreset, CustomComboPreset?>? ParentCombos;  // child: parent
+
+        public static HashSet<CustomComboPreset>? AllPresets;
 
         public static void Init()
         {
@@ -47,6 +52,14 @@ namespace WrathCombo.Core
                 .ToDictionary(
                     preset => preset,
                     preset => preset.GetAttribute<ParentComboAttribute>()?.ParentPreset);
+
+            AllPresets = Enum.GetValues<CustomComboPreset>().ToHashSet();
+
+            foreach (var preset in Enum.GetValues<CustomComboPreset>())
+            {
+                Presets.Attributes.Add(preset, new Presets.PresetAttributes(preset));
+            }
+            Svc.Log.Information($"Cached {Presets.Attributes.Count} preset attributes.");
         }
 
 

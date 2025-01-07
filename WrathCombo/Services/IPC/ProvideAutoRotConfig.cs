@@ -79,8 +79,6 @@ public partial class Provider
     /// </param>
     /// <value>+1 <c>set</c></value>
     /// <seealso cref="AutoRotationConfigOption"/>
-    /// <seealso cref="AutoRotationConfigDPSRotationSubset"/>
-    /// <seealso cref="AutoRotationConfigHealerRotationSubset"/>
     [EzIPC]
     public void SetAutoRotationConfigState
         (Guid lease, AutoRotationConfigOption option, object value)

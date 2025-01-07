@@ -1,6 +1,10 @@
 ﻿using Dalamud.Game.ClientState.JobGauge.Types;
+using Dalamud.Game.ClientState.Objects.Types;
+using ECommons.DalamudServices;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using WrathCombo.CustomComboNS;
 using WrathCombo.CustomComboNS.Functions;
 using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions;
@@ -20,6 +24,23 @@ namespace WrathCombo.Combos.PvE
 
             return WrathOpener.Dummy;
         }
+        public static bool FairyDismissed => Gauge.DismissedFairy > 0;
+
+        private static DateTime _summonTime;
+        private static DateTime SummonTime
+        {
+            get
+            {
+                if (HasPetPresent() || FairyDismissed)
+                    return _summonTime = DateTime.Now.AddSeconds(1);
+
+                return _summonTime;
+            }
+        }
+
+        public static bool NeedToSummon => DateTime.Now > SummonTime && !HasPetPresent() && !FairyDismissed;
+
+        public static IBattleChara? AetherPactTarget => Svc.Objects.Where(x => x is IBattleChara chara && chara.StatusList.Any(y => y.StatusId == 1223 && y.SourceObject.GameObjectId == Svc.Buddies.PetBuddy.ObjectId)).Cast<IBattleChara>().FirstOrDefault();
 
         public static int GetMatchingConfigST(int i, out uint action, out bool enabled)
         {

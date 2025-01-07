@@ -90,7 +90,7 @@ namespace WrathCombo.Window.Functions
                 var labelSize = ImGui.CalcTextSize(label);
                 ImGui.SetCursorPosX(ImGui.GetContentRegionAvail().X - labelSize.X.Scale() - 64f.Scale());
                 bool autoOn = Service.Configuration.AutoActions[preset];
-                if (P.IPC.UIHelper.ShowIPCControlledCheckboxIfNeeded
+                if (P.UIHelper.ShowIPCControlledCheckboxIfNeeded
                         ($"###AutoAction{preset}", ref autoOn, preset, false))
                 {
                     Service.Configuration.AutoActions[preset] = autoOn;
@@ -105,10 +105,10 @@ namespace WrathCombo.Window.Functions
             }
 
             if (info.Name.Contains(" - AoE") || info.Name.Contains(" - Sin"))
-                if (P.IPC.UIHelper.PresetControlled(preset) is not null)
-                    P.IPC.UIHelper.ShowIPCControlledIndicatorIfNeeded(preset);
+                if (P.UIHelper.PresetControlled(preset) is not null)
+                    P.UIHelper.ShowIPCControlledIndicatorIfNeeded(preset);
 
-            if (P.IPC.UIHelper.ShowIPCControlledCheckboxIfNeeded
+            if (P.UIHelper.ShowIPCControlledCheckboxIfNeeded
                     ($"{info.Name}###{preset}", ref enabled, preset, true))
             {
                 if (enabled)

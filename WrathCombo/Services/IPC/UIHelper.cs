@@ -6,6 +6,7 @@ using System.Linq;
 using System.Numerics;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
+using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.ImGuiMethods;
 using ImGuiNET;
@@ -18,10 +19,10 @@ using WrathCombo.CustomComboNS.Functions;
 
 namespace WrathCombo.Services.IPC;
 
-public class UIHelper(ref Leasing leasing, ref Search search)
+public class UIHelper(Leasing leasing)
 {
     private readonly Leasing _leasing = leasing;
-    private readonly Search _search = search;
+    private readonly Search _search = P.IPCSearch;
 
     #region Checks for the UI
 
@@ -430,7 +431,7 @@ public class UIHelper(ref Leasing leasing, ref Search search)
         }
         catch (Exception e)
         {
-            Logging.Error("Error in UIHelper.\n" + e.Message);
+            Logging.Error("Error in UIHelper.\n" + e);
             return DefaultUI(label, ref backupVar);
         }
 
