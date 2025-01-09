@@ -144,14 +144,16 @@ internal static partial class SCH
 
     public static bool FairyDismissed => Gauge.DismissedFairy > 0;
 
+    private static DateTime _summonTimeField = DateTime.Now;  // Add backing field
+
     private static DateTime SummonTime
     {
         get
         {
             if (HasPetPresent() || FairyDismissed)
-                return field = DateTime.Now.AddSeconds(1);
+                return _summonTimeField = DateTime.Now.AddSeconds(1);
 
-            return field;
+            return _summonTimeField;
         }
     }
 
