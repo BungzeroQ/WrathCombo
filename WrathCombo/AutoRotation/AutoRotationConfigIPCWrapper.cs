@@ -103,6 +103,8 @@ public class DPSSettingsIPCWrapper(DPSSettings settings)
 
     public float MaxDistance => settings.MaxDistance;
 
+    public bool AlwaysSelectTarget => settings.AlwaysSelectTarget;
+
     #endregion
 }
 

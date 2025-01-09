@@ -8,8 +8,10 @@ internal class All
 {
     public const byte JobID = 0;
 
-    public const uint
+    /// Used to block user input.
+    public const uint SavageBlade = 11;
 
+    public const uint
         //Tank
         ShieldWall = 197, //LB1, instant, range 0, AOE 50 circle, targets=self, animLock=1.930
         Stronghold = 198, //LB2, instant, range 0, AOE 50 circle, targets=self, animLock=3.860

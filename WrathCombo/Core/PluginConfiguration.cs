@@ -180,7 +180,7 @@ namespace WrathCombo.Core
         /// <summary> Gets active Blue Mage (BLU) spells. </summary>
         public List<uint> ActiveBLUSpells { get; set; } = [];
 
-        /// <summary> Gets or sets an array of 4 ability IDs to interact with the <see cref="CustomComboPreset.DNC_DanceComboReplacer"/> combo. </summary>
+        /// <summary> Gets or sets an array of 4 ability IDs to interact with the <see cref="CustomComboPreset.DNC_CustomDanceSteps"/> combo. </summary>
         public uint[] DancerDanceCompatActionIDs { get; set; } = [ 0, 0, 0, 0, ];
 
         #endregion

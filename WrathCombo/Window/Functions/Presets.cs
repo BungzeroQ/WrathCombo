@@ -19,6 +19,7 @@ using WrathCombo.Data;
 using WrathCombo.Extensions;
 using WrathCombo.Services;
 using System;
+using WrathCombo.Combos.PvP;
 
 namespace WrathCombo.Window.Functions
 {
@@ -69,8 +70,8 @@ namespace WrathCombo.Window.Functions
                 PresetAttributes attributes = new(preset);
                 Attributes[preset] = attributes;
             }
-            var enabled = PresetStorage.IsEnabled(preset);
-            var secret = Attributes[preset].IsPvP;
+            bool enabled = PresetStorage.IsEnabled(preset);
+            bool pvp = Attributes[preset].IsPvP;
             var conflicts = Attributes[preset].Conflicts;
             var parent = Attributes[preset].Parent;
             var blueAttr = Attributes[preset].BlueInactive;
@@ -285,34 +286,69 @@ namespace WrathCombo.Window.Functions
             }
             if (enabled)
             {
-                switch (info.JobID)
+                if (!pvp)
                 {
-                  //  case All.JobID: All.Config.Draw(preset); break;
-                    case AST.JobID: AST.Config.Draw(preset); break;
-                    case BLM.JobID: BLM.Config.Draw(preset); break;
-                    case BLU.JobID: BLU.Config.Draw(preset); break;
-                    case BRD.JobID: BRD.Config.Draw(preset); break;
-                    case DNC.JobID: DNC.Config.Draw(preset); break;
-                    case DOL.JobID: DOL.Config.Draw(preset); break;
-                    case DRG.JobID: DRG.Config.Draw(preset); break;
-                    case DRK.JobID: DRK.Config.Draw(preset); break;
-                    case GNB.JobID: GNB.Config.Draw(preset); break;
-                    case MCH.JobID: MCH.Config.Draw(preset); break;
-                    case MNK.JobID: MNK.Config.Draw(preset); break;
-                    case NIN.JobID: NIN.Config.Draw(preset); break;
-                    case PCT.JobID: PCT.Config.Draw(preset); break;
-                    case PLD.JobID: PLD.Config.Draw(preset); break;
-                    case RPR.JobID: RPR.Config.Draw(preset); break;
-                    case RDM.JobID: RDM.Config.Draw(preset); break;
-                    case SAM.JobID: SAM.Config.Draw(preset); break;
-                    case SCH.JobID: SCH.Config.Draw(preset); break;
-                    case SGE.JobID: SGE.Config.Draw(preset); break;
-                    case SMN.JobID: SMN.Config.Draw(preset); break;
-                    case VPR.JobID: VPR.Config.Draw(preset); break;
-                    case WAR.JobID: WAR.Config.Draw(preset); break;
-                    case WHM.JobID: WHM.Config.Draw(preset); break;
-                    default: UserConfigItems.Draw(preset, enabled); break;
+                    switch (info.JobID)
+                    {
+                        //  case All.JobID: All.Config.Draw(preset); break;
+                        case AST.JobID: AST.Config.Draw(preset); break;
+                        case BLM.JobID: BLM.Config.Draw(preset); break;
+                        case BLU.JobID: BLU.Config.Draw(preset); break;
+                        case BRD.JobID: BRD.Config.Draw(preset); break;
+                        case DNC.JobID: DNC.Config.Draw(preset); break;
+                        case DOL.JobID: DOL.Config.Draw(preset); break;
+                        case DRG.JobID: DRG.Config.Draw(preset); break;
+                        case DRK.JobID: DRK.Config.Draw(preset); break;
+                        case GNB.JobID: GNB.Config.Draw(preset); break;
+                        case MCH.JobID: MCH.Config.Draw(preset); break;
+                        case MNK.JobID: MNK.Config.Draw(preset); break;
+                        case NIN.JobID: NIN.Config.Draw(preset); break;
+                        case PCT.JobID: PCT.Config.Draw(preset); break;
+                        case PLD.JobID: PLD.Config.Draw(preset); break;
+                        case RPR.JobID: RPR.Config.Draw(preset); break;
+                        case RDM.JobID: RDM.Config.Draw(preset); break;
+                        case SAM.JobID: SAM.Config.Draw(preset); break;
+                        case SCH.JobID: SCH.Config.Draw(preset); break;
+                        case SGE.JobID: SGE.Config.Draw(preset); break;
+                        case SMN.JobID: SMN.Config.Draw(preset); break;
+                        case VPR.JobID: VPR.Config.Draw(preset); break;
+                        case WAR.JobID: WAR.Config.Draw(preset); break;
+                        case WHM.JobID: WHM.Config.Draw(preset); break;
+                        default: UserConfigItems.Draw(preset, enabled); break;
+                    }
                 }
+                else
+                {
+                    switch (info.JobID)
+                    {
+                        //  case All.JobID: All.Config.Draw(preset); break;
+                        case AST.JobID: AST.Config.Draw(preset); break;
+                        case BLM.JobID: BLM.Config.Draw(preset); break;
+                        case BLU.JobID: BLU.Config.Draw(preset); break;
+                        case BRD.JobID: BRD.Config.Draw(preset); break;
+                        case DNC.JobID: DNC.Config.Draw(preset); break;
+                        //case DOL.JobID: DOL.Config.Draw(preset); break;
+                        case DRG.JobID: DRG.Config.Draw(preset); break;
+                        case DRK.JobID: DRK.Config.Draw(preset); break;
+                        case GNB.JobID: GNB.Config.Draw(preset); break;
+                        case MCH.JobID: MCH.Config.Draw(preset); break;
+                        case MNK.JobID: MNK.Config.Draw(preset); break;
+                        case NIN.JobID: NIN.Config.Draw(preset); break;
+                        case PCT.JobID: PCT.Config.Draw(preset); break;
+                        case PLD.JobID: PLD.Config.Draw(preset); break;
+                        case RPR.JobID: RPR.Config.Draw(preset); break;
+                        case RDM.JobID: RDMPvP.Config.Draw(preset); break;
+                        case SAM.JobID: SAM.Config.Draw(preset); break;
+                        case SCH.JobID: SCH.Config.Draw(preset); break;
+                        case SGE.JobID: SGE.Config.Draw(preset); break;
+                        case SMN.JobID: SMN.Config.Draw(preset); break;
+                        case VPR.JobID: VPR.Config.Draw(preset); break;
+                        case WAR.JobID: WAR.Config.Draw(preset); break;
+                        case WHM.JobID: WHM.Config.Draw(preset); break;
+                        default: UserConfigItems.Draw(preset, enabled); break;
+                    }
+                }
+
             }
 
             ConfigWindow.currentPreset++;

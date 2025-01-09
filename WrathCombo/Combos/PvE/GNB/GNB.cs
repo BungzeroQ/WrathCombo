@@ -123,7 +123,6 @@ namespace WrathCombo.Combos.PvE
                 var hasNM = nmCD is >= 40 and <= 60; //Checks if No Mercy is active
                 var hasBreak = HasEffect(Buffs.ReadyToBreak); //Checks for Ready To Break buff
                 var hasReign = HasEffect(Buffs.ReadyToReign); //Checks for Ready To Reign buff
-                //Mitigations
                 //Misc
                 var inOdd = bfCD is < 90 and > 20; //Odd Minute
                 var canLateWeave = GetCooldownRemainingTime(actionID) < 1 && GetCooldownRemainingTime(actionID) > 0.6; //SkS purposes
@@ -207,8 +206,8 @@ namespace WrathCombo.Combos.PvE
                             return OriginalHook(HeartOfStone);
 
                         //Aurora
-                        if (ActionReady(Aurora) && //Aurora is ready
-                            ((HasFriendlyTarget() && TargetHasEffectAny(Buffs.Aurora)) || (!HasFriendlyTarget() && HasEffectAny(Buffs.Aurora))) && //Aurora is not active on self or target
+                        if (LevelChecked(Aurora) && //Aurora is unlocked
+                            !(HasEffect(Buffs.Aurora) || TargetHasEffectAny(Buffs.Aurora)) && //Aurora is not active on self or target
                             PlayerHealthPercentageHp() < 85) //
                             return Aurora;
                     }
@@ -703,7 +702,7 @@ namespace WrathCombo.Combos.PvE
                         ActionReady(Superbolide) && //Superbolide is ready
                         PlayerHealthPercentageHp() < Config.GNB_ST_Superbolide_Health && //Player's health is below selected threshold
                         (Config.GNB_ST_Superbolide_SubOption == 0 || //Superbolide is enabled for all targets
-                         (TargetIsBoss() && Config.GNB_ST_Superbolide_SubOption == 1))) //Superbolide is enabled for bosses only
+                        (TargetIsBoss() && Config.GNB_ST_Superbolide_SubOption == 1))) //Superbolide is enabled for bosses only
                         return Superbolide;
 
                     if (IsPlayerTargeted()) //Player is being targeted by current target
@@ -759,12 +758,12 @@ namespace WrathCombo.Combos.PvE
 
                     //Aurora
                     if (IsEnabled(CustomComboPreset.GNB_ST_Aurora) && //Aurora option is enabled
-                        ActionReady(Aurora) && //Aurora is ready
-                        ((HasFriendlyTarget() && TargetHasEffectAny(Buffs.Aurora)) || (!HasFriendlyTarget() && HasEffectAny(Buffs.Aurora))) && //Aurora is not active on self or target
+                        LevelChecked(Aurora) && //Aurora is unlocked
+                        !(HasEffect(Buffs.Aurora) || TargetHasEffectAny(Buffs.Aurora)) && //Aurora is not already active on player or target
                         GetRemainingCharges(Aurora) > Config.GNB_ST_Aurora_Charges && //Aurora has more charges than set threshold
                         PlayerHealthPercentageHp() < Config.GNB_ST_Aurora_Health && //Player's health is below selected threshold
                         (Config.GNB_ST_Aurora_SubOption == 0 || //Aurora is enabled for all targets
-                         (TargetIsBoss() && Config.GNB_ST_Aurora_SubOption == 1))) //Aurora is enabled for bosses only
+                        (TargetIsBoss() && Config.GNB_ST_Aurora_SubOption == 1))) //Aurora is enabled for bosses only
                         return Aurora;
                 }
                 #endregion
@@ -999,9 +998,9 @@ namespace WrathCombo.Combos.PvE
                     if (LevelChecked(DoubleDown)) //Lv90+
                     {
                         if ((inOdd && //Odd Minute window
-                             (Ammo >= 2 || (ComboAction is BrutalShell && Ammo == 1))) || //2 or 3 Ammo or 1 Ammo with Solid Barrel next in combo
+                            (Ammo >= 2 || (ComboAction is BrutalShell && Ammo == 1))) || //2 or 3 Ammo or 1 Ammo with Solid Barrel next in combo
                             (!inOdd && //Even Minute window
-                             Ammo != 3)) //Ammo is not full (3)
+                            Ammo != 3)) //Ammo is not full (3)
                             return NoMercy; //Execute No Mercy if conditions are met
                     }
                     if (!LevelChecked(DoubleDown)) //Lv1-89
@@ -1267,9 +1266,9 @@ namespace WrathCombo.Combos.PvE
                             return OriginalHook(HeartOfStone);
 
                         //Aurora
-                        if (ActionReady(Aurora) && //Aurora is ready
-                            ((HasFriendlyTarget() && TargetHasEffectAny(Buffs.Aurora)) || (!HasFriendlyTarget() && HasEffectAny(Buffs.Aurora))) && //Aurora is not active on self or target
-                            PlayerHealthPercentageHp() < 85) //
+                        if (LevelChecked(Aurora) && //Aurora is unlocked
+                            !(HasEffect(Buffs.Aurora) || TargetHasEffectAny(Buffs.Aurora)) && //Aurora is not active on self or target
+                            PlayerHealthPercentageHp() < 85) //Player's health is below 85%
                             return Aurora;
                     }
 
@@ -1687,12 +1686,12 @@ namespace WrathCombo.Combos.PvE
 
                     //Aurora
                     if (IsEnabled(CustomComboPreset.GNB_AoE_Aurora) && //Aurora option is enabled
-                        ActionReady(Aurora) && //Aurora is ready
+                        LevelChecked(Aurora) && //Aurora is unlocked
                         GetRemainingCharges(Aurora) > Config.GNB_AoE_Aurora_Charges && //Aurora has more charges than set threshold
-                        ((HasFriendlyTarget() && TargetHasEffectAny(Buffs.Aurora)) || (!HasFriendlyTarget() && HasEffectAny(Buffs.Aurora))) && //Aurora is not active on self or target
+                        !(HasEffect(Buffs.Aurora) || TargetHasEffectAny(Buffs.Aurora)) && //Aurora is not already active on player or target
                         PlayerHealthPercentageHp() < Config.GNB_AoE_Aurora_Health && //Player's health is below selected threshold
                         (Config.GNB_AoE_Aurora_SubOption == 0 || //Aurora is enabled for all targets
-                         (TargetIsBoss() && Config.GNB_AoE_Aurora_SubOption == 1))) //Aurora is enabled for bosses only
+                        (TargetIsBoss() && Config.GNB_AoE_Aurora_SubOption == 1))) //Aurora is enabled for bosses only
                         return Aurora;
                 }
                 #endregion
@@ -2102,7 +2101,7 @@ namespace WrathCombo.Combos.PvE
                         //Hypervelocity
                         if (IsEnabled(CustomComboPreset.GNB_GF_Continuation) && //Continuation option is enabled
                             LevelChecked(Hypervelocity) && //Hypervelocity is unlocked
-                            (JustUsed(BurstStrike, 5f) || //Burst Strike was just used within 5 seconds
+                            (JustUsed(BurstStrike, 1) || //Burst Strike was just used within 1 second
                              HasEffect(Buffs.ReadyToBlast))) //Ready To Blast buff is active
                             return Hypervelocity; //Execute Hypervelocity if conditions are met
 
@@ -2255,7 +2254,7 @@ namespace WrathCombo.Combos.PvE
                 if (IsEnabled(CustomComboPreset.GNB_BS_Continuation) && //Continuation option is enabled
                     IsEnabled(CustomComboPreset.GNB_BS_Hypervelocity) && //Continuation option is enabled
                     LevelChecked(Hypervelocity) && //Hypervelocity is unlocked
-                    (JustUsed(BurstStrike, 5f) || //Burst Strike was just used within 5 seconds
+                    (JustUsed(BurstStrike, 1) || //Burst Strike was just used within 1 second
                      HasEffect(Buffs.ReadyToBlast))) //Ready To Blast buff is active
                     return Hypervelocity; //Execute Hypervelocity if conditions are met
 
@@ -2284,9 +2283,9 @@ namespace WrathCombo.Combos.PvE
                     return DoubleDown; //Execute Double Down if conditions are met
 
                 //Gnashing Fang
-                if (IsEnabled(CustomComboPreset.GNB_BS_GnashingFang) && //Double Down option is enabled
-                    canGF) //able to use Gnashing Fang
-                    return GnashingFang; //Execute Gnashing Fang if conditions are met
+                if (IsEnabled(CustomComboPreset.GNB_BS_GnashingFang) && //Gnashing Fang option is enabled
+                    canGF || GunStep is 1 or 2) //able to use Gnashing Fang combo
+                    return OriginalHook(GnashingFang); //Execute Gnashing Fang if conditions are met
 
                 //Double Down
                 if (IsEnabled(CustomComboPreset.GNB_BS_DoubleDown) && //Double Down option is enabled
@@ -2359,9 +2358,9 @@ namespace WrathCombo.Combos.PvE
                     return Bloodfest; //Execute Bloodfest if conditions are met
 
                 //Bow Shock
-                if (IsEnabled(CustomComboPreset.GNB_FC_BowShock) && //Double Down option is enabled
-                    canBow) //able to use Double Down
-                    return BowShock; //Execute Double Down if conditions are met
+                if (IsEnabled(CustomComboPreset.GNB_FC_BowShock) && //Bow Shock option is enabled
+                    canBow) //able to use Bow Shock
+                    return BowShock; //Execute Bow Shock if conditions are met
 
                 //Double Down
                 if (IsEnabled(CustomComboPreset.GNB_FC_DoubleDown) && //Double Down option is enabled
@@ -2409,7 +2408,7 @@ namespace WrathCombo.Combos.PvE
                 #endregion
 
                 //oGCDs
-                if (Config.GNB_NM_Features_Weave == 1) //Weave option is enabled
+                if (Config.GNB_NM_Features_Weave == 0) //Weave option is enabled
                 {
                     if (CanWeave())
                     {
@@ -2446,7 +2445,7 @@ namespace WrathCombo.Combos.PvE
 
                 }
 
-                if (Config.GNB_NM_Features_Weave == 2) //Force option is enabled
+                if (Config.GNB_NM_Features_Weave == 1) //Force option is enabled
                 {
                     //Continuation
                     if (IsEnabled(CustomComboPreset.GNB_NM_Continuation) && //Continuation option is enabled

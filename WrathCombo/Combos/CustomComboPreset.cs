@@ -1236,10 +1236,14 @@ public enum CustomComboPreset
     [CustomComboInfo("Custom Dance Step Feature",
         "Change custom actions into dance steps while dancing." +
         "\nLets you still dance with combos on, without using Dance Step Combo Feature.", DNC.JobID)]
-    DNC_DanceComboReplacer = 4115,
+    DNC_CustomDanceSteps = 4115,
+
+    [ReplaceSkill(DNC.Devilment)]
+    [CustomComboInfo("Override Smaller Features", "If enabled, will let you choose actions that are replaced by the smaller features listed below here, and they will return the Step that you have set them to when dancing.", DNC.JobID)]
+    DNC_CustomDanceSteps_Conflicts = 4116,
 
     #endregion
-    // Last value = 4115
+    // Last value = 4116
 
     #region Fan Features
 
@@ -1300,14 +1304,14 @@ public enum CustomComboPreset
         DNC.JobID)]
     DNC_TechnicalStep_Devilment = 4160,
 
-    // Bloodshower --> Bladeshower (or Bloodshower)
-    [ReplaceSkill(DNC.Bloodshower)]
-    [CustomComboInfo("Bloodshower to Bladeshower Feature", "Change Bloodshower to Bladeshower when Bloodshower is not available.", DNC.JobID)]
+    // Bladeshower --> Bloodshower
+    [ReplaceSkill(DNC.Bladeshower)]
+    [CustomComboInfo("Bladeshower to Bloodshower Feature", "Change Bladeshower to Bloodshower when available.", DNC.JobID)]
     DNC_Procc_Bladeshower = 4165,
 
-    // Rising Windmill --> Windmill (or Rising Windmill)
-    [ReplaceSkill(DNC.RisingWindmill)]
-    [CustomComboInfo("Rising Windmill to Windmill Feature", "Change Rising Windmill to Windmill when Rising Windmill is not available.", DNC.JobID)]
+    // Windmill --> Rising Windmill
+    [ReplaceSkill(DNC.Windmill)]
+    [CustomComboInfo("Windmill to Rising Windmill Feature", "Change Windmill to Rising Windmill when available.", DNC.JobID)]
     DNC_Procc_Windmill = 4170,
 
     #endregion
@@ -2878,8 +2882,12 @@ public enum CustomComboPreset
     MNK_STUseWindsReply = 9015,
 
     [ParentCombo(MNK_ST_AdvancedMode)]
-    [CustomComboInfo("Perfect Balance Option", "Adds Perfect Balance and Masterful Blitz to the rotation", MNK.JobID)]
+    [CustomComboInfo("Perfect Balance Option", "Adds Perfect Balance to the rotation", MNK.JobID)]
     MNK_STUsePerfectBalance = 9013,
+
+    [ParentCombo(MNK_ST_AdvancedMode)]
+    [CustomComboInfo(" Masterful Blitz Option", "Adds Masterful Blitz to the rotation", MNK.JobID)]
+    MNK_STUseMasterfulBlitz = 9039,
 
     [ParentCombo(MNK_ST_AdvancedMode)]
     [CustomComboInfo("True North Option", "Adds True North dynamically, when not in positional, to the rotation", MNK.JobID)]
@@ -2937,8 +2945,12 @@ public enum CustomComboPreset
     MNK_AoEUseWindsReply = 9035,
 
     [ParentCombo(MNK_AOE_AdvancedMode)]
-    [CustomComboInfo("Perfect Balance Option", "Adds Perfect Balance and Masterful Blitz to the rotation", MNK.JobID)]
+    [CustomComboInfo("Perfect Balance Option", "Adds Perfect Balance to the rotation", MNK.JobID)]
     MNK_AoEUsePerfectBalance = 9034,
+
+    [ParentCombo(MNK_AOE_AdvancedMode)]
+    [CustomComboInfo(" Masterful Blitz Option", "Adds Masterful Blitz to the rotation", MNK.JobID)]
+    MNK_AoEUseMasterfulBlitz = 9040,
 
     [ParentCombo(MNK_AOE_AdvancedMode)]
     [CustomComboInfo("Combo Heals Option", "Adds Bloodbath and Second Wind to the rotation.", MNK.JobID)]
@@ -2993,7 +3005,7 @@ public enum CustomComboPreset
         "Replaces Riddle of Fire with Brotherhood when Riddle of Fire is on cooldown.", MNK.JobID)]
     MNK_Riddle_Brotherhood = 9024,
 
-    // Last value = 9037
+    // Last value = 9040
 
     #endregion
 
@@ -4246,7 +4258,7 @@ public enum CustomComboPreset
     #region Single Target DPS
 
     [AutoAction(false, false)]
-    [ReplaceSkill(RDM.Jolt, RDM.Jolt2)]
+    [ReplaceSkill(RDM.Jolt, RDM.Jolt2, RDM.Jolt3)]
     [ConflictingCombos(RDM_ST_SimpleMode)]
     [CustomComboInfo("Advanced Mode - Single Target",
         "Replaces Jolt with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.",
@@ -4319,12 +4331,6 @@ public enum CustomComboPreset
     [CustomComboInfo("Melee combo overcap protection",
         "Adds melee combo to the rotation when mana is at a certain threshold.", RDM.JobID)]
     RDM_ST_Melee_Overcap_Protection = 13660,
-
-    [ParentCombo(RDM_ST_MeleeCombo)]
-    [CustomComboInfo("Melee Combo Fill Option",
-        "Adds the melee combo to the rotation." + "\nRiposte itself must be initiated manually when using this option.",
-        RDM.JobID)]
-    RDM_ST_Adv_MeleeFill = 13710,
 
     #region AoE DPS
 
@@ -4515,6 +4521,10 @@ public enum CustomComboPreset
     SGE_AoE_DPS_Toxikon = 14011,
 
     [ParentCombo(SGE_AoE_DPS)]
+    [CustomComboInfo("Pneuma Option", "Adds Pneuma if available.", SGE.JobID)]
+    SGE_AoE_DPS__Pneuma = 14059,
+
+    [ParentCombo(SGE_AoE_DPS)]
     [CustomComboInfo("Psyche Option", "Weaves Psyche if available.", SGE.JobID)]
     SGE_AoE_DPS_Psyche = 14051,
 
@@ -4608,22 +4618,16 @@ public enum CustomComboPreset
     SGE_AoE_Heal = 14026,
 
     [ParentCombo(SGE_AoE_Heal)]
+    [CustomComboInfo("Kerachole Option", "Adds Kerachole.", SGE.JobID)]
+    SGE_AoE_Heal_Kerachole = 14035,
+
+    [ParentCombo(SGE_AoE_Heal)]
+    [CustomComboInfo("Ixochole Option", "Adds Ixochole.", SGE.JobID)]
+    SGE_AoE_Heal_Ixochole = 14033,
+
+    [ParentCombo(SGE_AoE_Heal)]
     [CustomComboInfo("Physis Option", "Adds Physis.", SGE.JobID)]
     SGE_AoE_Heal_Physis = 14027,
-
-    [ParentCombo(SGE_AoE_Heal)]
-    [CustomComboInfo("Philosophia Option", "Adds Philosophia.", SGE.JobID)]
-    SGE_AoE_Heal_Philosophia = 14050,
-
-    [ParentCombo(SGE_AoE_Heal)]
-    [CustomComboInfo("Eukrasian Prognosis Option",
-        "Prognosis becomes Eukrasian Prognosis if the shield is not applied.", SGE.JobID)]
-    SGE_AoE_Heal_EPrognosis = 14028,
-
-    [ParentCombo(SGE_AoE_Heal_EPrognosis)]
-    [CustomComboInfo("Ignore Shield Check",
-        "Warning, will force the use of Eukrasia Prognosis, and normal Prognosis will be unavailable.", SGE.JobID)]
-    SGE_AoE_Heal_EPrognosis_IgnoreShield = 14029,
 
     [ParentCombo(SGE_AoE_Heal)]
     [CustomComboInfo("Holos Option", "Adds Holos.", SGE.JobID)]
@@ -4638,12 +4642,26 @@ public enum CustomComboPreset
     SGE_AoE_Heal_Pepsis = 14032,
 
     [ParentCombo(SGE_AoE_Heal)]
-    [CustomComboInfo("Ixochole Option", "Adds Ixochole.", SGE.JobID)]
-    SGE_AoE_Heal_Ixochole = 14033,
+    [CustomComboInfo("Philosophia Option", "Adds Philosophia.", SGE.JobID)]
+    SGE_AoE_Heal_Philosophia = 14050,
 
     [ParentCombo(SGE_AoE_Heal)]
-    [CustomComboInfo("Kerachole Option", "Adds Kerachole.", SGE.JobID)]
-    SGE_AoE_Heal_Kerachole = 14035,
+    [CustomComboInfo("Zoe Option", "Adds Zoe.", SGE.JobID)]
+    SGE_AoE_Heal_Zoe = 14058,
+
+        [ParentCombo(SGE_AoE_Heal_Zoe)]
+        [CustomComboInfo("Pneuma Option", "Chain to Pneuma After.", SGE.JobID)]
+        SGE_AoE_Heal_ZoePneuma = 14060,
+
+    [ParentCombo(SGE_AoE_Heal)]
+    [CustomComboInfo("Eukrasian Prognosis Option",
+        "Prognosis becomes Eukrasian Prognosis if the shield is not applied.", SGE.JobID)]
+    SGE_AoE_Heal_EPrognosis = 14028,
+
+    [ParentCombo(SGE_AoE_Heal_EPrognosis)]
+    [CustomComboInfo("Ignore Shield Check",
+        "Warning, will force the use of Eukrasia Prognosis, and normal Prognosis will be unavailable.", SGE.JobID)]
+    SGE_AoE_Heal_EPrognosis_IgnoreShield = 14029,
 
     [ParentCombo(SGE_AoE_Heal)]
     [CustomComboInfo("Rhizomata Option", "Adds Rhizomata when Addersgall is 0.", SGE.JobID)]
@@ -4724,7 +4742,7 @@ public enum CustomComboPreset
 
     #endregion
 
-    // Last used number = 14055
+    // Last used number = 14060
 
     #endregion
 
@@ -6327,63 +6345,78 @@ public enum CustomComboPreset
 
     #region DOL
 
+    [Role(JobRole.DoL)]
     [ReplaceSkill(DOL.AgelessWords, DOL.SolidReason)]
     [CustomComboInfo("[BTN/MIN] Eureka Feature",
         "Replaces Ageless Words and Solid Reason with Wise to the World when available", DOL.JobID)]
     DOL_Eureka = 51001,
 
+
+    [Role(JobRole.DoL)]
     [ReplaceSkill(DOL.ArborCall, DOL.ArborCall2, DOL.LayOfTheLand, DOL.LayOfTheLand2)]
     [CustomComboInfo("[BTN/MIN] Locate & Truth Feature",
         "Replaces Lay of the Lands or Arbor Calls with Prospect/Triangulate and Truth of Mountains/Forests if not active.",
         DOL.JobID)]
     DOL_NodeSearchingBuffs = 51012,
 
+
+    [Role(JobRole.DoL)]
     [ReplaceSkill(DOL.Cast)]
     [CustomComboInfo("[FSH] Cast to Hook Feature", "Replaces Cast with Hook when fishing", DOL.JobID)]
     FSH_CastHook = 51002,
 
+
+    [Role(JobRole.DoL)]
     [CustomComboInfo("[FSH] Diving Feature", "Replace fishing abilities with diving abilities when underwater",
         DOL.JobID)]
     FSH_Swim = 51008,
 
+    [Role(JobRole.DoL)]
     [ReplaceSkill(DOL.Cast)]
     [ParentCombo(FSH_Swim)]
     [CustomComboInfo("[FSH] Cast to Gig Option", "Replaces Cast with Gig when diving.", DOL.JobID)]
     FSH_CastGig = 51003,
 
+    [Role(JobRole.DoL)]
     [ReplaceSkill(DOL.SurfaceSlap)]
     [ParentCombo(FSH_Swim)]
     [CustomComboInfo("Surface Slap to Veteran Trade Option", "Replaces Surface Slap with Veteran Trade when diving.",
         DOL.JobID)]
     FSH_SurfaceTrade = 51004,
 
+    [Role(JobRole.DoL)]
     [ReplaceSkill(DOL.PrizeCatch)]
     [ParentCombo(FSH_Swim)]
     [CustomComboInfo("Prize Catch to Nature's Bounty Option", "Replaces Prize Catch with Nature's Bounty when diving.",
         DOL.JobID)]
     FSH_PrizeBounty = 51005,
 
+    [Role(JobRole.DoL)]
     [ReplaceSkill(DOL.Snagging)]
     [ParentCombo(FSH_Swim)]
     [CustomComboInfo("Snagging to Salvage Option", "Replaces Snagging with Salvage when diving.", DOL.JobID)]
     FSH_SnaggingSalvage = 51006,
 
+    [Role(JobRole.DoL)]
     [ReplaceSkill(DOL.CastLight)]
     [ParentCombo(FSH_Swim)]
     [CustomComboInfo("Cast Light to Electric Current Option", "Replaces Cast Light with Electric Current when diving.",
         DOL.JobID)]
     FSH_CastLight_ElectricCurrent = 51007,
 
+    [Role(JobRole.DoL)]
     [ReplaceSkill(DOL.Mooch, DOL.MoochII)]
     [ParentCombo(FSH_Swim)]
     [CustomComboInfo("Mooch to Shark Eye Option", "Replaces Mooch with Shark Eye when diving.", DOL.JobID)]
     FSH_Mooch_SharkEye = 51009,
 
+    [Role(JobRole.DoL)]
     [ReplaceSkill(DOL.FishEyes)]
     [ParentCombo(FSH_Swim)]
     [CustomComboInfo("Fish Eyes to Vital Sight Option", "Replaces Fish Eyes with Vital Sight when diving.", DOL.JobID)]
     FSH_FishEyes_VitalSight = 51010,
 
+    [Role(JobRole.DoL)]
     [ReplaceSkill(DOL.Chum)]
     [ParentCombo(FSH_Swim)]
     [CustomComboInfo("Chum to Baited Breath Option", "Replaces Chum with Baited Breath when diving.", DOL.JobID)]

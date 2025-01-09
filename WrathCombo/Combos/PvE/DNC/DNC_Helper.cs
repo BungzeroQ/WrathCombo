@@ -6,6 +6,7 @@ using System.Linq;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using WrathCombo.CustomComboNS;
 using WrathCombo.CustomComboNS.Functions;
+using WrathCombo.Services;
 using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions;
 using Options = WrathCombo.Combos.CustomComboPreset;
 
@@ -57,10 +58,69 @@ internal partial class DNC
     private static bool InAutoMode(bool singleTarget, bool simpleMode) =>
         P.IPC.GetAutoRotationState() && P.IPC.GetComboState(
             (singleTarget
-                ? (simpleMode ? Options.DNC_ST_SimpleMode : Options.DNC_ST_AdvancedMode)
-                : (simpleMode ? Options.DNC_AoE_SimpleMode : Options.DNC_AoE_AdvancedMode)
+                ? (simpleMode
+                    ? Options.DNC_ST_SimpleMode
+                    : Options.DNC_ST_AdvancedMode)
+                : (simpleMode
+                    ? Options.DNC_AoE_SimpleMode
+                    : Options.DNC_AoE_AdvancedMode)
             ).ToString()
         )!.Values.Last();
+
+    #region Custom Dance Step Logic
+
+    /// <summary>
+    ///     Consolidating a few checks to reduce duplicate code.
+    /// </summary>
+    private static bool WantsCustomStepsOnSmallerFeatures =>
+        IsEnabled(Options.DNC_CustomDanceSteps) &&
+        IsEnabled(Options.DNC_CustomDanceSteps_Conflicts) &&
+        Gauge.IsDancing;
+
+    /// <summary>
+    ///     Saved custom dance steps.
+    /// </summary>
+    /// <seealso cref="DNC_DanceComboReplacer.Invoke">DanceComboReplacer</seealso>
+    private static uint[] CustomDanceStepActions =>
+        Service.Configuration.DancerDanceCompatActionIDs;
+
+    /// <summary>
+    ///     Checks if the action is a custom dance step and replaces it with the
+    ///     appropriate step if so.
+    /// </summary>
+    /// <param name="action">The action ID to check.</param>
+    /// <param name="updatedAction">
+    ///     The matching dance step the action was assigned to.<br/>
+    ///     Will be Savage Blade if used and was not a custom dance step.<br/>
+    ///     Do not use this value if the return is <c>false</c>.
+    /// </param>
+    /// <returns>If the action was assigned as a custom dance step.</returns>
+    private static bool GetCustomDanceStep(uint action, out uint updatedAction)
+    {
+        updatedAction = All.SavageBlade;
+
+        if (!CustomDanceStepActions.Contains(action))
+            return false;
+
+        for (var i = 0; i < CustomDanceStepActions.Length; i++)
+        {
+            if (CustomDanceStepActions[i] != action) continue;
+
+            // This is simply the order of the UI
+            updatedAction = i switch
+            {
+                0 => Emboite,
+                1 => Entrechat,
+                2 => Jete,
+                3 => Pirouette,
+                _ => updatedAction
+            };
+        }
+
+        return false;
+    }
+
+    #endregion
 
     #region Openers
 

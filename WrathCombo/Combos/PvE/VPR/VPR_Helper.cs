@@ -10,6 +10,94 @@ namespace WrathCombo.Combos.PvE;
 
 internal static partial class VPR
 {
+    #region ID's
+
+    public const byte JobID = 41;
+
+    public const uint
+        ReavingFangs = 34607,
+        ReavingMaw = 34615,
+        Vicewinder = 34620,
+        HuntersCoil = 34621,
+        HuntersDen = 34624,
+        HuntersSnap = 39166,
+        Vicepit = 34623,
+        RattlingCoil = 39189,
+        Reawaken = 34626,
+        SerpentsIre = 34647,
+        SerpentsTail = 35920,
+        Slither = 34646,
+        SteelFangs = 34606,
+        SteelMaw = 34614,
+        SwiftskinsCoil = 34622,
+        SwiftskinsDen = 34625,
+        Twinblood = 35922,
+        Twinfang = 35921,
+        UncoiledFury = 34633,
+        WrithingSnap = 34632,
+        SwiftskinsSting = 34609,
+        TwinfangBite = 34636,
+        TwinbloodBite = 34637,
+        UncoiledTwinfang = 34644,
+        UncoiledTwinblood = 34645,
+        HindstingStrike = 34612,
+        DeathRattle = 34634,
+        HuntersSting = 34608,
+        HindsbaneFang = 34613,
+        FlankstingStrike = 34610,
+        FlanksbaneFang = 34611,
+        HuntersBite = 34616,
+        JaggedMaw = 34618,
+        SwiftskinsBite = 34617,
+        BloodiedMaw = 34619,
+        FirstGeneration = 34627,
+        FirstLegacy = 34640,
+        SecondGeneration = 34628,
+        SecondLegacy = 34641,
+        ThirdGeneration = 34629,
+        ThirdLegacy = 34642,
+        FourthGeneration = 34630,
+        FourthLegacy = 34643,
+        Ouroboros = 34631,
+        LastLash = 34635;
+
+    public static class Buffs
+    {
+        public const ushort
+            FellhuntersVenom = 3659,
+            FellskinsVenom = 3660,
+            FlanksbaneVenom = 3646,
+            FlankstungVenom = 3645,
+            HindstungVenom = 3647,
+            HindsbaneVenom = 3648,
+            GrimhuntersVenom = 3649,
+            GrimskinsVenom = 3650,
+            HuntersVenom = 3657,
+            SwiftskinsVenom = 3658,
+            HuntersInstinct = 3668,
+            Swiftscaled = 3669,
+            Reawakened = 3670,
+            ReadyToReawaken = 3671,
+            PoisedForTwinfang = 3665,
+            PoisedForTwinblood = 3666,
+            HonedReavers = 3772,
+            HonedSteel = 3672;
+    }
+
+    public static class Debuffs
+    {
+    }
+
+    public static class Traits
+    {
+        public const uint
+            EnhancedVipersRattle = 530,
+            EnhancedSerpentsLineage = 533,
+            SerpentsLegacy = 534;
+    }
+
+    #endregion
+
     internal static VPROpenerMaxLevel1 Opener1 = new();
     internal static VPRGauge gauge = GetJobGauge<VPRGauge>();
 
@@ -49,19 +137,29 @@ internal static partial class VPR
 
     internal static bool UseReawaken(VPRGauge gauge)
     {
-        float ireCD = GetCooldownRemainingTime(SerpentsIre);
-
         if (LevelChecked(Reawaken) && !HasEffect(Buffs.Reawakened) && InActionRange(Reawaken) &&
             !HasEffect(Buffs.HuntersVenom) && !HasEffect(Buffs.SwiftskinsVenom) &&
             !HasEffect(Buffs.PoisedForTwinblood) && !HasEffect(Buffs.PoisedForTwinfang) &&
             !IsEmpowermentExpiring(6))
-            if ((!JustUsed(SerpentsIre, 2.2f) && HasEffect(Buffs.ReadyToReawaken)) || //2min burst
-                (WasLastWeaponskill(Ouroboros) && gauge.SerpentOffering >= 50 && ireCD >= 50) || //2nd RA
-                (gauge.SerpentOffering is >= 50 and <= 80 && ireCD is >= 50 and <= 62) || //1min
-                gauge.SerpentOffering >= 100 || //overcap
-                (gauge.SerpentOffering >= 50 && WasLastWeaponskill(FourthGeneration) &&
-                 !LevelChecked(Ouroboros))) //<100
+        {
+            //2min burst
+            if ((!JustUsed(SerpentsIre, 2.2f) && HasEffect(Buffs.ReadyToReawaken)) ||
+               (WasLastWeaponskill(Ouroboros) && gauge.SerpentOffering >= 50 && IreCD >= 50))
                 return true;
+
+            //1min
+            if (gauge.SerpentOffering is >= 50 and <= 80 && IreCD is >= 50 and <= 62)
+                return true;
+
+            //overcap protection
+            if (gauge.SerpentOffering >= 100)
+                return true;
+
+            //Lower lvl
+            if (gauge.SerpentOffering >= 50 &&
+                WasLastWeaponskill(FourthGeneration) && !LevelChecked(Ouroboros))
+                return true;
+        }
 
         return false;
     }

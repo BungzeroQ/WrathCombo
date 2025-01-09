@@ -89,7 +89,8 @@ namespace WrathCombo.AutoRotation
             if (!needsHeal)
                 TimeToHeal = null;
 
-            bool actCheck = autoActions.Any(x => x.Key.Attributes().AutoAction.IsHeal && ActionReady(AutoRotationHelper.InvokeCombo(x.Key, x.Key.Attributes()!)));
+            uint _ = 0;
+            bool actCheck = autoActions.Any(x => x.Key.Attributes().AutoAction.IsHeal && ActionReady(AutoRotationHelper.InvokeCombo(x.Key, x.Key.Attributes()!, ref _)));
             bool canHeal = TimeToHeal is null ? false : (DateTime.Now - TimeToHeal.Value).TotalSeconds >= cfg.HealerSettings.HealDelay && actCheck;
 
             if (Player.Object.CurrentCastTime > 0) return;
@@ -124,7 +125,7 @@ namespace WrathCombo.AutoRotation
                 if (ActionManager.Instance()->GetActionStatus(ActionType.Action, gameAct) == 639) continue;
                 var sheetAct = Svc.Data.GetExcelSheet<Action>().GetRow(gameAct);
 
-                var outAct = OriginalHook(AutoRotationHelper.InvokeCombo(preset.Key, attributes));
+                var outAct = OriginalHook(AutoRotationHelper.InvokeCombo(preset.Key, attributes, ref _));
                 if (!CanQueue(outAct)) continue;
                 if (action.IsHeal)
                 {
@@ -391,7 +392,7 @@ namespace WrathCombo.AutoRotation
             {
                 if (attributes.AutoAction.IsHeal)
                 {
-                    uint outAct = OriginalHook(InvokeCombo(preset, attributes, Player.Object));
+                    uint outAct = OriginalHook(InvokeCombo(preset, attributes, ref gameAct, Player.Object));
                     if (ActionManager.Instance()->GetActionStatus(ActionType.Action, outAct) != 0) return false;
                     if (!ActionReady(outAct))
                         return false;
@@ -412,7 +413,7 @@ namespace WrathCombo.AutoRotation
                 }
                 else
                 {
-                    uint outAct = OriginalHook(InvokeCombo(preset, attributes, Player.Object));
+                    uint outAct = OriginalHook(InvokeCombo(preset, attributes, ref gameAct, Player.Object));
                     if (!CanQueue(outAct)) return false;
                     if (!ActionReady(outAct))
                         return false;
@@ -428,7 +429,7 @@ namespace WrathCombo.AutoRotation
                         if (IsMoving() && castTime > 0)
                             return false;
 
-                        if (mustTarget)
+                        if (mustTarget || cfg.DPSSettings.AlwaysSelectTarget)
                             Svc.Targets.Target = target;
 
                         var ret = ActionManager.Instance()->UseAction(ActionType.Action, Service.IconReplacer.getIconHook.IsEnabled ? gameAct : outAct, (mustTarget && target != null) || switched ? target.GameObjectId : Player.Object.GameObjectId);
@@ -450,14 +451,11 @@ namespace WrathCombo.AutoRotation
                 if (target is null)
                     return false;
 
-                var outAct = OriginalHook(InvokeCombo(preset, attributes, target));
+                var outAct = OriginalHook(InvokeCombo(preset, attributes, ref gameAct, target));
                 if (!CanQueue(outAct))
                 {
                     return false;
                 }
-                var castTime = ActionManager.GetAdjustedCastTime(ActionType.Action, outAct);
-                if (IsMoving() && castTime > 0)
-                    return false;
 
                 bool switched = SwitchOnDChole(attributes, outAct, ref target);
 
@@ -471,8 +469,12 @@ namespace WrathCombo.AutoRotation
 
                 var canUse = canUseSelf || canUseTarget || areaTargeted;
 
-                if (canUse)
+                if (canUse || cfg.DPSSettings.AlwaysSelectTarget)
                     Svc.Targets.Target = target;
+
+                var castTime = ActionManager.GetAdjustedCastTime(ActionType.Action, outAct);
+                if (IsMoving() && castTime > 0)
+                    return false;
 
                 if (canUse && (inRange || areaTargeted))
                 {
@@ -502,7 +504,7 @@ namespace WrathCombo.AutoRotation
                 return false;
             }
 
-            public static uint InvokeCombo(CustomComboPreset preset, Presets.PresetAttributes attributes, IGameObject? optionalTarget = null)
+            public static uint InvokeCombo(CustomComboPreset preset, Presets.PresetAttributes attributes, ref uint originalAct, IGameObject? optionalTarget = null)
             {
                 var outAct = attributes.ReplaceSkill.ActionIDs.FirstOrDefault();
                 foreach (var actToCheck in attributes.ReplaceSkill.ActionIDs)
@@ -512,12 +514,13 @@ namespace WrathCombo.AutoRotation
                     {
                         if (customCombo.TryInvoke(actToCheck, out var changedAct, optionalTarget))
                         {
+                            originalAct = actToCheck;
                             outAct = changedAct;
                             break;
                         }
                     }
                 }
-
+                
                 return outAct;
             }
         }

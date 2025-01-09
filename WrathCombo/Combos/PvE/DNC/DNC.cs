@@ -413,7 +413,7 @@ internal partial class DNC
             // Thresholds to wait for TS/SS to come off CD
             var longAlignmentThreshold = 0.3f;
             var shortAlignmentThreshold = 0.1f;
-          
+
             var needToTech =
                 GetCooldownRemainingTime(TechnicalStep) <
                 longAlignmentThreshold && // Up or about to be (some anti-drift)
@@ -1121,7 +1121,7 @@ internal partial class DNC
                 // AoE Panic Heals
                 if (ActionReady(All.SecondWind) &&
                     PlayerHealthPercentageHp() < 40)
-                    return All.SecondWind;  
+                    return All.SecondWind;
             }
 
             #endregion
@@ -1352,29 +1352,14 @@ internal partial class DNC
     internal class DNC_DanceComboReplacer : CustomCombo
     {
         protected internal override CustomComboPreset Preset =>
-            CustomComboPreset.DNC_DanceComboReplacer;
+            CustomComboPreset.DNC_CustomDanceSteps;
 
         protected override uint Invoke(uint actionID)
         {
-            if (!GetJobGauge<DNCGauge>().IsDancing) return actionID;
+            if (!Gauge.IsDancing) return actionID;
 
-            var actionIDs = Service.Configuration.DancerDanceCompatActionIDs;
-
-            if (actionID == actionIDs[0] ||
-                (actionIDs[0] == 0 && actionID == Cascade)) // Default
-                return Emboite;
-
-            if (actionID == actionIDs[1] ||
-                (actionIDs[1] == 0 && actionID == Flourish)) // Default
-                return Entrechat;
-
-            if (actionID == actionIDs[2] ||
-                (actionIDs[2] == 0 && actionID == FanDance1)) // Default
-                return Jete;
-
-            if (actionID == actionIDs[3] ||
-                (actionIDs[3] == 0 && actionID == FanDance2)) // Default
-                return Pirouette;
+            if (GetCustomDanceStep(actionID, out var danceStep))
+                return danceStep;
 
             return actionID;
         }
@@ -1393,6 +1378,10 @@ internal partial class DNC
         {
             // Fan Dance 3 & 4 on Flourish
             if (actionID is not Flourish || !CanWeave()) return actionID;
+
+            if (WantsCustomStepsOnSmallerFeatures)
+                if (GetCustomDanceStep(actionID, out var danceStep))
+                    return danceStep;
 
             if (IsEnabled(CustomComboPreset.DNC_Flourishing_FD3) &&
                 HasEffect(Buffs.ThreeFoldFanDance))
@@ -1413,6 +1402,10 @@ internal partial class DNC
         protected override uint Invoke(uint actionID)
         {
             if (actionID is not (FanDance1 or FanDance2)) return actionID;
+
+            if (WantsCustomStepsOnSmallerFeatures)
+                if (GetCustomDanceStep(actionID, out var danceStep))
+                    return danceStep;
 
             return actionID switch
             {
@@ -1442,10 +1435,19 @@ internal partial class DNC
         protected internal override CustomComboPreset Preset =>
             CustomComboPreset.DNC_Starfall_Devilment;
 
-        protected override uint Invoke(uint actionID) =>
-            actionID is Devilment && HasEffect(Buffs.FlourishingStarfall)
-                ? StarfallDance
-                : actionID;
+        protected override uint Invoke(uint actionID)
+        {
+            if (actionID is not Devilment) return actionID;
+
+            if (WantsCustomStepsOnSmallerFeatures)
+                if (GetCustomDanceStep(actionID, out var danceStep))
+                    return danceStep;
+
+            if (HasEffect(Buffs.FlourishingStarfall))
+                return StarfallDance;
+
+            return actionID;
+        }
     }
 
     internal class DNC_StandardStep_LastDance : CustomCombo
@@ -1453,11 +1455,19 @@ internal partial class DNC
         protected internal override CustomComboPreset Preset =>
             CustomComboPreset.DNC_StandardStep_LastDance;
 
-        protected override uint Invoke(uint actionID) =>
-            actionID is StandardStep or FinishingMove &&
-            HasEffect(Buffs.LastDanceReady)
-                ? LastDance
-                : actionID;
+        protected override uint Invoke(uint actionID)
+        {
+            if (actionID is not (StandardStep or FinishingMove)) return actionID;
+
+            if (WantsCustomStepsOnSmallerFeatures)
+                if (GetCustomDanceStep(actionID, out var danceStep))
+                    return danceStep;
+
+            if (HasEffect(Buffs.LastDanceReady))
+                return LastDance;
+
+            return actionID;
+        }
     }
 
     internal class DNC_TechnicalStep_Devilment : CustomCombo
@@ -1465,12 +1475,19 @@ internal partial class DNC
         protected internal override CustomComboPreset Preset =>
             CustomComboPreset.DNC_TechnicalStep_Devilment;
 
-        protected override uint Invoke(uint actionID) =>
-            actionID is TechnicalStep &&
-            WasLastWeaponskill(TechnicalFinish4) &&
-            HasEffect(Buffs.TechnicalFinish)
-                ? Devilment
-                : actionID;
+        protected override uint Invoke(uint actionID) {
+            if (actionID is not TechnicalStep) return actionID;
+
+            if (WantsCustomStepsOnSmallerFeatures)
+                if (GetCustomDanceStep(actionID, out var danceStep))
+                    return danceStep;
+
+            if (WasLastWeaponskill(TechnicalFinish4) &&
+                HasEffect(Buffs.TechnicalFinish))
+                return Devilment;
+
+            return actionID;
+        }
     }
 
     internal class DNC_Procc_Bladeshower : CustomCombo
@@ -1478,12 +1495,20 @@ internal partial class DNC
         protected internal override CustomComboPreset Preset =>
             CustomComboPreset.DNC_Procc_Bladeshower;
 
-        protected override uint Invoke(uint actionID) =>
-            actionID is Bloodshower &&
-            !HasEffect(Buffs.FlourishingFlow) &&
-            !HasEffect(Buffs.SilkenFlow)
-                ? Bladeshower
-                : actionID;
+        protected override uint Invoke(uint actionID)
+        {
+            if (actionID is not Bladeshower) return actionID;
+
+            if (WantsCustomStepsOnSmallerFeatures)
+                if (GetCustomDanceStep(actionID, out var danceStep))
+                    return danceStep;
+
+            if (HasEffect(Buffs.FlourishingFlow) ||
+                HasEffect(Buffs.SilkenFlow))
+                return Bloodshower;
+
+            return actionID;
+        }
     }
 
     internal class DNC_Procc_Windmill : CustomCombo
@@ -1491,12 +1516,20 @@ internal partial class DNC
         protected internal override CustomComboPreset Preset =>
             CustomComboPreset.DNC_Procc_Windmill;
 
-        protected override uint Invoke(uint actionID) =>
-            actionID is RisingWindmill &&
-            !HasEffect(Buffs.FlourishingSymmetry) &&
-            !HasEffect(Buffs.SilkenSymmetry)
-                ? Windmill
-                : actionID;
+        protected override uint Invoke(uint actionID)
+        {
+            if (actionID is not Windmill) return actionID;
+
+            if (WantsCustomStepsOnSmallerFeatures)
+                if (GetCustomDanceStep(actionID, out var danceStep))
+                    return danceStep;
+
+            if (HasEffect(Buffs.FlourishingSymmetry) ||
+                HasEffect(Buffs.SilkenSymmetry))
+                return RisingWindmill;
+
+            return actionID;
+        }
     }
 
     #endregion

@@ -1,5 +1,7 @@
-﻿using WrathCombo.CustomComboNS;
+﻿using ImGuiNET;
+using WrathCombo.CustomComboNS;
 using WrathCombo.CustomComboNS.Functions;
+using static WrathCombo.Window.Functions.UserConfig;
 
 namespace WrathCombo.Combos.PvP
 {
@@ -56,6 +58,52 @@ namespace WrathCombo.Combos.PvP
                 RDMPvP_Forte_SubOption = new("RDMPvP_Forte_SubOption"),
                 RDMPvP_Embolden_SubOption = new("RDMPvP_Embolden_SubOption"),
                 RDMPvP_Displacement_SubOption = new("RDMPvP_Displacement_SubOption");
+
+            internal static void Draw(CustomComboPreset preset)
+            {
+                switch (preset)
+                {
+                    // PvP
+
+                    // Resolution
+                    case CustomComboPreset.RDMPvP_Resolution:
+                        DrawSliderInt(10, 100, RDMPvP.Config.RDMPvP_Resolution_TargetHP, "Target HP%", 210);
+
+                        break;
+
+                    // Embolden / Prefulgence
+                    case CustomComboPreset.RDMPvP_Embolden:
+                        DrawAdditionalBoolChoice(RDMPvP.Config.RDMPvP_Embolden_SubOption, "Prefulgence Option",
+                            "Uses Prefulgence when available.");
+
+                        break;
+
+                    // Corps-a-Corps
+                    case CustomComboPreset.RDMPvP_Corps:
+                        DrawSliderInt(0, 1, RDMPvP.Config.RDMPvP_Corps_Charges, "Charges to Keep", 178);
+                        DrawSliderInt(5, 10, RDMPvP.Config.RDMPvP_Corps_Range, "Maximum Range", 173);
+
+                        break;
+
+                    // Displacement
+                    case CustomComboPreset.RDMPvP_Displacement:
+                        DrawSliderInt(0, 1, RDMPvP.Config.RDMPvP_Displacement_Charges, "Charges to Keep", 178);
+                        ImGui.Spacing();
+                        DrawAdditionalBoolChoice(RDMPvP.Config.RDMPvP_Displacement_SubOption, "No Movement Option",
+                            "Uses Displacement only when not moving.");
+
+                        break;
+
+                    // Forte / Vice of Thorns
+                    case CustomComboPreset.RDMPvP_Forte:
+                        DrawSliderInt(10, 100, RDMPvP.Config.RDMPvP_Forte_PlayerHP, "Player HP%", 210);
+                        ImGui.Spacing();
+                        DrawAdditionalBoolChoice(RDMPvP.Config.RDMPvP_Forte_SubOption, "Vice of Thorns Option",
+                            "Uses Vice of Thorns when available.");
+
+                        break;
+                }
+            }
         }
 
         internal class RDMPvP_BurstMode : CustomCombo

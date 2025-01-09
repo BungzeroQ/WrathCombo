@@ -21,6 +21,7 @@
         public int? DPSAoETargets = 3;
         public bool PreferNonCombat = false;
         public bool OnlyAttackInCombat = false;
+        public bool AlwaysSelectTarget = true;
         public float MaxDistance = 25;
     }
 

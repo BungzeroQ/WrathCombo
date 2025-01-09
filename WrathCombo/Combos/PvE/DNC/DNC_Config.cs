@@ -65,7 +65,7 @@ internal partial class DNC
         {
             switch (preset)
             {
-                case CustomComboPreset.DNC_DanceComboReplacer:
+                case CustomComboPreset.DNC_CustomDanceSteps:
                     ImGui.Indent(35f.Scale());
 
                     ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudYellow);

@@ -66,7 +66,7 @@ internal partial class GNB
             GNB_AoE_Reprisal_SubOption = new("GNB_ST_Reprisal_Option", 0),
             GNB_AoE_ArmsLength_Health = new("GNB_ST_ArmsLength_Health", 0),
             GNB_AoE_NoMercyStop = new("GNB_AoE_NoMercyStop", 5),
-            GNB_NM_Features_Weave = new("GNB_NM_Features_Weave", 0),
+            GNB_NM_Features_Weave = new("GNB_NM_Feature_Weave", 0),
             GNB_GF_Features_Choice = new("GNB_GF_Choice", 0),
             GNB_ST_Balance_Content = new("GNB_ST_Balance_Content", 1),
 

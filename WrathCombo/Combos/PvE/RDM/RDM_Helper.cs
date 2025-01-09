@@ -292,8 +292,8 @@ namespace WrathCombo.Combos.PvE
                 return false;
             }
 
-            internal static bool TrySTMeleeCombo(uint actionID, out uint newActionID,                 //Simple Mode Values
-                bool MeleeEnforced = true, bool GapCloser = false, bool UnbalanceMana = true)
+            internal static bool TrySTMeleeCombo(uint actionID, out uint newActionID,
+                bool MeleeEnforced = true)
             {
                 //Normal Combo
                 if (GetTargetDistance() <= 3 || MeleeEnforced)
@@ -309,12 +309,18 @@ namespace WrathCombo.Combos.PvE
                     if (ComboAction is Zwerchhau
                         && LevelChecked(Redoublement)
                         && ComboTimer > 0f)
-                    { 
-                        newActionID= OriginalHook(Redoublement);
+                    {
+                        newActionID = OriginalHook(Redoublement);
                         return true;
                     }
                 }
+                newActionID = actionID;
+                return false;
+            }
 
+            internal static bool TrySTMeleeStart(uint actionID, out uint newActionID,                 //Simple Mode Values
+                bool GapCloser = false, bool UnbalanceMana = true)
+            {
                 if (((RDMMana.Min >= 50 && LevelChecked(Redoublement))
                     || (RDMMana.Min >= 35 && !LevelChecked(Redoublement))
                     || (RDMMana.Min >= 20 && !LevelChecked(Zwerchhau)))
