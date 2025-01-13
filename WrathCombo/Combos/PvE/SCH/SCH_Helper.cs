@@ -167,15 +167,15 @@ internal static partial class SCH
         {
             case 0:
                 action = OriginalHook(WhisperingDawn);
-                enabled = IsEnabled(CustomComboPreset.SCH_AoE_Heal_WhisperingDawn);
+                enabled = IsEnabled(CustomComboPreset.SCH_AoE_Heal_WhisperingDawn) && HasPetPresent();
                 return Config.SCH_AoE_Heal_WhisperingDawnOption;
             case 1:
                 action = OriginalHook(FeyIllumination);
-                enabled = IsEnabled(CustomComboPreset.SCH_AoE_Heal_FeyIllumination);
+                enabled = IsEnabled(CustomComboPreset.SCH_AoE_Heal_FeyIllumination) && HasPetPresent();
                 return Config.SCH_AoE_Heal_FeyIlluminationOption;
             case 2:
                 action = FeyBlessing;
-                enabled = IsEnabled(CustomComboPreset.SCH_AoE_Heal_FeyBlessing);
+                enabled = IsEnabled(CustomComboPreset.SCH_AoE_Heal_FeyBlessing) && HasPetPresent();
                 return Config.SCH_AoE_Heal_FeyBlessingOption;
             case 3:
                 action = Consolation;
@@ -183,7 +183,7 @@ internal static partial class SCH
                 return Config.SCH_AoE_Heal_ConsolationOption;
             case 4:
                 action = Seraphism;
-                enabled = IsEnabled(CustomComboPreset.SCH_AoE_Heal_Seraphism);
+                enabled = IsEnabled(CustomComboPreset.SCH_AoE_Heal_Seraphism) && HasPetPresent();
                 return Config.SCH_AoE_Heal_SeraphismOption;
             case 5:
                 action = Indomitability;

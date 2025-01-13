@@ -405,19 +405,22 @@ internal static partial class SCH
             if (actionID is not WhisperingDawn)
                 return actionID;
 
-            // FeyIllumination
-            if (ActionReady(FeyIllumination))
-                return OriginalHook(FeyIllumination);
+            if (HasPetPresent())
+            {
+                // FeyIllumination
+                if (ActionReady(FeyIllumination))
+                    return OriginalHook(FeyIllumination);
 
-            // FeyBlessing
-            if (ActionReady(FeyBlessing) && !(Gauge.SeraphTimer > 0))
-                return OriginalHook(FeyBlessing);
+                // FeyBlessing
+                if (ActionReady(FeyBlessing) && !(Gauge.SeraphTimer > 0))
+                    return OriginalHook(FeyBlessing);
 
-            if (IsEnabled(CustomComboPreset.SCH_Fairy_Combo_Consolation) && ActionReady(WhisperingDawn))
-                return OriginalHook(actionID);
+                if (IsEnabled(CustomComboPreset.SCH_Fairy_Combo_Consolation) && ActionReady(WhisperingDawn))
+                    return OriginalHook(actionID);
 
-            if (IsEnabled(CustomComboPreset.SCH_Fairy_Combo_Consolation) && Gauge.SeraphTimer > 0 && GetRemainingCharges(Consolation) > 0)
-                return OriginalHook(Consolation);
+                if (IsEnabled(CustomComboPreset.SCH_Fairy_Combo_Consolation) && Gauge.SeraphTimer > 0 && GetRemainingCharges(Consolation) > 0)
+                    return OriginalHook(Consolation);
+            }
 
             return actionID;
         }
