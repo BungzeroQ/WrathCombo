@@ -1,21 +1,25 @@
 ﻿using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Hooking;
+using Dalamud.Utility;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
+using ECommons.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using Lumina.Excel.Sheets;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using ECommons.Logging;
+using System.Numerics;
 using WrathCombo.Combos.PvE;
 using WrathCombo.CustomComboNS;
 using WrathCombo.CustomComboNS.Functions;
 using WrathCombo.Extensions;
 using WrathCombo.Services;
-using Dalamud.Utility;
+using static FFXIVClientStructs.FFXIV.Client.Game.Character.ActionEffectHandler;
 
 namespace WrathCombo.Data
 {
@@ -46,45 +50,84 @@ namespace WrathCombo.Data
         public delegate void ActionSendDelegate();
         public static event ActionSendDelegate? OnActionSend;
 
-        private delegate void ReceiveActionEffectDelegate(ulong sourceObjectId, IntPtr sourceActor, IntPtr position, IntPtr effectHeader, IntPtr effectArray, IntPtr effectTrail);
+        private unsafe delegate void ReceiveActionEffectDelegate(uint casterEntityId, Character* casterPtr, Vector3* targetPos, Header* header, TargetEffects* effects, GameObjectId* targetEntityIds);
         private readonly static Hook<ReceiveActionEffectDelegate>? ReceiveActionEffectHook;
-        private static void ReceiveActionEffectDetour(ulong sourceObjectId, IntPtr sourceActor, IntPtr position, IntPtr effectHeader, IntPtr effectArray, IntPtr effectTrail)
+        private unsafe static void ReceiveActionEffectDetour(uint casterEntityId, Character* casterPtr, Vector3* targetPos, Header* header, TargetEffects* effects, GameObjectId* targetEntityIds)
         {
-            ReceiveActionEffectHook!.Original(sourceObjectId, sourceActor, position, effectHeader, effectArray, effectTrail);
-            ActionEffectHeader header = Marshal.PtrToStructure<ActionEffectHeader>(effectHeader);
-            
-            if (ActionType is 13 or 2) return;
-            if (header.ActionId != 7 &&
-                header.ActionId != 8 &&
-                sourceObjectId == Svc.ClientState.LocalPlayer.GameObjectId)
+
+            var rawEffects = (ulong*)effects;
+            List<(ulong id, ActionEffects effects)> targets = new();
+            for (int i = 0; i < header->NumTargets; ++i)
             {
-                LastAction = header.ActionId;
+                var targetEffects = new ActionEffects();
+                for (int j = 0; j < ActionEffects.MaxCount; ++j)
+                    targetEffects[j] = rawEffects[i * 8 + j];
+
+                targets.Add(new(targetEntityIds[i], targetEffects));
+            }
+
+            foreach (var target in targets)
+            {
+                foreach (var eff in target.effects)
+                {
+                    Svc.Log.Debug($"{eff.Type}, {eff.Value} ({header->ActionId.ActionName()}) -> {Svc.Objects.First(x => x.GameObjectId == target.id).Name}, {eff.AtSource}/{eff.FromTarget}");
+                    if (eff.Type is ActionEffectType.Heal or ActionEffectType.Damage)
+                    {
+                        if (CustomComboFunctions.GetPartyMembers().Any(x => x.GameObjectId == target.id))
+                        {
+                            var member = CustomComboFunctions.GetPartyMembers().First(x => x.GameObjectId == target.id);
+                            member.CurrentHP = eff.Type == ActionEffectType.Damage ? Math.Min(member.BattleChara.MaxHp, member.CurrentHP - eff.Value) : Math.Min(member.BattleChara.MaxHp, member.CurrentHP + eff.Value);
+                            member.HPUpdatePending = true;
+                            Svc.Framework.RunOnTick(() => member.HPUpdatePending = false, TimeSpan.FromSeconds(1.5));
+                        }
+                    }
+                    if (eff.Type is ActionEffectType.MpGain or ActionEffectType.MpLoss)
+                    {
+                        if (CustomComboFunctions.GetPartyMembers().Any(x => x.GameObjectId == (eff.AtSource ? casterEntityId : target.id)))
+                        {
+                            var member = CustomComboFunctions.GetPartyMembers().First(x => x.GameObjectId == (eff.AtSource ? casterEntityId : target.id));
+                            member.CurrentMP = eff.Type == ActionEffectType.MpLoss ? Math.Min(member.BattleChara.MaxMp, member.CurrentMP - eff.Value) : Math.Min(member.BattleChara.MaxMp, member.CurrentMP + eff.Value);
+                            member.MPUpdatePending = true;
+                            Svc.Framework.RunOnTick(() => member.MPUpdatePending = false, TimeSpan.FromSeconds(1.5));
+                        }
+                    }
+                }
+            }
+
+            ReceiveActionEffectHook!.Original(casterEntityId, casterPtr, targetPos, header, effects, targetEntityIds);
+
+            if (ActionType is 13 or 2) return;
+            if (header->ActionId != 7 &&
+                header->ActionId != 8 &&
+                casterEntityId == Svc.ClientState.LocalPlayer.GameObjectId)
+            {
+                LastAction = header->ActionId;
                 TimeLastActionUsed = DateTime.Now;
-                if (header.ActionId != CombatActions.LastOrDefault())
+                if (header->ActionId != CombatActions.LastOrDefault())
                     LastActionUseCount = 1;
                 else
                     LastActionUseCount++;
 
-                CombatActions.Add(header.ActionId);
-                LastSuccessfulUseTime[header.ActionId] = Environment.TickCount64;
+                CombatActions.Add(header->ActionId);
+                LastSuccessfulUseTime[header->ActionId] = Environment.TickCount64;
 
-                if (ActionSheet.TryGetValue(header.ActionId, out var sheet))
-                { 
+                if (ActionSheet.TryGetValue(header->ActionId, out var sheet))
+                {
                     switch (sheet.ActionCategory.Value.RowId)
                     {
                         case 2: //Spell
-                            LastSpell = header.ActionId;
+                            LastSpell = header->ActionId;
                             break;
                         case 3: //Weaponskill
-                            LastWeaponskill = header.ActionId;
+                            LastWeaponskill = header->ActionId;
                             break;
                         case 4: //Ability
-                            LastAbility = header.ActionId;
+                            LastAbility = header->ActionId;
                             break;
                     }
 
                     if (sheet.TargetArea)
-                        WrathOpener.CurrentOpener?.ProgressOpener(header.ActionId);
+                        WrathOpener.CurrentOpener?.ProgressOpener(header->ActionId);
                 }
 
                 if (Service.Configuration.EnabledOutputLog)
@@ -110,10 +153,7 @@ namespace WrathCombo.Data
                     ActionTimestamps[actionId] = Environment.TickCount64;
 
                 CheckForChangedTarget(actionId, ref targetObjectId);
-
-                if (GetAttackType(actionId) != ActionAttackType.Spell) 
                 TimeLastActionUsed = DateTime.Now;
-
                 LastAction = actionId;
                 ActionType = actionType;
                 WrathOpener.CurrentOpener?.ProgressOpener(actionId);
@@ -285,7 +325,7 @@ namespace WrathCombo.Data
 
         static unsafe ActionWatching()
         {
-            ReceiveActionEffectHook ??= Svc.Hook.HookFromSignature<ReceiveActionEffectDelegate>("40 55 56 57 41 54 41 55 41 56 48 8D AC 24", ReceiveActionEffectDetour);
+            ReceiveActionEffectHook ??= Svc.Hook.HookFromAddress<ReceiveActionEffectDelegate>(Addresses.Receive.Value, ReceiveActionEffectDetour);
             SendActionHook ??= Svc.Hook.HookFromSignature<SendActionDelegate>("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 48 8B E9 41 0F B7 D9", SendActionDetour);
             canQueueAction ??= Svc.Hook.HookFromSignature<CanQueueActionDelegate>("E8 ?? ?? ?? ?? 84 C0 74 37 8B 84 24 ?? ?? 00 00", CanQueueDetour);
         }
@@ -369,15 +409,5 @@ namespace WrathCombo.Data
             Weaponskill,
             Unknown
         }
-    }
-
-    [StructLayout(LayoutKind.Explicit)]
-    public struct ActionEffectHeader
-    {
-        [FieldOffset(0x0)] public long TargetObjectId;
-        [FieldOffset(0x8)] public uint ActionId;
-        [FieldOffset(0x14)] public uint UnkObjectId;
-        [FieldOffset(0x18)] public ushort Sequence;
-        [FieldOffset(0x1A)] public ushort Unk_1A;
     }
 }

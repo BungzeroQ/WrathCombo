@@ -46,14 +46,17 @@ namespace WrathCombo.Window.Tabs
             // Custom Styling
             static void CustomStyleText(string label, object? value)
             {
+                ImGui.Columns(2, null, false);
                 if (!string.IsNullOrEmpty(label))
                 {
                     ImGui.TextUnformatted(label);
                     ImGui.SameLine(0, 4f);
                 }
                 ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudGrey);
+                ImGui.NextColumn();
                 ImGui.TextUnformatted(value?.ToString() ?? "");
                 ImGui.PopStyleColor();
+                ImGui.Columns(1);
             }
 
             if (LocalPlayer != null)
@@ -137,6 +140,7 @@ namespace WrathCombo.Window.Tabs
                 }
                 if (ImGui.CollapsingHeader("Action Info"))
                 {
+                    var actions = Svc.Data.GetExcelSheet<Action>()!.Where(x => x.ClassJobLevel > 0 && x.ClassJobCategory.RowId != 1 && x.ClassJobCategory.Value.IsJobInCategory(Player.Job)).OrderBy(x => x.ClassJobLevel);
                     string prev = debugSpell == null ? "Select Action" : $"({debugSpell.Value.RowId}) Lv.{debugSpell.Value.ClassJobLevel}. {debugSpell.Value.Name} - {(debugSpell.Value.IsPvP ? "PvP" : "Normal")}";
                     ImGuiEx.SetNextItemFullWidth();
                     using (var comboBox = ImRaii.Combo("###ActionCombo", prev))
@@ -152,7 +156,7 @@ namespace WrathCombo.Window.Tabs
                             var cjc = Svc.Data.Excel.GetRawSheet("ClassJobCategory");
                             var cjcColumIdx = cjc.Columns[(int)JobID.Value];
 
-                            foreach (var act in Svc.Data.GetExcelSheet<Action>()!.Where(x => x.IsPlayerAction && x.ClassJobCategory.Value.IsJobInCategory(Player.Job)).OrderBy(x => x.ClassJobLevel))
+                            foreach (var act in actions)
                             {
                                 if (ImGui.Selectable($"({act.RowId}) Lv.{act.ClassJobLevel}. {act.Name} - {(act.IsPvP ? "PvP" : "Normal")}", debugSpell?.RowId == act.RowId))
                                 {
@@ -209,6 +213,13 @@ namespace WrathCombo.Window.Tabs
                         CustomStyleText($"Can Use on Self:", canUseOnSelf);
 
                         Util.ShowObject(debugSpell.Value);
+                    }
+
+                    ImGuiEx.TextUnderlined("Action Readys");
+                    foreach (var act in actions)
+                    {
+                        var status = ActionManager.Instance()->GetActionStatus(ActionType.Action, act.RowId, checkRecastActive: false, checkCastingActive: false);
+                        CustomStyleText(act.Name.ExtractText(), $"{ActionReady(act.RowId)}, {status} ({Svc.Data.GetExcelSheet<LogMessage>().GetRow(status).Text})");
                     }
                 }
 
@@ -372,11 +383,12 @@ namespace WrathCombo.Window.Tabs
                     ImGui.Indent();
                     foreach (var member in GetPartyMembers())
                     {
-                        if (ImGui.CollapsingHeader(member.Name.ToString()))
+                        if (ImGui.CollapsingHeader(member.BattleChara.GetInitials()))
                         {
-                            CustomStyleText("Job:", member.ClassJob.Value.Abbreviation);
-                            CustomStyleText($"HP:", $"{member.CurrentHp}/{member.MaxHp}");
-                            CustomStyleText("Dead Timer:", TimeSpentDead(member.GameObjectId));
+                            CustomStyleText("Job:", member.BattleChara.ClassJob.Value.Abbreviation);
+                            CustomStyleText($"HP:", $"{member.CurrentHP}/{member.BattleChara.MaxHp}");
+                            CustomStyleText("MP:", $"{member.CurrentMP}/{member.BattleChara.MaxMp}");
+                            CustomStyleText("Dead Timer:", TimeSpentDead(member.BattleChara.GameObjectId));
                         }
                     }
                     ImGui.Unindent();

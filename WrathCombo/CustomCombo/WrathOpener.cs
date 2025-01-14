@@ -176,16 +176,6 @@ namespace WrathCombo.CustomComboNS
                     }
                 }
 
-                while (GetCooldownChargeRemainingTime(CurrentOpenerAction) > 6 && !HasCharges(CurrentOpenerAction))
-                {
-                    Svc.Log.Debug($"Skipping {CurrentOpenerAction.ActionName()}");
-                    OpenerStep++;
-                    if (OpenerStep >= OpenerActions.Count)
-                        break;
-
-                    CurrentOpenerAction = OpenerActions[OpenerStep - 1];
-                }
-
                 if (OpenerStep < OpenerActions.Count)
                 {
                     actionID = CurrentOpenerAction = OpenerActions[OpenerStep - 1];
@@ -223,6 +213,17 @@ namespace WrathCombo.CustomComboNS
                             actionID = 11;
                             return true;
                         }
+                    }
+
+                    while (!ActionReady(CurrentOpenerAction) && ActionWatching.TimeSinceLastAction.TotalSeconds > 1)
+                    {
+                        if (OpenerStep >= OpenerActions.Count)
+                            break;
+
+                        Svc.Log.Debug($"Skipping {CurrentOpenerAction.ActionName()}");
+                        OpenerStep++;
+
+                        CurrentOpenerAction = OpenerActions[OpenerStep - 1];
                     }
 
 

@@ -1,4 +1,6 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
+using System;
+using System.Linq;
 
 namespace WrathCombo.Extensions
 {
@@ -22,5 +24,14 @@ namespace WrathCombo.Extensions
         }
 
         public static bool HasShield(this IBattleChara chara) => chara.RawShieldValue() > 0;
+
+        public static string GetInitials(this IBattleChara chara)
+        {
+            var ret = string.Concat(chara.Name.TextValue.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                                          .Where(x => x.Length >= 1 && char.IsLetter(x[0]))
+                                          .Select(x => char.ToUpper(x[0])));
+
+            return ret;
+        }
     }
 }

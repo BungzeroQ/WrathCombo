@@ -207,7 +207,7 @@ internal partial class DNC
                 return false;
 
             // go at 15s, with some leeway
-            if (CountdownRemaining is > 13.5f and < 16f)
+            if (CountdownRemaining is < 13.5f or > 16f)
                 return false;
 
             return true;

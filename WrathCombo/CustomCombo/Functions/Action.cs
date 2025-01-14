@@ -88,7 +88,7 @@ namespace WrathCombo.CustomComboNS.Functions
         /// <param name="id"> ID of the action. </param>
         /// <returns></returns>
         //Note: Testing so far shows non charge skills have a max charge of 1, and it's zero during cooldown
-        public unsafe static bool ActionReady(uint id) => (LevelChecked(id) && (HasCharges(id) || GetCooldown(id).CooldownTotal <= 3)) || ActionManager.Instance()->GetActionStatus(ActionType.Action, id) == 0;
+        public unsafe static bool ActionReady(uint id) => (GetCooldownRemainingTime(id) <= GCDTotal || HasCharges(id)) && ActionManager.Instance()->GetActionStatus(ActionType.Action, id, checkRecastActive: false, checkCastingActive: false) is 0 or 582 or 580;
 
         public static bool ActionsReady(uint[] ids)
         {

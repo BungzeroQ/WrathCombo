@@ -70,10 +70,10 @@ namespace WrathCombo.CustomComboNS.Functions
         private static void UpdateDeadtionary(IFramework framework)
         {
             if (!Player.Available) return;
-            foreach (var member in GetPartyMembers().Where(x => x.IsDead))
+            foreach (var member in GetPartyMembers().Where(x => x.BattleChara.IsDead))
             {
-                if (!Deadtionary.ContainsKey(member.GameObjectId))
-                    Deadtionary[member.GameObjectId] = Environment.TickCount64;
+                if (!Deadtionary.ContainsKey(member.BattleChara.GameObjectId))
+                    Deadtionary[member.BattleChara.GameObjectId] = Environment.TickCount64;
             }
 
             var deadCopy = Deadtionary.ToList();
@@ -87,12 +87,12 @@ namespace WrathCombo.CustomComboNS.Functions
         private unsafe static void UpdatePartyTimer(IFramework framework)
         {
             if (!Player.Available) return;
-            if (GetPartyMembers().Any(x => x.Struct()->InCombat) && !partyInCombat)
+            if (GetPartyMembers().Any(x => x.BattleChara.Struct()->InCombat) && !partyInCombat)
             {
                 partyInCombat = true;
                 partyCombat = DateTime.Now;
             }
-            else if (!GetPartyMembers().Any(x => x.Struct()->InCombat))
+            else if (!GetPartyMembers().Any(x => x.BattleChara.Struct()->InCombat))
             {
                 partyInCombat = false;
             }
