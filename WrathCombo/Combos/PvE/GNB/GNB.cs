@@ -688,7 +688,7 @@ namespace WrathCombo.Combos.PvE
                 #endregion
                 #endregion
 
-                if (IsEnabled(CustomComboPreset.GNB_ST_Advanced_Opener) &&
+                if (IsEnabled(CustomComboPreset.GNB_ST_Advanced_Opener) && Ammo == 0 &&
                     Opener().FullOpener(ref actionID))
                     return actionID;
 
