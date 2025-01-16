@@ -18,21 +18,8 @@ internal partial class GNB
         if (gcd <= 2.47f && Opener1.LevelChecked)
             return Opener1;
 
-        //if (Opener2.LevelChecked)
-        //    return Opener2;
         if (Opener2.LevelChecked)
-        {
-            if (CustomComboFunctions.InMeleeRange())
-            {
-                return Opener3;
-            }
-            else
-            {
-                return Opener2;
-            }
-
-        }
-
+            return Opener2;
 
         return WrathOpener.Dummy;
     }
