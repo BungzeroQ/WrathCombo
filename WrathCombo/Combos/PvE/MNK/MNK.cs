@@ -31,6 +31,7 @@ internal static partial class MNK
                 return Variant.VariantCure;
 
             if (ActionReady(RiddleOfFire) &&
+                !HasEffect(Buffs.FiresRumination) &&
                 CanDelayedWeave())
                 return RiddleOfFire;
 
@@ -46,7 +47,8 @@ internal static partial class MNK
                 if (ActionReady(Brotherhood))
                     return Brotherhood;
 
-                if (ActionReady(RiddleOfWind))
+                if (ActionReady(RiddleOfWind) &&
+                    !HasEffect(Buffs.WindsRumination))
                     return RiddleOfWind;
 
                 //Perfect Balance
@@ -169,6 +171,7 @@ internal static partial class MNK
 
             if (IsEnabled(CustomComboPreset.MNK_STUseBuffs) &&
                 IsEnabled(CustomComboPreset.MNK_STUseROF) &&
+                !HasEffect(Buffs.FiresRumination) &&
                 ActionReady(RiddleOfFire) &&
                 CanDelayedWeave() &&
                 GetTargetHPPercent() >= Config.MNK_ST_RiddleOfFire_HP)
@@ -191,6 +194,7 @@ internal static partial class MNK
                         return Brotherhood;
 
                     if (IsEnabled(CustomComboPreset.MNK_STUseROW) &&
+                        !HasEffect(Buffs.WindsRumination) &&
                         ActionReady(RiddleOfWind) &&
                         GetTargetHPPercent() >= Config.MNK_ST_RiddleOfWind_HP)
                         return RiddleOfWind;
@@ -315,6 +319,7 @@ internal static partial class MNK
                 return Variant.VariantCure;
 
             if (ActionReady(RiddleOfFire) &&
+                !HasEffect(Buffs.FiresRumination) &&
                 CanDelayedWeave())
                 return RiddleOfFire;
 
@@ -330,7 +335,8 @@ internal static partial class MNK
                 if (ActionReady(Brotherhood))
                     return Brotherhood;
 
-                if (ActionReady(RiddleOfWind))
+                if (ActionReady(RiddleOfWind) &&
+                    !HasEffect(Buffs.WindsRumination))
                     return RiddleOfWind;
 
                 if (ActionReady(PerfectBalance) &&
@@ -448,6 +454,7 @@ internal static partial class MNK
 
             if (IsEnabled(CustomComboPreset.MNK_AoEUseBuffs) &&
                 IsEnabled(CustomComboPreset.MNK_AoEUseROF) &&
+                !HasEffect(Buffs.FiresRumination) &&
                 ActionReady(RiddleOfFire) &&
                 CanDelayedWeave() &&
                 GetTargetHPPercent() >= Config.MNK_AoE_RiddleOfFire_HP)
@@ -471,6 +478,7 @@ internal static partial class MNK
 
                     if (IsEnabled(CustomComboPreset.MNK_AoEUseROW) &&
                         ActionReady(RiddleOfWind) &&
+                        !HasEffect(Buffs.WindsRumination) &&
                         GetTargetHPPercent() >= Config.MNK_AoE_RiddleOfWind_HP)
                         return RiddleOfWind;
                 }

@@ -151,8 +151,7 @@ enabled. There will still be error logs about it though.
 ### IPC Methods
 
 The Provider files ([main](https://github.com/PunishXIV/WrathCombo/blob/main/WrathCombo/Services/IPC/Provider.cs),
-[auto-rot settings](https://github.
-com/PunishXIV/WrathCombo/blob/main/WrathCombo/Services/IPC/ProvideAutoRotConfig.cs))
+[auto-rot settings](https://github.com/PunishXIV/WrathCombo/blob/main/WrathCombo/Services/IPC/ProvideAutoRotConfig.cs))
 are the real documentation on all IPC methods, and have verbose doc comments, 
 this here will only serve to document via the verbose method names and brief 
 comments on each method.
@@ -207,9 +206,9 @@ comments on each method.
     plugin
   - Only whether a Single-Target and Multi-Target combo are enabled in Auto-Mode, 
     NOT whether they are turned on
-- `List? GetComboNamesForJob(string)`
+- `List? GetComboNamesForJob(uint)`
   - Gets the names of all the combos for a job
-- `Dictionary? GetComboOptionNamesForJob(string)`
+- `Dictionary? GetComboOptionNamesForJob(uint)`
   - Gets the names of all the options for a job
 - `Dictionary? GetComboState(string)`
   - Gets the state and Auto-Mode state of a combo, whether by the user or another 
@@ -413,6 +412,10 @@ resources below, or the first several sections of this guide.
 
 ## Changelog
 
+- PunishXIV/WrathCombo@3ef3109 - Methods with specific job parameters are now `uint`,
+  `1.0.0.9`.
+- PunishXIV/WrathCombo@5699d7b - Auto-Rotation Configurations enums are no longer a 
+  subset of the full options, `1.0.0.9`.
 - PunishXIV/WrathCombo@0d8faa7 - Added `IncludeNPCs` healer option to the 
   `AutoRotationConfigOption` 
   enum, `1.0.0.8`.

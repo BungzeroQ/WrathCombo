@@ -181,6 +181,7 @@ internal static partial class MNK
 
         public override List<uint> OpenerActions { get; set; } =
         [
+            DragonKick,
             PerfectBalance,
             TwinSnakes,
             Demolish,

@@ -76,7 +76,7 @@ internal static partial class MCH
                             return OriginalHook(RookAutoturret);
 
                         // Reassemble
-                        if (Reassembled(Gauge))
+                        if (Reassembled())
                             return Reassemble;
 
                         // Gauss Round and Ricochet outside HC
@@ -238,7 +238,7 @@ internal static partial class MCH
                         // Reassemble
                         if (IsEnabled(CustomComboPreset.MCH_ST_Adv_Reassemble) &&
                             GetRemainingCharges(Reassemble) > Config.MCH_ST_ReassemblePool &&
-                            Reassembled(Gauge))
+                            Reassembled())
                             return Reassemble;
 
                         // Gauss Round and Ricochet outside HC
@@ -366,8 +366,9 @@ internal static partial class MCH
                          !Flamethrower.LevelChecked()))
                         return Hypercharge;
 
-                    if (!HasEffect(Buffs.Wildfire) &&
-                        !HasEffect(Buffs.Reassembled) && HasCharges(Reassemble) &&
+                    if (ActionReady(Reassemble) &&
+                        !HasEffect(Buffs.Wildfire) &&
+                        !HasEffect(Buffs.Reassembled) &&
                         !JustUsed(Flamethrower, 10f) &&
                         ((HasEffect(Buffs.ExcavatorReady) && Excavator.LevelChecked()) ||
                          (GetCooldownRemainingTime(Chainsaw) < 1 && Chainsaw.LevelChecked()) ||
@@ -395,28 +396,31 @@ internal static partial class MCH
                 }
             }
 
-            //Full Metal Field
-            if (HasEffect(Buffs.FullMetalMachinist) && LevelChecked(FullMetalField))
-                return FullMetalField;
+            if (!Gauge.IsOverheated)
+            {
+                //Full Metal Field
+                if (HasEffect(Buffs.FullMetalMachinist) && LevelChecked(FullMetalField))
+                    return FullMetalField;
 
-            if (ActionReady(BioBlaster) && !TargetHasEffect(Debuffs.Bioblaster) && !Gauge.IsOverheated && !HasEffect(Buffs.Reassembled))
-                return OriginalHook(BioBlaster);
+                if (ActionReady(BioBlaster) && !TargetHasEffect(Debuffs.Bioblaster) && !Gauge.IsOverheated && !HasEffect(Buffs.Reassembled))
+                    return OriginalHook(BioBlaster);
 
-            if (ActionReady(Flamethrower) && !IsMoving())
-                return OriginalHook(Flamethrower);
+                if (ActionReady(Flamethrower) && !IsMoving())
+                    return OriginalHook(Flamethrower);
 
-            if (LevelChecked(Excavator) && HasEffect(Buffs.ExcavatorReady))
-                return OriginalHook(Chainsaw);
+                if (LevelChecked(Excavator) && HasEffect(Buffs.ExcavatorReady))
+                    return OriginalHook(Chainsaw);
 
-            if (LevelChecked(Chainsaw) &&
-                (GetCooldownRemainingTime(Chainsaw) <= GetCooldownRemainingTime(OriginalHook(Scattergun)) + 0.25 ||
-                 ActionReady(Chainsaw)))
-                return Chainsaw;
+                if (LevelChecked(Chainsaw) &&
+                    (GetCooldownRemainingTime(Chainsaw) <= GetCooldownRemainingTime(OriginalHook(Scattergun)) + 0.25 ||
+                     ActionReady(Chainsaw)))
+                    return Chainsaw;
 
-            if (LevelChecked(AirAnchor) &&
-                (GetCooldownRemainingTime(AirAnchor) <= GetCooldownRemainingTime(OriginalHook(Scattergun)) + 0.25 ||
-                 ActionReady(AirAnchor)))
-                return AirAnchor;
+                if (LevelChecked(AirAnchor) &&
+                    (GetCooldownRemainingTime(AirAnchor) <= GetCooldownRemainingTime(OriginalHook(Scattergun)) + 0.25 ||
+                     ActionReady(AirAnchor)))
+                    return AirAnchor;
+            }
 
             if (LevelChecked(AutoCrossbow) && Gauge.IsOverheated && !LevelChecked(CheckMate))
                 return AutoCrossbow;
@@ -500,8 +504,9 @@ internal static partial class MCH
                          !Flamethrower.LevelChecked() || IsNotEnabled(CustomComboPreset.MCH_AoE_Adv_FlameThrower)))
                         return Hypercharge;
 
-                    if (IsEnabled(CustomComboPreset.MCH_AoE_Adv_Reassemble) && !HasEffect(Buffs.Wildfire) &&
-                        !HasEffect(Buffs.Reassembled) && HasCharges(Reassemble) && !JustUsed(Flamethrower, 10f) &&
+                    if (IsEnabled(CustomComboPreset.MCH_AoE_Adv_Reassemble) &&
+                        ActionReady(Reassemble) && !HasEffect(Buffs.Wildfire) &&
+                        !HasEffect(Buffs.Reassembled) && !JustUsed(Flamethrower, 10f) &&
                         GetRemainingCharges(Reassemble) > Config.MCH_AoE_ReassemblePool &&
                         ((Config.MCH_AoE_Reassembled[0] && Scattergun.LevelChecked()) ||
                          (Gauge.IsOverheated && Config.MCH_AoE_Reassembled[1] && AutoCrossbow.LevelChecked()) ||
@@ -547,38 +552,41 @@ internal static partial class MCH
                 }
             }
 
-            //Full Metal Field
-            if (IsEnabled(CustomComboPreset.MCH_AoE_Adv_Stabilizer_FullMetalField) &&
-                HasEffect(Buffs.FullMetalMachinist) && LevelChecked(FullMetalField))
-                return FullMetalField;
+            if (!Gauge.IsOverheated)
+            {
+                //Full Metal Field
+                if (IsEnabled(CustomComboPreset.MCH_AoE_Adv_Stabilizer_FullMetalField) &&
+                    HasEffect(Buffs.FullMetalMachinist) && LevelChecked(FullMetalField))
+                    return FullMetalField;
 
-            if (IsEnabled(CustomComboPreset.MCH_AoE_Adv_Bioblaster) &&
-                ActionReady(BioBlaster) && !TargetHasEffect(Debuffs.Bioblaster) && !Gauge.IsOverheated && !HasEffect(Buffs.Reassembled))
-                return OriginalHook(BioBlaster);
+                if (IsEnabled(CustomComboPreset.MCH_AoE_Adv_Bioblaster) &&
+                    ActionReady(BioBlaster) && !TargetHasEffect(Debuffs.Bioblaster) && !Gauge.IsOverheated && !HasEffect(Buffs.Reassembled))
+                    return OriginalHook(BioBlaster);
 
-            if (IsEnabled(CustomComboPreset.MCH_AoE_Adv_FlameThrower) &&
-                ActionReady(Flamethrower) && !IsMoving())
-                return OriginalHook(Flamethrower);
+                if (IsEnabled(CustomComboPreset.MCH_AoE_Adv_FlameThrower) &&
+                    ActionReady(Flamethrower) && !IsMoving())
+                    return OriginalHook(Flamethrower);
 
-            if (IsEnabled(CustomComboPreset.MCH_AoE_Adv_Excavator) &&
-                reassembledExcavatorAoE &&
-                LevelChecked(Excavator) && HasEffect(Buffs.ExcavatorReady))
-                return OriginalHook(Chainsaw);
+                if (IsEnabled(CustomComboPreset.MCH_AoE_Adv_Excavator) &&
+                    reassembledExcavatorAoE &&
+                    LevelChecked(Excavator) && HasEffect(Buffs.ExcavatorReady))
+                    return OriginalHook(Chainsaw);
 
-            if (IsEnabled(CustomComboPreset.MCH_AoE_Adv_Chainsaw) &&
-                reassembledChainsawAoE &&
-                LevelChecked(Chainsaw) &&
-                (GetCooldownRemainingTime(Chainsaw) <= GCD + 0.25 || ActionReady(Chainsaw)))
-                return Chainsaw;
+                if (IsEnabled(CustomComboPreset.MCH_AoE_Adv_Chainsaw) &&
+                    reassembledChainsawAoE &&
+                    LevelChecked(Chainsaw) &&
+                    (GetCooldownRemainingTime(Chainsaw) <= GCD + 0.25 || ActionReady(Chainsaw)))
+                    return Chainsaw;
 
-            if (IsEnabled(CustomComboPreset.MCH_AoE_Adv_AirAnchor) &&
-                reassembledAirAnchorAoE &&
-                LevelChecked(AirAnchor) &&
-                (GetCooldownRemainingTime(AirAnchor) <= GCD + 0.25 || ActionReady(AirAnchor)))
-                return AirAnchor;
+                if (IsEnabled(CustomComboPreset.MCH_AoE_Adv_AirAnchor) &&
+                    reassembledAirAnchorAoE &&
+                    LevelChecked(AirAnchor) &&
+                    (GetCooldownRemainingTime(AirAnchor) <= GCD + 0.25 || ActionReady(AirAnchor)))
+                    return AirAnchor;
 
-            if (reassembledScattergunAoE)
-                return OriginalHook(Scattergun);
+                if (reassembledScattergunAoE)
+                    return OriginalHook(Scattergun);
+            }
 
             if (LevelChecked(AutoCrossbow) && Gauge.IsOverheated &&
                 (!LevelChecked(CheckMate) || IsNotEnabled(CustomComboPreset.MCH_AoE_Adv_BlazingShot)))

@@ -376,7 +376,7 @@ internal partial class SAM
                     (IsEnabled(CustomComboPreset.SAM_ST_CDs_OgiNamikiri_Movement) && !IsMoving())) &&
                     ActionReady(OgiNamikiri) && InActionRange(OriginalHook(OgiNamikiri)) &&
                     ((JustUsed(Higanbana, 5f) && HasEffect(Buffs.OgiNamikiriReady)) ||
-                    (Config.SAM_ST_Higanbana_Suboption == 1 && HasEffect(Buffs.OgiNamikiriReady)) ||
+                    (Config.SAM_ST_Higanbana_Suboption == 1 && HasEffect(Buffs.OgiNamikiriReady) && !TargetIsBoss()) ||
                     (GetBuffRemainingTime(Buffs.OgiNamikiriReady) <= 8)) &&
                     HasEffect(Buffs.OgiNamikiriReady)) || gauge.Kaeshi == Kaeshi.NAMIKIRI)
                     return OriginalHook(OgiNamikiri);

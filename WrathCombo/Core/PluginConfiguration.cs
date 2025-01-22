@@ -55,6 +55,8 @@ namespace WrathCombo.Core
 
         public float OpenerTimeout = 4f;
 
+        public bool PerformanceMode = false;
+
         #endregion
 
         #region AutoAction Settings

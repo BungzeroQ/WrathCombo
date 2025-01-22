@@ -61,6 +61,9 @@ namespace WrathCombo.Window.Tabs
                 }
             }
 
+            changed |= ImGui.Checkbox("Enable Automatically in Instanced Content", ref cfg.EnableInInstance);
+            changed |= ImGui.Checkbox("Disable After Leaving Instanced Content", ref cfg.DisableAfterInstance);
+
             if (ImGui.CollapsingHeader("Damage Settings"))
             {
                 ImGuiEx.TextUnderlined($"Targeting Mode");
