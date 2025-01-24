@@ -48,7 +48,9 @@ namespace WrathCombo.Core
         /// <inheritdoc/>
         public void Dispose()
         {
+            getIconHook?.Disable();
             getIconHook?.Dispose();
+            isIconReplaceableHook?.Disable();
             isIconReplaceableHook?.Dispose();
         }
 

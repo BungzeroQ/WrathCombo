@@ -269,12 +269,14 @@ internal static partial class AST
             if (IsEnabled(CustomComboPreset.AST_AoE_SimpleHeals_Horoscope))
             {
                 if (ActionReady(Horoscope) &&
+                    !HasEffect(Buffs.Horoscope ) &&
+                    !HasEffect(Buffs.HoroscopeHelios) &&
                     canHoroscope)
                     return Horoscope;
 
                 if (HasEffect(Buffs.HoroscopeHelios) &&
                     canHoroscope)
-                    return OriginalHook(Horoscope);
+                    return HoroscopeHeal;
             }
 
             // Only check for our own HoTs

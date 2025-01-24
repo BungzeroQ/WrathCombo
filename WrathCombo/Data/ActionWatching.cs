@@ -334,6 +334,7 @@ namespace WrathCombo.Data
 
         public static void Dispose()
         {
+            Disable();
             ReceiveActionEffectHook?.Dispose();
             SendActionHook?.Dispose();
             canQueueAction?.Dispose();
@@ -395,6 +396,8 @@ namespace WrathCombo.Data
         {
             ReceiveActionEffectHook.Disable();
             SendActionHook?.Disable();
+            canQueueAction?.Disable();
+            UseActionHook?.Disable();
             Svc.Condition.ConditionChange -= ResetActions;
         }
 
