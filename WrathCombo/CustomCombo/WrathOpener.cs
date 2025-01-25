@@ -202,7 +202,7 @@ namespace WrathCombo.CustomComboNS
                             DelayedStep = OpenerStep;
                         }
 
-                        if ((DateTime.Now - DelayedAt).TotalSeconds < HoldDelay && !InCombat())
+                        if ((DateTime.Now - DelayedAt).TotalSeconds < HoldDelay && !PartyInCombat())
                         {
                             ActionWatching.TimeLastActionUsed = DateTime.Now; //Hacky workaround for TN jobs
                             actionID = 11;

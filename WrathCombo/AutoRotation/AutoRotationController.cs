@@ -415,12 +415,12 @@ namespace WrathCombo.AutoRotation
                 }
                 else
                 {
-                    uint outAct = OriginalHook(InvokeCombo(preset, attributes, ref gameAct, Player.Object));
+                    var target = DPSTargeting.BaseSelection.MaxBy(x => NumberOfEnemiesInRange(OriginalHook(gameAct), x, true));
+                    uint outAct = OriginalHook(InvokeCombo(preset, attributes, ref gameAct));
                     if (!CanQueue(outAct)) return false;
                     if (!ActionReady(outAct))
                         return false;
 
-                    var target = GetSingleTarget(mode);
                     var sheet = Svc.Data.GetExcelSheet<Action>().GetRow(outAct);
                     var mustTarget = sheet.CanTargetHostile;
                     var numEnemies = NumberOfEnemiesInRange(gameAct, target, true);

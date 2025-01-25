@@ -145,7 +145,7 @@ namespace WrathCombo
             Service.IconReplacer = new IconReplacer();
             ActionWatching.Enable();
             AST.InitCheckCards();
-            IPC = Provider.CreateAsync().Result;
+            IPC = Provider.InitAsync().Result;
 
             ConfigWindow = new ConfigWindow();
             SettingChangeWindow = new SettingChangeWindow();
@@ -245,6 +245,7 @@ namespace WrathCombo
             BlueMageService.PopulateBLUSpells();
             TargetHelper.Draw();
             AutoRotationController.Run();
+            PluginConfiguration.ProcessSaveQueue();
 
             // Skip the IPC checking if hidden
             if (DtrBarEntry.UserHidden) return;
@@ -343,6 +344,15 @@ namespace WrathCombo
         public void Dispose()
         {
             ConfigWindow?.Dispose();
+
+            // Try to force a config save if there are some pending
+            if (PluginConfiguration.SaveQueue.Count > 0)
+                lock (PluginConfiguration.SaveQueue)
+                {
+                    PluginConfiguration.SaveQueue.Clear();
+                    Service.Configuration.Save();
+                    PluginConfiguration.ProcessSaveQueue();
+                }
 
             ws.RemoveAllWindows();
             Svc.DtrBar.Remove("Wrath Combo");

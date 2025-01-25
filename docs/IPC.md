@@ -88,7 +88,7 @@ of the IPC that should be noted:
   - This limit is currently `60` individual configurations, with the exact costs 
     detailed in the Provider files.
     - The exact, current limit can be seen with the `MaxLeaseConfigurations` field
-      [here](https://github.com/PunishXIV/WrathCombo/blob/main/WrathCombo/Services/IPC/Leasing.cs#L164).
+      [here](https://github.com/PunishXIV/WrathCombo/blob/main/WrathCombo/Services/IPC/Leasing.cs#L163).
   - This limit is designed to keep the focus on making the user Auto-Rotation ready,
     and not on optimizing the user's settings or setting up multiple jobs.
 - Leases cannot share display names
@@ -226,8 +226,10 @@ comments on each method.
 - `object? GetAutoRotationConfigState(AutoRotationConfigOption)`
   - Gets the state of an Auto-Rotation configuration option, whether by the user 
     or another plugin
-  - The `AutoRotationConfigOption` enum is in the [`AutoRotationConfigOption` enum](https://github.com/PunishXIV/WrathCombo/blob/main/WrathCombo/Services/IPC/Enums.cs#L117)
+  - The `AutoRotationConfigOption` enum is in the [`AutoRotationConfigOption` enum](https://github.com/PunishXIV/WrathCombo/blob/main/WrathCombo/Services/IPC/Enums.cs#L145)
    and must be copied over to your plugin for use with this method
+    - You can safely pass in enum values that are not yet released; they will 
+      just provide a warning you can ignore.
   - The `object` returned is of the type specified in the enum for the option
 - `void SetAutoRotationConfigState(Guid, AutoRotationConfigOption, object)`
   - The `object` must be of the type specified in the enum for the option
@@ -342,8 +344,7 @@ internal static Guid? CurrentLease
     }
 }
 ```
-See how AutoDuty does this [here, in `Register`]((https://github.com/ffxivcode/AutoDuty/blob/master/AutoDuty/IPC/IPCSubscriber.cs#L471)) (callback 
-[here](https://github.com/ffxivcode/AutoDuty/blob/master/AutoDuty/IPC/IPCProvider.cs#L27) and [here](https://github.com/ffxivcode/AutoDuty/blob/master/AutoDuty/IPC/IPCSubscriber.cs#L486)).
+See how AutoDuty does this [here, in `Register`]((https://github.com/ffxivcode/AutoDuty/blob/master/AutoDuty/IPC/IPCSubscriber.cs#L473)) (callback [here](https://github.com/ffxivcode/AutoDuty/blob/master/AutoDuty/IPC/IPCProvider.cs#L27) and [here](https://github.com/ffxivcode/AutoDuty/blob/master/AutoDuty/IPC/IPCSubscriber.cs#L488)).
 
 ## How to use the setup IPC
 
@@ -366,7 +367,7 @@ if (WrathIPC.IsEnabled)
 Or you can make it more advanced, making sure Auto-Rotation settings are as you want
 them to be.
 
-This does require you to copy over the [`AutoRotationConfigOption` enum](https://github.com/PunishXIV/WrathCombo/blob/main/WrathCombo/Services/IPC/Enums.cs#L117).
+This does require you to copy over the [`AutoRotationConfigOption` enum](https://github.com/PunishXIV/WrathCombo/blob/main/WrathCombo/Services/IPC/Enums.cs#L145).
 
 ```csharp
 if (WrathIPC.IsEnabled)
@@ -382,7 +383,7 @@ if (WrathIPC.IsEnabled)
 }
 ```
 See how AutoDuty does this, and to what extent, 
-[here, in `SetAutoMode`](https://github.com/ffxivcode/AutoDuty/blob/master/AutoDuty/IPC/IPCSubscriber.cs#L449).
+[here, in `SetAutoMode`](https://github.com/ffxivcode/AutoDuty/blob/master/AutoDuty/IPC/IPCSubscriber.cs#L451).
 
 Lastly, you will need to release control when you are done, you are incentivized to
 release control yourself so the user is not incentivized to revoke control from you:

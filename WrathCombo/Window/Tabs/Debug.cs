@@ -16,6 +16,7 @@ using ImGuiNET;
 using Lumina.Excel.Sheets;
 using System;
 using System.Linq;
+using System.Numerics;
 using WrathCombo.AutoRotation;
 using WrathCombo.CustomComboNS;
 using WrathCombo.Data;
@@ -413,7 +414,7 @@ namespace WrathCombo.Window.Tabs
                 if (ImGui.CollapsingHeader("IPC"))
                 {
                     CustomStyleText("Wrath Leased:", WrathLease is not null);
-                    foreach (var registration in P.IPC._leasing.Registrations)
+                    foreach (var registration in P.IPC.Leasing.Registrations)
                     {
                         CustomStyleText($"{registration.Key}", $"{registration.Value}");
                     }

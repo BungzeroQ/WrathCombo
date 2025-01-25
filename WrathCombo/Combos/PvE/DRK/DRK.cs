@@ -9,8 +9,6 @@ using WrathCombo.Data;
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable InconsistentNaming
 // ReSharper disable CheckNamespace
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable MemberHidesStaticFromOuterClass
 
 #endregion
 
@@ -64,17 +62,9 @@ internal partial class DRK
                 return Unmend;
 
             // Opener
-
-            if (IsEnabled(CustomComboPreset.DRK_ST_BalanceOpener) && Opener().FullOpener(ref actionID))
-            {
-                var currentAction = Opener().CurrentOpenerAction;
-                if (currentAction is SaltedEarth or ScarletDelirium &&
-                    (Gauge.HasDarkArts || LocalPlayer.CurrentMp > 9000) &&
-                    CanWeave())
-                    return EdgeOfShadow;
-
+            if (IsEnabled(CustomComboPreset.DRK_ST_BalanceOpener)
+                && Opener().FullOpener(ref actionID))
                 return actionID;
-            }
 
             // Bail if not in combat
             if (!InCombat()) return HardSlash;
