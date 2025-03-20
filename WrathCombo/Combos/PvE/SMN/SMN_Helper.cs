@@ -1,7 +1,11 @@
-﻿using ECommons.DalamudServices;
+﻿using Dalamud.Game.ClientState.JobGauge.Types;
+using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.Game.Gauge;
+using System;
 using System.Collections.Generic;
 using WrathCombo.CustomComboNS;
 using WrathCombo.CustomComboNS.Functions;
+using WrathCombo.Data;
 using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions;
 
 namespace WrathCombo.Combos.PvE;
@@ -133,7 +137,8 @@ internal partial class SMN
             EverlastingFlight = 16517,
             SearingLight = 2703,
             RubysGlimmer = 3873,
-            RefulgentLux = 3874;
+            RefulgentLux = 3874,
+            CrimsonStrike = 4403;
     }
 
     public static class Traits
@@ -143,6 +148,58 @@ internal partial class SMN
     }
 
     #endregion
+
+    internal static SMNGauge Gauge => GetJobGauge<SMNGauge>();
+    private static byte AttunementType => (byte)(Gauge.Attunement & 0x3);
+    private static byte AttunementCount => (byte)(Gauge.Attunement >> 2);
+
+    internal static bool IsIfritAttuned => AttunementType == 1;
+    internal static bool IsTitanAttuned => AttunementType == 2;
+    internal static bool IsGarudaAttuned => AttunementType == 3;
+
+    internal static bool IsAttunedAny => IsIfritAttuned || IsTitanAttuned || IsGarudaAttuned;
+
+    internal static bool IsDreadwyrmTranceReady => !LevelChecked(SummonBahamut) && IsBahamutReady;
+    internal static bool IsBahamutReady => !IsPhoenixReady && !IsSolarBahamutReady;
+    internal static bool IsPhoenixReady => Gauge.AetherFlags.HasFlag((AetherFlags)4) && !Gauge.AetherFlags.HasFlag((AetherFlags)8);
+    internal static bool IsSolarBahamutReady => Gauge.AetherFlags.HasFlag((AetherFlags)8) || Gauge.AetherFlags.HasFlag((AetherFlags)12);
+
+    private static DateTime SummonTime
+    {
+        get
+        {
+            if (HasPetPresent())
+                return field = DateTime.Now.AddSeconds(1);
+
+            return field;
+        }
+    }
+
+    public static bool NeedToSummon => DateTime.Now > SummonTime && !HasPetPresent();
+
+    internal static DemiSummon CurrentDemiSummon
+    {
+        get
+        {
+            if (Gauge.SummonTimerRemaining > 0 && Gauge.AttunmentTimerRemaining == 0)
+            {
+                if (IsDreadwyrmTranceReady) return DemiSummon.Dreadwyrm;
+                if (IsBahamutReady) return DemiSummon.Bahamut;
+                if (IsPhoenixReady) return DemiSummon.Phoenix;
+                if (IsSolarBahamutReady) return DemiSummon.SolarBahamut;
+            }
+            return DemiSummon.None;
+        }
+    }
+
+    internal enum DemiSummon
+    {
+        None,
+        Dreadwyrm,
+        Bahamut,
+        Phoenix,
+        SolarBahamut
+    }
 
     internal static SMNOpenerMaxLevel1 Opener1 = new();
     internal static WrathOpener Opener()
@@ -168,6 +225,9 @@ internal partial class SMN
             EnkindleSolarBahamut,
             Necrotize,
             UmbralImpulse,
+            Sunflare,
+            Necrotize,
+            UmbralImpulse,
             SearingFlash,
             SummonTitan2,
             TopazRite,
@@ -179,7 +239,7 @@ internal partial class SMN
             TopazRite,
             MountainBuster,
             SummonGaruda2,
-            All.Swiftcast,
+            Role.Swiftcast,
             Slipstream,
 
         ];
@@ -197,10 +257,10 @@ internal partial class SMN
             if (!HasPetPresent())
                 return false;
 
-            if (!IsOffCooldown(SummonSolarBahamut) ||
+            if (!ActionReady(SummonSolarBahamut) ||
                 !IsOffCooldown(SearingFlash) ||
                 !IsOffCooldown(SearingLight) ||
-                !IsOffCooldown(All.Swiftcast) ||
+                !IsOffCooldown(Role.Swiftcast) ||
                 !IsOffCooldown(EnergyDrain))
                 return false;
 

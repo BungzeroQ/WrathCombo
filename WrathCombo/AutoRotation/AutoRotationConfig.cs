@@ -14,6 +14,7 @@
         public HealerSettings HealerSettings = new();
         public DPSSettings DPSSettings = new();
         public int Throttler = 50;
+        public bool OrbwalkerIntegration;
     }
 
     public class DPSSettings
@@ -25,6 +26,7 @@
         public bool OnlyAttackInCombat = false;
         public bool AlwaysSelectTarget = true;
         public float MaxDistance = 25;
+        public bool AoEIgnoreManual = false;
     }
 
     public class HealerSettings
@@ -37,6 +39,7 @@
         public bool ManageKardia = false;
         public bool KardiaTanksOnly = false;
         public bool AutoRez = false;
+        public bool AutoRezRequireSwift = false;
         public bool AutoRezDPSJobs = false;
         public bool AutoCleanse = false;
         public bool PreEmptiveHoT = false;

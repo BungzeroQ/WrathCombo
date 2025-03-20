@@ -4,6 +4,8 @@ using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Utility;
 using ECommons.DalamudServices;
+using ECommons.GameFunctions;
+using ECommons.ImGuiMethods;
 using ImGuiNET;
 using System;
 using System.Numerics;
@@ -13,6 +15,7 @@ using WrathCombo.Core;
 using WrathCombo.CustomComboNS.Functions;
 using WrathCombo.Data;
 using WrathCombo.Services;
+using static FFXIVClientStructs.FFXIV.Client.UI.RaptureAtkHistory.Delegates;
 
 
 namespace WrathCombo.Window.Functions
@@ -28,7 +31,7 @@ namespace WrathCombo.Window.Functions
         /// <param name="sliderIncrement"> How much you want the user to increment the slider by. Uses SliderIncrements as a preset. </param>
         /// <param name="hasAdditionalChoice">True if this config can trigger additional configs depending on value.</param>
         /// <param name="additonalChoiceCondition">What the condition is to convey to the user what triggers it.</param>
-        public static void DrawSliderInt(int minValue, int maxValue, string config, string sliderDescription, float itemWidth = 150, uint sliderIncrement = SliderIncrements.Ones, bool hasAdditionalChoice = false, string additonalChoiceCondition = "")
+        public static bool DrawSliderInt(int minValue, int maxValue, string config, string sliderDescription, float itemWidth = 150, uint sliderIncrement = SliderIncrements.Ones, bool hasAdditionalChoice = false, string additonalChoiceCondition = "")
         {
             ImGui.Indent();
             int output = PluginConfiguration.GetCustomIntValue(config, minValue);
@@ -51,7 +54,7 @@ namespace WrathCombo.Window.Functions
                 AutoResize = true,
                 HasMaxWidth = true,
                 IsSubBox = true,
-                ContentsAction = () =>
+                ContentsFunc = () =>
                 {
                     bool inputChanged = false;
                     Vector2 currentPos = ImGui.GetCursorPos();
@@ -81,8 +84,7 @@ namespace WrathCombo.Window.Functions
                         ImGui.SameLine();
                         ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.HealerGreen);
                         ImGui.PushFont(UiBuilder.IconFont);
-                        ImGui.Dummy(new Vector2(5, 0));
-                        ImGui.SameLine();
+                        ImGuiEx.Spacing(new Vector2(5, 0));
                         ImGui.TextWrapped($"{FontAwesomeIcon.Search.ToIconString()}");
                         ImGui.PopFont();
                         ImGui.PopStyleColor();
@@ -111,15 +113,34 @@ namespace WrathCombo.Window.Functions
                             if (output > maxValue) output = maxValue;
                         }
 
+                        DebugFile.AddLog($"Set Config {config} to {output}");
                         PluginConfiguration.SetCustomIntValue(config, output);
                         Service.Configuration.Save();
                     }
+
+                    return inputChanged;
                 }
             };
 
             box.Draw();
+            DrawResetContextMenu(config);
             ImGui.Spacing();
             ImGui.Unindent();
+            return box.FuncRes;
+        }
+
+        private static void DrawResetContextMenu(string config, int occurrence = 0)
+        {
+            if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                ImGui.OpenPopup($"##ResetConfig{config}{occurrence}");
+
+            using var contextMenu = ImRaii.Popup($"##ResetConfig{config}{occurrence}");
+            if (!contextMenu) return;
+
+            if (ImGui.MenuItem("Reset to Default"))
+            {
+                ResetToDefault(config);
+            }
         }
 
         /// <summary> Draws a slider that lets the user set a given value for their feature. </summary>
@@ -183,8 +204,7 @@ namespace WrathCombo.Window.Functions
                         ImGui.SameLine();
                         ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.HealerGreen);
                         ImGui.PushFont(UiBuilder.IconFont);
-                        ImGui.Dummy(new Vector2(5, 0));
-                        ImGui.SameLine();
+                        ImGuiEx.Spacing(new Vector2(5, 0));
                         ImGui.TextWrapped($"{FontAwesomeIcon.Search.ToIconString()}");
                         ImGui.PopFont();
                         ImGui.PopStyleColor();
@@ -206,6 +226,7 @@ namespace WrathCombo.Window.Functions
 
                     if (inputChanged)
                     {
+                        DebugFile.AddLog($"Set Config {config} to {output}");
                         PluginConfiguration.SetCustomFloatValue(config, output);
                         Service.Configuration.Save();
                     }
@@ -213,6 +234,7 @@ namespace WrathCombo.Window.Functions
             };
 
             box.Draw();
+            DrawResetContextMenu(config);
             ImGui.Spacing();
         }
 
@@ -278,8 +300,7 @@ namespace WrathCombo.Window.Functions
                         ImGui.SameLine();
                         ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.HealerGreen);
                         ImGui.PushFont(UiBuilder.IconFont);
-                        ImGui.Dummy(new Vector2(5, 0));
-                        ImGui.SameLine();
+                        ImGuiEx.Spacing(new Vector2(5, 0));
                         ImGui.TextWrapped($"{FontAwesomeIcon.Search.ToIconString()}");
                         ImGui.PopFont();
                         ImGui.PopStyleColor();
@@ -301,6 +322,7 @@ namespace WrathCombo.Window.Functions
 
                     if (inputChanged)
                     {
+                        DebugFile.AddLog($"Set Config {config} to {output}");
                         PluginConfiguration.SetCustomFloatValue(config, output);
                         Service.Configuration.Save();
                     }
@@ -308,6 +330,7 @@ namespace WrathCombo.Window.Functions
             };
 
             box.Draw();
+            DrawResetContextMenu(config);
             ImGui.Spacing();
         }
 
@@ -326,12 +349,12 @@ namespace WrathCombo.Window.Functions
             int output = PluginConfiguration.GetCustomIntValue(config, outputValue);
             ImGui.PushItemWidth(itemWidth);
             ImGui.SameLine();
-            ImGui.Dummy(new Vector2(21, 0));
-            ImGui.SameLine();
+            ImGuiEx.Spacing(new Vector2(21, 0));
             bool enabled = output == outputValue;
 
             if (ImGui.RadioButton($"{checkBoxName}###{config}{outputValue}", enabled))
             {
+                DebugFile.AddLog($"Set Config {config} to {output}");
                 PluginConfiguration.SetCustomIntValue(config, outputValue);
                 Service.Configuration.Save();
             }
@@ -366,31 +389,41 @@ namespace WrathCombo.Window.Functions
         /// <param name="outputValue"> If the user ticks this box, this is the value the config will be set to. </param>
         /// <param name="itemWidth"></param>
         /// <param name="descriptionColor"></param>
-        public static void DrawHorizontalRadioButton(string config, string checkBoxName, string checkboxDescription, int outputValue, float itemWidth = 150, Vector4 descriptionColor = new Vector4())
+        public static bool DrawHorizontalRadioButton(string config, string checkBoxName, string checkboxDescription, int outputValue, float itemWidth = 150, Vector4 descriptionColor = new Vector4())
         {
             if (descriptionColor == new Vector4()) descriptionColor = ImGuiColors.DalamudYellow;
             int output = PluginConfiguration.GetCustomIntValue(config);
             ImGui.SameLine();
             ImGui.PushItemWidth(itemWidth);
+            var labelW = ImGui.CalcTextSize(checkBoxName);
+            var finishPos = ImGui.GetCursorPosX() + labelW.X + ImGui.GetStyle().ItemSpacing.X;
+            if (finishPos >= ImGui.GetContentRegionMax().X)
+                ImGui.NewLine();
+            
             bool enabled = output == outputValue;
 
-            ImGui.PushStyleColor(ImGuiCol.Text, descriptionColor);
-            if (ImGui.RadioButton($"{checkBoxName}###{config}{outputValue}", enabled))
+            bool o = false;
+            using (ImRaii.PushColor(ImGuiCol.Text, descriptionColor))
             {
-                PluginConfiguration.SetCustomIntValue(config, outputValue);
-                Service.Configuration.Save();
+                if (ImGui.RadioButton($"{checkBoxName}###{config}{outputValue}", enabled))
+                {
+                    DebugFile.AddLog($"Set Config {config} to {output}");
+                    PluginConfiguration.SetCustomIntValue(config, outputValue);
+                    Service.Configuration.Save();
+                    o = true;
+                }
+
+                if (!checkboxDescription.IsNullOrEmpty() && ImGui.IsItemHovered())
+                {
+                    ImGui.BeginTooltip();
+                    ImGui.TextUnformatted(checkboxDescription);
+                    ImGui.EndTooltip();
+                }
             }
 
-            if (!checkboxDescription.IsNullOrEmpty() && ImGui.IsItemHovered())
-            {
-                ImGui.BeginTooltip();
-                ImGui.TextUnformatted(checkboxDescription);
-                ImGui.EndTooltip();
-            }
-            ImGui.PopStyleColor();
+            DrawResetContextMenu(config, outputValue);
 
-            ImGui.SameLine();
-            ImGui.Dummy(new Vector2(16f, 0));
+            return o;
         }
 
         /// <summary>
@@ -409,29 +442,31 @@ namespace WrathCombo.Window.Functions
         {
             if (descriptionColor == new Vector4()) descriptionColor = ImGuiColors.DalamudYellow;
             bool[]? values = PluginConfiguration.GetCustomBoolArrayValue(config);
-            ImGui.SameLine();
             ImGui.PushItemWidth(itemWidth);
 
-            ImGui.PushStyleColor(ImGuiCol.Text, descriptionColor);
-            if (ImGui.RadioButton($"{checkBoxName}###{config}{choice}", values[choice]))
+            using (ImRaii.PushColor(ImGuiCol.Text, descriptionColor))
             {
-                for (var i = 0; i < values.Length; i++)
-                    values[i] = false;
-                values[choice] = true;
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
+                if (ImGui.RadioButton($"{checkBoxName}###{config}{choice}", values[choice]))
+                {
+                    for (var i = 0; i < values.Length; i++)
+                        values[i] = false;
+                    values[choice] = true;
+                    DebugFile.AddLog($"Set Config {config} to {string.Join(", ", values)}");
+                    PluginConfiguration.SetCustomBoolArrayValue(config, values);
+                    Service.Configuration.Save();
+                }
+
+                if (!checkboxDescription.IsNullOrEmpty() && ImGui.IsItemHovered())
+                {
+                    ImGui.BeginTooltip();
+                    ImGui.TextUnformatted(checkboxDescription);
+                    ImGui.EndTooltip();
+                }
             }
 
-            if (!checkboxDescription.IsNullOrEmpty() && ImGui.IsItemHovered())
-            {
-                ImGui.BeginTooltip();
-                ImGui.TextUnformatted(checkboxDescription);
-                ImGui.EndTooltip();
-            }
-            ImGui.PopStyleColor();
+            DrawResetContextMenu(config, choice);
 
             ImGui.SameLine();
-            ImGui.Dummy(new Vector2(16f, 0));
         }
 
         /// <summary>A true or false configuration. Similar to presets except can be used as part of a condition on another config.</summary>
@@ -448,28 +483,30 @@ namespace WrathCombo.Window.Functions
                 ImGui.Indent();
             else
             {
-                ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.HealerGreen);
-                ImGui.PushFont(UiBuilder.IconFont);
-                ImGui.AlignTextToFramePadding();
-                ImGui.TextWrapped($"{FontAwesomeIcon.Plus.ToIconString()}");
-                ImGui.PopFont();
-                ImGui.PopStyleColor();
+                using (ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.HealerGreen))
+                {
+                    ImGui.PushFont(UiBuilder.IconFont);
+                    ImGui.AlignTextToFramePadding();
+                    ImGui.TextWrapped($"{FontAwesomeIcon.Plus.ToIconString()}");
+                    ImGui.PopFont();
+                }
+
                 ImGui.SameLine();
-                ImGui.Dummy(new Vector2(3));
-                ImGui.SameLine();
+                ImGuiEx.Spacing(new Vector2(3, 0));
                 if (isConditionalChoice) ImGui.Indent(); //Align checkbox after the + symbol
             }
             if (ImGui.Checkbox($"{checkBoxName}###{config}", ref output))
             {
+                DebugFile.AddLog($"Set Config {config} to {output}");
                 PluginConfiguration.SetCustomBoolValue(config, output);
                 Service.Configuration.Save();
             }
 
+            DrawResetContextMenu(config);
+
             if (!checkboxDescription.IsNullOrEmpty())
             {
-                ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudGrey);
-                ImGui.TextWrapped(checkboxDescription);
-                ImGui.PopStyleColor();
+                ImGuiEx.TextWrapped(ImGuiColors.DalamudGrey, checkboxDescription);
             }
 
             //!isConditionalChoice
@@ -498,83 +535,36 @@ namespace WrathCombo.Window.Functions
                 Service.Configuration.Save();
             }
 
-            ImGui.PushStyleColor(ImGuiCol.Text, descriptionColor);
-            if (choice > 0)
+            using (ImRaii.PushColor(ImGuiCol.Text, descriptionColor))
             {
-                ImGui.SameLine();
-                ImGui.Dummy(new Vector2(12f, 0));
-                ImGui.SameLine();
-            }
-
-            if (ImGui.Checkbox($"{checkBoxName}###{config}{choice}", ref values[choice]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-            if (!checkboxDescription.IsNullOrEmpty() && ImGui.IsItemHovered())
-            {
-                ImGui.BeginTooltip();
-                ImGui.TextUnformatted(checkboxDescription);
-                ImGui.EndTooltip();
-            }
-
-
-            ImGui.PopStyleColor();
-            ImGui.Unindent();
-        }
-
-        public static void DrawGridMultiChoice(string config, byte columns, string[,] nameAndDesc, Vector4 descriptionColor = new Vector4())
-        {
-            int totalChoices = nameAndDesc.GetLength(0);
-            if (totalChoices > 0)
-            {
-                ImGui.Indent();
-                if (descriptionColor == new Vector4()) descriptionColor = ImGuiColors.DalamudWhite;
-                //ImGui.PushItemWidth(itemWidth);
-                //ImGui.SameLine();
-                //ImGui.Dummy(new Vector2(21, 0));
-                //ImGui.SameLine();
-                bool[]? values = PluginConfiguration.GetCustomBoolArrayValue(config);
-
-                //If new saved options or amount of choices changed, resize and save
-                if (values.Length == 0 || values.Length != totalChoices)
+                if (choice > 0)
                 {
-                    Array.Resize(ref values, totalChoices);
+                    ImGui.SameLine();
+                    ImGuiEx.Spacing(new Vector2(12, 0));
+                }
+
+                var labelW = ImGui.CalcTextSize(checkBoxName);
+                var finishPos = ImGui.GetCursorPosX() + labelW.X + ImGui.GetStyle().ItemSpacing.X;
+                if (finishPos >= ImGui.GetContentRegionMax().X)
+                    ImGui.NewLine();
+
+                if (ImGui.Checkbox($"{checkBoxName}###{config}{choice}", ref values[choice]))
+                {
+                    DebugFile.AddLog($"Set Config {config} to {string.Join(", ", values)}");
                     PluginConfiguration.SetCustomBoolArrayValue(config, values);
                     Service.Configuration.Save();
                 }
 
-                ImGui.BeginTable($"Grid###{config}", columns);
-                ImGui.TableNextRow();
-                //Convert the 2D array of names and descriptions into radio buttons
-                for (int idx = 0; idx < totalChoices; idx++)
+                if (!checkboxDescription.IsNullOrEmpty() && ImGui.IsItemHovered())
                 {
-                    ImGui.TableNextColumn();
-                    string checkBoxName = nameAndDesc[idx, 0];
-                    string checkboxDescription = nameAndDesc[idx, 1];
-
-                    ImGui.PushStyleColor(ImGuiCol.Text, descriptionColor);
-                    if (ImGui.Checkbox($"{checkBoxName}###{config}{idx}", ref values[idx]))
-                    {
-                        PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                        Service.Configuration.Save();
-                    }
-
-                    if (!checkboxDescription.IsNullOrEmpty() && ImGui.IsItemHovered())
-                    {
-                        ImGui.BeginTooltip();
-                        ImGui.TextUnformatted(checkboxDescription);
-                        ImGui.EndTooltip();
-                    }
-
-                    ImGui.PopStyleColor();
-
-                    if (((idx + 1) % columns) == 0)
-                        ImGui.TableNextRow();
+                    ImGui.BeginTooltip();
+                    ImGui.TextUnformatted(checkboxDescription);
+                    ImGui.EndTooltip();
                 }
-                ImGui.EndTable();
-                ImGui.Unindent();
             }
+
+            DrawResetContextMenu(config, choice);
+            ImGui.Unindent();
         }
 
         public static void DrawPvPStatusMultiChoice(string config)
@@ -589,6 +579,7 @@ namespace WrathCombo.Window.Functions
 
             if (ImGui.Checkbox($"Stun###{config}0", ref values[0]))
             {
+                DebugFile.AddLog($"Set Config {config} to {string.Join(", ", values)}");
                 PluginConfiguration.SetCustomBoolArrayValue(config, values);
                 Service.Configuration.Save();
             }
@@ -597,6 +588,7 @@ namespace WrathCombo.Window.Functions
 
             if (ImGui.Checkbox($"Deep Freeze###{config}1", ref values[1]))
             {
+                DebugFile.AddLog($"Set Config {config} to {string.Join(", ", values)}");
                 PluginConfiguration.SetCustomBoolArrayValue(config, values);
                 Service.Configuration.Save();
             }
@@ -605,6 +597,7 @@ namespace WrathCombo.Window.Functions
 
             if (ImGui.Checkbox($"Half Asleep###{config}2", ref values[2]))
             {
+                DebugFile.AddLog($"Set Config {config} to {string.Join(", ", values)}");
                 PluginConfiguration.SetCustomBoolArrayValue(config, values);
                 Service.Configuration.Save();
             }
@@ -613,6 +606,7 @@ namespace WrathCombo.Window.Functions
 
             if (ImGui.Checkbox($"Sleep###{config}3", ref values[3]))
             {
+                DebugFile.AddLog($"Set Config {config} to {string.Join(", ", values)}");
                 PluginConfiguration.SetCustomBoolArrayValue(config, values);
                 Service.Configuration.Save();
             }
@@ -621,6 +615,7 @@ namespace WrathCombo.Window.Functions
 
             if (ImGui.Checkbox($"Bind###{config}4", ref values[4]))
             {
+                DebugFile.AddLog($"Set Config {config} to {string.Join(", ", values)}");
                 PluginConfiguration.SetCustomBoolArrayValue(config, values);
                 Service.Configuration.Save();
             }
@@ -629,6 +624,7 @@ namespace WrathCombo.Window.Functions
 
             if (ImGui.Checkbox($"Heavy###{config}5", ref values[5]))
             {
+                DebugFile.AddLog($"Set Config {config} to {string.Join(", ", values)}");
                 PluginConfiguration.SetCustomBoolArrayValue(config, values);
                 Service.Configuration.Save();
             }
@@ -637,6 +633,7 @@ namespace WrathCombo.Window.Functions
 
             if (ImGui.Checkbox($"Silence###{config}6", ref values[6]))
             {
+                DebugFile.AddLog($"Set Config {config} to {string.Join(", ", values)}");
                 PluginConfiguration.SetCustomBoolArrayValue(config, values);
                 Service.Configuration.Save();
             }
@@ -645,525 +642,13 @@ namespace WrathCombo.Window.Functions
 
             if (ImGui.Checkbox($"Miracle of Nature###{config}7", ref values[7]))
             {
+                DebugFile.AddLog($"Set Config {config} to {string.Join(", ", values)}");
                 PluginConfiguration.SetCustomBoolArrayValue(config, values);
                 Service.Configuration.Save();
             }
 
             ImGui.Columns(1);
             ImGui.PopStyleColor();
-            ImGui.Spacing();
-        }
-
-        public static void DrawRoleGridMultiChoice(string config)
-        {
-            bool[]? values = PluginConfiguration.GetCustomBoolArrayValue(config);
-
-            ImGui.Columns(5, $"{config}", false);
-
-            if (values.Length == 0) Array.Resize(ref values, 5);
-
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.TankBlue);
-
-            if (ImGui.Checkbox($"Tanks###{config}0", ref values[0]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-            ImGui.PopStyleColor();
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.HealerGreen);
-
-            if (ImGui.Checkbox($"Healers###{config}1", ref values[1]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-            ImGui.PopStyleColor();
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DPSRed);
-
-            if (ImGui.Checkbox($"Melee###{config}2", ref values[2]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-            ImGui.PopStyleColor();
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudYellow);
-
-            if (ImGui.Checkbox($"Ranged###{config}3", ref values[3]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-            ImGui.PopStyleColor();
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.ParsedPurple);
-
-            if (ImGui.Checkbox($"Casters###{config}4", ref values[4]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.Columns(1);
-            ImGui.PopStyleColor();
-            ImGui.Spacing();
-        }
-
-        public static void DrawRoleGridSingleChoice(string config)
-        {
-            int value = PluginConfiguration.GetCustomIntValue(config);
-            bool[] values = new bool[20];
-
-            for (int i = 0; i <= 4; i++)
-            {
-                if (value == i) values[i] = true;
-                else
-                    values[i] = false;
-            }
-
-            ImGui.Columns(5, $"{config}", false);
-
-            if (values.Length == 0) Array.Resize(ref values, 5);
-
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.TankBlue);
-
-            if (ImGui.Checkbox($"Tanks###{config}0", ref values[0]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 0);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-            ImGui.PopStyleColor();
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.HealerGreen);
-
-            if (ImGui.Checkbox($"Healers###{config}1", ref values[1]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 1);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-            ImGui.PopStyleColor();
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DPSRed);
-
-            if (ImGui.Checkbox($"Melee###{config}2", ref values[2]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 2);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-            ImGui.PopStyleColor();
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudYellow);
-
-            if (ImGui.Checkbox($"Ranged###{config}3", ref values[3]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 3);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-            ImGui.PopStyleColor();
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.ParsedPurple);
-
-            if (ImGui.Checkbox($"Casters###{config}4", ref values[4]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 4);
-                Service.Configuration.Save();
-            }
-
-            ImGui.Columns(1);
-            ImGui.PopStyleColor();
-            ImGui.Spacing();
-        }
-
-        public static void DrawJobGridMultiChoice(string config)
-        {
-            bool[]? values = PluginConfiguration.GetCustomBoolArrayValue(config);
-
-            ImGui.Columns(5, $"{config}", false);
-
-            if (values.Length == 0) Array.Resize(ref values, 20);
-
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.TankBlue);
-
-            if (ImGui.Checkbox($"Paladin###{config}0", ref values[0]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Warrior###{config}1", ref values[1]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Dark Knight###{config}2", ref values[2]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Gunbreaker###{config}3", ref values[3]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-            ImGui.NextColumn();
-
-            ImGui.PopStyleColor();
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.HealerGreen);
-
-            if (ImGui.Checkbox($"White Mage###{config}", ref values[4]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Scholar###{config}5", ref values[5]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Astrologian###{config}6", ref values[6]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Sage###{config}7", ref values[7]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-            ImGui.NextColumn();
-
-            ImGui.PopStyleColor();
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DPSRed);
-
-            if (ImGui.Checkbox($"Monk###{config}8", ref values[8]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Dragoon###{config}9", ref values[9]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Ninja###{config}10", ref values[10]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Samurai###{config}11", ref values[11]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Reaper###{config}12", ref values[12]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.PopStyleColor();
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudYellow);
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Bard###{config}13", ref values[13]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Machinist###{config}14", ref values[14]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Dancer###{config}15", ref values[15]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-            ImGui.NextColumn();
-            ImGui.NextColumn();
-
-            ImGui.PopStyleColor();
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.ParsedPurple);
-
-            if (ImGui.Checkbox($"Black Mage###{config}16", ref values[16]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Summoner###{config}17", ref values[17]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Red Mage###{config}18", ref values[18]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Blue Mage###{config}19", ref values[19]))
-            {
-                PluginConfiguration.SetCustomBoolArrayValue(config, values);
-                Service.Configuration.Save();
-            }
-
-            ImGui.PopStyleColor();
-            ImGui.NextColumn();
-            ImGui.Columns(1);
-            ImGui.Spacing();
-        }
-
-        public static void DrawJobGridSingleChoice(string config)
-        {
-            int value = PluginConfiguration.GetCustomIntValue(config);
-            bool[] values = new bool[20];
-
-            for (int i = 0; i <= 19; i++)
-            {
-                if (value == i) values[i] = true;
-                else
-                    values[i] = false;
-            }
-
-            ImGui.Columns(5, null, false);
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.TankBlue);
-
-            if (ImGui.Checkbox($"Paladin###{config}0", ref values[0]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 0);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Warrior###{config}1", ref values[1]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 1);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Dark Knight###{config}2", ref values[2]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 2);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Gunbreaker###{config}3", ref values[3]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 3);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-            ImGui.NextColumn();
-
-            ImGui.PopStyleColor();
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.HealerGreen);
-
-            if (ImGui.Checkbox($"White Mage###{config}4", ref values[4]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 4);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Scholar###{config}5", ref values[5]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 5);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Astrologian###{config}6", ref values[6]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 6);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Sage###{config}7", ref values[7]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 7);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-            ImGui.NextColumn();
-
-            ImGui.PopStyleColor();
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DPSRed);
-
-            if (ImGui.Checkbox($"Monk###{config}8", ref values[8]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 8);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Dragoon###{config}9", ref values[9]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 9);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Ninja###{config}10", ref values[10]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 10);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Samurai###{config}11", ref values[11]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 11);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Reaper###{config}12", ref values[12]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 12);
-                Service.Configuration.Save();
-            }
-
-            ImGui.PopStyleColor();
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudYellow);
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Bard###{config}13", ref values[13]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 13);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Machinist###{config}14", ref values[14]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 14);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Dancer###{config}15", ref values[15]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 15);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-            ImGui.NextColumn();
-            ImGui.NextColumn();
-
-            ImGui.PopStyleColor();
-            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.ParsedPurple);
-
-            if (ImGui.Checkbox($"Black Mage###{config}16", ref values[16]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 16);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Summoner###{config}17", ref values[17]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 17);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Red Mage###{config}18", ref values[18]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 18);
-                Service.Configuration.Save();
-            }
-
-            ImGui.NextColumn();
-
-            if (ImGui.Checkbox($"Blue Mage###{config}19", ref values[19]))
-            {
-                PluginConfiguration.SetCustomIntValue(config, 19);
-                Service.Configuration.Save();
-            }
-
-            ImGui.PopStyleColor();
-            ImGui.NextColumn();
-            ImGui.Columns(1);
             ImGui.Spacing();
         }
 
@@ -1367,26 +852,25 @@ namespace WrathCombo.Window.Functions
         {
             using (ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudYellow))
             {
-                ImGui.Indent();
-                ImGui.TextUnformatted(overrideText.IsNullOrEmpty()
+                ImGui.Text(overrideText.IsNullOrEmpty()
                     ? "Select what kind of content this option applies to:"
                     : overrideText);
             }
-            ImGui.Unindent();
-            ImGui.NewLine();
+
             DrawHorizontalBoolRadioButton(
                 config, "All Content",
                 "Applies to all content in the game.",
                 choice: 0,
                 descriptionColor: ImGuiColors.DalamudYellow
             );
+
             DrawHorizontalBoolRadioButton(
                 config, "Boss Only Content",
                 "Only applies in instances where you directly fight a boss. Excludes many A Realm Reborn & Heavensward raids that include trash.",
                 choice: 1,
                 descriptionColor: ImGuiColors.DalamudYellow
             );
-                
+
         }
 
         /// <summary>
@@ -1412,13 +896,12 @@ namespace WrathCombo.Window.Functions
         {
             using (ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudYellow))
             {
-                ImGui.Indent();
+
                 ImGui.TextUnformatted(overrideText.IsNullOrEmpty()
                     ? "Select what kind of content this option applies to:"
                     : overrideText);
             }
-            ImGui.Unindent();
-            ImGui.NewLine();
+
             DrawHorizontalRadioButton(
                 config, "All Content",
                 "Applies to all content in the game.",
@@ -1503,6 +986,12 @@ namespace WrathCombo.Window.Functions
         {
             double sliderAsDouble = Convert.ToDouble(sliderIncrement);
             return ((int)Math.Round(i / sliderAsDouble)) * (int)sliderIncrement;
+        }
+
+        private static void ResetToDefault(string config)
+        {
+            DebugFile.AddLog($"Set Config {config} to default");
+            UserData.MasterList[config].ResetToDefault();
         }
     }
 

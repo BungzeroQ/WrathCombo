@@ -1,5 +1,6 @@
 using WrathCombo.Combos.PvP;
 using WrathCombo.CustomComboNS.Functions;
+using WrathCombo.Data;
 using WrathCombo.Extensions;
 using static WrathCombo.Window.Functions.UserConfig;
 namespace WrathCombo.Combos.PvE;
@@ -10,6 +11,7 @@ internal partial class VPR
     {
         public static UserInt
             VPR_ST_SecondWind_Threshold = new("VPR_ST_SecondWindThreshold", 25),
+            VPR_ST_SerpentsIre_SubOption = new("VPR_ST_SerpentsIre_SubOption", 1),
             VPR_ST_Bloodbath_Threshold = new("VPR_ST_BloodbathThreshold", 40),
             VPR_AoE_SecondWind_Threshold = new("VPR_AoE_SecondWindThreshold", 25),
             VPR_AoE_Bloodbath_Threshold = new("VPR_AoE_BloodbathThreshold", 40),
@@ -31,6 +33,15 @@ internal partial class VPR
             {
                 case CustomComboPreset.VPR_ST_Opener:
                     DrawBossOnlyChoice(VPR_Balance_Content);
+                    break;
+
+                case CustomComboPreset.VPR_ST_SerpentsIre:
+                    DrawHorizontalRadioButton(VPR_ST_SerpentsIre_SubOption,
+                        "All content", $"Uses {ActionWatching.GetActionName(SerpentsIre)} regardless of content.", 0);
+
+                    DrawHorizontalRadioButton(VPR_ST_SerpentsIre_SubOption,
+                        "Boss encounters Only", $"Only uses {ActionWatching.GetActionName(SerpentsIre)} when in Boss encounters.", 1);
+
                     break;
 
                 case CustomComboPreset.VPR_ST_UncoiledFury:
@@ -63,19 +74,19 @@ internal partial class VPR
 
                 case CustomComboPreset.VPR_ST_ComboHeals:
                     DrawSliderInt(0, 100, VPR_ST_SecondWind_Threshold,
-                        $"HP percent threshold to use {All.SecondWind.ActionName()} (0 = Disabled)");
+                        $"HP percent threshold to use {Role.SecondWind.ActionName()} (0 = Disabled)");
 
                     DrawSliderInt(0, 100, VPR_ST_Bloodbath_Threshold,
-                        $"HP percent threshold to use {All.Bloodbath.ActionName()} (0 = Disabled)");
+                        $"HP percent threshold to use {Role.Bloodbath.ActionName()} (0 = Disabled)");
 
                     break;
 
                 case CustomComboPreset.VPR_AoE_ComboHeals:
                     DrawSliderInt(0, 100, VPR_AoE_SecondWind_Threshold,
-                        $"HP percent threshold to use {All.SecondWind.ActionName()} (0 = Disabled)");
+                        $"HP percent threshold to use {Role.SecondWind.ActionName()} (0 = Disabled)");
 
                     DrawSliderInt(0, 100, VPR_AoE_Bloodbath_Threshold,
-                        $"HP percent threshold to use {All.Bloodbath.ActionName()} (0 = Disabled)");
+                        $"HP percent threshold to use {Role.Bloodbath.ActionName()} (0 = Disabled)");
 
                     break;
 

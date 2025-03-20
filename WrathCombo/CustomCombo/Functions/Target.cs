@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using WrathCombo.Data;
-using WrathCombo.Extensions;
 using WrathCombo.Services;
 using ObjectKind = Dalamud.Game.ClientState.Objects.Enums.ObjectKind;
 
@@ -114,7 +113,7 @@ namespace WrathCombo.CustomComboNS.Functions
 
         public static float PlayerHealthPercentageHp() => (float)LocalPlayer.CurrentHp / LocalPlayer.MaxHp * 100;
 
-        public static bool HasBattleTarget() => CurrentTarget is IBattleNpc { BattleNpcKind: BattleNpcSubKind.Enemy or (BattleNpcSubKind)1 };
+        public static bool HasBattleTarget() => CurrentTarget is not null && CurrentTarget.IsHostile();
 
         /// <summary> Checks if the player is being targeted by a hostile target. </summary>
         public static bool IsPlayerTargeted() => Svc.Objects.Any(x => x.IsHostile() && x.IsTargetable && x.TargetObjectId == LocalPlayer.GameObjectId);
@@ -169,28 +168,60 @@ namespace WrathCombo.CustomComboNS.Functions
             return healTarget;
         }
 
-        /// <summary> Determines if the enemy is casting an action. Optionally, limit by total cast time. </summary>
-        /// <param name="minTotalCast"> The minimum total cast time required, in seconds. </param>
-        /// <returns> Bool indicating whether they are casting an action or not. </returns>
-        public static bool TargetIsCasting(float? minTotalCast = null)
+        /// <summary>
+        ///     Determines if the enemy is casting an action. Optionally, limit by percentage of cast time.
+        /// </summary>
+        /// <param name="minCastPercentage">
+        ///     The minimum percentage of the cast time completed required.<br/>
+        ///     Default is 0%.<br/>
+        ///     As a float representation of a percentage, value should be between
+        ///     0.0f (0%) and 1.0f (100%).
+        /// </param>
+        /// <returns>
+        ///     Bool indicating whether they are casting an action or not.<br/>
+        ///     (and if the cast time is over the percentage specified)
+        /// </returns>
+        public static bool TargetIsCasting(double? minCastPercentage = null)
         {
-            if (CurrentTarget is null || CurrentTarget is not IBattleChara chara) return false;
+            if (CurrentTarget is not IBattleChara chara) return false;
 
-            if (chara.IsCasting) return minTotalCast == null || chara.TotalCastTime >= minTotalCast;
+            minCastPercentage ??= 0.0f;
+            minCastPercentage = Math.Clamp((double)minCastPercentage, 0.0d, 1.0d);
+            double castPercentage = chara.CurrentCastTime / chara.TotalCastTime;
 
-            else return false;
+            if (chara.IsCasting)
+                return minCastPercentage <= castPercentage;
+
+            return false;
         }
 
-        /// <summary> Determines if the enemy is casting an action that can be interrupted. Optionally, limit by current cast time. </summary>
-        /// <param name="minCurrentCast"> The minimum current cast time required, in seconds. </param>
-        /// <returns> Bool indicating whether they can be interrupted or not. </returns>
-        public static bool CanInterruptEnemy(float? minCurrentCast = null)
+        /// <summary>
+        ///     Determines if the enemy is casting an action that can be interrupted.
+        ///     <br/>
+        ///     Optionally limited by percentage of cast time.
+        /// </summary>
+        /// <param name="minCastPercentage">
+        ///     The minimum percentage of the cast time completed required.<br/>
+        ///     Default is 0%.<br/>
+        ///     As a float representation of a percentage, value should be between
+        ///     0.0f (0%) and 1.0f (100%).
+        /// </param>
+        /// <returns>
+        ///     Bool indicating whether they can be interrupted or not.<br/>
+        ///     (and if the cast time is over the percentage specified)
+        /// </returns>
+        public static bool CanInterruptEnemy(double? minCastPercentage = null)
         {
-            if (CurrentTarget is null || CurrentTarget is not IBattleChara chara) return false;
+            if (CurrentTarget is not IBattleChara chara) return false;
 
-            if (chara.IsCasting && chara.IsCastInterruptible) return minCurrentCast == null || chara.CurrentCastTime >= minCurrentCast;
+            minCastPercentage ??= Service.Configuration.InterruptDelay;
+            minCastPercentage = Math.Clamp((double)minCastPercentage, 0.0d, 1.0d);
+            double castPercentage = chara.CurrentCastTime / chara.TotalCastTime;
 
-            else return false;
+            if (chara is { IsCasting: true, IsCastInterruptible: true })
+                return minCastPercentage <= castPercentage;
+
+            return false;
         }
 
         /// <summary> Sets the player's target. </summary>
@@ -452,8 +483,9 @@ namespace WrathCombo.CustomComboNS.Functions
             ActionWatching.ActionSheet.Values.TryGetFirst(x => x.RowId == aoeSpell, out var sheetSpell);
             bool needsTarget = sheetSpell.CanTargetHostile;
 
-            if (needsTarget && GetTargetDistance(target) > sheetSpell.Range)
+            if (needsTarget && GetTargetDistance(target) > ActionWatching.GetActionRange(sheetSpell.RowId))
                 return 0;
+
 
             int count = sheetSpell.CastType switch
             {
@@ -513,7 +545,7 @@ namespace WrathCombo.CustomComboNS.Functions
                     $"P = {P}\n" +
                     $"Q = {Q}\n" +
                     $"P2 = {P2}\n" +
-                    $"Ptrans = {Ptrans}\n"+
+                    $"Ptrans = {Ptrans}\n" +
                     $"Pcorner{Pcorner}\n" +
                     $"R = {R}, R * R = {R * R}\n" +
                     $"PcornerSquared = {Pcorner.LengthSquared()}\n" +
@@ -559,6 +591,7 @@ namespace WrathCombo.CustomComboNS.Functions
             return Svc.Objects.Count(o => o.ObjectKind == ObjectKind.BattleNpc &&
                                                                  o.IsHostile() &&
                                                                  o.IsTargetable &&
+                                                                 !TargetIsInvincible(o) &&
                                                                  (checkIgnoredList ? !Service.Configuration.IgnoredNPCs.Any(x => x.Key == o.DataId) : true) &&
                                                                  PointInCircle(o.Position - LocalPlayer.Position, effectRange + o.HitboxRadius));
         }
@@ -570,6 +603,7 @@ namespace WrathCombo.CustomComboNS.Functions
             return Svc.Objects.Count(o => o.ObjectKind == ObjectKind.BattleNpc &&
                                                                  o.IsHostile() &&
                                                                  o.IsTargetable &&
+                                                                 !TargetIsInvincible(o) &&
                                                                  (checkIgnoredList ? !Service.Configuration.IgnoredNPCs.Any(x => x.Key == o.DataId) : true) &&
                                                                  PointInCircle(o.Position - target.Position, effectRange + o.HitboxRadius));
         }
@@ -582,6 +616,7 @@ namespace WrathCombo.CustomComboNS.Functions
             return Svc.Objects.Count(o => o.ObjectKind == ObjectKind.BattleNpc &&
                                                                  o.IsHostile() &&
                                                                  o.IsTargetable &&
+                                                                 !TargetIsInvincible(o) &&
                                                                  GetTargetDistance(o) <= range &&
                                                                  (checkIgnoredList ? !Service.Configuration.IgnoredNPCs.Any(x => x.Key == o.DataId) : true) &&
                                                                  PointInCone(o.Position - LocalPlayer.Position, dir, 45f));
@@ -595,6 +630,7 @@ namespace WrathCombo.CustomComboNS.Functions
             return Svc.Objects.Count(o => o.ObjectKind == ObjectKind.BattleNpc &&
                                                                  o.IsHostile() &&
                                                                  o.IsTargetable &&
+                                                                 !TargetIsInvincible(o) &&
                                                                  GetTargetDistance(o) <= range &&
                                                                  (checkIgnoredList ? !Service.Configuration.IgnoredNPCs.Any(x => x.Key == o.DataId) : true) &&
                                                                  HitboxInRect(o, dir, range, effectRange / 2));
@@ -629,12 +665,13 @@ namespace WrathCombo.CustomComboNS.Functions
 
         internal static unsafe bool IsQuestMob(IGameObject target) => target.Struct()->NamePlateIconId is 71204 or 71144 or 71224 or 71344;
 
-        private static bool IsBoss(IGameObject? target) => Svc.Data.GetExcelSheet<BNpcBase>().HasRow(target.DataId) ? Svc.Data.GetExcelSheet<BNpcBase>().GetRow(target.DataId).Rank is 2 or 6 : false;
+        private static bool IsBoss(IGameObject? target) =>
+            target != null && Svc.Data.GetExcelSheet<BNpcBase>().HasRow(target.DataId) && Svc.Data.GetExcelSheet<BNpcBase>().GetRow(target.DataId).Rank is 2 or 6;
 
         internal static bool TargetIsBoss() => IsBoss(LocalPlayer.TargetObject);
 
         internal static bool TargetIsHostile() => HasTarget() && CurrentTarget.IsHostile();
 
-        internal static IEnumerable<IBattleChara> NearbyBosses =>  Svc.Objects.Where(x => x.ObjectKind == ObjectKind.BattleNpc && IsBoss(x)).Cast<IBattleChara>();
+        internal static IEnumerable<IBattleChara> NearbyBosses => Svc.Objects.Where(x => x.ObjectKind == ObjectKind.BattleNpc && IsBoss(x)).Cast<IBattleChara>();
     }
 }

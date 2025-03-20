@@ -10,15 +10,17 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using WrathCombo.Combos;
 using WrathCombo.Combos.PvE;
+using WrathCombo.CustomComboNS.Functions;
 using WrathCombo.Data;
 using WrathCombo.Extensions;
 using WrathCombo.Services;
+using WrathCombo.Services.IPC_Subscriber;
 using WrathCombo.Window.Functions;
-using Action = Lumina.Excel.Sheets.Action;
 using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions;
-using WrathCombo.CustomComboNS.Functions;
+using Action = Lumina.Excel.Sheets.Action;
 
 #pragma warning disable CS0414 // Field is assigned but its value is never used
 
@@ -36,11 +38,11 @@ namespace WrathCombo.AutoRotation
 
         static DateTime? TimeToHeal;
 
-        static Func<WrathPartyMember, bool> RezQuery => x => x.BattleChara.IsDead && FindEffectOnMember(2648, x.BattleChara) == null && FindEffectOnMember(148, x.BattleChara) == null && x.BattleChara.IsTargetable && TimeSpentDead(x.BattleChara.GameObjectId).TotalSeconds > 2;
+        static Func<WrathPartyMember, bool> RezQuery => x => x.BattleChara.IsDead && FindEffectOnMember(2648, x.BattleChara) == null && FindEffectOnMember(148, x.BattleChara) == null && x.BattleChara.IsTargetable && TimeSpentDead(x.BattleChara.GameObjectId).TotalSeconds > 2 && GetTargetDistance(x.BattleChara) <= 30;
 
         public static bool LockedST
         {
-            get => _lockedST; 
+            get => _lockedST;
             set
             {
                 if (_lockedST != value)
@@ -51,7 +53,7 @@ namespace WrathCombo.AutoRotation
         }
         public static bool LockedAoE
         {
-            get => _lockedAoE; 
+            get => _lockedAoE;
             set
             {
                 if (_lockedAoE != value)
@@ -61,10 +63,11 @@ namespace WrathCombo.AutoRotation
             }
         }
 
+        private static bool _ninjaLockedAoE;
+
         internal static void Run()
         {
             cfg ??= new AutoRotationConfigIPCWrapper(Service.Configuration.RotationConfig);
-
             if (!cfg.Enabled || !Player.Available || Player.Object.IsDead || Svc.Condition[ConditionFlag.Mounted] || !EzThrottler.Throttle("Autorot", cfg.Throttler))
                 return;
 
@@ -75,9 +78,6 @@ namespace WrathCombo.AutoRotation
 
             if (cfg.InCombatOnly && (!GetPartyMembers().Any(x => x.BattleChara.Struct()->InCombat) || PartyEngageDuration().TotalSeconds < cfg.CombatDelay) && !combatBypass)
                 return;
-
-            if (Player.Job is Job.SGE && cfg.HealerSettings.ManageKardia)
-                UpdateKardiaTarget();
 
             var autoActions = Presets.GetJobAutorots;
             var healTarget = Player.Object.GetRole() is CombatRole.Healer ? AutoRotationHelper.GetSingleTarget(cfg.HealerRotationMode) : null;
@@ -107,18 +107,21 @@ namespace WrathCombo.AutoRotation
                     }
 
                     if (cfg.HealerSettings.AutoRez)
-                    {
                         RezParty();
-                        bool rdmCheck = Player.Job is Job.RDM && ActionReady(RDM.Verraise) && ActionManager.GetAdjustedCastTime(ActionType.Action, RDM.Verraise) > 0;
-
-                        //if (GetPartyMembers().Any(RezQuery) && !rdmCheck)
-                        //    return;
-                    }
                 }
             }
 
+            if (Player.Job is Job.SGE && cfg.HealerSettings.ManageKardia)
+                UpdateKardiaTarget();
+
 
             if (ActionManager.Instance()->AnimationLock > 0) return;
+            if (ActionWatching.TimeSinceLastAction.TotalSeconds >= 3)
+            {
+                LockedAoE = false;
+                LockedST = false;
+                _ninjaLockedAoE = false;
+            }
 
             foreach (var preset in autoActions.Where(x => x.Key.Attributes().AutoAction.IsHeal == canHeal).OrderByDescending(x => x.Key.Attributes().AutoAction.IsAoE))
             {
@@ -147,7 +150,8 @@ namespace WrathCombo.AutoRotation
                 }
 
                 if (!action.IsHeal)
-                    AutomateDPS(preset.Key, attributes, gameAct);
+                    if (AutomateDPS(preset.Key, attributes, gameAct))
+                        return;
             }
 
         }
@@ -177,7 +181,7 @@ namespace WrathCombo.AutoRotation
                 _ => 0
             };
 
-            if (regenSpell != 0 && Svc.Targets.FocusTarget != null && (!MemberHasEffect(regenBuff, Svc.Targets.FocusTarget, true, out var regen) || regen?.RemainingTime <= 5f))
+            if (regenSpell != 0 && !JustUsed(regenSpell, 4) && Svc.Targets.FocusTarget != null && (!MemberHasEffect(regenBuff, Svc.Targets.FocusTarget, true, out var regen) || regen?.RemainingTime <= 5f))
             {
                 var query = Svc.Objects.Where(x => !x.IsDead && x.IsHostile() && x.IsTargetable);
                 if (!query.Any())
@@ -227,9 +231,9 @@ namespace WrathCombo.AutoRotation
                 {
                     if (Player.Job is Job.RDM)
                     {
-                        if (ActionReady(All.Swiftcast) && !HasEffect(RDM.Buffs.Dualcast))
+                        if (ActionReady(MagicRole.Swiftcast) && !HasEffect(RDM.Buffs.Dualcast))
                         {
-                            ActionManager.Instance()->UseAction(ActionType.Action, All.Swiftcast);
+                            ActionManager.Instance()->UseAction(ActionType.Action, MagicRole.Swiftcast);
                             return;
                         }
 
@@ -241,18 +245,20 @@ namespace WrathCombo.AutoRotation
                     }
                     else
                     {
-                        if (ActionReady(All.Swiftcast))
+                        if (ActionReady(MagicRole.Swiftcast))
                         {
-                            if (ActionManager.Instance()->GetActionStatus(ActionType.Action, All.Swiftcast) == 0)
+                            if (ActionManager.Instance()->GetActionStatus(ActionType.Action, MagicRole.Swiftcast) == 0)
                             {
-                                ActionManager.Instance()->UseAction(ActionType.Action, All.Swiftcast);
+                                ActionManager.Instance()->UseAction(ActionType.Action, MagicRole.Swiftcast);
                                 return;
                             }
                         }
 
-                        if (!IsMoving() || HasEffect(All.Buffs.Swiftcast))
+                        if (!IsMoving() || HasEffect(MagicRole.Buffs.Swiftcast))
                         {
-                            ActionManager.Instance()->UseAction(ActionType.Action, resSpell, member.BattleChara.GameObjectId);
+                            
+                            if ((cfg.HealerSettings.AutoRezRequireSwift && ActionManager.GetAdjustedCastTime(ActionType.Action, resSpell) == 0) || !cfg.HealerSettings.AutoRezRequireSwift)
+                                ActionManager.Instance()->UseAction(ActionType.Action, resSpell, member.BattleChara.GameObjectId);
                         }
                     }
                 }
@@ -261,13 +267,13 @@ namespace WrathCombo.AutoRotation
 
         private static void CleanseParty()
         {
-            if (ActionManager.Instance()->QueuedActionId == All.Esuna)
+            if (ActionManager.Instance()->QueuedActionId == Healer.Esuna)
                 ActionManager.Instance()->QueuedActionId = 0;
 
             if (GetPartyMembers().FindFirst(x => HasCleansableDebuff(x.BattleChara), out var member))
             {
-                if (InActionRange(All.Esuna, member.BattleChara) && IsInLineOfSight(member.BattleChara))
-                ActionManager.Instance()->UseAction(ActionType.Action, All.Esuna, member.BattleChara.GameObjectId);
+                if (InActionRange(Healer.Esuna, member.BattleChara) && IsInLineOfSight(member.BattleChara))
+                    ActionManager.Instance()->UseAction(ActionType.Action, Healer.Esuna, member.BattleChara.GameObjectId);
             }
         }
 
@@ -276,7 +282,7 @@ namespace WrathCombo.AutoRotation
             if (!LevelChecked(SGE.Kardia)) return;
             if (CombatEngageDuration().TotalSeconds < 3) return;
 
-            foreach (var member in GetPartyMembers().OrderByDescending(x => x.BattleChara.GetRole() is CombatRole.Tank))
+            foreach (var member in GetPartyMembers().Where(x => !x.BattleChara.IsDead).OrderByDescending(x => x.BattleChara.GetRole() is CombatRole.Tank))
             {
                 if (cfg.HealerSettings.KardiaTanksOnly && member.BattleChara.GetRole() is not CombatRole.Tank &&
                     FindEffectOnMember(3615, member.BattleChara) is null) continue;
@@ -394,6 +400,9 @@ namespace WrathCombo.AutoRotation
             {
                 if (attributes.AutoAction.IsHeal)
                 {
+                    LockedAoE = false;
+                    LockedST = false;
+
                     uint outAct = OriginalHook(InvokeCombo(preset, attributes, ref gameAct, Player.Object));
                     if (ActionManager.Instance()->GetActionStatus(ActionType.Action, outAct) != 0) return false;
                     if (!ActionReady(outAct))
@@ -402,10 +411,11 @@ namespace WrathCombo.AutoRotation
                     if (HealerTargeting.CanAoEHeal(outAct))
                     {
                         var castTime = ActionManager.GetAdjustedCastTime(ActionType.Action, outAct);
-                        if (IsMoving() && castTime > 0)
+                        bool orbwalking = cfg.OrbwalkerIntegration && OrbwalkerIPC.CanOrbwalk;
+                        if (IsMoving() && castTime > 0 && !orbwalking)
                             return false;
 
-                        var ret = ActionManager.Instance()->UseAction(ActionType.Action, Service.IconReplacer.getIconHook.IsEnabled ? gameAct : outAct);
+                        var ret = ActionManager.Instance()->UseAction(ActionType.Action, Service.ActionReplacer.getActionHook.IsEnabled ? gameAct : outAct);
 
                         if (ret)
                             LastHealAt = Environment.TickCount64 + castTime;
@@ -415,7 +425,22 @@ namespace WrathCombo.AutoRotation
                 }
                 else
                 {
-                    var target = DPSTargeting.BaseSelection.MaxBy(x => NumberOfEnemiesInRange(OriginalHook(gameAct), x, true));
+                    var target = !cfg.DPSSettings.AoEIgnoreManual && cfg.DPSRotationMode == DPSRotationMode.Manual ? Svc.Targets.Target : DPSTargeting.BaseSelection.MaxBy(x => NumberOfEnemiesInRange(OriginalHook(gameAct), x, true));
+                    var numEnemies = NumberOfEnemiesInRange(gameAct, target, true);
+                    if (!_ninjaLockedAoE)
+                    {
+                        if (numEnemies < cfg.DPSSettings.DPSAoETargets)
+                        {
+                            LockedAoE = false;
+                            return false;
+                        }
+                        else
+                        {
+                            LockedAoE = true;
+                            LockedST = false;
+                        }
+                    }
+
                     uint outAct = OriginalHook(InvokeCombo(preset, attributes, ref gameAct));
                     if (!CanQueue(outAct)) return false;
                     if (!ActionReady(outAct))
@@ -423,32 +448,41 @@ namespace WrathCombo.AutoRotation
 
                     var sheet = Svc.Data.GetExcelSheet<Action>().GetRow(outAct);
                     var mustTarget = sheet.CanTargetHostile;
-                    var numEnemies = NumberOfEnemiesInRange(gameAct, target, true);
-                    if (numEnemies >= cfg.DPSSettings.DPSAoETargets)
+
+                    bool switched = SwitchOnDChole(attributes, outAct, ref target);
+                    var castTime = ActionManager.GetAdjustedCastTime(ActionType.Action, outAct);
+                    bool orbwalking = cfg.OrbwalkerIntegration && OrbwalkerIPC.CanOrbwalk;
+                    if (IsMoving() && castTime > 0 && !orbwalking)
+                        return false;
+
+                    if (mustTarget || cfg.DPSSettings.AlwaysSelectTarget)
+                        Svc.Targets.Target = target;
+
+                    if (mustTarget)
                     {
-                        bool switched = SwitchOnDChole(attributes, outAct, ref target);
-                        var castTime = ActionManager.GetAdjustedCastTime(ActionType.Action, outAct);
-                        if (IsMoving() && castTime > 0)
-                            return false;
-
-                        if (mustTarget || cfg.DPSSettings.AlwaysSelectTarget)
-                            Svc.Targets.Target = target;
-
-                        var ret = ActionManager.Instance()->UseAction(ActionType.Action, Service.IconReplacer.getIconHook.IsEnabled ? gameAct : outAct, (mustTarget && target != null) || switched ? target.GameObjectId : Player.Object.GameObjectId);
-
-                        if (outAct is NIN.Ten or NIN.Chi or NIN.Jin or NIN.TenCombo or NIN.ChiCombo or NIN.JinCombo && ret)
-                            LockedAoE = true;
-                        else
-                            LockedAoE = false;
-
-                        return ret;
+                        Svc.GameConfig.TryGet(Dalamud.Game.Config.UiControlOption.AutoFaceTargetOnAction, out uint original);
+                        Svc.GameConfig.Set(Dalamud.Game.Config.UiControlOption.AutoFaceTargetOnAction, 1);
+                        Vector3 pos = new(LocalPlayer.Position.X, LocalPlayer.Position.Y, LocalPlayer.Position.Z);
+                        ActionManager.Instance()->AutoFaceTargetPosition(&pos, target.GameObjectId);
+                        Svc.GameConfig.Set(Dalamud.Game.Config.UiControlOption.AutoFaceTargetOnAction, original);
                     }
+
+                    var ret = ActionManager.Instance()->UseAction(ActionType.Action, Service.ActionReplacer.getActionHook.IsEnabled ? gameAct : outAct, (mustTarget && target != null) || switched ? target.GameObjectId : Player.Object.GameObjectId);
+
+                    if (outAct is NIN.Ten or NIN.Chi or NIN.Jin or NIN.TenCombo or NIN.ChiCombo or NIN.JinCombo && ret)
+                        _ninjaLockedAoE = true;
+                    else
+                        _ninjaLockedAoE = false;
+
+                    return true;
+
                 }
                 return false;
             }
 
             public static bool ExecuteST(Enum mode, CustomComboPreset preset, Presets.PresetAttributes attributes, uint gameAct)
             {
+                if (_ninjaLockedAoE) return false;
                 var target = GetSingleTarget(mode);
                 if (target is null)
                     return false;
@@ -475,19 +509,15 @@ namespace WrathCombo.AutoRotation
                     Svc.Targets.Target = target;
 
                 var castTime = ActionManager.GetAdjustedCastTime(ActionType.Action, outAct);
-                if (IsMoving() && castTime > 0)
+                bool orbwalking = cfg.OrbwalkerIntegration && OrbwalkerIPC.CanOrbwalk;
+                if (IsMoving() && castTime > 0 && !orbwalking)
                     return false;
 
                 if (canUse && (inRange || areaTargeted))
                 {
-                    var ret = ActionManager.Instance()->UseAction(ActionType.Action, Service.IconReplacer.getIconHook.IsEnabled ? gameAct : outAct, canUseTarget ? target.GameObjectId : Player.Object.GameObjectId);
+                    var ret = ActionManager.Instance()->UseAction(ActionType.Action, Service.ActionReplacer.getActionHook.IsEnabled ? gameAct : outAct, canUseTarget ? target.GameObjectId : Player.Object.GameObjectId);
                     if (mode is HealerRotationMode && ret)
                         LastHealAt = Environment.TickCount64 + castTime;
-
-                    if (outAct is NIN.Ten or NIN.Chi or NIN.Jin or NIN.TenCombo or NIN.ChiCombo or NIN.JinCombo && ret)
-                        LockedST = true;
-                    else
-                        LockedST = false;
 
                     return ret;
                 }
@@ -511,7 +541,7 @@ namespace WrathCombo.AutoRotation
                 var outAct = attributes.ReplaceSkill.ActionIDs.FirstOrDefault();
                 foreach (var actToCheck in attributes.ReplaceSkill.ActionIDs)
                 {
-                    var customCombo = Service.IconReplacer.CustomCombos.FirstOrDefault(x => x.Preset == preset);
+                    var customCombo = Service.ActionReplacer.CustomCombos.FirstOrDefault(x => x.Preset == preset);
                     if (customCombo != null)
                     {
                         if (customCombo.TryInvoke(actToCheck, out var changedAct, optionalTarget))
@@ -522,14 +552,14 @@ namespace WrathCombo.AutoRotation
                         }
                     }
                 }
-                
+
                 return outAct;
             }
         }
 
         public class DPSTargeting
         {
-            private static bool Query(IGameObject x) => x is IBattleChara chara && chara.IsHostile() && IsInRange(chara, cfg.DPSSettings.MaxDistance) && !chara.IsDead && chara.IsTargetable && IsInLineOfSight(chara) && !TargetIsInvincible(chara) && !Service.Configuration.IgnoredNPCs.Any(x => x.Key == chara.DataId) && 
+            private static bool Query(IGameObject x) => x is IBattleChara chara && chara.IsHostile() && IsInRange(chara, cfg.DPSSettings.MaxDistance) && !chara.IsDead && chara.IsTargetable && IsInLineOfSight(chara) && !TargetIsInvincible(chara) && !Service.Configuration.IgnoredNPCs.Any(x => x.Key == chara.DataId) &&
                 ((cfg.DPSSettings.OnlyAttackInCombat && chara.Struct()->InCombat) || !cfg.DPSSettings.OnlyAttackInCombat);
             public static IEnumerable<IGameObject> BaseSelection => Svc.Objects.Any(x => Query(x) && IsPriority(x)) ?
                                                                     Svc.Objects.Where(x => Query(x) && IsPriority(x)) :

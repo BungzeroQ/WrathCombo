@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -120,7 +121,7 @@ public class UIHelper(Leasing leasing)
 
     private DateTime? _presetsUpdated;
 
-    private Dictionary<string, (string controllers, bool enabled, bool autoMode)>
+    private ConcurrentDictionary<string, (string controllers, bool enabled, bool autoMode)>
         PresetsControlled { get; } = new();
 
     internal (string controllers, bool enabled, bool autoMode)?
@@ -476,7 +477,7 @@ public class UIHelper(Leasing leasing)
     {
         bool DefaultUI(string label, ref int backupVar)
         {
-            ImGui.SetNextItemWidth(200f.Scale());
+            ImGuiEx.SetNextItemWidthScaled(200);
             return ImGuiEx.SliderInt(
                 label, ref backupVar, 1, 99, "%d%%");
         }
@@ -492,7 +493,7 @@ public class UIHelper(Leasing leasing)
 
             if (controlled is null)
             {
-                ImGui.SetNextItemWidth(200f.Scale());
+                ImGuiEx.SetNextItemWidthScaled(200);
                 return DefaultUI(label, ref backupVar);
             }
         }
@@ -511,7 +512,7 @@ public class UIHelper(Leasing leasing)
 
         var _ = controlled.Value.state;
         ImGui.BeginDisabled();
-        ImGui.SetNextItemWidth(200f.Scale());
+        ImGuiEx.SetNextItemWidthScaled(200);
         ImGuiEx.SliderInt("", ref _, 1, 99, "%d%%");
         ImGui.EndDisabled();
 

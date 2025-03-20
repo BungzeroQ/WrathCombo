@@ -11,8 +11,10 @@ using System.Threading.Tasks;
 using Dalamud.Plugin.Services;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
+using ECommons.GameHelpers;
 using WrathCombo.Combos;
 using WrathCombo.CustomComboNS.Functions;
+using WrathCombo.Extensions;
 using CancellationReasonEnum = WrathCombo.Services.IPC.CancellationReason;
 
 // ReSharper disable UseSymbolAlias
@@ -58,7 +60,7 @@ public class Lease(
     ///     The date and time this lease was created.
     /// </summary>
     // ReSharper disable once UnusedMember.Local
-    private DateTime Created { get; } = DateTime.Now;
+    internal DateTime Created { get; } = DateTime.Now;
     /// <summary>
     ///     The date and time this lease was last updated.
     /// </summary>
@@ -291,6 +293,8 @@ public partial class Leasing
         return _autoRotationStateUpdated;
     }
 
+    private DateTime _lastAutoRotationSetCheck = DateTime.MinValue;
+
     /// <summary>
     ///     Adds a registration for Auto-Rotation control to a lease.
     /// </summary>
@@ -299,16 +303,20 @@ public partial class Leasing
     /// </param>
     /// <param name="newState">Whether to enabled Auto-Rotation.</param>
     /// <seealso cref="Provider.SetAutoRotationState" />
-    internal void AddRegistrationForAutoRotation(Guid lease, bool newState)
+    internal SetResult AddRegistrationForAutoRotation(Guid lease, bool newState)
     {
         var registration = Registrations[lease];
 
         if (registration.AutoRotationConfigsControlled.Count > 0 &&
             registration.AutoRotationControlled[0] == newState)
         {
-            Logging.Log(
-                $"{registration.PluginName}: You are already controlling Auto-Rotation");
-            return;
+            if ((DateTime.Now - _lastAutoRotationSetCheck).TotalSeconds >= 15)
+            {
+                Logging.Log(
+                    $"{registration.PluginName}: You are already controlling Auto-Rotation");
+                _lastAutoRotationSetCheck = DateTime.Now;
+            }
+            return SetResult.Duplicate;
         }
 
         // Always [0], not an actual add
@@ -317,7 +325,12 @@ public partial class Leasing
         registration.LastUpdated = DateTime.Now;
         AutoRotationStateUpdated = DateTime.Now;
 
+        // Try to build combo data before auto-rotation-readiness is requested
+        Task.Run(() => P.IPCSearch.ComboStatesByJobCategorized
+            .TryGetValue(Player.Job, out var _));
+
         Logging.Log($"{registration.PluginName}: Auto-Rotation state updated");
+        return SetResult.Okay;
     }
 
     /// <summary>
@@ -345,6 +358,8 @@ public partial class Leasing
         return lease?.JobsControlled[resolvedJob];
     }
 
+    private DateTime _lasJobSetCheck = DateTime.MinValue;
+
     /// <summary>
     ///     Adds a registration for the current Job to a lease.
     /// </summary>
@@ -353,7 +368,7 @@ public partial class Leasing
     /// </param>
     /// <param name="jobOverride">A manual override, only used in testing</param>
     /// <seealso cref="Provider.SetCurrentJobAutoRotationReady" />
-    internal void AddRegistrationForCurrentJob(Guid lease, Job? jobOverride = null)
+    internal SetResult AddRegistrationForCurrentJob(Guid lease, Job? jobOverride = null)
     {
         var registration = Registrations[lease];
 
@@ -361,26 +376,23 @@ public partial class Leasing
         {
             Logging.Error(
                 "Failed to register current job: player object does not exist!");
-            return;
+            return SetResult.PlayerNotAvailable;
         }
 
-        // Convert current job/class to a job, if it is a class
-        var currentJobRow = CustomComboFunctions.LocalPlayer.ClassJob;
-        var currentRealJob = currentJobRow.Value.RowId;
-        if (currentJobRow.Value.ClassJobParent.RowId != currentJobRow.Value.RowId)
-            currentRealJob =
-                CustomComboFunctions.JobIDs.ClassToJob(currentJobRow.RowId);
-
-        var currentJob = (Job)currentRealJob;
+        var job =
+            (Job)CustomComboFunctions.JobIDs.ClassToJob((uint)Player.Job);
         if (jobOverride is not null)
-            currentJob = jobOverride.Value;
-        var job = currentJob.ToString();
+            job = jobOverride.Value;
 
-        if (!registration.JobsControlled.TryAdd(currentJob, true))
+        if (!registration.JobsControlled.TryAdd(job, true))
         {
-            Logging.Log(
-                $"{registration.PluginName}: You are already controlling the current job ({job})");
-            return;
+            if ((DateTime.Now - _lasJobSetCheck).TotalSeconds >= 15)
+            {
+                Logging.Log(
+                    $"{registration.PluginName}: You are already controlling the current job ({job})");
+                _lasJobSetCheck = DateTime.Now;
+            }
+            return SetResult.Duplicate;
         }
 
         Logging.Log(
@@ -389,8 +401,8 @@ public partial class Leasing
         Task.Run(() =>
         {
             bool locking;
-            var combos = Helper.GetCombosToSetJobAutoRotationReady(currentJob, false)!;
-            var options = Helper.GetCombosToSetJobAutoRotationReady(currentJob)!;
+            var combos = Helper.GetCombosToSetJobAutoRotationReady(job, false)!;
+            var options = Helper.GetCombosToSetJobAutoRotationReady(job)!;
             string[] stringKeys;
 
             // Lock the job if it's already ready
@@ -398,6 +410,18 @@ public partial class Leasing
             {
                 locking = true;
                 stringKeys = [];
+                combos = P.IPCSearch.EnabledActions
+                    .Where(a=> a.Attributes().CustomComboInfo.JobID
+                               == (uint)job)
+                    .Where(a => a.Attributes().Parent is null)
+                    .Select(a => a.ToString())
+                    .ToList();
+                options = P.IPCSearch.EnabledActions
+                    .Where(a=> a.Attributes().CustomComboInfo.JobID
+                               == (uint)job)
+                    .Where(a => a.Attributes().Parent is not null)
+                    .Select(a => a.ToString())
+                    .ToList();
             }
             // Get the list of combos and options to enable
             else
@@ -442,6 +466,7 @@ public partial class Leasing
             CombosUpdated = DateTime.Now;
             OptionsUpdated = DateTime.Now;
         });
+        return SetResult.OkayWorking;
     }
 
     /// <summary>
@@ -527,24 +552,39 @@ public partial class Leasing
     /// <param name="newState">The state to set the preset to.</param>
     /// <param name="newAutoState">The state to set the Auto-Mode to.</param>
     /// <seealso cref="Provider.SetComboState" />
-    internal void AddRegistrationForCombo
+    internal SetResult AddRegistrationForCombo
         (Guid lease, string combo, bool newState, bool newAutoState)
     {
         var registration = Registrations[lease];
         var preset = (CustomComboPreset)
             Enum.Parse(typeof(CustomComboPreset), combo, true);
 
+        // Disable the combo of the opposite type mode, if one exists
+        var oppositeModeCombo = Helper.GetOppositeModeCombo(preset);
+        if (oppositeModeCombo is not null)
+            registration.CombosControlled[(CustomComboPreset)oppositeModeCombo] =
+                (false, false);
+        var oppositeText = oppositeModeCombo is not null
+            ? $" (Disabled opposite combo: {oppositeModeCombo})"
+            : "";
+
         registration.CombosControlled[preset] = (newState, newAutoState);
 
         if (CheckBlacklist(Registrations[lease].ConfigurationsHash) &&
             Registrations[lease].SetsLeased > 4)
-            RemoveRegistration(lease, CancellationReasonEnum.WrathUserManuallyCancelled,
+        {
+            RemoveRegistration(lease,
+                CancellationReasonEnum.WrathUserManuallyCancelled,
                 "Matched currently-blacklisted configuration");
+            return SetResult.BlacklistedLease;
+        }
 
         registration.LastUpdated = DateTime.Now;
         CombosUpdated = DateTime.Now;
 
-        Logging.Log($"{registration.PluginName}: Registered Combo ({combo})");
+        Logging.Log(
+            $"{registration.PluginName}: Registered Combo ({combo}){oppositeText}");
+        return SetResult.Okay;
     }
 
     /// <summary>
@@ -585,7 +625,7 @@ public partial class Leasing
     /// <param name="option">The option internal name to register control of.</param>
     /// <param name="newState">The state to set the preset to.</param>
     /// <seealso cref="Provider.SetComboOptionState" />
-    internal void AddRegistrationForOption
+    internal SetResult AddRegistrationForOption
         (Guid lease, string option, bool newState)
     {
         var registration = Registrations[lease];
@@ -596,13 +636,18 @@ public partial class Leasing
 
         if (CheckBlacklist(Registrations[lease].ConfigurationsHash) &&
             Registrations[lease].SetsLeased > 4)
-            RemoveRegistration(lease, CancellationReasonEnum.WrathUserManuallyCancelled,
+        {
+            RemoveRegistration(lease,
+                CancellationReasonEnum.WrathUserManuallyCancelled,
                 "Matched currently-blacklisted configuration");
+            return SetResult.BlacklistedLease;
+        }
 
         registration.LastUpdated = DateTime.Now;
         OptionsUpdated = DateTime.Now;
 
         Logging.Log($"{registration.PluginName}: Registered Option ({option})");
+        return SetResult.Okay;
     }
 
     #endregion

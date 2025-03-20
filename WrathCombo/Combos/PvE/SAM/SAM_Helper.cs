@@ -17,16 +17,12 @@ internal partial class SAM
 
     internal static int MeikyoUsed => ActionWatching.CombatActions.Count(x => x == MeikyoShisui);
 
-    internal static bool TrueNorthReady =>
-        TargetNeedsPositionals() && ActionReady(All.TrueNorth) &&
-        !HasEffect(All.Buffs.TrueNorth);
-
     internal static float GCD => GetCooldown(Hakaze).CooldownTotal;
 
     internal static int SenCount => GetSenCount();
-    
+
     internal static bool ComboStarted => GetComboStarted();
-    
+
     internal static int NumSen => GetNumSen();
 
     internal static WrathOpener Opener()
@@ -73,7 +69,10 @@ internal partial class SAM
 
     internal static bool UseMeikyo()
     {
+        float gcd = ActionManager.GetAdjustedRecastTime(ActionType.Action, Hakaze) / 100f;
+
         if (ActionReady(MeikyoShisui) &&
+            (CanWeave() || CanDelayedWeave()) &&
             (WasLastWeaponskill(Gekko) || WasLastWeaponskill(Kasha) || WasLastWeaponskill(Yukikaze)) &&
             (!HasEffect(Buffs.Tendo) || !LevelChecked(TendoSetsugekka)))
         {
@@ -87,28 +86,33 @@ internal partial class SAM
             //double meikyo
             if (TraitLevelChecked(Traits.EnhancedMeikyoShishui) && HasEffect(Buffs.TsubameReady))
             {
-                //2min windows
-                if ((GetCooldownRemainingTime(Ikishoten) > 80 || GetCooldownRemainingTime(Ikishoten) < GCD * 2 ||
-                     IsOffCooldown(Ikishoten) || JustUsed(Ikishoten, 5f)) &&
-                    (MeikyoUsed % 7 is 2 && SenCount is 3 ||
-                     MeikyoUsed % 7 is 4 && SenCount is 2 ||
-                     MeikyoUsed % 7 is 6 && SenCount is 1))
-                    return true;
+                switch (gcd)
+                {
+                    //Even windows
+                    case >= 2.09f when GetCooldownRemainingTime(Ikishoten) > 60 &&
+                                       (MeikyoUsed % 7 is 2 && SenCount is 3 ||
+                                        MeikyoUsed % 7 is 4 && SenCount is 2 ||
+                                        MeikyoUsed % 7 is 6 && SenCount is 1):
+                    //Odd windows
+                    case >= 2.09f when GetCooldownRemainingTime(Ikishoten) is <= 60 &&
+                                       (MeikyoUsed % 7 is 1 && SenCount is 3 ||
+                                        MeikyoUsed % 7 is 3 && SenCount is 2 ||
+                                        MeikyoUsed % 7 is 5 && SenCount is 1):
+                    //Even windows
+                    case <= 2.08f when GetCooldownRemainingTime(Ikishoten) > 60 && SenCount is 3:
 
-                //1min windows
-                if (GetCooldownRemainingTime(Ikishoten) is > 35 and < 71 &&
-                    (MeikyoUsed % 7 is 1 && SenCount is 3 ||
-                     MeikyoUsed % 7 is 3 && SenCount is 2 ||
-                     MeikyoUsed % 7 is 5 && SenCount is 1))
-                    return true;
+                    //Odd windows
+                    case <= 2.08f when GetCooldownRemainingTime(Ikishoten) is <= 60 && SenCount is 3:
+                        return true;
+                }
             }
 
             // reset meikyo
-            if (MeikyoUsed % 7 is 0 && !HasEffect(Buffs.MeikyoShisui) && WasLastWeaponskill(Yukikaze))
+            if (gcd >= 2.09f && MeikyoUsed % 7 is 0 && !HasEffect(Buffs.MeikyoShisui) && WasLastWeaponskill(Yukikaze))
                 return true;
 
-            //Pre double meikyo
-            if (!TraitLevelChecked(Traits.EnhancedMeikyoShishui))
+            //Pre double meikyo / Overcap protection
+            if (GetRemainingCharges(MeikyoShisui) == GetMaxCharges(MeikyoShisui) && !HasEffect(Buffs.TsubameReady))
                 return true;
         }
 
@@ -124,7 +128,7 @@ internal partial class SAM
         public override List<uint> OpenerActions { get; set; } =
         [
             MeikyoShisui,
-            All.TrueNorth,
+            Role.TrueNorth, //2
             Gekko,
             Kasha,
             Ikishoten,
@@ -142,7 +146,7 @@ internal partial class SAM
             Kasha,
             Shinten,
             Gekko,
-            Gyoten,
+            Gyoten, //20
             Gyofu,
             Yukikaze,
             Shinten,
@@ -151,9 +155,9 @@ internal partial class SAM
         ];
         internal override UserData ContentCheckConfig => Config.SAM_Balance_Content;
 
-        public override List<(int[] Steps, int HoldDelay)> PrepullDelays { get; set; } =
+        public override List<(int[] Steps, Func<int> HoldDelay)> PrepullDelays { get; set; } =
         [
-            ([2], 13)
+            ([2], () => Config.SAM_Opener_PrePullDelay)
         ];
 
         public override List<(int[] Steps, uint NewAction, Func<bool> Condition)> SubstitutionSteps { get; set; } =
@@ -166,7 +170,7 @@ internal partial class SAM
             if (GetRemainingCharges(MeikyoShisui) < 2)
                 return false;
 
-            if (GetRemainingCharges(All.TrueNorth) < 2)
+            if (GetRemainingCharges(Role.TrueNorth) < 2)
                 return false;
 
             if (!IsOffCooldown(Senei))

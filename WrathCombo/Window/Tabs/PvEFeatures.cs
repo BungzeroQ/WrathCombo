@@ -1,27 +1,30 @@
-﻿using Dalamud.Interface.Textures.TextureWraps;
-using Dalamud.Interface.Utility;
+﻿using System;
+using Dalamud.Interface.Textures.TextureWraps;
 using Dalamud.Interface.Utility.Raii;
+using ECommons.ExcelServices;
+using ECommons.GameHelpers;
 using ECommons.ImGuiMethods;
 using ImGuiNET;
 using System.Linq;
 using System.Numerics;
+using ECommons.Logging;
+using WrathCombo.Combos.PvE;
 using WrathCombo.Core;
 using WrathCombo.Services;
 using WrathCombo.Window.Functions;
 using WrathCombo.Window.MessagesNS;
+using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions.JobIDs;
 
 namespace WrathCombo.Window.Tabs
 {
     internal class PvEFeatures : ConfigWindow
     {
-        //internal static Dictionary<string, bool> showHeader = new Dictionary<string, bool>();
-
-        internal static bool HasToOpenJob = true;
         internal static string OpenJob = string.Empty;
+
         internal static new void Draw()
         {
             //#if !DEBUG
-            if (IconReplacer.ClassLocked())
+            if (ActionReplacer.ClassLocked())
             {
                 ImGui.TextWrapped("Equip your job stone to re-unlock features.");
                 return;
@@ -30,7 +33,6 @@ namespace WrathCombo.Window.Tabs
 
             using (var scrolling = ImRaii.Child("scrolling", new Vector2(ImGui.GetContentRegionAvail().X, ImGui.GetContentRegionAvail().Y), true))
             {
-                int i = 1;
                 var indentwidth = 12f.Scale();
                 var indentwidth2 = indentwidth + 42f.Scale();
                 if (OpenJob == string.Empty)
@@ -90,7 +92,7 @@ namespace WrathCombo.Window.Tabs
                         {
                             if (icon != null)
                             {
-                                ImGui.Image(icon.ImGuiHandle, new Vector2(icon.Size.X.Scale(), icon.Size.Y.Scale()) / 2f);
+                                ImGui.Image(icon.ImGuiHandle, new Vector2(icon.Size.X, icon.Size.Y).Scale() / 2f);
                                 ImGui.SameLine();
                             }
                             ImGuiEx.Text($"{OpenJob}");
@@ -114,7 +116,7 @@ namespace WrathCombo.Window.Tabs
                             {
                                 if (ImGui.BeginTabItem("Normal"))
                                 {
-                                    DrawHeadingContents(OpenJob, i);
+                                    DrawHeadingContents(OpenJob);
                                     ImGui.EndTabItem();
                                 }
 
@@ -161,7 +163,7 @@ namespace WrathCombo.Window.Tabs
             {
                 InfoBox presetBox = new() { Color = Colors.Grey, BorderThickness = 1f, CurveRadius = 8f, ContentsAction = () => { Presets.DrawPreset(preset, info); } };
                 presetBox.Draw();
-                ImGuiHelpers.ScaledDummy(12.0f);
+                ImGuiEx.Spacing(new Vector2(0, 12));
             }
         }
         private static void DrawBozjaContents(string jobName)
@@ -171,11 +173,11 @@ namespace WrathCombo.Window.Tabs
             {
                 InfoBox presetBox = new() { Color = Colors.Grey, BorderThickness = 1f, CurveRadius = 8f, ContentsAction = () => { Presets.DrawPreset(preset, info); } };
                 presetBox.Draw();
-                ImGuiHelpers.ScaledDummy(12.0f);
+                ImGuiEx.Spacing(new Vector2(0, 12));
             }
         }
 
-        internal static void DrawHeadingContents(string jobName, int i)
+        internal static void DrawHeadingContents(string jobName)
         {
             if (!Messages.PrintBLUMessage(jobName)) return;
 
@@ -194,18 +196,25 @@ namespace WrathCombo.Window.Tabs
                     if (!conflictsSource.Where(x => x == preset).Any() || conflictOriginals.Length == 0)
                     {
                         presetBox.Draw();
-                        ImGuiHelpers.ScaledDummy(12.0f);
+                        ImGuiEx.Spacing(new Vector2(0, 12));
                         continue;
                     }
 
-                    if (conflictOriginals.Any(x => PresetStorage.IsEnabled(x)))
+                    if (conflictOriginals.Any(PresetStorage.IsEnabled))
                     {
-                        Service.Configuration.EnabledActions.Remove(preset);
-                        Service.Configuration.Save();
+                        if (DateTime.UtcNow - LastPresetDeconflictTime > TimeSpan.FromSeconds(3))
+                        {
+                            if (Service.Configuration.EnabledActions.Remove(preset))
+                            {
+                                PluginLog.Debug($"Removed {preset} due to conflict");
+                                Service.Configuration.Save();
+                            }
+                            LastPresetDeconflictTime = DateTime.UtcNow;
+                        }
 
                         // Keep removed items in the counter
                         var parent = PresetStorage.GetParent(preset) ?? preset;
-                        i += 1 + Presets.AllChildren(presetChildren[parent]);
+                        currentPreset += 1 + Presets.AllChildren(presetChildren[parent]);
                     }
 
                     else
@@ -218,11 +227,32 @@ namespace WrathCombo.Window.Tabs
                 else
                 {
                     presetBox.Draw();
-                    ImGuiHelpers.ScaledDummy(12.0f);
+                    ImGuiEx.Spacing(new Vector2(0, 12));
                 }
             }
         }
 
-        internal static string? HeaderToOpen;
+        internal static void OpenToCurrentJob(bool onJobChange)
+        {
+            if ((!onJobChange || !Service.Configuration.OpenToCurrentJobOnSwitch) &&
+                (onJobChange || !Service.Configuration.OpenToCurrentJob ||
+                 !Player.Available)) return;
+
+            if (onJobChange && !P.ConfigWindow.IsOpen)
+                return;
+
+            if (Player.Job.IsDoh())
+                return;
+
+            if (Player.Job.IsDol())
+            {
+                OpenJob = JobIDToName(DOL.JobID);
+                return;
+            }
+
+            var job = JobIDToName(ClassToJob((uint)Player.Job));
+            if (groupedPresets.TryGetValue(job, out var foundJob))
+                OpenJob = foundJob.First().Info.JobName;
+        }
     }
 }

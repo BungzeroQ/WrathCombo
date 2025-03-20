@@ -18,7 +18,13 @@ internal partial class RDM
             RDM_AoE_MoulinetRange = new("RDM_MoulinetRange"),
             RDMPvP_Burst_CorpsACorps = new("RDMPvP_Burst_CorpsACorps"),
             RDMPvP_Burst_Displacement = new("RDMPvP_Burst_Displacement"),
-            RDM_BalanceOpener_Content = new("RDM_BalanceOpener_Content", 1);
+            RDM_BalanceOpener_Content = new("RDM_BalanceOpener_Content", 1),
+            RDM_ST_Acceleration_Charges = new("RDM_ST_Acceleration_Charges", 0),
+            RDM_ST_AccelerationMovement_Charges = new("RDM_ST_AccelerationMovement_Charges", 0),
+            RDM_AoE_Acceleration_Charges = new("RDM_AoE_Acceleration_Charges", 0),
+            RDM_AoE_AccelerationMovement_Charges = new("RDM_AoE_AccelerationMovement_Charges", 0);
+
+
 
         public static UserBool
             RDM_ST_oGCD_OnAction_Adv = new("RDM_ST_oGCD_OnAction_Adv"),
@@ -114,6 +120,7 @@ internal partial class RDM
                         }
                         ImGui.Unindent();
                     }
+                    DrawAdditionalBoolChoice(RDM_ST_MeleeEnforced, "Enforced Melee Check", "Once the melee combo has started, don't switch away even if target is out of range.");
                     break;
 
                 case CustomComboPreset.RDM_ST_MeleeFinisher:
@@ -130,7 +137,7 @@ internal partial class RDM
                     break;
 
                 case CustomComboPreset.RDM_ST_Lucid:
-                    DrawSliderInt(0, 10000, RDM_ST_Lucid_Threshold, $"Add {All.LucidDreaming.ActionName()} when below this MP", sliderIncrement: Hundreds);
+                    DrawSliderInt(0, 10000, RDM_ST_Lucid_Threshold, $"Add {Role.LucidDreaming.ActionName()} when below this MP", sliderIncrement: Hundreds);
                     break;
 
                 case CustomComboPreset.RDM_AoE_oGCD:
@@ -168,7 +175,6 @@ internal partial class RDM
                         DrawHorizontalMultiChoice(RDM_AoE_MeleeCombo_OnAction, Moulinet.ActionName(), "", 2, 1, descriptionColor: ImGuiColors.DalamudYellow);
                         ImGui.Unindent();
                     }
-                    DrawAdditionalBoolChoice(RDM_ST_MeleeEnforced, "Enforced Melee Check", "Once the melee combo has started, don't switch away even if target is out of range.");
                     break;
 
                 case CustomComboPreset.RDM_AoE_MeleeFinisher:
@@ -185,11 +191,27 @@ internal partial class RDM
                     break;
 
                 case CustomComboPreset.RDM_AoE_Lucid:
-                    DrawSliderInt(0, 10000, RDM_AoE_Lucid_Threshold, $"Add {All.LucidDreaming.ActionName()} when below this MP", sliderIncrement: Hundreds);
+                    DrawSliderInt(0, 10000, RDM_AoE_Lucid_Threshold, $"Add {Role.LucidDreaming.ActionName()} when below this MP", sliderIncrement: Hundreds);
                     break;
 
                 case CustomComboPreset.RDM_Variant_Cure:
                     DrawSliderInt(1, 100, RDM_VariantCure, "HP% to be at or under", 200);
+                    break;
+
+                case CustomComboPreset.RDM_ST_ThunderAero_Accel:
+                    DrawSliderInt(0, 1, RDM_ST_Acceleration_Charges, "How many charges to keep ready?\n (0 = Use All)");
+                    break;
+
+                case CustomComboPreset.RDM_ST_ThunderAero_Accel_Movement:
+                    DrawSliderInt(0, 1, RDM_ST_AccelerationMovement_Charges, "How many charges to keep ready?\n (0 = Use All)");
+                    break;
+
+                case CustomComboPreset.RDM_AoE_Accel:
+                    DrawSliderInt(0, 1, RDM_AoE_Acceleration_Charges, "How many charges to keep ready?\n (0 = Use All)");
+                    break;
+
+                case CustomComboPreset.RDM_AoE_Accel_Movement:
+                    DrawSliderInt(0, 1, RDM_AoE_AccelerationMovement_Charges, "How many charges to keep ready?\n (0 = Use All)");
                     break;
             }
         }

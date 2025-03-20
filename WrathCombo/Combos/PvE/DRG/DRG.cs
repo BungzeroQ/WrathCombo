@@ -1,9 +1,8 @@
-using WrathCombo.Combos.PvE.Content;
 using WrathCombo.CustomComboNS;
 using WrathCombo.Extensions;
 namespace WrathCombo.Combos.PvE;
 
-internal partial class DRG
+internal partial class DRG : MeleeJob
 {
     internal class DRG_ST_FullThrustCombo : CustomCombo
     {
@@ -71,16 +70,12 @@ internal partial class DRG
             if (actionID is not TrueThrust)
                 return actionID;
 
-            if (IsEnabled(CustomComboPreset.DRG_Variant_Cure) &&
-                IsEnabled(Variant.VariantCure) &&
-                PlayerHealthPercentageHp() <= Config.DRG_Variant_Cure)
-                return Variant.VariantCure;
+            if (Variant.CanCure(CustomComboPreset.DRG_Variant_Cure, Config.DRG_Variant_Cure))
+                return Variant.Cure;
 
-            if (IsEnabled(CustomComboPreset.DRG_Variant_Rampart) &&
-                IsEnabled(Variant.VariantRampart) &&
-                IsOffCooldown(Variant.VariantRampart) &&
-                CanDRGWeave(Variant.VariantRampart))
-                return Variant.VariantRampart;
+            if (Variant.CanRampart(CustomComboPreset.DRG_Variant_Rampart, WeaveTypes.None) &&
+                CanDRGWeave(Variant.Rampart))
+                return Variant.Rampart;
 
             // Piercing Talon Uptime Option
             if (LevelChecked(PiercingTalon) &&
@@ -90,25 +85,20 @@ internal partial class DRG
 
             if (HasEffect(Buffs.PowerSurge))
             {
-                //Lance Charge Feature
-                if (ActionReady(LanceCharge) &&
-                    CanDRGWeave(LanceCharge))
-                    return LanceCharge;
-
                 //Battle Litany Feature
                 if (ActionReady(BattleLitany) &&
-                    CanDRGWeave(BattleLitany))
+                    CanDRGWeave(BattleLitany) &&
+                    InBossEncounter())
                     return BattleLitany;
 
+                //Lance Charge Feature
+                if (ActionReady(LanceCharge) &&
+                    CanDRGWeave(LanceCharge) &&
+                    InBossEncounter())
+                    return LanceCharge;
+
                 //Life Surge Feature
-                if (ActionReady(LifeSurge) &&
-                    (GetCooldownRemainingTime(LifeSurge) < 40 || GetCooldownRemainingTime(BattleLitany) > 50) &&
-                    CanDRGWeave(LifeSurge) && !HasEffect(Buffs.LifeSurge) &&
-                    (HasEffect(Buffs.LanceCharge) &&
-                     (JustUsed(WheelingThrust) && LevelChecked(Drakesbane) ||
-                      JustUsed(FangAndClaw) && LevelChecked(Drakesbane) ||
-                      JustUsed(OriginalHook(VorpalThrust)) && LevelChecked(FullThrust)) ||
-                     !LevelChecked(LanceCharge) && JustUsed(VorpalThrust)))
+                if (UseLifeSurge())
                     return LifeSurge;
 
                 //Geirskogul Feature
@@ -117,13 +107,6 @@ internal partial class DRG
                     !Gauge.IsLOTDActive)
                     return Geirskogul;
 
-                //Dragonfire Dive Feature
-                if (ActionReady(DragonfireDive) &&
-                    CanDRGWeave(DragonfireDive) &&
-                    !HasEffect(Buffs.DragonsFlight) &&
-                    TimeMoving.Ticks == 0 && GetTargetDistance() <= 1)
-                    return DragonfireDive;
-
                 //(High) Jump Feature   
                 if (ActionReady(OriginalHook(Jump)) &&
                     CanDRGWeave(OriginalHook(Jump)) &&
@@ -131,10 +114,19 @@ internal partial class DRG
                     TimeMoving.Ticks == 0)
                     return OriginalHook(Jump);
 
+                //Dragonfire Dive Feature
+                if (ActionReady(DragonfireDive) &&
+                    CanDRGWeave(DragonfireDive) &&
+                    !HasEffect(Buffs.DragonsFlight) &&
+                    TimeMoving.Ticks == 0 && GetTargetDistance() <= 1)
+                    return DragonfireDive;
+
                 //Wyrmwind Thrust Feature
                 if (LevelChecked(WyrmwindThrust) &&
                     CanDRGWeave(WyrmwindThrust) &&
-                    Gauge.FirstmindsFocusCount is 2)
+                    Gauge.FirstmindsFocusCount is 2 &&
+                    (Gauge.IsLOTDActive ||
+                     !Gauge.IsLOTDActive && HasEffect(Buffs.DraconianFire)))
                     return WyrmwindThrust;
 
                 //StarDiver Feature
@@ -170,11 +162,11 @@ internal partial class DRG
                     return MirageDive;
             }
 
-            if (PlayerHealthPercentageHp() <= 25 && ActionReady(All.SecondWind))
-                return All.SecondWind;
+            if (Role.CanSecondWind(25))
+                return Role.SecondWind;
 
-            if (PlayerHealthPercentageHp() <= 40 && ActionReady(All.Bloodbath))
-                return All.Bloodbath;
+            if (Role.CanBloodBath(40))
+                return Role.Bloodbath;
 
             //1-2-3 Combo
             if (ComboTimer > 0)
@@ -188,18 +180,18 @@ internal partial class DRG
 
                 if (ComboAction == OriginalHook(Disembowel) && LevelChecked(ChaosThrust))
                 {
-                    if (TrueNorthReady && CanDRGWeave(All.TrueNorth) &&
+                    if (Role.CanTrueNorth() && CanDRGWeave(Role.TrueNorth) &&
                         !OnTargetsRear())
-                        return All.TrueNorth;
+                        return Role.TrueNorth;
 
                     return OriginalHook(ChaosThrust);
                 }
 
                 if (ComboAction == OriginalHook(ChaosThrust) && LevelChecked(WheelingThrust))
                 {
-                    if (TrueNorthReady && CanDRGWeave(All.TrueNorth) &&
+                    if (Role.CanTrueNorth() && CanDRGWeave(Role.TrueNorth) &&
                         !OnTargetsRear())
-                        return All.TrueNorth;
+                        return Role.TrueNorth;
 
                     return WheelingThrust;
                 }
@@ -209,9 +201,9 @@ internal partial class DRG
 
                 if (ComboAction == OriginalHook(FullThrust) && LevelChecked(FangAndClaw))
                 {
-                    if (TrueNorthReady && CanDRGWeave(All.TrueNorth) &&
+                    if (Role.CanTrueNorth() && CanDRGWeave(Role.TrueNorth) &&
                         !OnTargetsFlank())
-                        return All.TrueNorth;
+                        return Role.TrueNorth;
 
                     return FangAndClaw;
                 }
@@ -234,16 +226,12 @@ internal partial class DRG
             if (actionID is not TrueThrust)
                 return actionID;
 
-            if (IsEnabled(CustomComboPreset.DRG_Variant_Cure) &&
-                IsEnabled(Variant.VariantCure) &&
-                PlayerHealthPercentageHp() <= Config.DRG_Variant_Cure)
-                return Variant.VariantCure;
+            if (Variant.CanCure(CustomComboPreset.DRG_Variant_Cure, Config.DRG_Variant_Cure))
+                return Variant.Cure;
 
-            if (IsEnabled(CustomComboPreset.DRG_Variant_Rampart) &&
-                IsEnabled(Variant.VariantRampart) &&
-                IsOffCooldown(Variant.VariantRampart) &&
-                CanDRGWeave(Variant.VariantRampart))
-                return Variant.VariantRampart;
+            if (Variant.CanRampart(CustomComboPreset.DRG_Variant_Rampart, WeaveTypes.None) &&
+                CanDRGWeave(Variant.Rampart))
+                return Variant.Rampart;
 
             // Opener for DRG
             if (IsEnabled(CustomComboPreset.DRG_ST_Opener))
@@ -259,33 +247,28 @@ internal partial class DRG
             {
                 if (IsEnabled(CustomComboPreset.DRG_ST_Buffs))
                 {
-                    //Lance Charge Feature
-                    if (IsEnabled(CustomComboPreset.DRG_ST_Lance) &&
-                        ActionReady(LanceCharge) &&
-                        CanDRGWeave(LanceCharge) &&
-                        GetTargetHPPercent() >= Config.DRG_ST_LanceChargeHP)
-                        return LanceCharge;
-
                     //Battle Litany Feature
                     if (IsEnabled(CustomComboPreset.DRG_ST_Litany) &&
                         ActionReady(BattleLitany) &&
                         CanDRGWeave(BattleLitany) &&
-                        GetTargetHPPercent() >= Config.DRG_ST_LitanyHP)
+                        (Config.DRG_ST_Litany_SubOption == 0 ||
+                         Config.DRG_ST_Litany_SubOption == 1 && InBossEncounter()))
                         return BattleLitany;
+
+                    //Lance Charge Feature
+                    if (IsEnabled(CustomComboPreset.DRG_ST_Lance) &&
+                        ActionReady(LanceCharge) &&
+                        CanDRGWeave(LanceCharge) &&
+                        (Config.DRG_ST_Lance_SubOption == 0 ||
+                         Config.DRG_ST_Lance_SubOption == 1 && InBossEncounter()))
+                        return LanceCharge;
                 }
 
                 if (IsEnabled(CustomComboPreset.DRG_ST_CDs))
                 {
                     //Life Surge Feature
                     if (IsEnabled(CustomComboPreset.DRG_ST_LifeSurge) &&
-                        ActionReady(LifeSurge) &&
-                        (GetCooldownRemainingTime(LifeSurge) < 40 || GetCooldownRemainingTime(BattleLitany) > 50) &&
-                        CanDRGWeave(LifeSurge) && !HasEffect(Buffs.LifeSurge) &&
-                        (HasEffect(Buffs.LanceCharge) &&
-                         (JustUsed(WheelingThrust) && LevelChecked(Drakesbane) ||
-                          JustUsed(FangAndClaw) && LevelChecked(Drakesbane) ||
-                          JustUsed(OriginalHook(VorpalThrust)) && LevelChecked(FullThrust)) ||
-                         !LevelChecked(LanceCharge) && JustUsed(VorpalThrust)))
+                        UseLifeSurge())
                         return LifeSurge;
 
                     //Geirskogul Feature
@@ -294,16 +277,6 @@ internal partial class DRG
                         CanDRGWeave(Geirskogul) &&
                         !Gauge.IsLOTDActive)
                         return Geirskogul;
-
-                    //Dragonfire Dive Feature
-                    if (IsEnabled(CustomComboPreset.DRG_ST_DragonfireDive) &&
-                        ActionReady(DragonfireDive) &&
-                        CanDRGWeave(DragonfireDive) &&
-                        !HasEffect(Buffs.DragonsFlight) &&
-                        (IsNotEnabled(CustomComboPreset.DRG_ST_DragonfireDive_Melee) ||
-                         IsEnabled(CustomComboPreset.DRG_ST_DragonfireDive_Melee) && TimeMoving.Ticks == 0 &&
-                         GetTargetDistance() <= 1))
-                        return DragonfireDive;
 
                     //(High) Jump Feature   
                     if (IsEnabled(CustomComboPreset.DRG_ST_HighJump) &&
@@ -315,11 +288,23 @@ internal partial class DRG
                          GetTargetDistance() <= 1))
                         return OriginalHook(Jump);
 
+                    //Dragonfire Dive Feature
+                    if (IsEnabled(CustomComboPreset.DRG_ST_DragonfireDive) &&
+                        ActionReady(DragonfireDive) &&
+                        CanDRGWeave(DragonfireDive) &&
+                        !HasEffect(Buffs.DragonsFlight) &&
+                        (IsNotEnabled(CustomComboPreset.DRG_ST_DragonfireDive_Melee) ||
+                         IsEnabled(CustomComboPreset.DRG_ST_DragonfireDive_Melee) && TimeMoving.Ticks == 0 &&
+                         GetTargetDistance() <= 1))
+                        return DragonfireDive;
+
                     //Wyrmwind Thrust Feature
                     if (IsEnabled(CustomComboPreset.DRG_ST_Wyrmwind) &&
                         LevelChecked(WyrmwindThrust) &&
                         CanDRGWeave(WyrmwindThrust) &&
-                        Gauge.FirstmindsFocusCount is 2)
+                        Gauge.FirstmindsFocusCount is 2 &&
+                        (Gauge.IsLOTDActive ||
+                         !Gauge.IsLOTDActive && HasEffect(Buffs.DraconianFire)))
                         return WyrmwindThrust;
 
                     //StarDiver Feature
@@ -365,12 +350,12 @@ internal partial class DRG
 
             // healing
             if (IsEnabled(CustomComboPreset.DRG_ST_ComboHeals))
-            {
-                if (PlayerHealthPercentageHp() <= Config.DRG_ST_SecondWind_Threshold && ActionReady(All.SecondWind))
-                    return All.SecondWind;
+            { 
+                if (Role.CanSecondWind(Config.DRG_ST_SecondWind_Threshold))
+                    return Role.SecondWind;
 
-                if (PlayerHealthPercentageHp() <= Config.DRG_ST_Bloodbath_Threshold && ActionReady(All.Bloodbath))
-                    return All.Bloodbath;
+                if (Role.CanBloodBath(Config.DRG_ST_Bloodbath_Threshold))
+                    return Role.Bloodbath;
             }
 
             //1-2-3 Combo
@@ -386,9 +371,9 @@ internal partial class DRG
                 if (ComboAction == OriginalHook(Disembowel) && LevelChecked(ChaosThrust))
                 {
                     if (IsEnabled(CustomComboPreset.DRG_TrueNorthDynamic) &&
-                        TrueNorthReady && CanDRGWeave(All.TrueNorth) &&
+                        Role.CanTrueNorth() && CanDRGWeave(Role.TrueNorth) &&
                         !OnTargetsRear())
-                        return All.TrueNorth;
+                        return Role.TrueNorth;
 
                     return OriginalHook(ChaosThrust);
                 }
@@ -396,9 +381,9 @@ internal partial class DRG
                 if (ComboAction == OriginalHook(ChaosThrust) && LevelChecked(WheelingThrust))
                 {
                     if (IsEnabled(CustomComboPreset.DRG_TrueNorthDynamic) &&
-                        TrueNorthReady && CanDRGWeave(All.TrueNorth) &&
+                        Role.CanTrueNorth() && CanDRGWeave(Role.TrueNorth) &&
                         !OnTargetsRear())
-                        return All.TrueNorth;
+                        return Role.TrueNorth;
 
                     return WheelingThrust;
                 }
@@ -409,9 +394,9 @@ internal partial class DRG
                 if (ComboAction == OriginalHook(FullThrust) && LevelChecked(FangAndClaw))
                 {
                     if (IsEnabled(CustomComboPreset.DRG_TrueNorthDynamic) &&
-                        TrueNorthReady && CanDRGWeave(All.TrueNorth) &&
+                        Role.CanTrueNorth() && CanDRGWeave(Role.TrueNorth) &&
                         !OnTargetsFlank())
-                        return All.TrueNorth;
+                        return Role.TrueNorth;
 
                     return FangAndClaw;
                 }
@@ -434,16 +419,12 @@ internal partial class DRG
             if (actionID is not DoomSpike)
                 return actionID;
 
-            if (IsEnabled(CustomComboPreset.DRG_Variant_Cure) &&
-                IsEnabled(Variant.VariantCure) &&
-                PlayerHealthPercentageHp() <= Config.DRG_Variant_Cure)
-                return Variant.VariantCure;
+            if (Variant.CanCure(CustomComboPreset.DRG_Variant_Cure, Config.DRG_Variant_Cure))
+                return Variant.Cure;
 
-            if (IsEnabled(CustomComboPreset.DRG_Variant_Rampart) &&
-                IsEnabled(Variant.VariantRampart) &&
-                IsOffCooldown(Variant.VariantRampart) &&
-                CanDRGWeave(Variant.VariantRampart))
-                return Variant.VariantRampart;
+            if (Variant.CanRampart(CustomComboPreset.DRG_Variant_Rampart, WeaveTypes.None) &&
+                CanDRGWeave(Variant.Rampart))
+                return Variant.Rampart;
 
             // Piercing Talon Uptime Option
             if (LevelChecked(PiercingTalon) && !InMeleeRange() && HasBattleTarget())
@@ -473,7 +454,9 @@ internal partial class DRG
                 //Wyrmwind Thrust Feature
                 if (LevelChecked(WyrmwindThrust) &&
                     CanDRGWeave(WyrmwindThrust) &&
-                    Gauge.FirstmindsFocusCount is 2)
+                    Gauge.FirstmindsFocusCount is 2 &&
+                    (Gauge.IsLOTDActive ||
+                     !Gauge.IsLOTDActive && HasEffect(Buffs.DraconianFire)))
                     return WyrmwindThrust;
 
                 //Geirskogul Feature
@@ -528,12 +511,11 @@ internal partial class DRG
                     Gauge.IsLOTDActive)
                     return Nastrond;
             }
+            if (Role.CanSecondWind(25))
+                return Role.SecondWind;
 
-            if (PlayerHealthPercentageHp() <= 25 && ActionReady(All.SecondWind))
-                return All.SecondWind;
-
-            if (PlayerHealthPercentageHp() <= 40 && ActionReady(All.Bloodbath))
-                return All.Bloodbath;
+            if (Role.CanBloodBath(40))
+                return Role.Bloodbath;
 
             if (ComboTimer > 0)
             {
@@ -572,16 +554,12 @@ internal partial class DRG
             if (actionID is not DoomSpike)
                 return actionID;
 
-            if (IsEnabled(CustomComboPreset.DRG_Variant_Cure) &&
-                IsEnabled(Variant.VariantCure) &&
-                PlayerHealthPercentageHp() <= Config.DRG_Variant_Cure)
-                return Variant.VariantCure;
+            if (Variant.CanCure(CustomComboPreset.DRG_Variant_Cure, Config.DRG_Variant_Cure))
+                return Variant.Cure;
 
-            if (IsEnabled(CustomComboPreset.DRG_Variant_Rampart) &&
-                IsEnabled(Variant.VariantRampart) &&
-                IsOffCooldown(Variant.VariantRampart) &&
-                CanDRGWeave(Variant.VariantRampart))
-                return Variant.VariantRampart;
+            if (Variant.CanRampart(CustomComboPreset.DRG_Variant_Rampart, WeaveTypes.None) &&
+                CanDRGWeave(Variant.Rampart))
+                return Variant.Rampart;
 
             // Piercing Talon Uptime Option
             if (IsEnabled(CustomComboPreset.DRG_AoE_RangedUptime) &&
@@ -622,7 +600,9 @@ internal partial class DRG
                     if (IsEnabled(CustomComboPreset.DRG_AoE_Wyrmwind) &&
                         LevelChecked(WyrmwindThrust) &&
                         CanDRGWeave(WyrmwindThrust) &&
-                        Gauge.FirstmindsFocusCount is 2)
+                        Gauge.FirstmindsFocusCount is 2 &&
+                        (Gauge.IsLOTDActive ||
+                         !Gauge.IsLOTDActive && HasEffect(Buffs.DraconianFire)))
                         return WyrmwindThrust;
 
                     //Geirskogul Feature
@@ -697,13 +677,12 @@ internal partial class DRG
             // healing
             if (IsEnabled(CustomComboPreset.DRG_AoE_ComboHeals))
             {
-                if (PlayerHealthPercentageHp() <= Config.DRG_AoE_SecondWind_Threshold && ActionReady(All.SecondWind))
-                    return All.SecondWind;
+                if (Role.CanSecondWind(Config.DRG_AoE_SecondWind_Threshold))
+                    return Role.SecondWind;
 
-                if (PlayerHealthPercentageHp() <= Config.DRG_AoE_Bloodbath_Threshold && ActionReady(All.Bloodbath))
-                    return All.Bloodbath;
+                if (Role.CanBloodBath(Config.DRG_AoE_Bloodbath_Threshold))
+                    return Role.Bloodbath;
             }
-
             if (ComboTimer > 0)
             {
                 if (IsEnabled(CustomComboPreset.DRG_AoE_Disembowel) &&

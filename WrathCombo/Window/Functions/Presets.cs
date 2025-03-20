@@ -1,25 +1,26 @@
-﻿using Dalamud.Interface.Colors;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using System.Text;
+using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Utility;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;
 using ECommons.ImGuiMethods;
+using ECommons.Logging;
 using ImGuiNET;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
 using WrathCombo.Attributes;
 using WrathCombo.Combos;
 using WrathCombo.Combos.PvE;
+using WrathCombo.Combos.PvP;
 using WrathCombo.Core;
 using WrathCombo.CustomComboNS.Functions;
 using WrathCombo.Data;
 using WrathCombo.Extensions;
 using WrathCombo.Services;
-using System;
-using WrathCombo.Combos.PvP;
 
 namespace WrathCombo.Window.Functions
 {
@@ -63,7 +64,7 @@ namespace WrathCombo.Window.Functions
         internal static Dictionary<CustomComboPreset, bool> GetJobAutorots => P
             .IPCSearch.AutoActions.Where(x => x.Key.Attributes().IsPvP == CustomComboFunctions.InPvP() && (Player.JobId == x.Key.Attributes().CustomComboInfo.JobID || CustomComboFunctions.JobIDs.ClassToJob((byte)Player.Job) == x.Key.Attributes().CustomComboInfo.JobID) && x.Value && CustomComboFunctions.IsEnabled(x.Key) && x.Key.Attributes().Parent == null).ToDictionary();
 
-        internal unsafe static void DrawPreset(CustomComboPreset preset, CustomComboInfoAttribute info)
+        internal static void DrawPreset(CustomComboPreset preset, CustomComboInfoAttribute info)
         {
             if (!Attributes.ContainsKey(preset))
             {
@@ -94,9 +95,9 @@ namespace WrathCombo.Window.Functions
                 if (P.UIHelper.ShowIPCControlledCheckboxIfNeeded
                         ($"###AutoAction{preset}", ref autoOn, preset, false))
                 {
+                    DebugFile.AddLog($"Set Auto-Mode for {preset} to {autoOn}");
                     Service.Configuration.AutoActions[preset] = autoOn;
                     Service.Configuration.Save();
-                    P.IPCSearch.UpdateActiveJobPresets();
                 }
                 ImGui.SameLine();
                 ImGui.Text(label);
@@ -120,6 +121,8 @@ namespace WrathCombo.Window.Functions
                 {
                     PresetStorage.DisablePreset(preset);
                 }
+
+                DebugFile.AddLog($"Set {preset} to {enabled}");
 
                 Service.Configuration.Save();
             }
@@ -187,6 +190,7 @@ namespace WrathCombo.Window.Functions
 
             if (blueAttr != null)
             {
+                blueAttr.GetActions();
                 if (blueAttr.Actions.Count > 0)
                 {
                     ImGui.PushStyleColor(ImGuiCol.Text, blueAttr.NoneSet ? ImGuiColors.DPSRed : ImGuiColors.DalamudOrange);
@@ -197,7 +201,7 @@ namespace WrathCombo.Window.Functions
                 else
                 {
                     ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.HealerGreen);
-                    ImGui.Text($"All required spells active!");
+                    ImGui.Text("All required spells active!");
                     ImGui.PopStyleColor();
                 }
             }
@@ -346,6 +350,7 @@ namespace WrathCombo.Window.Functions
 
             }
 
+            ImGui.Spacing();
             currentPreset++;
 
             presetChildren.TryGetValue(preset, out var children);
@@ -375,10 +380,17 @@ namespace WrathCombo.Window.Functions
                                 continue;
                             }
 
-                            if (conflictOriginals.Any(x => PresetStorage.IsEnabled(x)))
+                            if (conflictOriginals.Any(PresetStorage.IsEnabled))
                             {
-                                Service.Configuration.EnabledActions.Remove(childPreset);
-                                Service.Configuration.Save();
+                                if (DateTime.UtcNow - LastPresetDeconflictTime > TimeSpan.FromSeconds(3))
+                                {
+                                    if (Service.Configuration.EnabledActions.Remove(childPreset))
+                                    {
+                                        PluginLog.Debug($"Removed {childPreset} due to conflict with {preset}");
+                                        Service.Configuration.Save();
+                                    }
+                                    LastPresetDeconflictTime = DateTime.UtcNow;
+                                }
 
                                 // Keep removed items in the counter
                                 currentPreset += 1 + AllChildren(presetChildren[childPreset]);
@@ -389,7 +401,6 @@ namespace WrathCombo.Window.Functions
                                 draw();
                                 if (grandchildren?.Count() > 0)
                                     ImGui.Spacing();
-                                continue;
                             }
                         }
                         else
@@ -397,7 +408,6 @@ namespace WrathCombo.Window.Functions
                             draw();
                             if (grandchildren?.Count() > 0)
                                 ImGui.Spacing();
-                            continue;
                         }
                     }
 

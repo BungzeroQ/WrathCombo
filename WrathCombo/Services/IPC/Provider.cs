@@ -6,10 +6,13 @@ using ECommons.GameHelpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using WrathCombo.Combos;
 
+// ReSharper disable UnusedMethodReturnValue.Global
 // ReSharper disable UnusedMember.Global
 
 #endregion
@@ -76,7 +79,7 @@ public partial class Provider : IDisposable
 
         // Build Caches of presets
         await Task.Run(() => P.IPCSearch.ComboStatesByJobCategorized.TryGetValue(Player.Job, out var _));
-        await Task.Run(() => P.UIHelper.PresetControlled(CustomComboPreset.DRK_ST_Combo));
+        await Task.Run(() => P.UIHelper.PresetControlled(CustomComboPreset.AST_ST_DPS));
         output._ipcReady = true;
 
         return output;
@@ -143,7 +146,7 @@ public partial class Provider : IDisposable
     ///     </list>
     /// </returns>
     /// <remarks>
-    ///     None of this will work correctly -or sometimes at all- with PvP.
+    ///     None of this will work correctly - or sometimes at all - with PvP.
     /// </remarks>
     /// <seealso cref="RegisterForLeaseWithCallback" />
     /// <seealso cref="RegisterForLease(string,string,Action{int,string})" />
@@ -152,7 +155,7 @@ public partial class Provider : IDisposable
         (string internalPluginName, string pluginName)
     {
         // Bail if IPC is disabled
-        if (Helper.CheckForBailConditionsAtSetTime())
+        if (Helper.CheckForBailConditionsAtSetTime(out _))
             return null;
 
         return Leasing.CreateRegistration(internalPluginName, pluginName);
@@ -196,7 +199,7 @@ public partial class Provider : IDisposable
         (string internalPluginName, string pluginName, string? ipcPrefixForCallback)
     {
         // Bail if IPC is disabled
-        if (Helper.CheckForBailConditionsAtSetTime())
+        if (Helper.CheckForBailConditionsAtSetTime(out _))
             return null;
 
         // Assign the IPC prefix if indicated it is the same as the internal name
@@ -234,7 +237,7 @@ public partial class Provider : IDisposable
         Action<int, string> leaseCancelledCallback)
     {
         // Bail if IPC is disabled
-        if (Helper.CheckForBailConditionsAtSetTime())
+        if (Helper.CheckForBailConditionsAtSetTime(out _))
             return null;
 
         return Leasing.CreateRegistration(
@@ -266,20 +269,39 @@ public partial class Provider : IDisposable
     ///     Optionally whether to enable Auto-Rotation.<br />
     ///     Only used to disable Auto-Rotation, as enabling it is the default.
     /// </param>
+    /// <returns>
+    ///     The <see cref="SetResult" /> status code indicating the result of the
+    ///     operation.
+    /// </returns>
     /// <seealso cref="GetAutoRotationState" />
     /// <remarks>
     ///     This is only the state of Auto-Rotation, not whether any combos are
     ///     enabled in Auto-Mode.
     /// </remarks>
     [EzIPC]
-    public void SetAutoRotationState(Guid lease, bool enabled = true)
+    public SetResult SetAutoRotationState(Guid lease, bool enabled = true)
     {
         // Bail for standard conditions
-        if (Helper.CheckForBailConditionsAtSetTime(lease))
-            return;
+        if (Helper.CheckForBailConditionsAtSetTime(out var result, lease))
+            return result;
 
-        Leasing.AddRegistrationForAutoRotation(lease, enabled);
+        return Leasing.AddRegistrationForAutoRotation(lease, enabled);
     }
+
+    /// <summary>
+    ///     The last time the current job was reported as not ready.
+    /// </summary>
+    private DateTime _lastJobReadyLog = DateTime.MinValue;
+
+    /// <summary>
+    ///     The last time there was a full check for the current job's readiness.
+    /// </summary>
+    private DateTime _lastJobReadyCheck = DateTime.MinValue;
+
+    /// <summary>
+    ///     The state of the last <see cref="IsCurrentJobAutoRotationReady" /> check.
+    /// </summary>
+    private bool _lastJobReady;
 
     /// <summary>
     ///     Checks if the current job has a Single and Multi-Target combo configured
@@ -293,11 +315,33 @@ public partial class Provider : IDisposable
     [EzIPC]
     public bool IsCurrentJobAutoRotationReady()
     {
-        // Check if job has a Single and Multi-Target combo configured on and
-        // enabled in Auto-Mode
-        return
-            IsCurrentJobConfiguredOn().All(x => x.Value) &&
-            IsCurrentJobAutoModeOn().All(x => x.Value);
+        if (File.GetLastWriteTime(P.IPCSearch.ConfigFilePath) <= _lastJobReadyCheck &&
+            (DateTime.Now - _lastJobReadyCheck).TotalSeconds <= 45)
+            return _lastJobReady;
+
+        // Check if the current job has a Single and Multi-Target combo configured on
+        var jobOn = IsCurrentJobConfiguredOn();
+        // Check if the current job has those same combos configured on in Auto-Mode
+        var jobAutoOn = InternalIsCurrentJobAutoModeOn(jobOn);
+
+        // Check that all combos are configured and enabled in Auto-Mode
+        var allGood = jobOn.All(x => x.Value is not null) &&
+               jobAutoOn.All(x => x.Value is not null);
+
+        // Log if not ready
+        if (!allGood && (DateTime.Now - _lastJobReadyLog).TotalSeconds > 15)
+        {
+            Logging.Warn(
+                $"Current job is not fully ready for Auto-Rotation.\n" +
+                $"jobOn: {JsonConvert.SerializeObject(jobOn)}\n" +
+                $"jobAutoOn: {JsonConvert.SerializeObject(jobAutoOn)}"
+            );
+            _lastJobReadyLog = DateTime.Now;
+        }
+
+        _lastJobReadyCheck = DateTime.Now;
+        _lastJobReady = allGood;
+        return allGood;
     }
 
     /// <summary>
@@ -311,15 +355,22 @@ public partial class Provider : IDisposable
     ///     Your lease ID from
     ///     <see cref="RegisterForLease(string,string)" />
     /// </param>
-    /// <remarks>This can take a little bit to finish.</remarks>
+    /// <returns>
+    ///     The <see cref="SetResult" /> status code indicating the result of the
+    ///     operation.
+    /// </returns>
+    /// <remarks>
+    ///     This will do the actual <c>set</c>ting asynchronously, and will take a
+    ///     several seconds to complete.
+    /// </remarks>
     [EzIPC]
-    public void SetCurrentJobAutoRotationReady(Guid lease)
+    public SetResult SetCurrentJobAutoRotationReady(Guid lease)
     {
         // Bail for standard conditions
-        if (Helper.CheckForBailConditionsAtSetTime(lease))
-            return;
+        if (Helper.CheckForBailConditionsAtSetTime(out var result, lease))
+            return result;
 
-        Leasing.AddRegistrationForCurrentJob(lease);
+        return Leasing.AddRegistrationForCurrentJob(lease);
     }
 
     /// <summary>
@@ -363,9 +414,9 @@ public partial class Provider : IDisposable
     /// <seealso cref="Helper.CheckCurrentJobModeIsEnabled" />
     [EzIPC]
     [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
-    public Dictionary<ComboTargetTypeKeys, bool> IsCurrentJobConfiguredOn()
+    public Dictionary<ComboTargetTypeKeys, ComboSimplicityLevelKeys?> IsCurrentJobConfiguredOn()
     {
-        return new Dictionary<ComboTargetTypeKeys, bool>
+        return new Dictionary<ComboTargetTypeKeys, ComboSimplicityLevelKeys?>
         {
             {
                 ComboTargetTypeKeys.SingleTarget,
@@ -376,7 +427,7 @@ public partial class Provider : IDisposable
                 ComboTargetTypeKeys.MultiTarget,
                 Helper.CheckCurrentJobModeIsEnabled(
                     ComboTargetTypeKeys.MultiTarget, ComboStateKeys.Enabled)
-            }
+            },
         };
     }
 
@@ -385,16 +436,19 @@ public partial class Provider : IDisposable
     ///     combo enabled in Auto-Mode.
     /// </summary>
     /// <returns>
-    ///     <see cref="ComboTargetTypeKeys.SingleTarget" /> - a <c>bool</c> indicating if
-    ///     a Single-Target combo is enabled in Auto-Mode.<br />
-    ///     <see cref="ComboTargetTypeKeys.MultiTarget" /> - a <c>bool</c> indicating if
-    ///     a Multi-Target combo is enabled in Auto-Mode.
+    ///     <see cref="ComboTargetTypeKeys.SingleTarget" /> - a
+    ///     <see cref="ComboSimplicityLevelKeys">SimplicityLevel?</see> indicating
+    ///     what mode, if any, is enabled for Auto-Mode for Single-Target.<br />
+    ///     <see cref="ComboTargetTypeKeys.MultiTarget" /> - a
+    ///     <see cref="ComboSimplicityLevelKeys">SimplicityLevel?</see> indicating
+    ///     what mode, if any, is enabled for Auto-Mode for Multi-Target.<br />
     /// </returns>
     [EzIPC]
     [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
-    public Dictionary<ComboTargetTypeKeys, bool> IsCurrentJobAutoModeOn()
+    public Dictionary<ComboTargetTypeKeys, ComboSimplicityLevelKeys?>
+        IsCurrentJobAutoModeOn()
     {
-        return new Dictionary<ComboTargetTypeKeys, bool>
+        return new Dictionary<ComboTargetTypeKeys, ComboSimplicityLevelKeys?>
         {
             {
                 ComboTargetTypeKeys.SingleTarget,
@@ -405,7 +459,37 @@ public partial class Provider : IDisposable
                 ComboTargetTypeKeys.MultiTarget,
                 Helper.CheckCurrentJobModeIsEnabled(
                     ComboTargetTypeKeys.MultiTarget, ComboStateKeys.AutoMode)
-            }
+            },
+        };
+    }
+
+    /// <summary>
+    ///     Same as <see cref="IsCurrentJobAutoModeOn" />, but with a parameter
+    ///     to make sure that Auto-Mode is enabled for the same enabled combos.
+    /// </summary>
+    /// <param name="previousMatches">
+    ///     The result of <see cref="IsCurrentJobConfiguredOn" />.
+    /// </param>
+    /// <returns></returns>
+    /// <seealso cref="IsCurrentJobAutoModeOn"/>
+    private Dictionary<ComboTargetTypeKeys, ComboSimplicityLevelKeys?>
+        InternalIsCurrentJobAutoModeOn
+        (Dictionary<ComboTargetTypeKeys, ComboSimplicityLevelKeys?> previousMatches)
+    {
+        return new Dictionary<ComboTargetTypeKeys, ComboSimplicityLevelKeys?>
+        {
+            {
+                ComboTargetTypeKeys.SingleTarget,
+                Helper.CheckCurrentJobModeIsEnabled(
+                    ComboTargetTypeKeys.SingleTarget, ComboStateKeys.AutoMode,
+                    previousMatches[ComboTargetTypeKeys.SingleTarget])
+            },
+            {
+                ComboTargetTypeKeys.MultiTarget,
+                Helper.CheckCurrentJobModeIsEnabled(
+                    ComboTargetTypeKeys.MultiTarget, ComboStateKeys.AutoMode,
+                    previousMatches[ComboTargetTypeKeys.MultiTarget])
+            },
         };
     }
 
@@ -498,16 +582,24 @@ public partial class Provider : IDisposable
     ///     Only used to disable the combo in Auto-Mode, as enabling it is the
     ///     default.
     /// </param>
+    /// <returns>
+    ///     The <see cref="SetResult" /> status code indicating the result of the
+    ///     operation.
+    /// </returns>
+    /// <returns>
+    ///     The <see cref="SetResult" /> status code indicating the result of the
+    ///     operation.
+    /// </returns>
     [EzIPC]
-    public void SetComboState
+    public SetResult SetComboState
     (Guid lease, string comboInternalName,
         bool comboState = true, bool autoState = true)
     {
         // Bail for standard conditions
-        if (Helper.CheckForBailConditionsAtSetTime(lease))
-            return;
+        if (Helper.CheckForBailConditionsAtSetTime(out var result, lease))
+            return result;
 
-        Leasing.AddRegistrationForCombo(
+        return Leasing.AddRegistrationForCombo(
             lease, comboInternalName, comboState, autoState);
     }
 
@@ -544,14 +636,19 @@ public partial class Provider : IDisposable
     ///     Optionally whether to enable the combo option.<br />
     ///     Only used to disable the combo option, as enabling it is the default.
     /// </param>
+    /// <returns>
+    ///     The <see cref="SetResult" /> status code indicating the result of the
+    ///     operation.
+    /// </returns>
     [EzIPC]
-    public void SetComboOptionState(Guid lease, string optionName, bool state = true)
+    public SetResult SetComboOptionState
+        (Guid lease, string optionName, bool state = true)
     {
         // Bail for standard conditions
-        if (Helper.CheckForBailConditionsAtSetTime(lease))
-            return;
+        if (Helper.CheckForBailConditionsAtSetTime(out var result, lease))
+            return result;
 
-        Leasing.AddRegistrationForOption(lease, optionName, state);
+        return Leasing.AddRegistrationForOption(lease, optionName, state);
     }
 
     #endregion

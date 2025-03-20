@@ -11,6 +11,7 @@ using WrathCombo.Combos.PvE;
 using WrathCombo.Extensions;
 using WrathCombo.Services;
 using WrathCombo.Services.IPC;
+using WrathCombo.Services.IPC_Subscriber;
 
 namespace WrathCombo.Window.Tabs
 {
@@ -35,9 +36,6 @@ namespace WrathCombo.Window.Tabs
             {
                 var inCombatOnly = (bool)P.IPC.GetAutoRotationConfigState(
                     Enum.Parse<AutoRotationConfigOption>("InCombatOnly"))!;
-                if (P.UIHelper.AutoRotationConfigControlled("InCombatOnly") is not null)
-                    ImGuiExtensions.Prefix(false);
-                P.UIHelper.ShowIPCControlledIndicatorIfNeeded("InCombatOnly");
                 ImGuiExtensions.Prefix(!inCombatOnly);
                 changed |= P.UIHelper.ShowIPCControlledCheckboxIfNeeded(
                     "Only in Combat", ref cfg.InCombatOnly, "InCombatOnly");
@@ -53,7 +51,7 @@ namespace WrathCombo.Window.Tabs
                     ImGuiComponents.HelpMarker("Disables Auto-Mode outside of combat unless you're synced to a FATE.");
 
                     ImGuiExtensions.Prefix(true);
-                    ImGui.SetNextItemWidth(100f.Scale());
+                    ImGuiEx.SetNextItemWidthScaled(100);
                     changed |= ImGui.InputInt("Delay to activate Auto-Rotation once combat starts (seconds)", ref cfg.CombatDelay);
 
                     if (cfg.CombatDelay < 0)
@@ -82,6 +80,14 @@ namespace WrathCombo.Window.Tabs
                     "Nearest - Prioritises the closest target to you.\n" +
                     "Furthest - Prioritises the furthest target from you.");
                 ImGui.Spacing();
+
+                if (cfg.DPSRotationMode == AutoRotation.DPSRotationMode.Manual)
+                {
+                    changed |= ImGui.Checkbox("Enforce Best AoE Target Selection", ref cfg.DPSSettings.AoEIgnoreManual);
+
+                    ImGuiComponents.HelpMarker("For all other targeting modes, AoE will target based on highest number of targets hit. In manual mode, it will only do this if you tick this box.");
+                }
+
                 var input = ImGuiEx.InputInt(100f.Scale(), "Targets Required for AoE Damage Features", ref cfg.DPSSettings.DPSAoETargets);
                 if (input)
                 {
@@ -91,7 +97,7 @@ namespace WrathCombo.Window.Tabs
                 }
                 ImGuiComponents.HelpMarker($"Disabling this will turn off AoE DPS features. Otherwise will require the amount of targets required to be in range of an AoE feature's attack to use. This applies to all 3 roles, and for any features that deal AoE damage.");
 
-                ImGui.SetNextItemWidth(100f.Scale());
+                ImGuiEx.SetNextItemWidthScaled(100);
                 changed |= ImGui.SliderFloat("Max Target Distance", ref cfg.DPSSettings.MaxDistance, 1, 30);
                 cfg.DPSSettings.MaxDistance =
                     Math.Clamp(cfg.DPSSettings.MaxDistance, 1, 30);
@@ -110,7 +116,8 @@ namespace WrathCombo.Window.Tabs
                     cfg.DPSSettings.OnlyAttackInCombat = false;
 
                 changed |= P.UIHelper.ShowIPCControlledCheckboxIfNeeded(
-                    "Only Attack Targets Already In Combat", ref cfg.InCombatOnly, "OnlyAttackInCombat");
+                    "Only Attack Targets Already In Combat", ref cfg.DPSSettings.OnlyAttackInCombat,
+                    "OnlyAttackInCombat");
 
                 if (cfg.DPSSettings.OnlyAttackInCombat && changed)
                     cfg.DPSSettings.PreferNonCombat = false;
@@ -194,7 +201,7 @@ namespace WrathCombo.Window.Tabs
                         cfg.HealerSettings.AoEHealTargetCount = 0;
                 }
                 ImGuiComponents.HelpMarker($"Disabling this will turn off AoE Healing features. Otherwise will require the amount of targets required to be in range of an AoE feature's heal to use.");
-                ImGui.SetNextItemWidth(100f.Scale());
+                ImGuiEx.SetNextItemWidthScaled(100);
                 changed |= ImGui.InputInt("Delay to start healing once above conditions are met (seconds)", ref cfg.HealerSettings.HealDelay);
 
                 if (cfg.HealerSettings.HealDelay < 0)
@@ -210,17 +217,25 @@ namespace WrathCombo.Window.Tabs
                 var autoRez = (bool)P.IPC.GetAutoRotationConfigState(AutoRotationConfigOption.AutoRez)!;
                 if (autoRez)
                 {
+                    ImGuiExtensions.Prefix(false);
+                    changed |= ImGui.Checkbox("Require Swiftcast/Dualcast", ref
+                        cfg.HealerSettings.AutoRezRequireSwift);
+                    ImGuiComponents.HelpMarker(
+                        $"Requires {MagicRole.Swiftcast.ActionName()} " +
+                        $"(or {RDM.JobID.JobAbbreviation()}'s Dualcast) " +
+                        $"to be available to resurrect a party member, to avoid hard-casting.");
+
                     ImGuiExtensions.Prefix(true);
                     P.UIHelper.ShowIPCControlledIndicatorIfNeeded("AutoRezDPSJobs");
                     changed |= P.UIHelper.ShowIPCControlledCheckboxIfNeeded(
                         $"Apply to {SMN.JobID.JobAbbreviation()} & {RDM.JobID.JobAbbreviation()}", ref cfg.HealerSettings.AutoRezDPSJobs, "AutoRezDPSJobs");
-                    ImGuiComponents.HelpMarker($"When playing as {SMN.JobID.JobAbbreviation()} or {RDM.JobID.JobAbbreviation()}, also attempt to raise a dead party member. {RDM.JobID.JobAbbreviation()} will only resurrect with {All.Buffs.Swiftcast.StatusName()} or {RDM.Buffs.Dualcast.StatusName()} active.");
+                    ImGuiComponents.HelpMarker($"When playing as {SMN.JobID.JobAbbreviation()} or {RDM.JobID.JobAbbreviation()}, also attempt to raise a dead party member. {RDM.JobID.JobAbbreviation()} will only resurrect with {MagicRole.Buffs.Swiftcast.StatusName()} or {RDM.Buffs.Dualcast.StatusName()} active.");
                 }
 
                 P.UIHelper.ShowIPCControlledIndicatorIfNeeded("AutoCleanse");
                 changed |= P.UIHelper.ShowIPCControlledCheckboxIfNeeded(
-                    $"Auto-{All.Esuna.ActionName()}", ref cfg.HealerSettings.AutoCleanse, "AutoCleanse");
-                ImGuiComponents.HelpMarker($"Will {All.Esuna.ActionName()} any cleansable debuffs (Healing takes priority).");
+                    $"Auto-{Healer.Esuna.ActionName()}", ref cfg.HealerSettings.AutoCleanse, "AutoCleanse");
+                ImGuiComponents.HelpMarker($"Will {Healer.Esuna.ActionName()} any cleansable debuffs (Healing takes priority).");
 
                 P.UIHelper.ShowIPCControlledIndicatorIfNeeded("ManageKardia");
                 changed |= P.UIHelper.ShowIPCControlledCheckboxIfNeeded(
@@ -244,6 +259,13 @@ namespace WrathCombo.Window.Tabs
             ImGuiEx.TextUnderlined("Advanced");
             changed |= ImGui.InputInt("Throttle Delay (ms)", ref cfg.Throttler);
             ImGuiComponents.HelpMarker("Auto-Rotation has a built in throttler to only run every so many milliseconds for performance reasons. If you experience issues with frame rate, try increasing this value. Do note this may have a side-effect of introducing clipping if set too high, so experiment with the value.");
+
+            using (ImRaii.Disabled(!OrbwalkerIPC.IsEnabled))
+            {
+                changed |= ImGui.Checkbox($"Enable Orbwalker Integration", ref cfg.OrbwalkerIntegration);
+
+                ImGuiComponents.HelpMarker($"This will make Auto-Rotation use actions with cast times even whilst moving, as Orbwalker will lock movement during the cast.");
+            }
 
             if (changed)
                 Service.Configuration.Save();

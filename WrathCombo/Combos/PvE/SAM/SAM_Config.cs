@@ -1,5 +1,8 @@
+using ECommons.DalamudServices;
+using ImGuiNET;
 using WrathCombo.Combos.PvP;
 using WrathCombo.CustomComboNS.Functions;
+using WrathCombo.Extensions;
 using WrathCombo.Window.Functions;
 namespace WrathCombo.Combos.PvE;
 
@@ -23,7 +26,8 @@ internal partial class SAM
             SAM_ST_Higanbana_Suboption = new("SAM_ST_Higanbana_Suboption", 1),
             SAM_ST_ExecuteThreshold = new("SAM_ST_ExecuteThreshold", 1),
             SAM_VariantCure = new("SAM_VariantCure"),
-            SAM_Balance_Content = new("SAM_Balance_Content", 1);
+            SAM_Balance_Content = new("SAM_Balance_Content", 1),
+            SAM_Opener_PrePullDelay = new("SAM_Opener_PrePullDelay", 13);
 
         public static UserBool
             SAM_Kasha_KenkiOvercap = new(nameof(SAM_Kasha_KenkiOvercap)),
@@ -38,12 +42,15 @@ internal partial class SAM
             {
                 case CustomComboPreset.SAM_ST_Opener:
                     UserConfig.DrawBossOnlyChoice(SAM_Balance_Content);
+                    ImGui.NewLine();
+                    UserConfig.DrawSliderInt(0, 13, SAM_Opener_PrePullDelay, $"Delay from first {MeikyoShisui.ActionName()} to next step. (seconds)\nDelay is enforced by replacing your button with Savage Blade.");
                     break;
 
                 case CustomComboPreset.SAM_ST_CDs_Iaijutsu:
-                    UserConfig.DrawSliderInt(0, 100, SAM_ST_Higanbana_Threshold,
+                    UserConfig.DrawSliderInt(0, 10, SAM_ST_Higanbana_Threshold,
                         "Stop using Higanbana on targets below this HP % (0% = always use).");
 
+                    ImGui.Indent();
                     UserConfig.DrawHorizontalRadioButton(SAM_ST_Higanbana_Suboption,
                         "All Enemies",
                         "Uses Higanbana regardless of targeted enemy type.", 0);
@@ -51,6 +58,7 @@ internal partial class SAM
                     UserConfig.DrawHorizontalRadioButton(SAM_ST_Higanbana_Suboption,
                         "Bosses Only",
                         "Only uses Higanbana when the targeted enemy is a boss.", 1);
+                    ImGui.Unindent();
 
                     break;
 

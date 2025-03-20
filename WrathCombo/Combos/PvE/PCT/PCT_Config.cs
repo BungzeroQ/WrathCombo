@@ -1,3 +1,4 @@
+using ImGuiNET;
 using WrathCombo.Combos.PvP;
 using WrathCombo.CustomComboNS.Functions;
 using WrathCombo.Extensions;
@@ -25,20 +26,26 @@ internal partial class PCT
             PCT_Balance_Content = new("PCT_Balance_Content", 1);
 
         public static UserBool
+            WhiteHyperphantasiaOption = new("WhiteHyperphantasiaOption"),
+            BlackHyperphantasiaOption = new("BlackHyperphantasiaOption"),
             CombinedMotifsMog = new("CombinedMotifsMog"),
             CombinedMotifsMadeen = new("CombinedMotifsMadeen"),
             CombinedMotifsWeapon = new("CombinedMotifsWeapon"),
             CombinedMotifsLandscape = new("CombinedMotifsLandscape");
+
 
         internal static void Draw(CustomComboPreset preset)
         {
             switch (preset)
             {
                 case CustomComboPreset.PCT_ST_Advanced_Openers:
+                    ImGui.Indent();
                     UserConfig.DrawHorizontalRadioButton(PCT_Opener_Choice, $"2nd GCD {StarryMuse.ActionName()}", "", 0);
                     UserConfig.DrawHorizontalRadioButton(PCT_Opener_Choice, $"3rd GCD {StarryMuse.ActionName()}", "", 1);
 
+                    ImGui.NewLine();
                     UserConfig.DrawBossOnlyChoice(PCT_Balance_Content);
+                    ImGui.Unindent();
                     break;
                 case CustomComboPreset.CombinedAetherhues:
                     UserConfig.DrawRadioButton(CombinedAetherhueChoices, "Both Single Target & AoE",
@@ -66,6 +73,17 @@ internal partial class PCT
                     UserConfig.DrawAdditionalBoolChoice(CombinedMotifsLandscape, $"{StarPrism.ActionName()} Feature",
                         $"Add {StarPrism.ActionName()} when under the effect of {Buffs.Starstruck.StatusName()}.");
                     break;
+
+                case CustomComboPreset.PCT_ST_AdvancedMode_MovementOption_HolyInWhite:
+                    UserConfig.DrawAdditionalBoolChoice(WhiteHyperphantasiaOption, "Hyperphantasia Priority Option",
+                        $"Prioritizes {HolyInWhite.ActionName()} if {Buffs.Inspiration.StatusName()} and {Buffs.Hyperphantasia.StatusName()} are active.");
+                    break;
+
+                case CustomComboPreset.PCT_ST_AdvancedMode_MovementOption_CometinBlack:
+                    UserConfig.DrawAdditionalBoolChoice(BlackHyperphantasiaOption, "Hyperphantasia Priority Option",
+                        $"Prioritizes {CometinBlack.ActionName()} if {Buffs.Inspiration.StatusName()} and {Buffs.Hyperphantasia.StatusName()} are active.");
+                    break;
+
 
                 case CustomComboPreset.PCT_ST_AdvancedMode_LucidDreaming:
                     UserConfig.DrawSliderInt(0, 10000, PCT_ST_AdvancedMode_LucidOption,

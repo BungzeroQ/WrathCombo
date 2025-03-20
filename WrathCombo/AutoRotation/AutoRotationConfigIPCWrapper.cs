@@ -54,6 +54,18 @@ public class AutoRotationConfigIPCWrapper(AutoRotationConfig? config)
 
     public HealerSettingsIPCWrapper HealerSettings => new(config.HealerSettings);
 
+    public bool OrbwalkerIntegration
+    {
+        get
+        {
+            var checkControlled =
+                P.UIHelper.AutoRotationConfigControlled("OrbwalkerIntegration");
+            return checkControlled is not null
+                ? checkControlled.Value.state == 1
+                : config.OrbwalkerIntegration;
+        }
+    }
+
     #region Direct Pass-Throughs (no IPC check)
 
     public bool BypassQuest => config.BypassQuest;
@@ -101,7 +113,7 @@ public class DPSSettingsIPCWrapper(DPSSettings settings)
                 P.UIHelper.AutoRotationConfigControlled("OnlyAttackInCombat");
             return checkControlled is not null
                 ? checkControlled.Value.state == 1
-                : settings.QuestPriority;
+                : settings.OnlyAttackInCombat;
         }
     }
 
@@ -114,6 +126,8 @@ public class DPSSettingsIPCWrapper(DPSSettings settings)
     public float MaxDistance => settings.MaxDistance;
 
     public bool AlwaysSelectTarget => settings.AlwaysSelectTarget;
+
+    public bool AoEIgnoreManual => settings.AoEIgnoreManual;
 
     #endregion
 }
@@ -193,6 +207,8 @@ public class HealerSettingsIPCWrapper(HealerSettings settings)
     }
 
     #region Direct Pass-Throughs (no IPC check)
+
+    public bool AutoRezRequireSwift => settings.AutoRezRequireSwift;
 
     public int? AoEHealTargetCount => settings.AoEHealTargetCount;
 
