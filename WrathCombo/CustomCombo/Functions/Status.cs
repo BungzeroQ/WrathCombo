@@ -189,6 +189,7 @@ namespace WrathCombo.CustomComboNS.Functions
         public static bool HasCleansableDebuff(IGameObject? target = null)
         {
             target ??= CurrentTarget;
+            if (target is null) return false;
             if ((target is not IBattleChara chara)) return false;
 
             try

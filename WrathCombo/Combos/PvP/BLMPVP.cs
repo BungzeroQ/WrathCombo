@@ -146,6 +146,9 @@ namespace WrathCombo.Combos.PvP
                                     return OriginalHook(Lethargy);
                             }
 
+                            if (IsEnabled(CustomComboPreset.BLMPvP_PhantomDart) && Role.CanPhantomDart() && CanWeave())
+                                return Role.PhantomDart;
+
                             // Burst (Offensive)
                             if (IsEnabled(CustomComboPreset.BLMPvP_Burst) && IsOffCooldown(Burst) && targetDistance <= 4)
                                 return OriginalHook(Burst);

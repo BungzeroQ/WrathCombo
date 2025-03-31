@@ -16,9 +16,9 @@ namespace WrathCombo.Combos.PvP
                 Rust = 4480;
         }
 
-        public bool CanComet() => ActionReady(Comet);
-        public bool CanPhantomDart() => ActionReady(PhantomDart);
-        public bool CanRust() => ActionReady(Rust);
+        public static bool CanComet() => ActionReady(Comet);
+        public static bool CanPhantomDart() => ActionReady(PhantomDart);
+        public static bool CanRust() => ActionReady(Rust);
     }
 
     class PvPHealer //Healers
@@ -76,7 +76,7 @@ namespace WrathCombo.Combos.PvP
         public static class Buffs
         {
             public const ushort
-            //    Bloodbath = 1234; // NEED VERIFICATION IT EVEN IS A BUFF, CANNOT FIND
+                Bloodbath = 1982,
                 Swift = 4477;
         }
 

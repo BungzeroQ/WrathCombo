@@ -669,8 +669,9 @@ namespace WrathCombo.AutoRotation
                 return true;
             }
 
-            private static bool TargetHasRegen(IGameObject target)
+            private static bool TargetHasRegen(IGameObject? target)
             {
+                if (target is null) return false;
                 ushort regenBuff = JobID switch
                 {
                     AST.JobID => AST.Buffs.AspectedBenefic,

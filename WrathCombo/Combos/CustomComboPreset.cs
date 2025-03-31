@@ -6755,12 +6755,18 @@ SMN.JobID)]
     [CustomComboInfo("Elemental Star Option", "Uses Elemental Star when available.\n- Prioritizes Flare Star unless expiring.", BLMPvP.JobID)]
     BLMPvP_ElementalStar = 112005,
 
+    [ParentCombo(BLMPvP_BurstMode)]
+    [PvPCustomCombo]
+    [CustomComboInfo("Phantom Dart Option", "Uses Phantom Dart (if selected) when available.", BLMPvP.JobID)]
+    BLMPvP_PhantomDart = 112007,
+
     [PvPCustomCombo]
     [ReplaceSkill(BLMPvP.AetherialManipulation)]
     [CustomComboInfo("Aetherial Manipulation Feature", "Adds Purify when affected by crowd control.\n- Requires Purify to be available.", BLMPvP.JobID)]
     BLMPvP_Manipulation_Feature = 112006,
 
-    // Last value = 112006
+
+    // Last value = 112007
 
     #endregion
 
