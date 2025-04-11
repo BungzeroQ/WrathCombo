@@ -1,6 +1,5 @@
 ﻿using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
-using Dalamud.Game.ClientState.Statuses;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameFunctions;
@@ -32,18 +31,16 @@ namespace WrathCombo.CustomComboNS.Functions
             for (int i = 1; i <= 8; i++)
             {
                 var member = GetPartySlot(i);
-                if (member != null)
+                if (member != null && !_partyList.Any(x => x.GameObjectId == member.GameObjectId))
                 {
                     var chara = (member as IBattleChara);
                     WrathPartyMember wmember = new()
                     {
                         GameObjectId = chara.GameObjectId,
-                        BattleChara = chara,
                         CurrentHP = chara.CurrentHp
                     };
 
-                    if (!_partyList.Any(x => x.BattleChara.GameObjectId == chara.GameObjectId))
-                        _partyList.Add(wmember);
+                    _partyList.Add(wmember);
 
                 }
             }
@@ -54,23 +51,21 @@ namespace WrathCombo.CustomComboNS.Functions
                 {
                     foreach (var npc in Svc.Objects.Where(x => x is IBattleChara && x is not IPlayerCharacter).Cast<IBattleChara>())
                     {
-                        if (ActionManager.CanUseActionOnTarget(Healer.Esuna, npc.GameObject()) && !_partyList.Any(x => x.BattleChara == npc))
+                        if (ActionManager.CanUseActionOnTarget(Healer.Esuna, npc.GameObject()) && !_partyList.Any(x => x.GameObjectId == npc.GameObjectId))
                         {
                             WrathPartyMember wmember = new()
                             {
                                 GameObjectId = npc.GameObjectId,
-                                BattleChara = npc,
                                 CurrentHP = npc.CurrentHp
                             };
 
-                            if (!_partyList.Any(x => x.BattleChara.GameObjectId == npc.GameObjectId))
-                                _partyList.Add(wmember);
+                            _partyList.Add(wmember);
                         }
                     }
                 }
             }
 
-            _partyList.RemoveAll(x => !Svc.Objects.Any(y => y.GameObjectId == x.GameObjectId));
+            _partyList.RemoveAll(x => x.BattleChara is null);
             return _partyList;
         }
 
@@ -148,7 +143,7 @@ namespace WrathCombo.CustomComboNS.Functions
         public bool HPUpdatePending = false;
         public bool MPUpdatePending = false;
         public ulong GameObjectId;
-        public IBattleChara BattleChara = null!;
+        public IBattleChara? BattleChara => Svc.Objects.Any(x => x.GameObjectId == GameObjectId) ? Svc.Objects.First(x => x.GameObjectId == GameObjectId) as IBattleChara : null;
         public Dictionary<ushort, long> BuffsGainedAt = new();
         public uint CurrentHP
         {

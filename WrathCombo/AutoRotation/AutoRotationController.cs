@@ -76,7 +76,7 @@ namespace WrathCombo.AutoRotation
 
             bool combatBypass = (cfg.BypassQuest && DPSTargeting.BaseSelection.Any(x => IsQuestMob(x))) || (cfg.BypassFATE && InFATE());
 
-            if (cfg.InCombatOnly && (!GetPartyMembers().Any(x => x.BattleChara.Struct()->InCombat) || PartyEngageDuration().TotalSeconds < cfg.CombatDelay) && !combatBypass)
+            if (cfg.InCombatOnly && (!GetPartyMembers().Any(x => x.BattleChara is not null && x.BattleChara.Struct()->InCombat) || PartyEngageDuration().TotalSeconds < cfg.CombatDelay) && !combatBypass)
                 return;
 
             var autoActions = Presets.GetJobAutorots;
@@ -559,7 +559,7 @@ namespace WrathCombo.AutoRotation
 
         public class DPSTargeting
         {
-            private static bool Query(IGameObject x) => x is IBattleChara chara && chara.IsHostile() && IsInRange(chara, cfg.DPSSettings.MaxDistance) && GetTargetHeightDifference(chara) <= 3 && !chara.IsDead && chara.IsTargetable && IsInLineOfSight(chara) && !TargetIsInvincible(chara) && !Service.Configuration.IgnoredNPCs.Any(x => x.Key == chara.DataId) &&
+            private static bool Query(IGameObject x) => x is IBattleChara chara && chara.IsHostile() && IsInRange(chara, cfg.DPSSettings.MaxDistance) && GetTargetHeightDifference(chara) <= cfg.DPSSettings.MaxDistance && !chara.IsDead && chara.IsTargetable && IsInLineOfSight(chara) && !TargetIsInvincible(chara) && !Service.Configuration.IgnoredNPCs.Any(x => x.Key == chara.DataId) &&
                 ((cfg.DPSSettings.OnlyAttackInCombat && chara.Struct()->InCombat) || !cfg.DPSSettings.OnlyAttackInCombat);
             public static IEnumerable<IGameObject> BaseSelection => Svc.Objects.Any(x => Query(x) && IsPriority(x)) ?
                                                                     Svc.Objects.Where(x => Query(x) && IsPriority(x)) :
@@ -672,14 +672,12 @@ namespace WrathCombo.AutoRotation
             private static bool TargetHasRegen(IGameObject? target)
             {
                 if (target is null) return false;
-                ushort regenBuff = JobID switch
+                return JobID switch
                 {
-                    AST.JobID => AST.Buffs.AspectedBenefic,
-                    WHM.JobID => WHM.Buffs.Regen,
-                    _ => 0
+                    AST.JobID => FindEffectOnMember(AST.Buffs.AspectedBenefic, target) != null,
+                    WHM.JobID => FindEffectOnMember(WHM.Buffs.Regen, target) != null,
+                    _ => false,
                 };
-
-                return FindEffectOnMember(regenBuff, target) != null;
             }
         }
 

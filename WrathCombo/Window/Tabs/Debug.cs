@@ -377,8 +377,7 @@ namespace WrathCombo.Window.Tabs
                     ImGui.Indent();
                     foreach (var member in GetPartyMembers())
                     {
-                        if (ImGui.CollapsingHeader(
-                                member.BattleChara.GetInitials()))
+                        if (ImGui.CollapsingHeader($"{member?.BattleChara?.GetInitials()}###{member.GameObjectId}"))
                         {
                             CustomStyleText("Job:",
                                 member.BattleChara.ClassJob.Value.Abbreviation);
@@ -388,6 +387,8 @@ namespace WrathCombo.Window.Tabs
                                 $"{member.CurrentMP}/{member.BattleChara.MaxMp}");
                             CustomStyleText("Dead Timer:",
                                 TimeSpentDead(member.BattleChara.GameObjectId));
+
+                            Util.ShowObject(member.BattleChara);
                         }
                     }
 
@@ -562,7 +563,18 @@ namespace WrathCombo.Window.Tabs
                     ImGui.TextUnformatted(
                         $"{string.Join("\n", Service.Configuration.ActiveBLUSpells.Select(ActionWatching.GetActionName).OrderBy(x => x))}");
                 }
+                ImGui.Indent();
+                if (ImGui.CollapsingHeader("Enmity"))
+                {
+                    foreach (var h in EnmityDictParty)
+                    {
+                        CustomStyleText($"{Svc.Objects.First(x => x.GameObjectId == h.Key).Name}", h.Value);
+                    }
 
+                    ImGui.Spacing();
+                    CustomStyleText($"\"Strongest\" DPS:", $"{StrongestDPS()?.Name}");
+                }
+                ImGui.Unindent();
                 if (WrathOpener.CurrentOpener is not null)
                 {
                     CustomStyleText("Current Opener",
