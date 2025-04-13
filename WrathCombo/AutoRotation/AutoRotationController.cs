@@ -429,7 +429,7 @@ namespace WrathCombo.AutoRotation
                     var numEnemies = NumberOfEnemiesInRange(gameAct, target, true);
                     if (!_ninjaLockedAoE)
                     {
-                        if (numEnemies < cfg.DPSSettings.DPSAoETargets)
+                        if (cfg.DPSSettings.DPSAoETargets == null || numEnemies < cfg.DPSSettings.DPSAoETargets)
                         {
                             LockedAoE = false;
                             return false;
