@@ -1,7 +1,7 @@
 using WrathCombo.CustomComboNS;
 namespace WrathCombo.Combos.PvE;
 
-internal partial class MNK : MeleeJob
+internal partial class MNK : Melee
 {
     internal class MNK_ST_SimpleMode : CustomCombo
     {
@@ -24,18 +24,18 @@ internal partial class MNK : MeleeJob
                 (!InCombat() || !InMeleeRange()) &&
                 Gauge.Chakra < 5 &&
                 IsOriginal(MasterfulBlitz) &&
-                !HasEffect(Buffs.RiddleOfFire) &&
-                !HasEffect(Buffs.WindsRumination) &&
-                !HasEffect(Buffs.FiresRumination))
+                !HasStatusEffect(Buffs.RiddleOfFire) &&
+                !HasStatusEffect(Buffs.WindsRumination) &&
+                !HasStatusEffect(Buffs.FiresRumination))
                 return OriginalHook(SteeledMeditation);
 
             if (LevelChecked(FormShift) && !InCombat() &&
-                !HasEffect(Buffs.FormlessFist) && !HasEffect(Buffs.PerfectBalance) &&
-                !HasEffect(Buffs.OpoOpoForm) && !HasEffect(Buffs.RaptorForm) && !HasEffect(Buffs.CoeurlForm))
+                !HasStatusEffect(Buffs.FormlessFist) && !HasStatusEffect(Buffs.PerfectBalance) &&
+                !HasStatusEffect(Buffs.OpoOpoForm) && !HasStatusEffect(Buffs.RaptorForm) && !HasStatusEffect(Buffs.CoeurlForm))
                 return FormShift;
 
             if (ActionReady(RiddleOfFire) &&
-                !HasEffect(Buffs.FiresRumination) &&
+                !HasStatusEffect(Buffs.FiresRumination) &&
                 CanDelayedWeave() && InBossEncounter())
                 return RiddleOfFire;
 
@@ -47,7 +47,7 @@ internal partial class MNK : MeleeJob
                     return Brotherhood;
 
                 if (ActionReady(RiddleOfWind) &&
-                    !HasEffect(Buffs.WindsRumination) &&
+                    !HasStatusEffect(Buffs.WindsRumination) &&
                     InBossEncounter())
                     return RiddleOfWind;
 
@@ -66,31 +66,32 @@ internal partial class MNK : MeleeJob
             }
 
             // GCDs
-            if (HasEffect(Buffs.FormlessFist))
+            if (HasStatusEffect(Buffs.FormlessFist))
                 return Gauge.OpoOpoFury == 0
                     ? DragonKick
                     : OriginalHook(Bootshine);
 
             // Masterful Blitz
             if (LevelChecked(MasterfulBlitz) &&
-                !HasEffect(Buffs.PerfectBalance) &&
+                !HasStatusEffect(Buffs.PerfectBalance) &&
                 InMasterfulRange() &&
                 !IsOriginal(MasterfulBlitz))
                 return OriginalHook(MasterfulBlitz);
 
-            if (HasEffect(Buffs.FiresRumination) &&
+            if (HasStatusEffect(Buffs.FiresRumination) &&
                 LevelChecked(FiresReply) &&
-                !HasEffect(Buffs.FormlessFist) &&
+                !HasStatusEffect(Buffs.FormlessFist) &&
+                !HasStatusEffect(Buffs.PerfectBalance) &&
                 !JustUsed(RiddleOfFire, 4) &&
                 (JustUsed(OriginalHook(Bootshine)) ||
                  JustUsed(DragonKick) ||
-                 GetBuffRemainingTime(Buffs.FiresRumination) < 4 ||
+                 GetStatusEffectRemainingTime(Buffs.FiresRumination) < 4 ||
                  !InMeleeRange()))
                 return FiresReply;
 
-            if (HasEffect(Buffs.WindsRumination) &&
+            if (HasStatusEffect(Buffs.WindsRumination) &&
                 LevelChecked(WindsReply) &&
-                (!InMeleeRange() || !HasEffect(Buffs.PerfectBalance)))
+                (!InMeleeRange() || !HasStatusEffect(Buffs.PerfectBalance)))
                 return WindsReply;
 
             // Perfect Balance
@@ -124,15 +125,15 @@ internal partial class MNK : MeleeJob
                 (!InCombat() || !InMeleeRange()) &&
                 Gauge.Chakra < 5 &&
                 IsOriginal(MasterfulBlitz) &&
-                !HasEffect(Buffs.RiddleOfFire) &&
-                !HasEffect(Buffs.WindsRumination) &&
-                !HasEffect(Buffs.FiresRumination))
+                !HasStatusEffect(Buffs.RiddleOfFire) &&
+                !HasStatusEffect(Buffs.WindsRumination) &&
+                !HasStatusEffect(Buffs.FiresRumination))
                 return OriginalHook(SteeledMeditation);
 
             if (IsEnabled(CustomComboPreset.MNK_STUseFormShift) &&
                 LevelChecked(FormShift) && !InCombat() &&
-                !HasEffect(Buffs.FormlessFist) && !HasEffect(Buffs.PerfectBalance) &&
-                !HasEffect(Buffs.OpoOpoForm) && !HasEffect(Buffs.RaptorForm) && !HasEffect(Buffs.CoeurlForm))
+                !HasStatusEffect(Buffs.FormlessFist) && !HasStatusEffect(Buffs.PerfectBalance) &&
+                !HasStatusEffect(Buffs.OpoOpoForm) && !HasStatusEffect(Buffs.RaptorForm) && !HasStatusEffect(Buffs.CoeurlForm))
                 return FormShift;
 
             if (IsEnabled(CustomComboPreset.MNK_STUseOpener))
@@ -147,7 +148,7 @@ internal partial class MNK : MeleeJob
 
             if (IsEnabled(CustomComboPreset.MNK_STUseBuffs) &&
                 IsEnabled(CustomComboPreset.MNK_STUseROF) &&
-                !HasEffect(Buffs.FiresRumination) &&
+                !HasStatusEffect(Buffs.FiresRumination) &&
                 ActionReady(RiddleOfFire) &&
                 CanDelayedWeave() &&
                 (Config.MNK_ST_RiddleOfFire_SubOption == 0 ||
@@ -166,7 +167,7 @@ internal partial class MNK : MeleeJob
                         return Brotherhood;
 
                     if (IsEnabled(CustomComboPreset.MNK_STUseROW) &&
-                        !HasEffect(Buffs.WindsRumination) &&
+                        !HasStatusEffect(Buffs.WindsRumination) &&
                         ActionReady(RiddleOfWind) &&
                         (Config.MNK_ST_RiddleOfWind_SubOption == 0 ||
                          Config.MNK_ST_RiddleOfWind_SubOption == 1 && InBossEncounter()))
@@ -194,7 +195,7 @@ internal partial class MNK : MeleeJob
             }
 
             // GCDs
-            if (HasEffect(Buffs.FormlessFist))
+            if (HasStatusEffect(Buffs.FormlessFist))
                 return Gauge.OpoOpoFury == 0
                     ? DragonKick
                     : OriginalHook(Bootshine);
@@ -202,27 +203,28 @@ internal partial class MNK : MeleeJob
             // Masterful Blitz
             if (IsEnabled(CustomComboPreset.MNK_STUseMasterfulBlitz) &&
                 LevelChecked(MasterfulBlitz) &&
-                !HasEffect(Buffs.PerfectBalance) && InMasterfulRange() &&
+                !HasStatusEffect(Buffs.PerfectBalance) && InMasterfulRange() &&
                 !IsOriginal(MasterfulBlitz))
                 return OriginalHook(MasterfulBlitz);
 
             if (IsEnabled(CustomComboPreset.MNK_STUseBuffs))
             {
                 if (IsEnabled(CustomComboPreset.MNK_STUseFiresReply) &&
-                    HasEffect(Buffs.FiresRumination) &&
+                    HasStatusEffect(Buffs.FiresRumination) &&
                     LevelChecked(FiresReply) &&
-                    !HasEffect(Buffs.FormlessFist) &&
+                    !HasStatusEffect(Buffs.FormlessFist) &&
+                    !HasStatusEffect(Buffs.PerfectBalance) &&
                     !JustUsed(RiddleOfFire, 4) &&
                     (JustUsed(OriginalHook(Bootshine)) ||
                      JustUsed(DragonKick) ||
-                     GetBuffRemainingTime(Buffs.FiresRumination) < 4 ||
+                     GetStatusEffectRemainingTime(Buffs.FiresRumination) < 4 ||
                      !InMeleeRange()))
                     return FiresReply;
 
                 if (IsEnabled(CustomComboPreset.MNK_STUseWindsReply) &&
-                    HasEffect(Buffs.WindsRumination) &&
+                    HasStatusEffect(Buffs.WindsRumination) &&
                     LevelChecked(WindsReply) &&
-                    (!InMeleeRange() || !HasEffect(Buffs.PerfectBalance)))
+                    (!InMeleeRange() || !HasStatusEffect(Buffs.PerfectBalance)))
                     return WindsReply;
             }
 
@@ -256,18 +258,18 @@ internal partial class MNK : MeleeJob
                 (!InCombat() || !InMeleeRange()) &&
                 Gauge.Chakra < 5 &&
                 IsOriginal(MasterfulBlitz) &&
-                !HasEffect(Buffs.RiddleOfFire) &&
-                !HasEffect(Buffs.WindsRumination) &&
-                !HasEffect(Buffs.FiresRumination))
+                !HasStatusEffect(Buffs.RiddleOfFire) &&
+                !HasStatusEffect(Buffs.WindsRumination) &&
+                !HasStatusEffect(Buffs.FiresRumination))
                 return OriginalHook(InspiritedMeditation);
 
             if (LevelChecked(FormShift) && !InCombat() &&
-                !HasEffect(Buffs.FormlessFist) && !HasEffect(Buffs.PerfectBalance) &&
-                !HasEffect(Buffs.OpoOpoForm) && !HasEffect(Buffs.RaptorForm) && !HasEffect(Buffs.CoeurlForm))
+                !HasStatusEffect(Buffs.FormlessFist) && !HasStatusEffect(Buffs.PerfectBalance) &&
+                !HasStatusEffect(Buffs.OpoOpoForm) && !HasStatusEffect(Buffs.RaptorForm) && !HasStatusEffect(Buffs.CoeurlForm))
                 return FormShift;
 
             if (ActionReady(RiddleOfFire) &&
-                !HasEffect(Buffs.FiresRumination) &&
+                !HasStatusEffect(Buffs.FiresRumination) &&
                 CanDelayedWeave())
                 return RiddleOfFire;
 
@@ -278,7 +280,7 @@ internal partial class MNK : MeleeJob
                     return Brotherhood;
 
                 if (ActionReady(RiddleOfWind) &&
-                    !HasEffect(Buffs.WindsRumination))
+                    !HasStatusEffect(Buffs.WindsRumination))
                     return RiddleOfWind;
 
                 if (UsePerfectBalanceAoE())
@@ -298,21 +300,22 @@ internal partial class MNK : MeleeJob
 
             // Masterful Blitz
             if (LevelChecked(MasterfulBlitz) &&
-                !HasEffect(Buffs.PerfectBalance) &&
+                !HasStatusEffect(Buffs.PerfectBalance) &&
                 InMasterfulRange() &&
                 !IsOriginal(MasterfulBlitz))
                 return OriginalHook(MasterfulBlitz);
 
-            if (HasEffect(Buffs.FiresRumination) &&
+            if (HasStatusEffect(Buffs.FiresRumination) &&
                 LevelChecked(FiresReply) &&
-                !HasEffect(Buffs.FormlessFist) &&
+                !HasStatusEffect(Buffs.PerfectBalance) &&
+                !HasStatusEffect(Buffs.FormlessFist) &&
                 !JustUsed(RiddleOfFire, 4))
                 return FiresReply;
 
-            if (HasEffect(Buffs.WindsRumination) &&
+            if (HasStatusEffect(Buffs.WindsRumination) &&
                 LevelChecked(WindsReply) &&
-                HasEffect(Buffs.RiddleOfWind) &&
-                !HasEffect(Buffs.PerfectBalance))
+                HasStatusEffect(Buffs.RiddleOfWind) &&
+                !HasStatusEffect(Buffs.PerfectBalance))
                 return WindsReply;
 
             // Perfect Balance
@@ -320,10 +323,10 @@ internal partial class MNK : MeleeJob
                 return actionID;
 
             // Monk Rotation
-            if (HasEffect(Buffs.OpoOpoForm))
+            if (HasStatusEffect(Buffs.OpoOpoForm))
                 return OriginalHook(ArmOfTheDestroyer);
 
-            if (HasEffect(Buffs.RaptorForm))
+            if (HasStatusEffect(Buffs.RaptorForm))
             {
                 if (LevelChecked(FourPointFury))
                     return FourPointFury;
@@ -332,7 +335,7 @@ internal partial class MNK : MeleeJob
                     return TwinSnakes;
             }
 
-            if (HasEffect(Buffs.CoeurlForm) && LevelChecked(Rockbreaker))
+            if (HasStatusEffect(Buffs.CoeurlForm) && LevelChecked(Rockbreaker))
                 return Rockbreaker;
 
             return actionID;
@@ -361,20 +364,20 @@ internal partial class MNK : MeleeJob
                 (!InCombat() || !InMeleeRange()) &&
                 Gauge.Chakra < 5 &&
                 IsOriginal(MasterfulBlitz) &&
-                !HasEffect(Buffs.RiddleOfFire) &&
-                !HasEffect(Buffs.WindsRumination) &&
-                !HasEffect(Buffs.FiresRumination))
+                !HasStatusEffect(Buffs.RiddleOfFire) &&
+                !HasStatusEffect(Buffs.WindsRumination) &&
+                !HasStatusEffect(Buffs.FiresRumination))
                 return OriginalHook(InspiritedMeditation);
 
             if (IsEnabled(CustomComboPreset.MNK_AoEUseFormShift) &&
                 LevelChecked(FormShift) && !InCombat() &&
-                !HasEffect(Buffs.FormlessFist) && !HasEffect(Buffs.PerfectBalance) &&
-                !HasEffect(Buffs.OpoOpoForm) && !HasEffect(Buffs.RaptorForm) && !HasEffect(Buffs.CoeurlForm))
+                !HasStatusEffect(Buffs.FormlessFist) && !HasStatusEffect(Buffs.PerfectBalance) &&
+                !HasStatusEffect(Buffs.OpoOpoForm) && !HasStatusEffect(Buffs.RaptorForm) && !HasStatusEffect(Buffs.CoeurlForm))
                 return FormShift;
 
             if (IsEnabled(CustomComboPreset.MNK_AoEUseBuffs) &&
                 IsEnabled(CustomComboPreset.MNK_AoEUseROF) &&
-                !HasEffect(Buffs.FiresRumination) &&
+                !HasStatusEffect(Buffs.FiresRumination) &&
                 ActionReady(RiddleOfFire) &&
                 CanDelayedWeave() &&
                 GetTargetHPPercent() >= Config.MNK_AoE_RiddleOfFire_HP)
@@ -392,7 +395,7 @@ internal partial class MNK : MeleeJob
 
                     if (IsEnabled(CustomComboPreset.MNK_AoEUseROW) &&
                         ActionReady(RiddleOfWind) &&
-                        !HasEffect(Buffs.WindsRumination) &&
+                        !HasStatusEffect(Buffs.WindsRumination) &&
                         GetTargetHPPercent() >= Config.MNK_AoE_RiddleOfWind_HP)
                         return RiddleOfWind;
                 }
@@ -419,7 +422,7 @@ internal partial class MNK : MeleeJob
             // Masterful Blitz
             if (IsEnabled(CustomComboPreset.MNK_AoEUseMasterfulBlitz) &&
                 LevelChecked(MasterfulBlitz) &&
-                !HasEffect(Buffs.PerfectBalance) &&
+                !HasStatusEffect(Buffs.PerfectBalance) &&
                 InMasterfulRange() &&
                 !IsOriginal(MasterfulBlitz))
                 return OriginalHook(MasterfulBlitz);
@@ -427,17 +430,18 @@ internal partial class MNK : MeleeJob
             if (IsEnabled(CustomComboPreset.MNK_AoEUseBuffs))
             {
                 if (IsEnabled(CustomComboPreset.MNK_AoEUseFiresReply) &&
-                    HasEffect(Buffs.FiresRumination) &&
+                    HasStatusEffect(Buffs.FiresRumination) &&
                     LevelChecked(FiresReply) &&
-                    !HasEffect(Buffs.FormlessFist) &&
+                    !HasStatusEffect(Buffs.FormlessFist) &&
+                    !HasStatusEffect(Buffs.PerfectBalance) &&
                     !JustUsed(RiddleOfFire, 4))
                     return FiresReply;
 
                 if (IsEnabled(CustomComboPreset.MNK_AoEUseWindsReply) &&
-                    HasEffect(Buffs.WindsRumination) &&
+                    HasStatusEffect(Buffs.WindsRumination) &&
                     LevelChecked(WindsReply) &&
-                    HasEffect(Buffs.RiddleOfWind) &&
-                    !HasEffect(Buffs.PerfectBalance))
+                    HasStatusEffect(Buffs.RiddleOfWind) &&
+                    !HasStatusEffect(Buffs.PerfectBalance))
                     return WindsReply;
             }
 
@@ -446,10 +450,10 @@ internal partial class MNK : MeleeJob
                 return actionID;
 
             // Monk Rotation
-            if (HasEffect(Buffs.OpoOpoForm))
+            if (HasStatusEffect(Buffs.OpoOpoForm))
                 return OriginalHook(ArmOfTheDestroyer);
 
-            if (HasEffect(Buffs.RaptorForm))
+            if (HasStatusEffect(Buffs.RaptorForm))
             {
                 if (LevelChecked(FourPointFury))
                     return FourPointFury;
@@ -458,7 +462,7 @@ internal partial class MNK : MeleeJob
                     return TwinSnakes;
             }
 
-            if (HasEffect(Buffs.CoeurlForm) && LevelChecked(Rockbreaker))
+            if (HasStatusEffect(Buffs.CoeurlForm) && LevelChecked(Rockbreaker))
                 return Rockbreaker;
 
             return actionID;
@@ -532,7 +536,7 @@ internal partial class MNK : MeleeJob
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.MNK_PerfectBalanceProtection;
 
         protected override uint Invoke(uint actionID) =>
-            actionID is PerfectBalance && HasEffect(Buffs.PerfectBalance) && LevelChecked(PerfectBalance)
+            actionID is PerfectBalance && HasStatusEffect(Buffs.PerfectBalance) && LevelChecked(PerfectBalance)
                 ? All.SavageBlade
                 : actionID;
     }

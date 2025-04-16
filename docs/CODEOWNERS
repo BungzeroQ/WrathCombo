@@ -17,13 +17,13 @@
 /WrathCombo/Combos/PvE/PLD/                           @Kaeris-Tempest
 /WrathCombo/Combos/PvE/RDM/                           @Tartarga
 /WrathCombo/Combos/PvE/RPR/                           @Kagekazu
-/WrathCombo/Combos/PvE/SAM/                           @Akechi-kun @Kagekazu
+/WrathCombo/Combos/PvE/SAM/                           @Kagekazu
 /WrathCombo/Combos/PvE/SCH/                           @Tartarga
 /WrathCombo/Combos/PvE/SGE/                           @Tartarga
 /WrathCombo/Combos/PvE/SMN/                           @Genesis-Nova
 /WrathCombo/Combos/PvE/VPR/                           @Akechi-kun @Kagekazu
 /WrathCombo/Combos/PvE/WAR/                           @Akechi-kun
-/WrathCombo/Combos/PvE/WHM/                           @Taurenkey @zbee
+/WrathCombo/Combos/PvE/WHM/                           @zbee
 
 # PvP Combos
 /WrathCombo/Combos/PvP/                               @Nik-Potokar
@@ -43,6 +43,7 @@
 /WrathCombo/Services/IPC/                             @zbee
 /res/ipc_status.txt                                   @zbee
 /WrathCombo/Combos/PvE/Content/Bozja.cs               @Akechi-kun @zbee
+/WrathCombo/CustomCombo/StancePartner.cs              @zbee
 
 # Protect the owners file
 /docs/CODEOWNERS                                      @Taurenkey @zbee
