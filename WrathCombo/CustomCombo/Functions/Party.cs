@@ -1,5 +1,6 @@
 ﻿using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
+using ECommons;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameFunctions;
@@ -87,11 +88,14 @@ namespace WrathCombo.CustomComboNS.Functions
                     8 => GetTarget(TargetType.P8),
                     _ => GetTarget(TargetType.Self),
                 };
+                if (o == null)
+                    return null;
+
                 return Svc.Objects.FirstOrDefault(x => x.GameObjectId == o->GetGameObjectId());
             }
-
-            catch
+            catch (Exception ex)
             {
+                ex.Log();
                 return null;
             }
         }
