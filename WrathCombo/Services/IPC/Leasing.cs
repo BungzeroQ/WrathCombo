@@ -764,7 +764,7 @@ public partial class Leasing
         Dictionary<Guid, (string, byte[], DateTime)> blacklistCopy =
             new(_userRevokedTemporaryBlacklist);
         foreach (var (lease, (_, _, time)) in blacklistCopy)
-            if (now - time > TimeSpan.FromMinutes(2))
+            if (now - time > TimeSpan.FromSeconds(15))
                 _userRevokedTemporaryBlacklist.Remove(lease);
     }
 

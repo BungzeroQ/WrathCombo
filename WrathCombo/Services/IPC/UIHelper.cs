@@ -349,8 +349,7 @@ public class UIHelper(Leasing leasing)
             ImGui.PushStyleColor(ImGuiCol.ButtonHovered, _hoverColor);
             ImGui.PushStyleColor(ImGuiCol.ButtonActive, _hoverColor);
             ImGui.PushStyleColor(ImGuiCol.Text, _textColor);
-            ImGui.SetCursorPosX(ImGui.GetCursorPosX() - _rounding.Scale() -
-                                3f.Scale());
+            ImGui.SetCursorPosX(ImGui.GetCursorPosX() - 12f.Scale());
             if (ImGui.SmallButton("X###" + revokeID))
                 RevokeControl(controlled.Value.controllers);
             ImGui.PopStyleColor(3);

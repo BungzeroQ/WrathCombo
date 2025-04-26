@@ -1,5 +1,5 @@
 using Dalamud.Game.ClientState.JobGauge.Types;
-using Dalamud.Game.ClientState.Statuses;
+using ECommons.DalamudServices;
 using System.Linq;
 using WrathCombo.CustomComboNS;
 using WrathCombo.Data;
@@ -288,12 +288,9 @@ internal partial class WAR : Tank
                 HasBattleTarget()) //has a target
                 return Tomahawk;
 
-            if (IsEnabled(CustomComboPreset.WAR_ST_Advanced_BalanceOpener) &&
-                ContentCheck.IsInConfiguredContent(Config.WAR_BalanceOpener_Content, ContentCheck.ListSet.BossOnly))
-            {
-                if (Opener().FullOpener(ref actionID))
-                    return actionID;
-            }
+            if (IsEnabled(CustomComboPreset.WAR_ST_Advanced_BalanceOpener) && Opener().FullOpener(ref actionID))
+                return actionID;
+
 
             if (CanWeave()) //in weave window
             {
@@ -471,7 +468,7 @@ internal partial class WAR : Tank
                             return Role.Rampart;
 
                         //Reprisal
-                        if (Role.CanReprisal(90, checkTargetForDebuff:false))
+                        if (Role.CanReprisal(90, checkTargetForDebuff: false))
                             return Role.Reprisal;
                     }
 
@@ -624,7 +621,7 @@ internal partial class WAR : Tank
 
                     //Reprisal
                     if (IsEnabled(CustomComboPreset.WAR_AoE_Advanced_Reprisal) && //Reprisal option is enabled
-                        Role.CanReprisal(Config.WAR_AoE_Reprisal_Health, checkTargetForDebuff:false) && //Player's health is below selected threshold
+                        Role.CanReprisal(Config.WAR_AoE_Reprisal_Health, checkTargetForDebuff: false) && //Player's health is below selected threshold
                         (Config.WAR_AoE_Reprisal_SubOption == 0 || //Reprisal is enabled for all targets
                          (TargetIsBoss() && Config.WAR_AoE_Reprisal_SubOption == 1))) //Reprisal is enabled for bosses only
                         return Role.Reprisal;
@@ -774,10 +771,10 @@ internal partial class WAR : Tank
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WAR_PrimalCombo_InnerRelease;
 
-            protected override uint Invoke(uint actionID)
-            {
-                if (actionID is not (Berserk or InnerRelease))
-                    return OriginalHook(actionID);
+        protected override uint Invoke(uint actionID)
+        {
+            if (actionID is not (Berserk or InnerRelease))
+                return OriginalHook(actionID);
 
             if (LevelChecked(PrimalRend) && //Primal Rend is available
                 HasStatusEffect(Buffs.PrimalRendReady)) //Primal Rend is ready
