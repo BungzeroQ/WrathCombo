@@ -86,7 +86,8 @@ internal partial class RDM : Caster
                     return Variant.Rampart;
 
                 // Opener for RDM
-                if (IsEnabled(CustomComboPreset.RDM_Balance_Opener) && Opener().FullOpener(ref actionID))
+                if (IsEnabled(CustomComboPreset.RDM_Balance_Opener) &&
+                    Opener().FullOpener(ref actionID))
                     return actionID;
 
             }
