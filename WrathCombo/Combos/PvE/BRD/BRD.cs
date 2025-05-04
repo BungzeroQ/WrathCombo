@@ -834,9 +834,9 @@ internal partial class BRD : PhysicalRanged
                     return OriginalHook(PitchPerfect);
 
                 if (ActionReady(Sidewinder) && UsePooledSidewinder())
-                    return Sidewinder;            
-               
-                if (UseInterrupt)
+                    return Sidewinder;
+
+                if (Role.CanHeadGraze(true, WeaveTypes.Weave))
                     return Role.HeadGraze;
 
                 if (ActionReady(Bloodletter) && UsePooledBloodRain())
