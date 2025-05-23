@@ -367,7 +367,8 @@ internal partial class WAR : Tank
                 if (CanWeave()) //in weave window
                 {
                     if (IsEnabled(CustomComboPreset.WAR_ST_Advanced_InnerRelease) && //Inner Release option is enabled
-                        ActionReady(OriginalHook(Berserk))) //Berserk is ready
+                        ActionReady(OriginalHook(Berserk)) && //Berserk is ready
+                        !HasStatusEffect(Buffs.Wrathful)) //Not Wrathful
                         return OriginalHook(Berserk);
 
                     if (IsEnabled(CustomComboPreset.WAR_ST_Advanced_Upheaval) && //Upheaval option is enabled
@@ -741,7 +742,8 @@ internal partial class WAR : Tank
                 if (CanWeave()) //in weave window
                 {
                     if (IsEnabled(CustomComboPreset.WAR_AoE_Advanced_InnerRelease) && //Inner Release option is enabled
-                        ActionReady(OriginalHook(Berserk))) //Berserk is ready
+                        ActionReady(OriginalHook(Berserk)) && //Berserk is ready
+                        !HasStatusEffect(Buffs.Wrathful)) //Not Wrathful
                         return OriginalHook(Berserk);
 
                     if (IsEnabled(CustomComboPreset.WAR_AoE_Advanced_Orogeny) && //Orogeny option is enabled

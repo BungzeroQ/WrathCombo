@@ -31,6 +31,7 @@ using WrathCombo.Services;
 using WrathCombo.Services.IPC;
 using WrathCombo.Window;
 using WrathCombo.Window.Tabs;
+using ECommons.EzHookManager;
 
 namespace WrathCombo;
 
@@ -49,6 +50,7 @@ public sealed partial class WrathCombo : IDalamudPlugin
     internal Provider IPC;
     internal Search IPCSearch = null!;
     internal UIHelper UIHelper = null!;
+    internal MovementHook MoveHook;
 
     private readonly TextPayload starterMotd = new("[Wrath Message of the Day] ");
     private static uint? jobID;
@@ -149,6 +151,7 @@ public sealed partial class WrathCombo : IDalamudPlugin
         Service.Configuration = pluginInterface.GetPluginConfig() as PluginConfiguration ?? new PluginConfiguration();
         Service.Address = new PluginAddressResolver();
         Service.Address.Setup(Svc.SigScanner);
+        MoveHook = new();
         PresetStorage.Init();
 
         Service.ComboCache = new CustomComboCache();
@@ -402,6 +405,7 @@ public sealed partial class WrathCombo : IDalamudPlugin
         AST.DisposeCheckCards();
         CustomComboFunctions.TimerDispose();
         IPC.Dispose();
+        MoveHook?.Dispose();
 
         Svc.ClientState.Login -= PrintLoginMessage;
         ECommonsMain.Dispose();
