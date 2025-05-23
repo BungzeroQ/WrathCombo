@@ -424,6 +424,35 @@ internal partial class PLD : Tank
                 // Weavables
                 if (canWeave)
                 {
+                    if (LevelChecked(Imperator))
+                    {
+                        if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_Requiescat) && ActionReady(Requiescat) && cooldownFightOrFlight > 50)
+                            return OriginalHook(Requiescat);
+
+                        // Fight or Flight
+                        if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_FoF) && ActionReady(FightOrFlight) && GetTargetHPPercent() >= Config.PLD_ST_FoF_Trigger)
+                        {
+                            if (!LevelChecked(Requiescat))
+                            {
+                                if (!LevelChecked(RageOfHalone))
+                                {
+                                    // Level 2-25
+                                    if (ComboAction is FastBlade)
+                                        return FightOrFlight;
+                                }
+
+                                // Level 26-67
+                                else if (ComboAction is RiotBlade)
+                                    return FightOrFlight;
+                            }
+
+                            // Level 68+
+                            else if (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave && (ComboAction is RoyalAuthority || afterOpener))
+                                return FightOrFlight;
+                        }
+                    }
+                  
+
                     if (InMeleeRange())
                     {
                         // Requiescat
