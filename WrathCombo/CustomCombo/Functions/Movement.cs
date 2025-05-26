@@ -45,7 +45,7 @@ namespace WrathCombo.CustomComboNS.Functions
             return isMoving && TimeMoving.TotalSeconds >= Service.Configuration.MovementLeeway;
         }
 
-        public unsafe static bool IsDashing() => MovementHook.Instance->Dashing == 1;
+        public unsafe static bool IsDashing() => MovementHook.Instance != null && MovementHook.Instance->Dashing == 1;
 
         public static TimeSpan TimeMoving => movementStarted is null ? TimeSpan.Zero : (DateTime.Now - movementStarted.Value);
 
@@ -54,11 +54,11 @@ namespace WrathCombo.CustomComboNS.Functions
 
     internal unsafe class MovementHook : IDisposable
     {
-        public static MoveControllerSubMemberForMine* Instance;
+        public static MoveControllerSubMemberForMine* Instance = null!;
 
         private delegate void RMIWalkDelegate(MoveControllerSubMemberForMine* self, float* sumLeft, float* sumForward, float* sumTurnLeft, byte* haveBackwardOrStrafe, byte* a6, byte bAdditiveUnk);
         [Signature("E8 ?? ?? ?? ?? 80 7B 3E 00 48 8D 3D", DetourName = nameof(RMIWalkDetour))]
-        private readonly Hook<RMIWalkDelegate> _rmiWalkHook;
+        private readonly Hook<RMIWalkDelegate> _rmiWalkHook = null!;
 
         private void RMIWalkDetour(MoveControllerSubMemberForMine* self, float* sumLeft, float* sumForward, float* sumTurnLeft, byte* haveBackwardOrStrafe, byte* a6, byte bAdditiveUnk)
         {

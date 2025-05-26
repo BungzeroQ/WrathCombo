@@ -30,14 +30,10 @@ namespace WrathCombo.Data
             .Where(i => i.RowId is not 7)
             .ToDictionary(i => i.RowId, i => i);
 
-        internal static Dictionary<uint, Lumina.Excel.Sheets.Status> StatusSheet = Svc.Data.GetExcelSheet<Lumina.Excel.Sheets.Status>()!
-            .ToDictionary(i => i.RowId, i => i);
-
         internal static Dictionary<uint, Trait> TraitSheet = Svc.Data.GetExcelSheet<Trait>()!
             .Where(i => i.ClassJobCategory.IsValid) //All player traits are assigned to a category. Chocobo and other garbage lacks this, thus excluded.
             .ToDictionary(i => i.RowId, i => i);
         private static uint lastAction = 0;
-        private static readonly Dictionary<string, List<uint>> statusCache = [];
 
         internal static readonly Dictionary<uint, long> ChargeTimestamps = [];
         internal static readonly Dictionary<uint, long> ActionTimestamps = [];
@@ -80,7 +76,7 @@ namespace WrathCombo.Data
                     foreach (var eff in target.effects)
                     {
 #if DEBUG
-                        Svc.Log.Verbose($"{eff.Type}, {eff.Value} 0:{eff.Param0}, 1:{eff.Param1}, 2:{eff.Param2}, 3:{eff.Param3}, 4:{eff.Param4} | ({header->ActionId.ActionName()}) -> {Svc.Objects.First(x => x.GameObjectId == target.id).Name}, {eff.AtSource}/{eff.FromTarget}");
+                        Svc.Log.Verbose($"{eff.Type}, {eff.Value} 0:{eff.Param0}, 1:{eff.Param1}, 2:{eff.Param2}, 3:{eff.Param3}, 4:{eff.Param4} | ({header->ActionId.ActionName()}) -> {Svc.Objects.FirstOrDefault(x => x.GameObjectId == target.id)?.Name}, {eff.AtSource}/{eff.FromTarget}");
 #endif
                         if (eff.Type is ActionEffectType.Heal or ActionEffectType.Damage)
                         {
@@ -247,16 +243,16 @@ namespace WrathCombo.Data
         /// <returns>Time in milliseconds if found, else -1.</returns>
         public static float TimeSinceActionUsed(uint actionId)
         {
-            if (ActionTimestamps.ContainsKey(actionId))
-                return Environment.TickCount64 - ActionTimestamps[actionId];
+            if (ActionTimestamps.TryGetValue(actionId, out long timestamp))
+                return Environment.TickCount64 - timestamp;
 
             return -1f;
         }
 
         public static float TimeSinceLastSuccessfulCast(uint actionId)
         {
-            if (LastSuccessfulUseTime.ContainsKey(actionId))
-                return Environment.TickCount64 - LastSuccessfulUseTime[actionId];
+            if (LastSuccessfulUseTime.TryGetValue(actionId, out long timestamp))
+                return Environment.TickCount64 - timestamp;
 
             return -1f;
         }
@@ -416,18 +412,6 @@ namespace WrathCombo.Data
             var index = Svc.Data.GetExcelSheet<AozActionTransient>().GetRow(aozKey).Number;
 
             return $"#{index} ";
-        }
-        public static string GetStatusName(uint id) => StatusSheet.TryGetValue(id, out var status) ? status.Name.ToString() : "Unknown Status";
-
-        public static List<uint>? GetStatusesByName(string status)
-        {
-            if (statusCache.TryGetValue(status, out List<uint>? list))
-                return list;
-
-            return statusCache.TryAdd(status, StatusSheet.Where(x => x.Value.Name.ToString().Equals(status, StringComparison.CurrentCultureIgnoreCase)).Select(x => x.Key).ToList())
-                ? statusCache[status]
-                : null;
-
         }
 
         public static ActionAttackType GetAttackType(uint id)

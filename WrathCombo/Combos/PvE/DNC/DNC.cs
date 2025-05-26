@@ -343,7 +343,7 @@ internal partial class DNC : PhysicalRanged
             // ST Dance of the Dawn
             if (IsEnabled(CustomComboPreset.DNC_ST_Adv_DawnDance) &&
                 HasStatusEffect(Buffs.DanceOfTheDawnReady) &&
-                LevelChecked(DanceOfTheDawn) &&
+                ActionReady(DanceOfTheDawn) &&
                 (GetCooldownRemainingTime(TechnicalStep) > 5 ||
                  IsOffCooldown(TechnicalStep)) && // Tech is up
                 (Gauge.Esprit >=
@@ -357,12 +357,9 @@ internal partial class DNC : PhysicalRanged
 
             // ST Saber Dance (Emergency Use)
             if (IsEnabled(CustomComboPreset.DNC_ST_Adv_SaberDance) &&
-                LevelChecked(SaberDance) &&
-                (Gauge.Esprit >=
-                 Config
-                     .DNC_ST_Adv_SaberThreshold || // above esprit threshold use
-                 (HasStatusEffect(Buffs
-                      .TechnicalFinish) && // will overcap with Tillana if not used
+                ActionReady(SaberDance) &&
+                (Gauge.Esprit >= Config.DNC_ST_Adv_SaberThreshold || // above esprit threshold use
+                 (HasStatusEffect(Buffs.TechnicalFinish) && // will overcap with Tillana if not used
                   !tillanaDriftProtectionActive && Gauge.Esprit >= 50)))
                 return LevelChecked(DanceOfTheDawn) &&
                        HasStatusEffect(Buffs.DanceOfTheDawnReady)
@@ -380,7 +377,7 @@ internal partial class DNC : PhysicalRanged
 
             // ST Saber Dance
             if (IsEnabled(CustomComboPreset.DNC_ST_Adv_SaberDance) &&
-                LevelChecked(SaberDance) &&
+                ActionReady(SaberDance) &&
                 Gauge.Esprit >=
                 Config.DNC_ST_Adv_SaberThreshold || // Above esprit threshold use
                 (HasStatusEffect(Buffs.TechnicalFinish) &&
@@ -640,7 +637,7 @@ internal partial class DNC : PhysicalRanged
 
             // ST Dance of the Dawn
             if (HasStatusEffect(Buffs.DanceOfTheDawnReady) &&
-                LevelChecked(DanceOfTheDawn) &&
+                ActionReady(DanceOfTheDawn) &&
                 (GetCooldownRemainingTime(TechnicalStep) > 5 ||
                  IsOffCooldown(TechnicalStep)) && // Tech is up
                 (Gauge.Esprit >=
@@ -653,7 +650,7 @@ internal partial class DNC : PhysicalRanged
                 return OriginalHook(DanceOfTheDawn);
 
             // ST Saber Dance
-            if (LevelChecked(SaberDance) &&
+            if (ActionReady(SaberDance) &&
                 Gauge.Esprit >= 50)
                 return LevelChecked(DanceOfTheDawn) &&
                        HasStatusEffect(Buffs.DanceOfTheDawnReady)
@@ -911,7 +908,7 @@ internal partial class DNC : PhysicalRanged
             // AoE Dance of the Dawn
             if (IsEnabled(CustomComboPreset.DNC_AoE_Adv_DawnDance) &&
                 HasStatusEffect(Buffs.DanceOfTheDawnReady) &&
-                LevelChecked(DanceOfTheDawn) &&
+                ActionReady(DanceOfTheDawn) &&
                 (GetCooldownRemainingTime(TechnicalStep) > 5 ||
                  IsOffCooldown(TechnicalStep)) && // Tech is up
                 (Gauge.Esprit >=
@@ -925,7 +922,7 @@ internal partial class DNC : PhysicalRanged
 
             // AoE Saber Dance (Emergency Use)
             if (IsEnabled(CustomComboPreset.DNC_AoE_Adv_SaberDance) &&
-                LevelChecked(SaberDance) &&
+                ActionReady(SaberDance) &&
                 (Gauge.Esprit >=
                  Config
                      .DNC_AoE_Adv_SaberThreshold || // above esprit threshold use
@@ -945,7 +942,7 @@ internal partial class DNC : PhysicalRanged
 
             // AoE Saber Dance
             if (IsEnabled(CustomComboPreset.DNC_AoE_Adv_SaberDance) &&
-                LevelChecked(SaberDance) &&
+                ActionReady(SaberDance) &&
                 Gauge.Esprit >=
                 Config.DNC_ST_Adv_SaberThreshold || // Above esprit threshold use
                 (HasStatusEffect(Buffs.TechnicalFinish) &&
@@ -1164,7 +1161,7 @@ internal partial class DNC : PhysicalRanged
 
             // AoE Dance of the Dawn
             if (HasStatusEffect(Buffs.DanceOfTheDawnReady) &&
-                LevelChecked(DanceOfTheDawn) &&
+                ActionReady(DanceOfTheDawn) &&
                 (GetCooldownRemainingTime(TechnicalStep) > 5 ||
                  IsOffCooldown(TechnicalStep)) && // Tech is up
                 (Gauge.Esprit >= 50))
@@ -1224,12 +1221,12 @@ internal partial class DNC : PhysicalRanged
 
             // ST Esprit overcap protection
             if (IsEnabled(CustomComboPreset.DNC_ST_EspritOvercap) &&
-                LevelChecked(DanceOfTheDawn) &&
+                ActionReady(DanceOfTheDawn) &&
                 HasStatusEffect(Buffs.DanceOfTheDawnReady) &&
                 Gauge.Esprit >= Config.DNCEspritThreshold_ST)
                 return OriginalHook(DanceOfTheDawn);
             if (IsEnabled(CustomComboPreset.DNC_ST_EspritOvercap) &&
-                LevelChecked(SaberDance) &&
+                ActionReady(SaberDance) &&
                 Gauge.Esprit >= Config.DNCEspritThreshold_ST)
                 return SaberDance;
 
@@ -1284,12 +1281,12 @@ internal partial class DNC : PhysicalRanged
 
             // AoE Esprit overcap protection
             if (IsEnabled(CustomComboPreset.DNC_AoE_EspritOvercap) &&
-                LevelChecked(DanceOfTheDawn) &&
+                ActionReady(DanceOfTheDawn) &&
                 HasStatusEffect(Buffs.DanceOfTheDawnReady) &&
                 Gauge.Esprit >= Config.DNCEspritThreshold_ST)
                 return OriginalHook(DanceOfTheDawn);
             if (IsEnabled(CustomComboPreset.DNC_AoE_EspritOvercap) &&
-                LevelChecked(SaberDance) &&
+                ActionReady(SaberDance) &&
                 Gauge.Esprit >= Config.DNCEspritThreshold_AoE)
                 return SaberDance;
 
@@ -1580,8 +1577,9 @@ internal partial class DNC : PhysicalRanged
                 if (GetCustomDanceStep(actionID, out var danceStep))
                     return danceStep;
 
-            if (HasStatusEffect(Buffs.FlourishingSymmetry) ||
-                HasStatusEffect(Buffs.SilkenSymmetry))
+            if ((HasStatusEffect(Buffs.FlourishingSymmetry) ||
+                 HasStatusEffect(Buffs.SilkenSymmetry)) &&
+                ActionReady(RisingWindmill))
                 return RisingWindmill;
 
             return actionID;
