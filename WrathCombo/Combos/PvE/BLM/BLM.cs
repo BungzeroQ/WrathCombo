@@ -164,11 +164,9 @@ internal partial class BLM : Caster
             }
 
             if (LevelChecked(Fire3))
-            {
                 return CurMp >= 7500
                     ? Fire3
                     : Blizzard3;
-            }
 
             return actionID;
         }
@@ -382,11 +380,9 @@ internal partial class BLM : Caster
             }
 
             if (LevelChecked(Fire3))
-            {
                 return CurMp >= 7500
                     ? Fire3
                     : Blizzard3;
-            }
 
             return actionID;
         }
@@ -465,8 +461,8 @@ internal partial class BLM : Caster
                     ActionReady(Transpose))
                     return Transpose;
 
-                if (ActionReady(Freeze) && (UmbralIceStacks == 3 || TraitLevelChecked(Traits.UmbralHeart)))
-                    return HasBattleTarget() && NumberOfEnemiesInRange(Freeze, CurrentTarget) == 2
+                if (ActionReady(Freeze))
+                    return LevelChecked(Blizzard4) && HasBattleTarget() && NumberOfEnemiesInRange(Freeze, CurrentTarget) == 2
                         ? Blizzard4
                         : Freeze;
 
@@ -571,9 +567,9 @@ internal partial class BLM : Caster
                         return Transpose;
                 }
 
-                if (ActionReady(Freeze) && (UmbralIceStacks == 3 || TraitLevelChecked(Traits.UmbralHeart)))
+                if (ActionReady(Freeze))
                     return IsEnabled(CustomComboPreset.BLM_AoE_Blizzard4Sub) &&
-                           HasBattleTarget() && NumberOfEnemiesInRange(Freeze, CurrentTarget) == 2
+                           LevelChecked(Blizzard4) && HasBattleTarget() && NumberOfEnemiesInRange(Freeze, CurrentTarget) == 2
                         ? Blizzard4
                         : Freeze;
 

@@ -73,7 +73,8 @@ namespace WrathCombo.AutoRotation
             return !cfg.Enabled
                 || !Player.Available
                 || Player.Object.IsDead
-                || Svc.Condition[ConditionFlag.Mounted]
+                || GenericHelpers.IsOccupied()
+                || Player.Mounted
                 || !EzThrottler.Throttle("Autorot", cfg.Throttler);
         }
 
