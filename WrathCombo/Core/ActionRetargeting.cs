@@ -87,14 +87,14 @@ public class ActionRetargeting : IDisposable
     {
         // Make sure the action is not in replaced actions,
         // and there are no duplicates
-        replacedActions = replacedActions.Where(a => a != action)
-            .Distinct().ToArray();
+        replacedActions = replacedActions.Distinct().ToArray();
+
         // Build the Retarget object
         var retarget = new Retargeting(action, replacedActions, resolver, dontCull);
 
-        // Limit spam from the same actionID, mostly for debugging
-        if (!EZ.Throttle($"retargetFor{retarget.ID}", TS.FromSeconds(1)))
-            return action;
+        //// Limit spam from the same actionID, mostly for debugging
+        //if (!EZ.Throttle($"retargetFor{retarget.ID}", TS.FromSeconds(1)))
+        //    return action;
 
         #region Replace existing Retargets
 
@@ -106,9 +106,7 @@ public class ActionRetargeting : IDisposable
             if (!Retargets.TryGetValue(replacedAction, out oldRetarget))
                 continue;
 
-            // Keep the old Retarget if it's the same resolver
-            if (oldRetarget.Resolver().GameObjectId == retarget.Resolver().GameObjectId)
-                return action;
+
 
             // Flag as a partial overwrite if `actionInReplaced` has different values
             if (replacedActions != oldRetarget.ReplacedActions)
@@ -116,7 +114,7 @@ public class ActionRetargeting : IDisposable
 
             overwriting = [oldRetarget.ResolverName, retarget.ResolverName];
         }
-
+       
         // Remove the old Retarget
         if (overwriting.Length != 0)
         {
@@ -166,9 +164,9 @@ public class ActionRetargeting : IDisposable
         target = null;
         replacedWith = action;
         // Find the Retarget object
-        if (!Retargets.TryGetValue(action, out var retarget) ||
+        if (!Retargets.TryGetValue(action, out var retarget) || 
             !Service.ActionReplacer.LastActionInvokeFor
-                .TryGetValue(action, out var lastAction) ||
+            .TryGetValue(action, out var lastAction) ||
             lastAction != retarget.Action)
             return false;
 
