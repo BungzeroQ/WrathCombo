@@ -74,14 +74,40 @@ namespace WrathCombo.Core
 
         public bool OpenToCurrentJobOnSwitch = false;
 
-        public bool ActionChanging = true;
+        #region Target Settings
 
-        private DateTime _lastActionChangeCheck = DateTime.MinValue;
+        public bool RetargetHealingActionsToStack = false;
+
+        public bool UseUIMouseoverOverridesInDefaultHealStack = false;
+
+        public bool UseFieldMouseoverOverridesInDefaultHealStack = false;
+
+        public bool UseFocusTargetOverrideInDefaultHealStack = false;
+
+        public bool UseLowestHPOverrideInDefaultHealStack = false;
+
+        public bool UseCustomHealStack = false;
+
+        // Just has value so the UI element for it is more obvious from the get-go
+        public string[] CustomHealStack = [
+            "FocusTarget",
+            "HardTarget",
+            "Self",
+        ];
+
+        public string[] RaiseStack = [
+            "AnyHealer",
+            "AnyTank",
+            "AnyRaiser",
+            "AnyDeadPartyMember",
+        ];
+
+        #endregion
+
+        public bool ActionChanging = true;
 
         internal void SetActionChanging(bool? newValue = null)
         {
-            if ((DateTime.Now - _lastActionChangeCheck).TotalSeconds < 3) return;
-
             if (newValue is not null && newValue != ActionChanging)
             {
                 ActionChanging = newValue.Value;
@@ -96,6 +122,8 @@ namespace WrathCombo.Core
         }
 
         public bool ShowHiddenFeatures = false;
+
+        public bool SuppressQueuedActions = true;
 
         #endregion
 
@@ -291,11 +319,12 @@ namespace WrathCombo.Core
         public bool HideMessageOfTheDay { get; set; } = false;
 
         /// <summary>
-        ///     Whether the Setting Change Suggestion window was hidden for a
+        ///     Whether the Major Changes window was hidden for a
         ///     specific version.
         /// </summary>
-        /// <seealso cref="SettingChangeWindow"/>
-        public string HideSettingsChangeSuggestionForVersion { get; set; } = "";
+        /// <seealso cref="MajorChangesWindow"/>
+        public Version HideMajorChangesForVersion { get; set; } =
+            System.Version.Parse("0.0.0");
 
         /// <summary>
         ///     If the DTR Bar text should be shortened.

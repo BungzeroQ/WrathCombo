@@ -838,5 +838,27 @@ internal partial class PLD : Tank
         }
     }
 
+    internal class PLD_Mit_OneButton_Party : CustomCombo
+    {
+        protected internal override CustomComboPreset Preset { get; } =
+            CustomComboPreset.PLD_Mit_Party;
+
+        protected override uint Invoke(uint action)
+        {
+            if (action is not DivineVeil)
+                return action;
+
+            if (ActionReady(Role.Reprisal))
+                return Role.Reprisal;
+
+            if (ActionReady(PassageOfArms) &&
+                IsEnabled(CustomComboPreset.PLD_Mit_Party_Wings) &&
+                !HasStatusEffect(Buffs.PassageOfArms, anyOwner: true))
+                return PassageOfArms;
+
+            return action;
+        }
+    }
+
     #endregion
 }

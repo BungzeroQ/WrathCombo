@@ -1,4 +1,7 @@
-﻿using ECommons.DalamudServices;
+﻿using System.Collections.Generic;
+using ECommons.DalamudServices;
+using ECommons.Logging;
+using WrathCombo.Core;
 using WrathCombo.CustomComboNS;
 
 namespace WrathCombo.Combos.PvE;
@@ -95,24 +98,28 @@ internal partial class All
 
         protected override uint Invoke(uint actionID)
         {
-            switch (actionID)
-            {
-                case WHM.Raise or AST.Ascend or SGE.Egeiro:
-                case SCH.Resurrection when LocalPlayer.ClassJob.Value.RowId is SCH.JobID:
-                {
-                    if (ActionReady(RoleActions.Magic.Swiftcast))
-                        return RoleActions.Magic.Swiftcast;
+            List<uint> replacedActions =
+                [WHM.Raise, AST.Ascend, SGE.Egeiro, SCH.Resurrection];
+            if (!replacedActions.Contains(actionID))
+                return actionID;
+            if (actionID is SCH.Resurrection &&
+                LocalPlayer.ClassJob.RowId is not SCH.JobID)
+                return actionID;
 
-                    if (actionID == WHM.Raise && IsEnabled(CustomComboPreset.WHM_ThinAirRaise) &&
-                        ActionReady(WHM.ThinAir) && !HasStatusEffect(WHM.Buffs.ThinAir))
-                        return WHM.ThinAir;
+            if (ActionReady(RoleActions.Magic.Swiftcast))
+                return RoleActions.Magic.Swiftcast;
 
-                    return actionID;
-                }
+            if (actionID == WHM.Raise &&
+                IsEnabled(CustomComboPreset.WHM_ThinAirRaise) &&
+                ActionReady(WHM.ThinAir) &&
+                !HasStatusEffect(WHM.Buffs.ThinAir))
+                return WHM.ThinAir;
 
-                default:
-                    return actionID;
-            }
+            if (IsEnabled(CustomComboPreset.ALL_Healer_Raise_Retarget))
+                return actionID.Retarget(replacedActions.ToArray(),
+                    SimpleTarget.Stack.AllyToRaise, dontCull: true);
+
+            return actionID;
         }
     }
 
@@ -133,24 +140,32 @@ internal partial class All
 
         protected override uint Invoke(uint actionID)
         {
-            switch (actionID)
-            {
-                case BLU.AngelWhisper or RDM.Verraise:
-                case SMN.Resurrection when LocalPlayer.ClassJob.RowId is SMN.JobID:
-                {
-                    if (HasStatusEffect(RoleActions.Magic.Buffs.Swiftcast) || HasStatusEffect(RDM.Buffs.Dualcast))
-                        return actionID;
+            List<uint> replacedActions =
+                [BLU.AngelWhisper, RDM.Verraise, SMN.Resurrection];
+            if (!replacedActions.Contains(actionID))
+                return actionID;
+            if (actionID is SMN.Resurrection &&
+                LocalPlayer.ClassJob.RowId is not SMN.JobID)
+                return actionID;
 
-                    if (IsOffCooldown(RoleActions.Magic.Swiftcast))
-                        return RoleActions.Magic.Swiftcast;
+            if (HasStatusEffect(RoleActions.Magic.Buffs.Swiftcast) ||
+                HasStatusEffect(RDM.Buffs.Dualcast))
+                if (IsEnabled(CustomComboPreset.ALL_Caster_Raise_Retarget))
+                    return actionID.Retarget(replacedActions.ToArray(),
+                        SimpleTarget.Stack.AllyToRaise, dontCull: true);
+                else
+                    return actionID;
 
-                    if (LocalPlayer.ClassJob.RowId is RDM.JobID &&
-                        ActionReady(RDM.Vercure))
-                        return RDM.Vercure;
+            if (IsOffCooldown(RoleActions.Magic.Swiftcast))
+                return RoleActions.Magic.Swiftcast;
 
-                    break;
-                }
-            }
+            if (LocalPlayer.ClassJob.RowId is RDM.JobID &&
+                ActionReady(RDM.Vercure))
+                return RDM.Vercure;
+
+            if (IsEnabled(CustomComboPreset.ALL_Caster_Raise_Retarget))
+                return actionID.Retarget(replacedActions.ToArray(),
+                    SimpleTarget.Stack.AllyToRaise, dontCull: true);
 
             return actionID;
         }

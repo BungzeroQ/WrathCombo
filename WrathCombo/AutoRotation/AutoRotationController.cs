@@ -81,7 +81,7 @@ namespace WrathCombo.AutoRotation
         internal static void Run()
         {
             cfg ??= new AutoRotationConfigIPCWrapper(Service.Configuration.RotationConfig);
-
+          
             // Early exit for all conditions that should prevent autorotation
             if (ShouldSkipAutorotation())
                 return;
@@ -572,7 +572,7 @@ namespace WrathCombo.AutoRotation
                 var canUseTarget = target is null ? false : ActionManager.CanUseActionOnTarget(outAct, target.Struct());
                 var inRange = target is null && canUseSelf ? true : target is null ? false : IsInLineOfSight(target) && InActionRange(outAct, target);
 
-                var canUse = canUseSelf || canUseTarget || areaTargeted;
+                var canUse = (canUseSelf || canUseTarget || areaTargeted) && (outAct.ActionType() is { } type && (type is ActionType.Ability || type is not ActionType.Ability && RemainingGCD == 0));
 
                 if ((canUse || cfg.DPSSettings.AlwaysSelectTarget) && !canUseSelf)
                     Svc.Targets.Target = target;
@@ -584,7 +584,7 @@ namespace WrathCombo.AutoRotation
 
                 if (canUse && (inRange || areaTargeted))
                 {
-                    var ret = ActionManager.Instance()->UseAction(ActionType.Action, Service.ActionReplacer.getActionHook.IsEnabled ? gameAct : outAct, canUseTarget ? target.GameObjectId : Player.Object.GameObjectId);
+                    var ret = ActionManager.Instance()->UseAction(ActionType.Action, Service.ActionReplacer.getActionHook.IsEnabled ? gameAct : outAct, canUseTarget || areaTargeted ? target.GameObjectId : Player.Object.GameObjectId);
                     if (mode is HealerRotationMode && ret)
                         LastHealAt = Environment.TickCount64 + castTime;
 

@@ -270,12 +270,9 @@ namespace WrathCombo.CustomComboNS.Functions
             bool alreadyQueued = ActionManager.Instance()->QueuedActionId != 0;
             bool inSlidecast = (LocalPlayer.TotalCastTime - LocalPlayer.CurrentCastTime) <= 0.5f;
             bool animLocked = ActionManager.Instance()->AnimationLock > 0;
-            bool recast = GetCooldown(actionID).CooldownRemaining <= 0.5f || GetCooldown(actionID).RemainingCharges > 0;
-            bool classCheck = ActionManager.Instance()->GetActionStatus(ActionType.Action, actionID) != 574;
 
-            bool ret = !alreadyQueued && inSlidecast && !animLocked && recast && classCheck;
-            uint status = ActionManager.Instance()->GetActionStatus(ActionType.Action, actionID);
-            return ret && status is 0 or 582;
+            bool ret = !alreadyQueued && inSlidecast && !animLocked && ActionReady(actionID);
+            return ret;
         }
 
         private static bool _raidwideInc;

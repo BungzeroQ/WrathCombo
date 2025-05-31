@@ -244,6 +244,7 @@ public static class DebugFile
         AddLine("START SETTINGS INFO");
         AddLine($"Throttle: {Service.Configuration.Throttle}ms");
         AddLine($"Performance Mode: {(Service.Configuration.PerformanceMode ? "ON" : "OFF")}");
+        AddLine($"Suppress Queued Actions: {(Service.Configuration.SuppressQueuedActions ? "ON" : "OFF")}");
         AddLine($"Block Spell on Move: {(Service.Configuration.BlockSpellOnMove ? "ON" : "OFF")}");
         AddLine($"Movement Delay: {Service.Configuration.MovementLeeway}s");
         AddLine($"Opener Timeout: {Service.Configuration.OpenerTimeout}s");

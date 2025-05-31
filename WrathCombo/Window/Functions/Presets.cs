@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility.Raii;
@@ -21,6 +22,8 @@ using WrathCombo.CustomComboNS.Functions;
 using WrathCombo.Data;
 using WrathCombo.Extensions;
 using WrathCombo.Services;
+using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions;
+using static WrathCombo.Attributes.PossiblyRetargetedAttribute;
 
 namespace WrathCombo.Window.Functions
 {
@@ -35,6 +38,8 @@ namespace WrathCombo.Window.Functions
             public BlueInactiveAttribute? BlueInactive;
             public VariantAttribute? Variant;
             public VariantParentAttribute? VariantParent;
+            public PossiblyRetargetedAttribute? PossiblyRetargeted;
+            public RetargetedAttribute? RetargetedAttribute;
             public BozjaParentAttribute? BozjaParent;
             public EurekaParentAttribute? EurekaParent;
             public HoverInfoAttribute? HoverInfo;
@@ -52,6 +57,8 @@ namespace WrathCombo.Window.Functions
                 BlueInactive = preset.GetAttribute<BlueInactiveAttribute>();
                 Variant = preset.GetAttribute<VariantAttribute>();
                 VariantParent = preset.GetAttribute<VariantParentAttribute>();
+                PossiblyRetargeted = preset.GetAttribute<PossiblyRetargetedAttribute>();
+                RetargetedAttribute = preset.GetAttribute<RetargetedAttribute>();
                 BozjaParent = preset.GetAttribute<BozjaParentAttribute>();
                 EurekaParent = preset.GetAttribute<EurekaParentAttribute>();
                 HoverInfo = preset.GetAttribute<HoverInfoAttribute>();
@@ -132,6 +139,8 @@ namespace WrathCombo.Window.Functions
             }
 
             DrawReplaceAttribute(preset);
+
+            DrawRetargetedAttribute(preset);
 
             Vector2 length = new();
             using (var styleCol = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudGrey))
@@ -446,6 +455,119 @@ namespace WrathCombo.Window.Functions
                         ImGui.SameLine();
                     }
                     ImGui.EndTooltip();
+                }
+            }
+        }
+
+        public static void DrawRetargetedSymbolForSettingsPage() =>
+            DrawRetargetedAttribute(
+                firstLine: "This Feature will involve retargeting actions if enabled.",
+                secondLine: "The actions this Feature affects will automatically be\n" +
+                            "targeted onto the targets in the priority you have configured.",
+                thirdLine: "Using plugins like Redirect or Reaction with configurations\n" +
+                           "affecting the same actions will Conflict and may cause issues.");
+
+        private static void DrawRetargetedAttribute
+            (CustomComboPreset? preset = null,
+                string? firstLine = null,
+                string? secondLine = null,
+                string? thirdLine = null)
+        {
+            // Determine what symbol to show
+            var possiblyRetargeted = false;
+            bool retargeted;
+            if (preset is null)
+                retargeted = true;
+            else
+            {
+                possiblyRetargeted =
+                    Attributes[preset.Value].PossiblyRetargeted != null;
+                retargeted =
+                    Attributes[preset.Value].RetargetedAttribute != null;
+            }
+
+            if (!possiblyRetargeted && !retargeted) return;
+
+            // Resolved the conditions if possibly retargeted
+            if (possiblyRetargeted)
+            {
+                void MakeRetargeted()
+                {
+                    retargeted = true;
+                    possiblyRetargeted = false;
+                }
+
+                // Should have all conditions in PossiblyRetargetedAttribute.Condition
+                switch (Attributes[preset!.Value].PossiblyRetargeted!.PossibleCondition)
+                {
+                    case Condition.RetargetHealingActionsEnabled:
+                        if (Service.Configuration.RetargetHealingActionsToStack)
+                            MakeRetargeted();
+                        break;
+                    case Condition.ASTQuickTargetCardsFeatureEnabled:
+                        if (IsEnabled(CustomComboPreset.AST_Cards_QuickTargetCards))
+                            MakeRetargeted();
+                        break;
+                    default:
+                        return; // No other conditions are supported
+                }
+            }
+
+            ImGui.SameLine();
+
+            // Color the icon for whether it is possibly or certainly retargeted
+            var color = retargeted
+                ? ImGuiColors.ParsedGreen
+                : ImGuiColors.DalamudYellow;
+
+            using var col = new ImRaii.Color();
+            col.Push(ImGuiCol.TextDisabled, color);
+
+            using (ImRaii.PushFont(UiBuilder.IconFont))
+            {
+                ImGui.TextDisabled(FontAwesomeIcon.Random.ToIconString());
+            }
+
+            if (ImGui.IsItemHovered())
+            {
+                using (ImRaii.Tooltip())
+                {
+                    using (ImRaii.TextWrapPos(ImGui.GetFontSize() * 35.0f))
+                    {
+                        if (possiblyRetargeted)
+                            ImGui.TextUnformatted(
+                                "This Feature's actions may be retargeted.");
+                        if (retargeted)
+                            ImGui.TextUnformatted(
+                                firstLine ??
+                                "This Feature's actions are retargeted.");
+
+                        ImGui.TextUnformatted(
+                            secondLine ??
+                            "The actions from this Feature will automatically be\n" +
+                            "targeted onto what the developers feel is the best target\n" +
+                            "(following The Balance where applicable).");
+
+                        ImGui.TextUnformatted(
+                            thirdLine ??
+                            "Using plugins like Redirect or Reaction with configurations\n" +
+                            "affecting this action will Conflict and may cause issues.");
+
+                        var settingInfo = "";
+                        if (preset.HasValue)
+                            settingInfo =
+                                Attributes[preset.Value].PossiblyRetargeted is not
+                                    null
+                                    ? Attributes[preset.Value].PossiblyRetargeted.SettingInfo
+                                    : "";
+                        if (settingInfo != "")
+                        {
+                            ImGui.NewLine();
+                            ImGui.TextUnformatted(
+                                "The setting that controls if this action is retargeted is:\n" +
+                                settingInfo);
+                        }
+                    }
                 }
             }
         }

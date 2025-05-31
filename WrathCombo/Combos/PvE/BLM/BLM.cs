@@ -103,9 +103,8 @@ internal partial class BLM : Caster
 
             if (FirePhase)
             {
-                // TODO Revisit when Raid Buff checks are in place
-                if (LevelChecked(Amplifier) &&
-                    PolyglotStacks > 1)
+                // TODO: Revisit when Raid Buff checks are in place
+                if ((PolyglotStacks > 1))
                     return LevelChecked(Xenoglossy)
                         ? Xenoglossy
                         : Foul;
@@ -256,11 +255,19 @@ internal partial class BLM : Caster
                 IsMoving() && !LevelChecked(Triplecast))
                 return Scathe;
 
-            if (IsEnabled(CustomComboPreset.BLM_ST_UsePolyglot) &&
-                HasMaxPolyglotStacks && PolyglotTimer <= 5000)
-                return LevelChecked(Xenoglossy)
-                    ? Xenoglossy
-                    : Foul;
+            if (IsEnabled(CustomComboPreset.BLM_ST_UsePolyglot))
+            {
+                if (HasMaxPolyglotStacks && PolyglotTimer <= 5000)
+                    return LevelChecked(Xenoglossy)
+                        ? Xenoglossy
+                        : Foul;
+
+                if (IsEnabled(CustomComboPreset.BLM_ST_UsePolyglotAsap) &&
+                    HasPolyglotStacks())
+                    return LevelChecked(Xenoglossy)
+                        ? Xenoglossy
+                        : Foul;
+            }
 
             if (IsEnabled(CustomComboPreset.BLM_ST_Thunder) &&
                 LevelChecked(Thunder) && HasStatusEffect(Buffs.Thunderhead))
@@ -314,7 +321,7 @@ internal partial class BLM : Caster
 
             if (FirePhase)
             {
-                // TODO Revisit when Raid Buff checks are in place
+                // TODO: Revisit when Raid Buff checks are in place
                 if (IsEnabled(CustomComboPreset.BLM_ST_UsePolyglot) &&
                     ((BLM_ST_MovementOption[3] && PolyglotStacks > BLM_ST_Polyglot_Movement) ||
                      (!BLM_ST_MovementOption[3] && HasPolyglotStacks())))

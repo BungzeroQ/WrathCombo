@@ -1,3 +1,4 @@
+using WrathCombo.Core;
 using WrathCombo.CustomComboNS;
 
 namespace WrathCombo.Combos.PvE;
@@ -343,18 +344,27 @@ internal partial class RDM : Caster
                 return actionID;
 
             if (Variant.CanRaise(CustomComboPreset.RDM_Variant_Raise))
-                return Variant.Raise;
+                return IsEnabled(CustomComboPreset.RDM_Raise_Retarget)
+                    ? Variant.Raise.Retarget(Role.Swiftcast,
+                        SimpleTarget.Stack.AllyToRaise)
+                    : Variant.Raise;
 
             if (LevelChecked(Verraise))
             {
                 bool schwifty = HasStatusEffect(Role.Buffs.Swiftcast);
                 if (schwifty || HasStatusEffect(Buffs.Dualcast))
-                    return Verraise;
+                    return IsEnabled(CustomComboPreset.RDM_Raise_Retarget)
+                        ? Verraise.Retarget(Role.Swiftcast,
+                            SimpleTarget.Stack.AllyToRaise)
+                        : Verraise;
                 if (IsEnabled(CustomComboPreset.RDM_Raise_Vercure) &&
                     !schwifty &&
                     ActionReady(Vercure) &&
                     IsOnCooldown(Role.Swiftcast))
-                    return Vercure;
+                    return IsEnabled(CustomComboPreset.RDM_Raise_Retarget)
+                        ? Vercure.Retarget(Role.Swiftcast,
+                            SimpleTarget.Stack.AllyToHeal)
+                        : Vercure;
             }
 
             // Else we just exit normally and return Swiftcast

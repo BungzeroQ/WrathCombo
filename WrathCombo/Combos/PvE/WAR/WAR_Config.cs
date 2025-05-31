@@ -1,3 +1,5 @@
+using Dalamud.Interface.Colors;
+using ECommons.ImGuiMethods;
 using ImGuiNET;
 using WrathCombo.CustomComboNS.Functions;
 using WrathCombo.Data;
@@ -462,7 +464,16 @@ internal partial class WAR
                     UserConfig.DrawSliderInt(1, 100, WAR_VariantCure,
                         " Player HP% to be less than or equal to:", 200);
                     break;
-                    #endregion
+
+                case CustomComboPreset.WAR_Bloodwhetting_Targeting_TT:
+                    ImGui.Indent();
+                    ImGuiEx.TextWrapped(ImGuiColors.DalamudGrey,
+                        "Note: If you are Off-Tanking, and want to use Bloodwhetting on yourself, the expectation would be that you do so via the One-Button Mitigation Feature or the Mitigation options in your rotation.\n" +
+                        "If you don't, Nascent Flash would replace the combo, and it would go to the main tank.\n" +
+                        "If you don't use those Features for your personal mitigation, you may not want to enable this.");
+                    ImGui.Unindent();
+                    break;
+                #endregion
             }
         }
     }

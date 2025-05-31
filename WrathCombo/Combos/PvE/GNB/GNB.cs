@@ -611,8 +611,8 @@ internal partial class GNB : Tank
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.GNB_AuroraProtection;
         protected override uint Invoke(uint actionID) => actionID != Aurora ? actionID :
-            (HasFriendlyTarget() && HasStatusEffect(Buffs.Aurora, CurrentTarget, true)) ||
-            (!HasFriendlyTarget() && HasStatusEffect(Buffs.Aurora, anyOwner: true)) ? All.SavageBlade : actionID;
+            (TargetIsFriendly() && HasStatusEffect(Buffs.Aurora, CurrentTarget, true)) ||
+            (!TargetIsFriendly() && HasStatusEffect(Buffs.Aurora, anyOwner: true)) ? All.SavageBlade : actionID;
     }
     #endregion
 

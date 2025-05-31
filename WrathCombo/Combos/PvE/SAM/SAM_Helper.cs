@@ -180,7 +180,8 @@ internal partial class SAM
             GetRemainingCharges(MeikyoShisui) is 2 &&
             GetRemainingCharges(Role.TrueNorth) is 2 &&
             IsOffCooldown(Senei) &&
-            IsOffCooldown(Ikishoten);
+            IsOffCooldown(Ikishoten) &&
+            SenCount is 0;
     }
 
     #endregion

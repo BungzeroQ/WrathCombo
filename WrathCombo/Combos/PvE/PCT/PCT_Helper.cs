@@ -1,15 +1,128 @@
-﻿using Dalamud.Game.ClientState.JobGauge.Types;
-using ECommons.DalamudServices;
+﻿#region Dependencies
+using Dalamud.Game.ClientState.JobGauge.Types;
 using System;
 using System.Collections.Generic;
 using WrathCombo.CustomComboNS;
 using WrathCombo.CustomComboNS.Functions;
 using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions;
+using WrathCombo.Extensions;
+#endregion
 
 namespace WrathCombo.Combos.PvE;
 
 internal partial class PCT
 {
+    #region Variables
+
+    // Gauge Stuff
+    internal static PCTGauge gauge = GetJobGauge<PCTGauge>();
+
+
+    //Useful Bools
+    internal static bool ScenicMuseReady => gauge.LandscapeMotifDrawn && LevelChecked(ScenicMuse);
+    internal static bool LivingMuseReady => LevelChecked(LivingMuse) && gauge.CreatureMotifDrawn;
+    internal static bool SteelMuseReady => LevelChecked(SteelMuse) && !HasStatusEffect(Buffs.HammerTime) && gauge.WeaponMotifDrawn;
+    internal static bool PortraitReady => MogoftheAges.LevelChecked() && (gauge.MooglePortraitReady || gauge.MadeenPortraitReady);
+    internal static bool CreatureMotifReady => !gauge.CreatureMotifDrawn && LevelChecked(CreatureMotif) && !HasStatusEffect(Buffs.StarryMuse);
+    internal static bool WeaponMotifReady => !gauge.WeaponMotifDrawn && LevelChecked(WeaponMotif) && !HasStatusEffect(Buffs.StarryMuse) && !HasStatusEffect(Buffs.HammerTime);
+    internal static bool LandscapeMotifReady => !gauge.LandscapeMotifDrawn && LevelChecked(LandscapeMotif) && !HasStatusEffect(Buffs.StarryMuse);
+    internal static bool PaletteReady => SubtractivePalette.LevelChecked() && !HasStatusEffect(Buffs.SubtractivePalette) && !HasStatusEffect(Buffs.MonochromeTones) && 
+                                            (HasStatusEffect(Buffs.SubtractiveSpectrum) || gauge.PalleteGauge >= 50 && ScenicCD > 40 || gauge.PalleteGauge == 100);
+    internal static bool HasPaint => gauge.Paint > 0;
+  
+
+
+    //Buff Tracking
+    internal static float ScenicCD => GetCooldownRemainingTime(StarryMuse);
+    internal static float SteelCD => GetCooldownRemainingTime(StrikingMuse);
+
+
+    #endregion
+
+    #region Functions
+    internal static bool HyperPhantasiaMovementPaint()
+    //Increase priority for using casts as soon as possible to avoid losing DPS and ensure all abilities fit within buff windows
+    //previously, there were situations where Wrath prioritized using Hammer Combo over casts during hyperphantasia, which would prevent us from generating Rainbow Bright in time when movement is required
+    //so, if we have Hyperphantasia stacks and Inspiration is active from standing in PCT LeyLines, we burn it all down
+    {
+        if (GetStatusEffectStacks(Buffs.Hyperphantasia) > 0 && HasStatusEffect(Buffs.Inspiration) && HasPaint)
+        {
+            if ((IsEnabled(CustomComboPreset.PCT_ST_AdvancedMode_MovementOption_HolyInWhite) || IsEnabled(CustomComboPreset.PCT_ST_SimpleMode)) 
+                && HolyInWhite.LevelChecked())
+                return true;
+
+            if ((IsEnabled(CustomComboPreset.PCT_ST_AdvancedMode_MovementOption_CometinBlack) || IsEnabled(CustomComboPreset.PCT_ST_SimpleMode)) 
+                && CometinBlack.LevelChecked())
+                return true;
+        }
+        return false;
+    }
+
+
+    internal static uint BurstWindow(uint actionId)
+    {
+        if (LandscapeMotifReady)
+            return OriginalHook(LandscapeMotif);        
+
+        if (!HasStatusEffect(Buffs.StarryMuse))
+        {
+            if (SteelMuseReady)
+                return OriginalHook(SteelMuse);
+
+            if (ActionReady(HammerStamp) && !HasStatusEffect(Buffs.StarryMuse) && ScenicCD < 1 && !JustUsed(HammerStamp, 3f))
+                return HammerStamp;
+
+            if (CanWeave() && ActionReady(SubtractivePalette) && !HasStatusEffect(Buffs.SubtractivePalette) && 
+                !HasStatusEffect(Buffs.MonochromeTones) && IsOffCooldown(ScenicMuse) &&
+                (HasStatusEffect(Buffs.SubtractiveSpectrum) || gauge.PalleteGauge >= 50))
+                return SubtractivePalette;
+
+            if (ScenicMuseReady && CanDelayedWeave() && IsOffCooldown(ScenicMuse))
+                return OriginalHook(ScenicMuse);            
+        }
+
+        if (HasStatusEffect(Buffs.SubtractivePalette) && (GetStatusEffectRemainingTime(Buffs.StarryMuse) > 10 || !HasStatusEffect(Buffs.StarryMuse)))
+            return OriginalHook(BlizzardinCyan);
+
+        if (HasStatusEffect(Buffs.StarryMuse) && GetStatusEffectRemainingTime(Buffs.StarryMuse) < 15)
+        {
+            if (CanSpellWeave() && !HasStatusEffect(Buffs.MonochromeTones))
+            {                
+                if (ActionReady(SubtractivePalette) && !HasStatusEffect(Buffs.Starstruck) &&
+                    !HasStatusEffect(Buffs.SubtractivePalette) && (HasStatusEffect(Buffs.SubtractiveSpectrum) || gauge.PalleteGauge >= 50))
+                    return SubtractivePalette;
+               
+                if (PortraitReady && IsOffCooldown(OriginalHook(MogoftheAges)))
+                    return OriginalHook(MogoftheAges);
+
+                if (LivingMuseReady && !PortraitReady)
+                    return OriginalHook(LivingMuse);
+            }
+
+            if (LevelChecked(CometinBlack) && HasStatusEffect(Buffs.MonochromeTones) && HasPaint && HasStatusEffect(Buffs.HammerTime))
+                return OriginalHook(CometinBlack);  
+
+            if (ActionReady(OriginalHook(HammerStamp)))
+                return OriginalHook(HammerStamp);
+
+            if (HasStatusEffect(Buffs.Starstruck))
+                return StarPrism;
+
+            if (HasStatusEffect(Buffs.RainbowBright))
+                return RainbowDrip;
+
+            if (CometinBlack.LevelChecked() && HasStatusEffect(Buffs.MonochromeTones) && HasPaint && !HasStatusEffect(Buffs.RainbowBright))
+                return OriginalHook(CometinBlack);
+
+            if (HasStatusEffect(Buffs.SubtractivePalette))
+                return OriginalHook(BlizzardinCyan);
+        }
+        return actionId;
+    }
+
+   
+    #endregion
+
     #region ID's
 
     public const byte JobID = 42;
@@ -76,6 +189,8 @@ internal partial class PCT
     }
 
     #endregion
+
+    #region Openers
 
     internal static PCTopenerMaxLevel1 Opener1 = new();
     internal static PCTopenerMaxLevel2 Opener2 = new();
@@ -235,5 +350,7 @@ internal partial class PCT
 
             return true;
         }
+        
     }
+#endregion
 }

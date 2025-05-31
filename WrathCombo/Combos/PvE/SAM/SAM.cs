@@ -256,6 +256,11 @@ internal partial class SAM : Melee
             int kenkiOvercap = SAM_ST_KenkiOvercapAmount;
             int shintenTreshhold = SAM_ST_ExecuteThreshold;
 
+            // Opener for SAM
+            if (IsEnabled(CustomComboPreset.SAM_ST_Opener) &&
+                Opener().FullOpener(ref actionID))
+                return actionID;
+
             //Meikyo to start before combat
             if (IsEnabled(CustomComboPreset.SAM_ST_CDs) &&
                 IsEnabled(CustomComboPreset.SAM_ST_CDs_MeikyoShisui) &&
@@ -269,11 +274,6 @@ internal partial class SAM : Melee
 
             if (Variant.CanRampart(CustomComboPreset.SAM_Variant_Rampart, WeaveTypes.Weave))
                 return Variant.Rampart;
-
-            // Opener for SAM
-            if (IsEnabled(CustomComboPreset.SAM_ST_Opener) &&
-                Opener().FullOpener(ref actionID))
-                return actionID;
 
             if (IsEnabled(CustomComboPreset.SAM_ST_RangedUptime) &&
                 ActionReady(Enpi) && !InMeleeRange() && HasBattleTarget())

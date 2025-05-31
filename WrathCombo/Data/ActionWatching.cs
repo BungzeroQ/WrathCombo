@@ -173,7 +173,6 @@ namespace WrathCombo.Data
                 if (actionType == 1)
                     ActionTimestamps[actionId] = Environment.TickCount64;
 
-                CheckForChangedTarget(actionId, ref targetObjectId);
                 TimeLastActionUsed = DateTime.Now + TimeSpan.FromMilliseconds(ActionManager.GetAdjustedCastTime((ActionType)actionType, actionId));
                 LastAction = actionId;
                 ActionType = actionType;
@@ -199,36 +198,15 @@ namespace WrathCombo.Data
                 NIN.InMudra = false;
         }
 
-        private static void CheckForChangedTarget(uint actionId, ref ulong targetObjectId)
+        private static bool CheckForChangedTarget(uint actionId, ref ulong targetObjectId, out uint replacedWith)
         {
-            if (actionId is not (AST.Balance or AST.Spear) ||
-                AST.QuickTargetCards.SelectedRandomMember is null ||
-                OutOfRange(actionId, Svc.ClientState.LocalPlayer!, AST.QuickTargetCards.SelectedRandomMember))
-                return;
+            replacedWith = actionId;
+            if (!P.ActionRetargeting.TryGetTargetFor(actionId, out var target, out replacedWith) ||
+                target is null)
+                return false;
 
-            // Set Default Result
-            targetObjectId = AST.QuickTargetCards.SelectedRandomMember.GameObjectId;
-
-            //Apply Overrides
-            switch ((int)AST.Config.AST_QuickTarget_Override)
-            {
-                // Case 0 is Default (SelectedRandomMember)
-
-                // Hard Target
-                case 1 when Svc.Targets.Target is not null && HasFriendlyTarget():
-                    targetObjectId = Svc.Targets.Target.GameObjectId;
-                    break;
-                // UI Mousover Override
-                case 2:
-                    if (PartyUITargeting.UiMouseOverTarget is IGameObject mouseTarget)
-                        targetObjectId = mouseTarget.GameObjectId;
-                    break;
-            }
-
-            // Log the selected target for debugging
-            ulong localTargetId = targetObjectId; // Copy to local variable, can't use for the next line
-            var selectedTarget = Svc.Objects.FirstOrDefault(x => x.GameObjectId == localTargetId);
-            Svc.Log.Debug($"Switched to {selectedTarget?.Name ?? "Unknown"}");
+            targetObjectId = target.GameObjectId;
+            return true;
         }
 
         public static unsafe bool OutOfRange(uint actionId, IGameObject source, IGameObject target)
@@ -361,12 +339,31 @@ namespace WrathCombo.Data
                 {
                     if (combo.TryInvoke(actionId, out result))
                     {
-                        actionId = result;
+                        actionId = Service.ActionReplacer.LastActionInvokeFor[actionId] = result;
                         break;
                     }
                 }
             }
-            return UseActionHook.Original(actionManager, actionType, actionId, targetId, extraParam, mode, comboRouteId, outOptAreaTargeted);
+            
+            var originalTargetId = targetId;
+            var changed = CheckForChangedTarget(actionId, ref targetId,
+                out var replacedWith);
+
+            if (changed)
+                if (!ActionManager.CanUseActionOnTarget(replacedWith,
+                    Svc.Objects
+                        .FirstOrDefault(x => x.GameObjectId == targetId)
+                        .Struct()))
+                    targetId = originalTargetId;
+
+            var hookResult = UseActionHook.Original(actionManager, actionType, replacedWith, targetId, extraParam, mode, comboRouteId, outOptAreaTargeted);
+
+            // If the target was changed, support changing the target for ground actions, too
+            if (changed)
+                ActionManager.Instance()->AreaTargetingExecuteAtObject =
+                    targetId;
+
+            return hookResult;
         }
 
         public static void Enable()

@@ -1238,8 +1238,8 @@ internal partial class DRK
             () => !HasAnyTBN && LocalPlayer.CurrentMp > 3000 &&
                   PlayerHealthPercentageHp() <= Config.DRK_Mit_TBN_Health),
         (Oblation, Preset.DRK_Mit_Oblation,
-            () => (!((HasFriendlyTarget() && HasStatusEffect(Buffs.Oblation, CurrentTarget, true)) ||
-                     (!HasFriendlyTarget() && HasStatusEffect(Buffs.Oblation, anyOwner: true)))) &&
+            () => (!((TargetIsFriendly() && HasStatusEffect(Buffs.Oblation, CurrentTarget, true)) ||
+                     (!TargetIsFriendly() && HasStatusEffect(Buffs.Oblation, anyOwner: true)))) &&
                   GetRemainingCharges(Oblation) > Config.DRK_Mit_Oblation_Charges),
         (Role.Reprisal, Preset.DRK_Mit_Reprisal,
             () => Role.CanReprisal(checkTargetForDebuff:false)),
@@ -1309,23 +1309,39 @@ internal partial class DRK
             HardSlash,
             EdgeOfShadow, // Not handled like a procc, since it sets up Darkside
             LivingShadow,
-            SyphonStrike,
-            Souleater, // 5
+            SyphonStrike, // 5
+            LivingShadow,
+            Souleater,
             Delirium,
-            Disesteem,
+            HardSlash,
+            Disesteem, // 10
             SaltedEarth,
             //EdgeOfShadow, // Handled like a procc
             ScarletDelirium,
-            Shadowbringer, // 10
+            Shadowbringer,
             //EdgeOfShadow, // Handled like a procc
             Comeuppance,
-            CarveAndSpit,
+            CarveAndSpit, // 15
             //EdgeOfShadow, // Handled like a procc
             Torcleaver,
             Shadowbringer,
             //EdgeOfShadow, // Handled like a procc
-            Bloodspiller, // 15
+            Bloodspiller,
             SaltAndDarkness,
+        ];
+
+        public override List<(int[] Steps, uint NewAction, Func<bool> Condition)> SubstitutionSteps
+        {
+            get;
+            set;
+        } =
+        [
+            // Pull with Shadowstride as selected
+            ([1], Shadowstride, () =>
+                Config.DRK_ST_OpenerAction == (int)Config.PullAction.Shadowstride),
+            // Pull with HardSlash as selected (requires skipping the now-duplicate HardSlash)
+            ([1], HardSlash, () =>
+                Config.DRK_ST_OpenerAction == (int)Config.PullAction.HardSlash),
         ];
 
         public override List<(int[] Steps, Func<bool> Condition)> SkipSteps
@@ -1334,7 +1350,15 @@ internal partial class DRK
             set;
         } =
         [
-            ([1], () => !Config.DRK_ST_OpenerUnmend),
+            // Skip the duplicate HardSlash, if pulling with HardSlash
+            ([2], () =>
+                Config.DRK_ST_OpenerAction == (int)Config.PullAction.HardSlash),
+            // Skip the early LivingShadow, if non-standard
+            ([4], () =>
+                Config.DRK_ST_OpenerAction != (int)Config.PullAction.Unmend),
+            // Skip the late LivingShadow and aligning HardSlash, if Standard
+            ([6, 9], () => HasOtherJobsBuffs ||
+                Config.DRK_ST_OpenerAction == (int)Config.PullAction.Unmend),
         ];
 
         internal override UserData? ContentCheckConfig =>
@@ -1398,6 +1422,7 @@ internal partial class DRK
         ScarletDelirium = 36928, // Under Enhanced Delirium
         Comeuppance = 36929, // Under Enhanced Delirium
         Torcleaver = 36930, // Under Enhanced Delirium
+        Shadowstride = 36926, // Dash, basically never
 
     #endregion
 
