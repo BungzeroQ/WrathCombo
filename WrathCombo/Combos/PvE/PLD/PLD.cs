@@ -445,7 +445,8 @@ internal partial class PLD : Tank
                 // Weavables
                 if (canWeave)
                 {
-                    if (LevelChecked(Imperator))
+
+                    if (LevelChecked(Imperator) || (!LevelChecked(Imperator) && InMeleeRange()))
                     {
                         if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_Requiescat) && ActionReady(Requiescat) && cooldownFightOrFlight > 50)
                             return OriginalHook(Requiescat);
@@ -476,32 +477,6 @@ internal partial class PLD : Tank
 
                     if (InMeleeRange())
                     {
-                        // Requiescat
-                        if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_Requiescat) && ActionReady(Requiescat) && cooldownFightOrFlight > 50)
-                            return OriginalHook(Requiescat);
-
-                        // Fight or Flight
-                        if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_FoF) && ActionReady(FightOrFlight) && GetTargetHPPercent() >= Config.PLD_ST_FoF_Trigger)
-                        {
-                            if (!LevelChecked(Requiescat))
-                            {
-                                if (!LevelChecked(RageOfHalone))
-                                {
-                                    // Level 2-25
-                                    if (ComboAction is FastBlade)
-                                        return FightOrFlight;
-                                }
-
-                                // Level 26-67
-                                else if (ComboAction is RiotBlade)
-                                    return FightOrFlight;
-                            }
-
-                            // Level 68+
-                            else if (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave && (ComboAction is RoyalAuthority || afterOpener))
-                                return FightOrFlight;
-                        }
-
                         // Variant Ultimatum
                         if (Variant.CanUltimatum(CustomComboPreset.PLD_Variant_Ultimatum))
                             return Variant.Ultimatum;
@@ -675,7 +650,7 @@ internal partial class PLD : Tank
                 // Weavables
                 if (canWeave)
                 {
-                    if (InMeleeRange())
+                    if (LevelChecked(Imperator) || (!LevelChecked(Imperator) && InMeleeRange()))
                     {
                         // Requiescat
                         if (IsEnabled(CustomComboPreset.PLD_AoE_AdvancedMode_Requiescat) && ActionReady(Requiescat) && cooldownFightOrFlight > 50)
@@ -685,7 +660,10 @@ internal partial class PLD : Tank
                         if (IsEnabled(CustomComboPreset.PLD_AoE_AdvancedMode_FoF) && ActionReady(FightOrFlight) && GetTargetHPPercent() >= Config.PLD_AoE_FoF_Trigger &&
                             (!LevelChecked(Requiescat) || (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave)))
                             return FightOrFlight;
+                    }
 
+                    if (InMeleeRange())
+                    {
                         // Variant Ultimatum
                         if (Variant.CanUltimatum(CustomComboPreset.PLD_Variant_Ultimatum))
                             return Variant.Ultimatum;
