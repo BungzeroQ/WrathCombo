@@ -393,6 +393,8 @@ public sealed partial class WrathCombo : IDalamudPlugin
     {
         ActionRetargeting.Dispose();
         ConfigWindow.Dispose();
+        Debug.Dispose();
+
         // Try to force a config save if there are some pending
         if (PluginConfiguration.SaveQueue.Count > 0)
             lock (PluginConfiguration.SaveQueue)
@@ -401,8 +403,6 @@ public sealed partial class WrathCombo : IDalamudPlugin
                 Service.Configuration.Save();
                 PluginConfiguration.ProcessSaveQueue();
             }
-
-        Debug.Dispose();
 
         ws.RemoveAllWindows();
         Svc.DtrBar.Remove("Wrath Combo");

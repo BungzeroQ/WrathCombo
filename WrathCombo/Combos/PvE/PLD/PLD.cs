@@ -39,6 +39,7 @@ internal partial class PLD : Tank
 
             #region Variables
 
+            var canFightOrFlight = OriginalHook(FightOrFlight) is FightOrFlight && ActionReady(FightOrFlight);
             float durationFightOrFlight = GetStatusEffectRemainingTime(Buffs.FightOrFlight);
             float cooldownFightOrFlight = GetCooldownRemainingTime(FightOrFlight);
             float cooldownRequiescat = GetCooldownRemainingTime(Requiescat);
@@ -139,7 +140,7 @@ internal partial class PLD : Tank
                             return OriginalHook(Requiescat);
 
                         // Fight or Flight
-                        if (ActionReady(FightOrFlight))
+                        if (canFightOrFlight)
                         {
                             if (!LevelChecked(Requiescat))
                             {
@@ -147,17 +148,17 @@ internal partial class PLD : Tank
                                 {
                                     // Level 2-25
                                     if (ComboAction is FastBlade)
-                                        return FightOrFlight;
+                                        return OriginalHook(FightOrFlight);
                                 }
 
                                 // Level 26-67
                                 else if (ComboAction is RiotBlade)
-                                    return FightOrFlight;
+                                    return OriginalHook(FightOrFlight);
                             }
 
                             // Level 68+
                             else if (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave && (ComboAction is RoyalAuthority || afterOpener))
-                                return FightOrFlight;
+                                return OriginalHook(FightOrFlight);
                         }
 
                         // Variant Ultimatum
@@ -250,6 +251,7 @@ internal partial class PLD : Tank
 
             #region Variables
 
+            var canFightOrFlight = OriginalHook(FightOrFlight) is FightOrFlight && ActionReady(FightOrFlight);
             float cooldownFightOrFlight = GetCooldownRemainingTime(FightOrFlight);
             float cooldownRequiescat = GetCooldownRemainingTime(Requiescat);
             uint playerMP = LocalPlayer.CurrentMp;
@@ -332,8 +334,14 @@ internal partial class PLD : Tank
                             return OriginalHook(Requiescat);
 
                         // Fight or Flight
-                        if (ActionReady(FightOrFlight) && (!LevelChecked(Requiescat) || (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave)))
-                            return FightOrFlight;
+                        if (canFightOrFlight)
+                        {
+                            if (!LevelChecked(Requiescat))
+                                return OriginalHook(FightOrFlight);
+
+                            else if (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave)
+                                return OriginalHook(FightOrFlight);
+                        }
 
                         // Variant Ultimatum
                         if (Variant.CanUltimatum(CustomComboPreset.PLD_Variant_Ultimatum))
@@ -388,6 +396,7 @@ internal partial class PLD : Tank
 
             #region Variables
 
+            var canFightOrFlight = OriginalHook(FightOrFlight) is FightOrFlight && ActionReady(FightOrFlight);
             float durationFightOrFlight = GetStatusEffectRemainingTime(Buffs.FightOrFlight);
             float cooldownFightOrFlight = GetCooldownRemainingTime(FightOrFlight);
             float cooldownRequiescat = GetCooldownRemainingTime(Requiescat);
@@ -452,7 +461,7 @@ internal partial class PLD : Tank
                             return OriginalHook(Requiescat);
 
                         // Fight or Flight
-                        if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_FoF) && ActionReady(FightOrFlight) && GetTargetHPPercent() >= Config.PLD_ST_FoF_Trigger)
+                        if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_FoF) && canFightOrFlight && GetTargetHPPercent() >= Config.PLD_ST_FoF_Trigger)
                         {
                             if (!LevelChecked(Requiescat))
                             {
@@ -460,17 +469,17 @@ internal partial class PLD : Tank
                                 {
                                     // Level 2-25
                                     if (ComboAction is FastBlade)
-                                        return FightOrFlight;
+                                        return OriginalHook(FightOrFlight);
                                 }
 
                                 // Level 26-67
                                 else if (ComboAction is RiotBlade)
-                                    return FightOrFlight;
+                                    return OriginalHook(FightOrFlight);
                             }
 
                             // Level 68+
                             else if (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave && (ComboAction is RoyalAuthority || afterOpener))
-                                return FightOrFlight;
+                                return OriginalHook(FightOrFlight);
                         }
                     }
                   
@@ -612,6 +621,7 @@ internal partial class PLD : Tank
 
             #region Variables
 
+            var canFightOrFlight = OriginalHook(FightOrFlight) is FightOrFlight && ActionReady(FightOrFlight);
             float cooldownFightOrFlight = GetCooldownRemainingTime(FightOrFlight);
             float cooldownRequiescat = GetCooldownRemainingTime(Requiescat);
             uint playerMP = LocalPlayer.CurrentMp;
@@ -657,11 +667,15 @@ internal partial class PLD : Tank
                             return OriginalHook(Requiescat);
 
                         // Fight or Flight
-                        if (IsEnabled(CustomComboPreset.PLD_AoE_AdvancedMode_FoF) && ActionReady(FightOrFlight) && GetTargetHPPercent() >= Config.PLD_AoE_FoF_Trigger &&
-                            (!LevelChecked(Requiescat) || (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave)))
-                            return FightOrFlight;
-                    }
+                        if (IsEnabled(CustomComboPreset.PLD_AoE_AdvancedMode_FoF) && canFightOrFlight && GetTargetHPPercent() >= Config.PLD_AoE_FoF_Trigger)
+                        {
+                            if (!LevelChecked(Requiescat))
+                                return OriginalHook(FightOrFlight);
 
+                            else if (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave)
+                                return OriginalHook(FightOrFlight);
+                        }
+                    }
                     if (InMeleeRange())
                     {
                         // Variant Ultimatum
@@ -750,9 +764,11 @@ internal partial class PLD : Tank
             if (actionID is not (Requiescat or Imperator))
                 return actionID;
 
+            var canFightOrFlight = OriginalHook(FightOrFlight) is FightOrFlight && ActionReady(FightOrFlight);
+
             // Fight or Flight
-            if (Config.PLD_Requiescat_SubOption == 2 && (ActionReady(FightOrFlight) && ActionReady(Requiescat) || !LevelChecked(Requiescat)))
-                return FightOrFlight;
+            if (Config.PLD_Requiescat_SubOption == 2 && (!LevelChecked(Requiescat) || (canFightOrFlight && ActionReady(Requiescat))))
+                return OriginalHook(FightOrFlight);
 
             // Confiteor & Blades
             if (HasStatusEffect(Buffs.ConfiteorReady) || LevelChecked(BladeOfFaith) && OriginalHook(Confiteor) != Confiteor)

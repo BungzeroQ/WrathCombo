@@ -614,6 +614,7 @@ namespace WrathCombo.AutoRotation
                     var customCombo = Service.ActionReplacer.CustomCombos.FirstOrDefault(x => x.Preset == preset);
                     if (customCombo != null)
                     {
+                        customCombo.OptionalTarget = null;
                         if (customCombo.TryInvoke(actToCheck, out var changedAct, optionalTarget))
                         {
                             originalAct = actToCheck;

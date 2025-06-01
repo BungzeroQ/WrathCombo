@@ -339,7 +339,7 @@ internal partial class WHM : Healer
                 ActionReady(Asylum) &&
                 !IsMoving() &&
                 (!Config.WHM_AoEHeals_AsylumRaidwideOnly || RaidWideCasting()))
-                return Asylum;
+                return Asylum.Retarget(Medica1, SimpleTarget.Stack.Allies);
 
             if (IsEnabled(CustomComboPreset.WHM_AoEHeals_Lucid) &&
                 CanSpellWeave() &&

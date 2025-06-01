@@ -2,13 +2,20 @@
 
 using Dalamud.Game.ClientState.JobGauge.Enums;
 using Dalamud.Game.ClientState.JobGauge.Types;
+using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.ClientState.Statuses;
+using ECommons.DalamudServices;
+using ECommons.GameHelpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using WrathCombo.Core;
 using WrathCombo.CustomComboNS;
 using WrathCombo.CustomComboNS.Functions;
 using WrathCombo.Data;
+using WrathCombo.Extensions;
 using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions;
+
 
 #endregion
 
@@ -231,6 +238,17 @@ internal partial class BRD
         return false;
     }
     #endregion
+
+        #region Warden Resolver
+        [ActionRetargeting.TargetResolver]
+        private static IGameObject? WardenResolver() =>
+         GetPartyMembers()
+              .Select(member => member.BattleChara)
+              .Where(member => member.IsNotThePlayer() && !member.IsDead && member.IsCleansable() && InActionRange(TheWardensPaeon, member))          
+              .FirstOrDefault();
+        #endregion
+
+
 
     #endregion
 

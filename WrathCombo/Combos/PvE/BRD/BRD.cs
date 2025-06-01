@@ -1,4 +1,5 @@
 using Dalamud.Game.ClientState.JobGauge.Enums;
+using WrathCombo.Core;
 using WrathCombo.CustomComboNS;
 using WrathCombo.Data;
 using static WrathCombo.Combos.PvE.BRD.Config;
@@ -363,12 +364,17 @@ internal partial class BRD : PhysicalRanged
 
             if (CanBardWeave)
             {
-                if (IsEnabled(CustomComboPreset.BRD_ST_SecondWind) && Role.CanSecondWind(Config.BRD_STSecondWindThreshold))
+                if (IsEnabled(CustomComboPreset.BRD_AoE_SecondWind) && Role.CanSecondWind(Config.BRD_STSecondWindThreshold))
                     return Role.SecondWind;
+               
+                if (IsEnabled(CustomComboPreset.BRD_AoE_Wardens) && ActionReady(TheWardensPaeon))
+                {
+                    if (HasCleansableDebuff(LocalPlayer))
+                        return TheWardensPaeon;
 
-                // Could be upgraded with a targetting system in the future
-                if (IsEnabled(CustomComboPreset.BRD_ST_Wardens) && ActionReady(TheWardensPaeon) && HasCleansableDebuff(LocalPlayer))
-                    return OriginalHook(TheWardensPaeon);
+                    else if (IsEnabled(CustomComboPreset.BRD_AoE_WardensAuto) && WardenResolver() is not null)
+                        return TheWardensPaeon.Retarget([Ladonsbite, QuickNock], WardenResolver);
+                }                   
             }
 
             #endregion
@@ -438,7 +444,7 @@ internal partial class BRD : PhysicalRanged
 
             #region Opener
 
-            if (IsEnabled(CustomComboPreset.BRD_ST_Adv_Balance_Standard) &&
+            if (IsEnabled(CustomComboPreset.BRD_ST_Adv_Balance_Standard) && HasBattleTarget() &&
                 Opener().FullOpener(ref actionID))
             {
                 if (ActionWatching.GetAttackType(Opener().CurrentOpenerAction) != ActionWatching.ActionAttackType.Ability && CanBardWeave)
@@ -540,13 +546,19 @@ internal partial class BRD : PhysicalRanged
 
             #region Self Care
 
-            if (CanBardWeave)
+            if (CanBardWeave || !InCombat())
             {
                 if (IsEnabled(CustomComboPreset.BRD_ST_SecondWind) && Role.CanSecondWind(Config.BRD_STSecondWindThreshold))
                     return Role.SecondWind;
 
-                if (IsEnabled(CustomComboPreset.BRD_ST_Wardens) && ActionReady(TheWardensPaeon) && HasCleansableDebuff(LocalPlayer))
-                    return OriginalHook(TheWardensPaeon);
+                if (IsEnabled(CustomComboPreset.BRD_ST_Wardens) && ActionReady(TheWardensPaeon))
+                {
+                    if (HasCleansableDebuff(LocalPlayer))
+                        return TheWardensPaeon;
+
+                    else if (IsEnabled(CustomComboPreset.BRD_ST_WardensAuto) && WardenResolver() is not null)
+                        return TheWardensPaeon.Retarget([HeavyShot, BurstShot], WardenResolver);
+                }
             }
 
             #endregion
@@ -711,8 +723,14 @@ internal partial class BRD : PhysicalRanged
                 if (Role.CanSecondWind(40))
                     return Role.SecondWind;
 
-                if (ActionReady(TheWardensPaeon) && HasCleansableDebuff(LocalPlayer))
-                    return OriginalHook(TheWardensPaeon);
+                if (ActionReady(TheWardensPaeon))
+                {
+                    if (HasCleansableDebuff(LocalPlayer))
+                        return TheWardensPaeon;
+
+                    else if (WardenResolver() is not null)
+                        return TheWardensPaeon.Retarget([Ladonsbite, QuickNock], WardenResolver);
+                }
             }
 
             #endregion
@@ -844,8 +862,13 @@ internal partial class BRD : PhysicalRanged
                 if (Role.CanSecondWind(40))
                     return Role.SecondWind;
 
-                if (ActionReady(TheWardensPaeon) && HasCleansableDebuff(LocalPlayer))
-                    return OriginalHook(TheWardensPaeon);
+                if (ActionReady(TheWardensPaeon))
+                {
+                    if (HasCleansableDebuff(LocalPlayer))
+                        return TheWardensPaeon;
+                    else if (WardenResolver() is not null)
+                        return TheWardensPaeon.Retarget([HeavyShot, BurstShot], WardenResolver);
+                }
             }
 
             #endregion

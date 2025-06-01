@@ -70,13 +70,20 @@ internal partial class WAR
             WAR_AoE_IRStop = new("WAR_AoE_IRStop", 0),
             WAR_VariantCure = new("WAR_VariantCure"),
             WAR_BalanceOpener_Content = new("WAR_BalanceOpener_Content", 1),
+            WAR_FC_IRStop = new("WAR_FC_IRStop", 0),
+            WAR_FC_Infuriate_Charges = new("WAR_FC_Infuriate_Charges", 0),
+            WAR_FC_Infuriate_Gauge = new("WAR_FC_Infuriate_Gauge", 40),
+            WAR_FC_Onslaught_Charges = new("WAR_FC_Onslaught_Charges", 0),
+            WAR_FC_Onslaught_Movement = new("WAR_FC_Onslaught_Movement", 0),
+            WAR_FC_PrimalRend_Movement = new("WAR_FC_PrimalRend_Movement", 0),
+            WAR_FC_PrimalRend_EarlyLate = new("WAR_FC_PrimalRend_EarlyLate", 0),
             WAR_Mit_Holmgang_Health = new("WAR_Mit_Holmgang_Health", 30),
             WAR_Mit_Bloodwhetting_Health = new("WAR_Mit_Bloodwhetting_Health", 70),
             WAR_Mit_Equilibrium_Health = new("WAR_Mit_Equilibrium_Health", 45),
             WAR_Mit_ThrillOfBattle_Health = new("WAR_Mit_ThrillOfBattle_Health", 60),
             WAR_Mit_Rampart_Health = new("WAR_Mit_Rampart_Health", 65),
-            WAR_Mit_ShakeItOff_PartyRequirement = new("WAR_Mit_ShakeItOff_PartyRequirement", (int) PartyRequirement.Yes),
-            WAR_Mit_ArmsLength_Boss = new("WAR_Mit_ArmsLength_Boss", (int) BossAvoidance.On),
+            WAR_Mit_ShakeItOff_PartyRequirement = new("WAR_Mit_ShakeItOff_PartyRequirement", (int)PartyRequirement.Yes),
+            WAR_Mit_ArmsLength_Boss = new("WAR_Mit_ArmsLength_Boss", (int)BossAvoidance.On),
             WAR_Mit_ArmsLength_EnemyCount = new("WAR_Mit_ArmsLength_EnemyCount", 0),
             WAR_Mit_Vengeance_Health = new("WAR_Mit_Vengeance_Health", 50),
             WAR_Bozja_LostCure_Health = new("WAR_Bozja_LostCure_Health", 50),
@@ -90,7 +97,9 @@ internal partial class WAR
             WAR_ST_Onslaught_Distance = new("WAR_ST_Ons_Distance", 3.0f),
             WAR_ST_PrimalRend_Distance = new("WAR_ST_PR_Distance", 3.0f),
             WAR_AoE_Onslaught_Distance = new("WAR_AoE_Ons_Distance", 3.0f),
-            WAR_AoE_PrimalRend_Distance = new("WAR_AoE_PR_Distance", 3.0f);
+            WAR_AoE_PrimalRend_Distance = new("WAR_AoE_PR_Distance", 3.0f),
+            WAR_FC_Onslaught_Distance = new("WAR_FC_Ons_Distance", 3.0f),
+            WAR_FC_PrimalRend_Distance = new("WAR_FC_PR_Distance", 3.0f);
 
         public static UserIntArray
             WAR_Mit_Priorities = new("WAR_Mit_Priorities");
@@ -262,7 +271,7 @@ internal partial class WAR
                     UserConfig.DrawHorizontalRadioButton(WAR_ST_Rampart_SubOption,
                         "All Enemies", $"Uses {Role.Rampart.ActionName()} regardless of targeted enemy type", 0);
                     UserConfig.DrawHorizontalRadioButton(WAR_ST_Rampart_SubOption,
-                        "Bosses Only",  $"Only uses {Role.Rampart.ActionName()} when the targeted enemy is a boss", 1);
+                        "Bosses Only", $"Only uses {Role.Rampart.ActionName()} when the targeted enemy is a boss", 1);
                     break;
 
                 case CustomComboPreset.WAR_AoE_Rampart:
@@ -344,12 +353,12 @@ internal partial class WAR
                         "All Enemies", $"Uses {Role.Reprisal.ActionName()} regardless of targeted enemy type", 0);
                     UserConfig.DrawHorizontalRadioButton(WAR_AoE_Reprisal_SubOption,
                         "Bosses Only", $"Only uses {Role.Reprisal.ActionName()} when the targeted enemy is a boss", 1);
-                    break;               
+                    break;
 
                 #region One-Button Mitigation
 
                 case CustomComboPreset.WAR_Mit_Holmgang_Max:
-                    UserConfig.DrawDifficultyMultiChoice(WAR_Mit_Holmgang_Difficulty, WAR_Mit_Holmgang_DifficultyListSet, 
+                    UserConfig.DrawDifficultyMultiChoice(WAR_Mit_Holmgang_Difficulty, WAR_Mit_Holmgang_DifficultyListSet,
                         "Select what difficulties Holmgang should be used in:");
 
                     UserConfig.DrawSliderInt(1, 100, WAR_Mit_Holmgang_Health,
@@ -360,7 +369,7 @@ internal partial class WAR
                     UserConfig.DrawSliderInt(1, 100, WAR_Mit_Bloodwhetting_Health,
                         "HP% to use at or below", sliderIncrement: SliderIncrements.Ones);
 
-                    UserConfig.DrawPriorityInput(WAR_Mit_Priorities, NumMitigationOptions, 0, 
+                    UserConfig.DrawPriorityInput(WAR_Mit_Priorities, NumMitigationOptions, 0,
                         "Bloodwhetting Priority:");
                     break;
 
@@ -410,11 +419,11 @@ internal partial class WAR
 
                 case CustomComboPreset.WAR_Mit_ArmsLength:
                     ImGui.Indent();
-                    UserConfig.DrawHorizontalRadioButton(WAR_Mit_ArmsLength_Boss, 
+                    UserConfig.DrawHorizontalRadioButton(WAR_Mit_ArmsLength_Boss,
                         "All Enemies", "Will use Arm's Length regardless of the type of enemy.",
                         outputValue: (int)BossAvoidance.Off, itemWidth: 125f);
                     UserConfig.DrawHorizontalRadioButton(WAR_Mit_ArmsLength_Boss,
-                        "Avoid Bosses","Will try not to use Arm's Length when in a boss fight.",
+                        "Avoid Bosses", "Will try not to use Arm's Length when in a boss fight.",
                         outputValue: (int)BossAvoidance.On, itemWidth: 125f);
                     ImGui.Unindent();
                     ImGui.NewLine();
@@ -434,6 +443,47 @@ internal partial class WAR
                 #endregion
 
                 #region Other
+                case CustomComboPreset.WAR_FC_InnerRelease:
+                    UserConfig.DrawSliderInt(0, 75, WAR_FC_IRStop,
+                        " Stop usage if Target HP% is below set value.\n To disable this, set value to 0");
+                    break;
+
+                case CustomComboPreset.WAR_FC_Onslaught:
+                    UserConfig.DrawHorizontalRadioButton(WAR_FC_Onslaught_Movement,
+                        "Stationary Only", "Uses Onslaught only while stationary", 0);
+                    UserConfig.DrawHorizontalRadioButton(WAR_FC_Onslaught_Movement,
+                        "Any Movement", "Uses Onslaught regardless of any movement conditions.\nNOTE: This could possibly get you killed", 1);
+                    ImGui.Spacing();
+                    UserConfig.DrawSliderInt(0, 2, WAR_FC_Onslaught_Charges,
+                        " How many charges to keep ready?\n (0 = Use All)");
+                    ImGui.SetCursorPosX(48);
+                    UserConfig.DrawSliderFloat(1, 20, WAR_FC_Onslaught_Distance,
+                        " Use when Distance from target is less than or equal to:");
+                    break;
+
+                case CustomComboPreset.WAR_FC_Infuriate:
+                    UserConfig.DrawSliderInt(0, 2, WAR_FC_Infuriate_Charges,
+                        " How many charges to keep ready?\n (0 = Use All)");
+                    UserConfig.DrawSliderInt(0, 50, WAR_FC_Infuriate_Gauge,
+                        " Use when Beast Gauge is less than or equal to:");
+                    break;
+
+                case CustomComboPreset.WAR_FC_PrimalRend:
+                    UserConfig.DrawHorizontalRadioButton(WAR_FC_PrimalRend_EarlyLate,
+                        "Early", "Uses Primal Rend ASAP", 0);
+                    UserConfig.DrawHorizontalRadioButton(WAR_FC_PrimalRend_EarlyLate,
+                        "Late", "Uses Primal Rend after consumption of all Inner Release stacks", 1);
+                    ImGui.NewLine();
+                    UserConfig.DrawHorizontalRadioButton(WAR_FC_PrimalRend_Movement,
+                        "Stationary Only", "Uses Primal Rend only while stationary", 0);
+                    UserConfig.DrawHorizontalRadioButton(WAR_FC_PrimalRend_Movement,
+                        "Any Movement", "Uses Primal Rend regardless of any movement conditions.\nNOTE: This could possibly get you killed", 1);
+                    ImGui.Spacing();
+                    ImGui.SetCursorPosX(48);
+                    UserConfig.DrawSliderFloat(1, 20, WAR_FC_PrimalRend_Distance,
+                        " Use when Distance from target is less than or equal to:");
+                    break;
+
                 case CustomComboPreset.WAR_ST_Simple:
                     UserConfig.DrawHorizontalRadioButton(WAR_ST_MitsOptions,
                         "Include Mitigations", "Enables the use of mitigations in Simple Mode.", 0);
@@ -473,7 +523,7 @@ internal partial class WAR
                         "If you don't use those Features for your personal mitigation, you may not want to enable this.");
                     ImGui.Unindent();
                     break;
-                #endregion
+                    #endregion
             }
         }
     }

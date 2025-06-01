@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
@@ -48,7 +49,9 @@ internal static class SimpleTarget
         ///     Hard Target near the bottom.
         /// </remarks>
         public static IGameObject? OverridesAllies =>
-            UIMouseOverTarget ?? FocusTarget ?? SoftTarget ?? HardTarget ?? Self;
+            UIMouseOverTarget ?? FocusTarget.IfFriendly() ??
+            SoftTarget.IfFriendly()  ?? HardTarget .IfFriendly() ??
+            Self;
 
         /// A very common stack that targets the player, if there are no manual
         /// overrides targeted.
@@ -61,7 +64,8 @@ internal static class SimpleTarget
 
         /// A very common stack that targets an ally or self.
         public static IGameObject? Allies =>
-            FocusTarget ?? SoftTarget ?? HardTarget ?? Self;
+            FocusTarget.IfFriendly() ?? SoftTarget.IfFriendly() ??
+            HardTarget .IfFriendly() ?? Self;
 
         /// A little mask for Plugin Configuration to make the string a bit shorter.
         private static PluginConfiguration cfg =>
@@ -162,7 +166,7 @@ internal static class SimpleTarget
                 {
                     var resolved = GetSimpleTargetValueFromName(name);
                     var target =
-                        CustomLogic(resolved.IfFriendly().IfWithinRange());
+                        CustomLogic(resolved.IfFriendly().IfTargetable().IfWithinRange());
 
                     // Only include Missing-HP options if they are missing HP
                     if (name.Contains("Missing"))
@@ -195,7 +199,8 @@ internal static class SimpleTarget
                 {
                     var resolved = GetSimpleTargetValueFromName(name);
                     var target =
-                        CustomLogic(resolved.IfFriendly().IfDead().IfWithinRange(30));
+                        CustomLogic(resolved.IfFriendly().IfTargetable()
+                            .IfDead().IfWithinRange(30));
 
                     if (logging)
                         PluginLog.Verbose(
@@ -368,6 +373,12 @@ internal static class SimpleTarget
             .GetPartyMembers()
             .Select(x => x.BattleChara)
             .FirstOrDefault(x => x?.IsDead() == true);
+
+    public static IGameObject? AnyDeadNonPartyMember =>
+        Svc.Objects
+            .Where(x => x.IsAPlayer() && x.IsTargetable &&
+                        !x.IsInParty())
+            .FirstOrDefault(x => x.IsDead());
 
     #region HP-Based Targets
 

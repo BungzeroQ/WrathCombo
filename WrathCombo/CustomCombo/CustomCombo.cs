@@ -23,7 +23,7 @@ namespace WrathCombo.CustomComboNS
             ClassID = JobIDs.JobToClass(JobID);
         }
 
-        protected IGameObject? OptionalTarget;
+        internal IGameObject? OptionalTarget;
 
         /// <summary> Gets the preset associated with this combo. </summary>
         protected internal abstract CustomComboPreset Preset { get; }
@@ -86,7 +86,7 @@ namespace WrathCombo.CustomComboNS
                 JobID != classJobID && ClassID != classJobID)
                 return false;
 
-            OptionalTarget = targetOverride;
+            OptionalTarget ??= targetOverride;
             uint resultingActionID = Invoke(actionID);
 
             var presetException = _presetsAllowedToReturnUnchanged

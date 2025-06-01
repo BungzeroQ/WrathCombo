@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using WrathCombo.Attributes;
 using WrathCombo.Combos;
+using WrathCombo.Extensions;
 using WrathCombo.Services;
 using WrathCombo.Window.Functions;
 using static FFXIVClientStructs.FFXIV.Client.UI.RaptureAtkHistory.Delegates;
@@ -76,7 +77,7 @@ namespace WrathCombo.Core
         /// <param name="preset"></param>
         /// <returns></returns>
         public static bool ShouldBeHidden(CustomComboPreset preset) =>
-            preset.GetAttribute<HiddenAttribute>() != null &&
+            preset.Attributes().Hidden != null &&
             !Service.Configuration.ShowHiddenFeatures;
 
         /// <summary> Gets a value indicating whether a preset is secret. </summary>

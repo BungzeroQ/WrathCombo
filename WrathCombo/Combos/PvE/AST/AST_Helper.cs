@@ -71,15 +71,12 @@ internal partial class AST
     {
         get
         {
-            if (!EZ.Throttle("astCardTargetCheck", TS.FromSeconds(0.1)))
-                return field;
-
             if (Svc.ClientState.LocalPlayer is null ||
                 Svc.ClientState.LocalPlayer.ClassJob.RowId != JobID ||
                 Svc.Condition[ConditionFlag.BetweenAreas] ||
                 Svc.Condition[ConditionFlag.Unconscious] ||
                 Gauge.DrawnCards[0] == CardType.None ||
-                !ActionReady(Play1) ||
+                !LevelChecked(Play1) ||
                 !IsInParty())
                 return field = null;
 
@@ -103,7 +100,7 @@ internal partial class AST
                     return field = targetOverride;
             }
 
-            if (!EZ.Throttle("astCardPartyCheck", TS.FromSeconds(0.75)))
+            if (!EZ.Throttle("astCardPartyCheck", TS.FromSeconds(0.5)))
                 return field;
 
             var card = Gauge.DrawnCards[0];

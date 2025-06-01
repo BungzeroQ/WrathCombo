@@ -359,21 +359,40 @@ internal partial class WAR : Tank
     }
     #endregion
 
+    #region Fell Cleave Features
+    internal class WAR_FC_Features : CustomCombo
+    {
+        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WAR_FC_Features;
+        protected override uint Invoke(uint action)
+        {
+            if (action is not InnerBeast or FellCleave)
+                return action;
+            if (IsEnabled(CustomComboPreset.WAR_FC_InnerRelease) && ShouldUseInnerRelease(Config.WAR_FC_IRStop))
+                return OriginalHook(Berserk);
+            if (IsEnabled(CustomComboPreset.WAR_FC_Infuriate) && ShouldUseInfuriate(Config.WAR_FC_Infuriate_Gauge, Config.WAR_FC_Infuriate_Charges))
+                return Infuriate;
+            if (IsEnabled(CustomComboPreset.WAR_FC_Upheaval) && ShouldUseUpheaval)
+                return Upheaval;
+            if (IsEnabled(CustomComboPreset.WAR_FC_PrimalWrath) && ShouldUsePrimalWrath)
+                return PrimalWrath;
+            if (IsEnabled(CustomComboPreset.WAR_FC_Onslaught) && ShouldUseOnslaught(Config.WAR_FC_Onslaught_Charges, Config.WAR_FC_Onslaught_Distance, Config.WAR_FC_Onslaught_Movement == 1 || (Config.WAR_FC_Onslaught_Movement == 0 && !IsMoving())))
+                return Onslaught;
+            if (IsEnabled(CustomComboPreset.WAR_FC_PrimalRend) &&
+                ShouldUsePrimalRend(Config.WAR_FC_PrimalRend_Distance, Config.WAR_FC_PrimalRend_Movement == 1 || (Config.WAR_FC_PrimalRend_Movement == 0 && !IsMoving())) &&
+                (Config.WAR_FC_PrimalRend_EarlyLate == 0 || (Config.WAR_FC_PrimalRend_EarlyLate == 1 && (GetStatusEffectRemainingTime(Buffs.PrimalRendReady) <= 15 || (!HasIR.Stacks && !HasBF.Stacks && !HasWrath)))))
+                return PrimalRend;
+            if (IsEnabled(CustomComboPreset.WAR_FC_PrimalRuination) && ShouldUsePrimalRuination)
+                return PrimalRuination;
+            return action;
+        }
+    }
+    #endregion
+
     #region Storm's Eye -> Storm's Path
     internal class WAR_EyePath : CustomCombo
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WAR_EyePath;
         protected override uint Invoke(uint action) => action != StormsPath ? action : GetStatusEffectRemainingTime(Buffs.SurgingTempest) <= Config.WAR_EyePath_Refresh ? StormsEye : action;
-    }
-    #endregion
-
-    #region Storm's Eye Combo -> Storm's Eye
-    internal class WAR_StormsEye : CustomCombo
-    {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WAR_StormsEye;
-        protected override uint Invoke(uint action) => action != StormsEye ? action :
-            ComboTimer > 0 && ComboAction == HeavySwing && LevelChecked(Maim) ? Maim :
-            ComboTimer > 0 && ComboAction == Maim && LevelChecked(StormsEye) ? StormsEye : HeavySwing;
     }
     #endregion
 

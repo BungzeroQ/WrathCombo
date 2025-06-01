@@ -517,6 +517,11 @@ internal class Debug : ConfigWindow, IDisposable
             CustomStyleText("GCD Total:", GCDTotal);
             CustomStyleText("Queued Action:", ActionManager.Instance()->QueuedActionId.ActionName());
             CustomStyleText("Animation Lock:", $"{ActionManager.Instance()->AnimationLock:F1}");
+            CustomStyleText($"Duty Action 1:", $"{Action1.ActionName()}");
+            CustomStyleText($"Duty Action 2:", $"{Action2.ActionName()}");
+            CustomStyleText($"Duty Action 3:", $"{Action3.ActionName()}");
+            CustomStyleText($"Duty Action 4:", $"{Action4.ActionName()}");
+            CustomStyleText($"Duty Action 5:", $"{Action5.ActionName()}");
 
             ImGuiEx.Spacing(new Vector2(0f, SpacingSmall));
 
