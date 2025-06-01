@@ -454,9 +454,9 @@ internal partial class PLD : Tank
                 // Weavables
                 if (canWeave)
                 {
-
                     if (LevelChecked(Imperator) || (!LevelChecked(Imperator) && InMeleeRange()))
                     {
+                        // Requiescat
                         if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_Requiescat) && ActionReady(Requiescat) && cooldownFightOrFlight > 50)
                             return OriginalHook(Requiescat);
 
@@ -481,8 +481,7 @@ internal partial class PLD : Tank
                             else if (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave && (ComboAction is RoyalAuthority || afterOpener))
                                 return OriginalHook(FightOrFlight);
                         }
-                    }
-                  
+                    }   
 
                     if (InMeleeRange())
                     {
@@ -676,8 +675,10 @@ internal partial class PLD : Tank
                                 return OriginalHook(FightOrFlight);
                         }
                     }
+
                     if (InMeleeRange())
                     {
+
                         // Variant Ultimatum
                         if (Variant.CanUltimatum(CustomComboPreset.PLD_Variant_Ultimatum))
                             return Variant.Ultimatum;
@@ -843,7 +844,7 @@ internal partial class PLD : Tank
                 ))
                 return HallowedGround;
 
-            foreach(int priority in Config.PLD_Mit_Priorities.Items.OrderBy(x => x))
+            foreach (int priority in Config.PLD_Mit_Priorities.Items.OrderBy(x => x))
             {
                 int index = Config.PLD_Mit_Priorities.IndexOf(priority);
                 if (CheckMitigationConfigMeetsRequirements(index, out uint action))
