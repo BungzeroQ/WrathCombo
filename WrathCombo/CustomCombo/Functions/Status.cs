@@ -1,5 +1,7 @@
-﻿using Dalamud.Game.ClientState.Objects.Types;
+﻿using Dalamud.Game.ClientState.Objects.SubKinds;
+using Dalamud.Game.ClientState.Objects.Types;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using System.Linq;
 using WrathCombo.Data;
 using WrathCombo.Services;
 using Status = Dalamud.Game.ClientState.Statuses.Status;
@@ -123,5 +125,46 @@ namespace WrathCombo.CustomComboNS.Functions
         /// <param name="target">The game object to check.</param>
         /// <returns>True if the target is invincible; otherwise, false.</returns>
         public static bool TargetIsInvincible(IGameObject? target) => StatusCache.TargetIsInvincible(target);
+
+        /// <summary>
+        /// Checks if a target has the max number of entries in their status list.
+        /// <para>30 for players, 60 for NPCs.</para>
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static bool TargetIsStatusCapped(IGameObject? target)
+        {
+            target ??= LocalPlayer;
+            if (target is IPlayerCharacter pc)
+                return pc.StatusList.Count(x => x.StatusId != 0) == 30;
+
+            if (target is IBattleNpc npc)
+                return npc.StatusList.Count(x => x.StatusId != 0) == 60;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if the target has any remaining entries in the status list to be able to add a new status, or if the status is already on them from the player. 
+        /// <para>Does not actually validate status logic i.e player buffs on enemies isn't checked.</para>
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="statusId"></param>
+        /// <returns></returns>
+        public static bool CanApplyStatus(IGameObject? target, ushort statusId)
+        {
+            target ??= LocalPlayer;
+            if (!TargetIsStatusCapped(target) || HasStatusEffect(statusId, target))
+                return true;
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Overload to accept a list of status IDs.
+        /// </summary>
+        /// <seealso cref="CanApplyStatus(IGameObject?,ushort)"/>
+        public static bool CanApplyStatus(IGameObject? target, ushort[] status) =>
+            status.Any(statusId => CanApplyStatus(target, statusId));
     }
 }

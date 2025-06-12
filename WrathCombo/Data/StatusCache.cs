@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using WrathCombo.Extensions;
 using static WrathCombo.CustomComboNS.Functions.CustomComboFunctions;
 using Status = Dalamud.Game.ClientState.Statuses.Status; // conflicts with structs if not defined
 
@@ -12,6 +13,8 @@ namespace WrathCombo.Data
 {
     internal partial class CustomComboCache : IDisposable
     {
+        private const uint InvalidStatusID = 0;
+
         //Invalidate this
         private readonly ConcurrentDictionary<(uint StatusID, ulong? TargetID, ulong? SourceID), Status?> statusCache = new();
 
@@ -22,21 +25,28 @@ namespace WrathCombo.Data
         /// <returns> Status object or null. </returns>
         internal Status? GetStatus(uint statusID, IGameObject? obj, ulong? sourceID)
         {
-            if (obj is null) return null;
-            var key = (statusID, obj?.GameObjectId, sourceID);
-            if (statusCache.TryGetValue(key, out Status? found))
-                return found;
-
             if (obj is null)
-                return statusCache[key] = null;
+                return null;
+
+            var key = (statusID, obj.GameObjectId, sourceID);
+
+            if (statusCache.TryGetValue(key, out var found))
+                return found;
 
             if (obj is not IBattleChara chara)
                 return statusCache[key] = null;
 
-            foreach (Status? status in chara.StatusList)
+            var statuses = chara.StatusList;
+            foreach (var status in statuses)
             {
-                if (status.StatusId == statusID && (!sourceID.HasValue || status.SourceId == 0 || status.SourceId == InvalidObjectID || status.SourceId == sourceID))
+                if (status.StatusId == InvalidStatusID)
+                    continue;
+
+                if (status.StatusId == statusID &&
+                    (!sourceID.HasValue || status.SourceId == 0 || status.SourceId == InvalidObjectID || status.SourceId == sourceID))
+                {
                     return statusCache[key] = status;
+                }
             }
 
             return statusCache[key] = null;
@@ -49,7 +59,7 @@ namespace WrathCombo.Data
         /// Lumina Status Sheet Dictionary
         /// </summary>
         private static readonly Dictionary<uint, Lumina.Excel.Sheets.Status> StatusSheet = 
-            Svc.Data.GetExcelSheet<Lumina.Excel.Sheets.Status>()!.ToDictionary(i => i.RowId, i => i);
+            Svc.Data.GetExcelSheet<Lumina.Excel.Sheets.Status>().ToDictionary(i => i.RowId, i => i);
 
 
         private static readonly HashSet<uint> DamageDownStatuses =
@@ -92,7 +102,7 @@ namespace WrathCombo.Data
 
         public static bool TargetIsInvincible(IGameObject? target)
         {
-            if (target is not IBattleChara tar || tar.StatusList == null)
+            if (target is not IBattleChara tar)
                 return false;
 
             // Turn Target's status to uint hashset
@@ -160,8 +170,6 @@ namespace WrathCombo.Data
                         return true;
 
                     return false;
-                default:
-                    break;
             }
 
             // General invincibility check
@@ -201,9 +209,11 @@ namespace WrathCombo.Data
         /// <returns></returns>
         internal static bool HasStatusInCacheList(HashSet<uint> statusList, IGameObject? gameObject = null)
         {
-            if (gameObject is not IBattleChara chara || chara.StatusList == null)
+            if (gameObject is not IBattleChara chara)
                 return false;
-            var targetStatuses = chara.StatusList.Select(s => s.StatusId).ToHashSet();
+
+            var statuses = chara.StatusList;
+            var targetStatuses = statuses.Select(s => s.StatusId).ToHashSet();
             return statusList.Count switch
             {
                 0 => false,

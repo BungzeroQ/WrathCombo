@@ -142,6 +142,16 @@ public static class GameObjectExtensions
     public static IGameObject? IfAPlayer (this IGameObject? obj) =>
         obj != null && obj is IPlayerCharacter ? obj : null;
 
+    /// <summary>
+    ///     Can be chained onto a <see cref="IGameObject" /> to make it return
+    ///     <see langword="null" /> if the target is not still loaded in the player's
+    ///     game.
+    /// </summary>
+    public static IGameObject? IfStillAround (this IGameObject? obj) =>
+        obj != null &&
+        Svc.Objects
+            .Any(x => x.GameObjectId != obj.GameObjectId) ? obj : null;
+
     #endregion
 
     #region Target Checking (same as above, but returns a boolean)
@@ -234,6 +244,15 @@ public static class GameObjectExtensions
     /// </summary>
     public static bool IsAPlayer(this IGameObject? obj) =>
         obj != null && obj is IPlayerCharacter;
+
+    /// <summary>
+    ///     Can be chained onto a <see cref="IGameObject" /> to make it a quick
+    ///     boolean check for if the object is still loaded in the player's game.
+    /// </summary>
+    public static bool IsStillAround(this IGameObject? obj) =>
+        obj != null &&
+        Svc.Objects
+            .Any(x => x.GameObjectId == obj.GameObjectId);
 
     #endregion
 

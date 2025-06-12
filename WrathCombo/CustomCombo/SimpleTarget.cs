@@ -50,7 +50,7 @@ internal static class SimpleTarget
         /// </remarks>
         public static IGameObject? OverridesAllies =>
             UIMouseOverTarget ?? FocusTarget.IfFriendly() ??
-            SoftTarget.IfFriendly()  ?? HardTarget .IfFriendly() ??
+            SoftTarget.IfFriendly() ?? HardTarget.IfFriendly() ??
             Self;
 
         /// A very common stack that targets the player, if there are no manual
@@ -65,7 +65,7 @@ internal static class SimpleTarget
         /// A very common stack that targets an ally or self.
         public static IGameObject? Allies =>
             FocusTarget.IfFriendly() ?? SoftTarget.IfFriendly() ??
-            HardTarget .IfFriendly() ?? Self;
+            HardTarget.IfFriendly() ?? Self;
 
         /// A little mask for Plugin Configuration to make the string a bit shorter.
         private static PluginConfiguration cfg =>
@@ -450,6 +450,15 @@ internal static class SimpleTarget
             .FirstOrDefault(x => x?.GetRole() is
                 CombatRole.Tank or CombatRole.Healer);
 
+    /// Gets any living Tank or Healer that is not the player.
+    public static IGameObject? AnyLivingSupport =>
+        CustomComboFunctions
+            .GetPartyMembers()
+            .Select(x => x.BattleChara)
+            .Where(x => x.IsNotThePlayer() && !x.IsDead)
+            .FirstOrDefault(x => x?.GetRole() is
+                CombatRole.Tank or CombatRole.Healer);
+
     /// Gets any DPS that is not the player.
     public static IGameObject? AnyDPS =>
         CustomComboFunctions
@@ -468,12 +477,28 @@ internal static class SimpleTarget
             .Where(x => x.IsNotThePlayer())
             .FirstOrDefault(x => x?.GetRole() is CombatRole.Tank);
 
+    /// Gets any living Tank that is not the player.
+    public static IGameObject? AnyLivingTank =>
+        CustomComboFunctions
+            .GetPartyMembers()
+            .Select(x => x.BattleChara)
+            .Where(x => x.IsNotThePlayer() && !x.IsDead)
+            .FirstOrDefault(x => x?.GetRole() is CombatRole.Tank);
+
     /// Gets any Healer that is not the player.
     public static IGameObject? AnyHealer =>
         CustomComboFunctions
             .GetPartyMembers()
             .Select(x => x.BattleChara)
             .Where(x => x.IsNotThePlayer())
+            .FirstOrDefault(x => x?.GetRole() is CombatRole.Healer);
+
+    /// Gets any living Healer that is not the player.
+    public static IGameObject? AnyLivingHealer =>
+        CustomComboFunctions
+            .GetPartyMembers()
+            .Select(x => x.BattleChara)
+            .Where(x => x.IsNotThePlayer() && !x.IsDead)
             .FirstOrDefault(x => x?.GetRole() is CombatRole.Healer);
 
     /// Gets any Raiser (Healer or DPS) that is not the player.

@@ -55,9 +55,9 @@ public static class HealRetargeting
     /// </summary>
     /// <seealso cref="UIntExtensions.Retarget(uint,IGameObject?,bool)" />
     public static uint RetargetIfEnabled
-        (this uint actionID,
-            IGameObject? optionalTarget,
-            bool dontCull = false) =>
+    (this uint actionID,
+        IGameObject? optionalTarget,
+        bool dontCull = false) =>
         RetargetSettingOn && optionalTarget is null
             ? actionID.Retarget(
                 actionID == RoleActions.Healer.Esuna ? EsunaStack : HealStack,

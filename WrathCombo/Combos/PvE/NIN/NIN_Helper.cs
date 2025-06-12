@@ -567,7 +567,7 @@ internal partial class NIN
 
         public bool ContinueCurrentMudra(ref uint actionID)
         {
-            if (CurrentNinjutsu == Ninjutsu)
+            if (ActionWatching.TimeSinceLastAction.TotalSeconds >= 1 && CurrentNinjutsu == Ninjutsu)
             {
                 InMudra = false;
                 ActionWatching.LastAction = 0;

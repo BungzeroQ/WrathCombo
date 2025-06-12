@@ -1,3 +1,4 @@
+using System.Linq;
 using WrathCombo.CustomComboNS;
 using static WrathCombo.Combos.PvE.BLM.Config;
 using static WrathCombo.Data.ActionWatching;
@@ -64,6 +65,7 @@ internal partial class BLM : Caster
                     : Foul;
 
             if (LevelChecked(Thunder) && HasStatusEffect(Buffs.Thunderhead) &&
+                CanApplyStatus(CurrentTarget, ThunderList[OriginalHook(Thunder)]) &&
                 (ThunderDebuffST is null && ThunderDebuffAoE is null ||
                  ThunderDebuffST?.RemainingTime <= 3 ||
                  ThunderDebuffAoE?.RemainingTime <= 3) &&
@@ -255,20 +257,12 @@ internal partial class BLM : Caster
                 IsMoving() && !LevelChecked(Triplecast))
                 return Scathe;
 
-            if (IsEnabled(CustomComboPreset.BLM_ST_UsePolyglot))
-            {
-                //Overcap protection
-                if (HasMaxPolyglotStacks && PolyglotTimer <= 5000)
-                    return LevelChecked(Xenoglossy)
-                        ? Xenoglossy
-                        : Foul;
-
-                if (IsEnabled(CustomComboPreset.BLM_ST_UsePolyglotAsap) &&
-                    HasPolyglotStacks())
-                    return LevelChecked(Xenoglossy)
-                        ? Xenoglossy
-                        : Foul;
-            }
+            //Overcap protection
+            if (IsEnabled(CustomComboPreset.BLM_ST_UsePolyglot) &&
+                HasMaxPolyglotStacks && PolyglotTimer <= 5000)
+                return LevelChecked(Xenoglossy)
+                    ? Xenoglossy
+                    : Foul;
 
             if (IsEnabled(CustomComboPreset.BLM_ST_Thunder) &&
                 LevelChecked(Thunder) && HasStatusEffect(Buffs.Thunderhead))
@@ -276,7 +270,8 @@ internal partial class BLM : Caster
                 float refreshTimer = BLM_ST_ThunderUptime_Threshold;
                 int hpThreshold = BLM_ST_Thunder_SubOption == 1 || !InBossEncounter() ? BLM_ST_ThunderOption : 0;
 
-                if ((ThunderDebuffST is null && ThunderDebuffAoE is null ||
+                if (CanApplyStatus(CurrentTarget, ThunderList[OriginalHook(Thunder)]) &&
+                    (ThunderDebuffST is null && ThunderDebuffAoE is null ||
                      ThunderDebuffST?.RemainingTime <= refreshTimer ||
                      ThunderDebuffAoE?.RemainingTime <= refreshTimer) &&
                     GetTargetHPPercent() > hpThreshold)
@@ -292,40 +287,23 @@ internal partial class BLM : Caster
 
             if (IsMoving() && InCombat())
             {
-                if (BLM_ST_MovementOption[0] &&
-                    ActionReady(Triplecast) &&
-                    !HasStatusEffect(Buffs.Triplecast) &&
-                    !HasStatusEffect(Role.Buffs.Swiftcast) &&
-                    !HasStatusEffect(Buffs.LeyLines))
-                    return Triplecast;
-
-                if (BLM_ST_MovementOption[1] &&
-                    ActionReady(Paradox) &&
-                    FirePhase && ActiveParadox &&
-                    !HasStatusEffect(Buffs.Firestarter) &&
-                    !HasStatusEffect(Buffs.Triplecast) &&
-                    !HasStatusEffect(Role.Buffs.Swiftcast))
-                    return OriginalHook(Paradox);
-
-                if (BLM_ST_MovementOption[2] &&
-                    ActionReady(Role.Swiftcast) && !HasStatusEffect(Buffs.Triplecast))
-                    return Role.Swiftcast;
-
-                if (BLM_ST_MovementOption[3] &&
-                    HasPolyglotStacks() &&
-                    !HasStatusEffect(Buffs.Triplecast) &&
-                    !HasStatusEffect(Role.Buffs.Swiftcast))
-                    return LevelChecked(Xenoglossy)
-                        ? Xenoglossy
-                        : Foul;
+                foreach(int priority in BLM_ST_Movement_Priority.Items.OrderBy(x => x))
+                {
+                    int index = BLM_ST_Movement_Priority.IndexOf(priority);
+                    if (CheckMovementConfigMeetsRequirements(index, out uint action))
+                        return action;
+                }
             }
 
             if (FirePhase)
             {
                 // TODO: Revisit when Raid Buff checks are in place
                 if (IsEnabled(CustomComboPreset.BLM_ST_UsePolyglot) &&
-                    ((BLM_ST_MovementOption[3] && PolyglotStacks > BLM_ST_Polyglot_Movement) ||
-                     (!BLM_ST_MovementOption[3] && HasPolyglotStacks())))
+                    ((BLM_ST_MovementOption[3] &&
+                      PolyglotStacks > BLM_ST_Polyglot_Movement &&
+                      PolyglotStacks > BLM_ST_Polyglot_Save) ||
+                     (!BLM_ST_MovementOption[3] &&
+                      PolyglotStacks > BLM_ST_Polyglot_Save)))
                     return LevelChecked(Xenoglossy)
                         ? Xenoglossy
                         : Foul;
@@ -435,7 +413,8 @@ internal partial class BLM : Caster
                 return Foul;
 
             if (HasStatusEffect(Buffs.Thunderhead) && LevelChecked(Thunder2) &&
-                (GetTargetHPPercent() > 1) &&
+                GetTargetHPPercent() > 1 &&
+                CanApplyStatus(CurrentTarget, ThunderList[OriginalHook(Thunder2)]) &&
                 (ThunderDebuffAoE is null && ThunderDebuffST is null ||
                  ThunderDebuffAoE?.RemainingTime <= 3 ||
                  ThunderDebuffST?.RemainingTime <= 3) &&
@@ -527,6 +506,7 @@ internal partial class BLM : Caster
 
             if (IsEnabled(CustomComboPreset.BLM_AoE_Thunder) &&
                 HasStatusEffect(Buffs.Thunderhead) && LevelChecked(Thunder2) &&
+                CanApplyStatus(CurrentTarget, ThunderList[OriginalHook(Thunder2)]) &&
                 (GetTargetHPPercent() > BLM_AoE_ThunderHP) &&
                 (ThunderDebuffAoE is null && ThunderDebuffST is null ||
                  ThunderDebuffAoE?.RemainingTime <= 3 ||

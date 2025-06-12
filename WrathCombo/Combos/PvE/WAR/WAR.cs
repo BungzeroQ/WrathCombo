@@ -30,30 +30,25 @@ internal partial class WAR : Tank
             #endregion
 
             #region Mitigations
-            if (Config.WAR_ST_MitsOptions != 1)
+            if (Config.WAR_ST_MitsOptions == 0 && InCombat() && !MitUsed)
             {
-                if (!InCombat() || MitUsed)
-                    return 0;
-                else
+                if (ActionReady(Holmgang) && PlayerHealthPercentageHp() < 30)
+                    return Holmgang;
+                if (IsPlayerTargeted())
                 {
-                    if (ActionReady(Holmgang) && PlayerHealthPercentageHp() < 30)
-                        return Holmgang;
-                    if (IsPlayerTargeted())
-                    {
-                        if (ActionReady(OriginalHook(Vengeance)) && PlayerHealthPercentageHp() < 60)
-                            return OriginalHook(Vengeance);
-                        if (Role.CanRampart(80))
-                            return Role.Rampart;
-                        if (Role.CanReprisal(90))
-                            return Role.Reprisal;
-                    }
-                    if (ActionReady(ThrillOfBattle) && PlayerHealthPercentageHp() < 70)
-                        return ThrillOfBattle;
-                    if (ActionReady(Equilibrium) && PlayerHealthPercentageHp() < 50)
-                        return Equilibrium;
-                    if (ActionReady(OriginalHook(RawIntuition)) && PlayerHealthPercentageHp() < 90)
-                        return OriginalHook(Bloodwhetting);
+                    if (ActionReady(OriginalHook(Vengeance)) && PlayerHealthPercentageHp() < 60)
+                        return OriginalHook(Vengeance);
+                    if (Role.CanRampart(80))
+                        return Role.Rampart;
+                    if (Role.CanReprisal(90))
+                        return Role.Reprisal;
                 }
+                if (ActionReady(ThrillOfBattle) && PlayerHealthPercentageHp() < 70)
+                    return ThrillOfBattle;
+                if (ActionReady(Equilibrium) && PlayerHealthPercentageHp() < 50)
+                    return Equilibrium;
+                if (ActionReady(OriginalHook(RawIntuition)) && PlayerHealthPercentageHp() < 90)
+                    return OriginalHook(Bloodwhetting);
             }
             #endregion
 
@@ -472,6 +467,15 @@ internal partial class WAR : Tank
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WAR_Mit_Party;
         protected override uint Invoke(uint action) => action != ShakeItOff ? action : ActionReady(Role.Reprisal) ? Role.Reprisal : action;
+    }
+    #endregion
+
+    #region MyRegion
+    internal class WAR_RetargetHolmgang : CustomCombo
+    {
+        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WAR_RetargetHolmgang;
+
+        protected override uint Invoke(uint actionID) => actionID != Holmgang ? actionID : actionID.Retarget(SimpleTarget.Self, dontCull: true);
     }
     #endregion
 

@@ -463,6 +463,7 @@ internal partial class MCH
     {
         public const ushort
             Dismantled = 860,
+            Wildfire = 861,
             Bioblaster = 1866;
     }
 

@@ -513,7 +513,7 @@ namespace WrathCombo.Window.Tabs
                         UserConfig.DrawCustomStackManager(
                             "CustomHealStack",
                             ref Service.Configuration.CustomHealStack,
-                            ["Enemy", "Attack", "Dead"],
+                            ["Enemy", "Attack", "Dead", "Living"],
                             "The priority goes from top to bottom.\n" +
                             "Scroll down to see all of your items.\n" +
                             "Click the Up and Down buttons to move items in the list.\n" +
@@ -560,7 +560,7 @@ namespace WrathCombo.Window.Tabs
                 UserConfig.DrawCustomStackManager(
                     "CustomRaiseStack",
                     ref Service.Configuration.RaiseStack,
-                    ["Enemy", "Attack", "MissingHP", "Lowest", "Chocobo"],
+                    ["Enemy", "Attack", "MissingHP", "Lowest", "Chocobo", "Living"],
                     "The priority goes from top to bottom.\n" +
                     "Scroll down to see all of your items.\n" +
                     "Click the Up and Down buttons to move items in the list.\n" +

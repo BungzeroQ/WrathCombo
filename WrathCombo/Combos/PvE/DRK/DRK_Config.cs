@@ -177,7 +177,7 @@ internal partial class DRK
                         outputValue: (int) BossAvoidance.Off, itemWidth: 125f);
                     UserConfig.DrawHorizontalRadioButton(
                         DRK_ST_TBNBossRestriction, "Avoid Bosses",
-                        "Will try not to use Blackest Night when your target is a boss.\n" +
+                        "Will try not to use Blackest Night when in a boss fight.\n" +
                         "(Note: don't rely on this 100%, square sometimes marks enemies inconsistently)",
                         outputValue: (int) BossAvoidance.On, itemWidth: 125f);
                     ImGui.Unindent();
@@ -302,6 +302,12 @@ internal partial class DRK
                         "# enemies in range",
                         itemWidth: little, sliderIncrement: SliderIncrements.Ones);
 
+                    break;
+
+                case CustomComboPreset.DRK_AoE_Mit_DarkMind:
+                    UserConfig.DrawSliderInt(10, 100, DRK_AoE_Mit_DarkMindThreshold,
+                        startUsingAtDescriptionPlusDisable,
+                        itemWidth: medium, sliderIncrement: SliderIncrements.Fives);
                     break;
 
                 case CustomComboPreset.DRK_AoE_Mit_Rampart:
@@ -1031,7 +1037,19 @@ internal partial class DRK
             new("DRK_AoE_ReprisalEnemyCount", 3);
 
         /// <summary>
-        ///     Self HP\% to use Rampart below for AoE.
+        ///     Self HP% to use Dark Mind below for AoE.
+        /// </summary>
+        /// <value>
+        ///     <b>Default</b>: 75 <br />
+        ///     <b>Range</b>: 10 - 100 <br />
+        ///     <b>Step</b>: <see cref="SliderIncrements.Fives" />
+        /// </value>
+        /// <seealso cref="CustomComboPreset.DRK_AoE_Mit_DarkMind" />
+        public static readonly UserInt DRK_AoE_Mit_DarkMindThreshold =
+            new("DRK_AoE_Mit_DarkMindThreshold", 75);
+
+        /// <summary>
+        ///     Self HP% to use Rampart below for AoE.
         /// </summary>
         /// <value>
         ///     <b>Default</b>: 50 <br />

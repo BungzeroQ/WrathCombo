@@ -33,18 +33,14 @@ internal partial class MNK
         {
             if (Coeurl is 0 && LevelChecked(Demolish))
                 return !OnTargetsRear() &&
-                       TargetNeedsPositionals() &&
-                       !HasStatusEffect(Buffs.TrueNorth) &&
-                       ActionReady(TrueNorth) &&
+                       Role.CanTrueNorth() &&
                        useTrueNorthIfEnabled
                     ? TrueNorth
                     : Demolish;
 
             if (LevelChecked(SnapPunch))
                 return !OnTargetsFlank() &&
-                       TargetNeedsPositionals() &&
-                       !HasStatusEffect(Buffs.TrueNorth) &&
-                       ActionReady(TrueNorth) &&
+                       Role.CanTrueNorth() &&
                        useTrueNorthIfEnabled
                     ? TrueNorth
                     : OriginalHook(SnapPunch);

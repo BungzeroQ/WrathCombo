@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using ECommons.DalamudServices;
-using ECommons.Logging;
 using WrathCombo.Core;
 using WrathCombo.CustomComboNS;
 
@@ -86,9 +85,32 @@ internal partial class All
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.ALL_Tank_Reprisal;
 
         protected override uint Invoke(uint actionID) =>
-            actionID is RoleActions.Tank.Reprisal && HasStatusEffect(RoleActions.Tank.Debuffs.Reprisal, CurrentTarget, true) && IsOffCooldown(RoleActions.Tank.Reprisal)
+            actionID is RoleActions.Tank.Reprisal && GetStatusEffectRemainingTime(RoleActions.Tank.Debuffs.Reprisal, CurrentTarget, true) > Config.ALL_Tank_Reprisal_Threshold && IsOffCooldown(RoleActions.Tank.Reprisal)
                 ? SavageBlade
                 : actionID;
+    }
+
+    internal class ALL_Tank_Shirk : CustomCombo
+    {
+        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.ALL_Tank_ShirkRetargeting;
+
+        protected override uint Invoke(uint actionID)
+        {
+            if (actionID is not RoleActions.Tank.Shirk)
+                return actionID;
+
+            var target =
+                IsNotEnabled(CustomComboPreset.ALL_Tank_ShirkRetargeting_Healer)
+                    ? SimpleTarget.AnyLivingTank
+                    : SimpleTarget.AnyLivingHealer;
+
+            if (IsEnabled(CustomComboPreset.ALL_Tank_ShirkRetargeting_Fallback))
+                target ??= SimpleTarget.AnyLivingSupport;
+
+            RoleActions.Tank.Shirk.Retarget(target, dontCull: true);
+
+            return actionID;
+        }
     }
 
     //Healer Features
@@ -118,6 +140,21 @@ internal partial class All
             if (IsEnabled(CustomComboPreset.ALL_Healer_Raise_Retarget))
                 return actionID.Retarget(replacedActions.ToArray(),
                     SimpleTarget.Stack.AllyToRaise, dontCull: true);
+
+            return actionID;
+        }
+    }
+
+    internal class ALL_Healer_EsunaRetargeting : CustomCombo
+    {
+        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.ALL_Healer_EsunaRetargeting;
+
+        protected override uint Invoke(uint actionID)
+        {
+            if (actionID is not RoleActions.Healer.Esuna)
+                return actionID;
+
+            RoleActions.Healer.Esuna.Retarget(SimpleTarget.Stack.AllyToEsuna, dontCull: true);
 
             return actionID;
         }
