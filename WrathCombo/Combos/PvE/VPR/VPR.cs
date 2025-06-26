@@ -228,7 +228,7 @@ internal partial class VPR : Melee
             {
                 //Serpents Ire
                 if (IsEnabled(CustomComboPreset.VPR_ST_SerpentsIre) && InCombat() &&
-                    !CappedOnCoils() && ActionReady(SerpentsIre) &&
+                    !CappedOnCoils() && ActionReady(SerpentsIre) && !HasStatusEffect(Buffs.Reawakened) &&
                     (VPR_ST_SerpentsIre_SubOption == 0 ||
                      VPR_ST_SerpentsIre_SubOption == 1 && InBossEncounter()))
                     return SerpentsIre;
