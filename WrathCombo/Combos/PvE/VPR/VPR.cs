@@ -7,7 +7,7 @@ internal partial class VPR : Melee
 {
     internal class VPR_ST_BasicCombo : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_ST_BasicCombo;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.VPR_ST_BasicCombo;
 
         protected override uint Invoke(uint actionID)
         {
@@ -53,7 +53,7 @@ internal partial class VPR : Melee
 
     internal class VPR_ST_SimpleMode : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_ST_SimpleMode;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.VPR_ST_SimpleMode;
 
         protected override uint Invoke(uint actionID)
         {
@@ -65,15 +65,18 @@ internal partial class VPR : Melee
                 return Variant.Cure;
 
             // Variant Rampart
-            if (Variant.CanRampart(CustomComboPreset.VPR_Variant_Rampart, WeaveTypes.Weave))
+            if (Variant.CanRampart(CustomComboPreset.VPR_Variant_Rampart))
                 return Variant.Rampart;
+
+            if (OccultCrescent.ShouldUsePhantomActions())
+                return OccultCrescent.BestPhantomAction();
 
             //oGCDs
             if (CanWeave() && !HasDoubleWeaved())
             {
                 //Serpents Ire
                 if (InCombat() && !CappedOnCoils() &&
-                    ActionReady(SerpentsIre) && InBossEncounter())
+                    ActionReady(SerpentsIre))
                     return SerpentsIre;
 
                 // Legacy Weaves
@@ -130,7 +133,7 @@ internal partial class VPR : Melee
             //Vicewinder Usage
             if (HasStatusEffect(Buffs.Swiftscaled) && !IsComboExpiring(3) &&
                 ActionReady(Vicewinder) && !HasStatusEffect(Buffs.Reawakened) && InMeleeRange() &&
-                (IreCD >= GCD * 5 && InBossEncounter() || !InBossEncounter() || !LevelChecked(SerpentsIre)) &&
+                ((IreCD >= GCD * 5) || !LevelChecked(SerpentsIre)) &&
                 !IsVenomExpiring(3) && !IsHoningExpiring(3))
                 return Role.CanTrueNorth()
                     ? Role.TrueNorth
@@ -203,7 +206,7 @@ internal partial class VPR : Melee
 
     internal class VPR_ST_AdvancedMode : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_ST_AdvancedMode;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.VPR_ST_AdvancedMode;
 
         protected override uint Invoke(uint actionID)
         {
@@ -215,8 +218,11 @@ internal partial class VPR : Melee
                 return Variant.Cure;
 
             // Variant Rampart
-            if (Variant.CanRampart(CustomComboPreset.VPR_Variant_Rampart, WeaveTypes.Weave))
+            if (Variant.CanRampart(CustomComboPreset.VPR_Variant_Rampart))
                 return Variant.Rampart;
+
+            if (OccultCrescent.ShouldUsePhantomActions())
+                return OccultCrescent.BestPhantomAction();
 
             // Opener for VPR
             if (IsEnabled(CustomComboPreset.VPR_ST_Opener) &&
@@ -385,7 +391,7 @@ internal partial class VPR : Melee
 
     internal class VPR_AoE_Simplemode : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_AoE_SimpleMode;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.VPR_AoE_SimpleMode;
 
         protected override uint Invoke(uint actionID)
         {
@@ -397,8 +403,11 @@ internal partial class VPR : Melee
                 return Variant.Cure;
 
             // Variant Rampart
-            if (Variant.CanRampart(CustomComboPreset.VPR_Variant_Rampart, WeaveTypes.Weave))
+            if (Variant.CanRampart(CustomComboPreset.VPR_Variant_Rampart))
                 return Variant.Rampart;
+
+            if (OccultCrescent.ShouldUsePhantomActions())
+                return OccultCrescent.BestPhantomAction();
 
             if (CanWeave() && !HasDoubleWeaved())
             {
@@ -521,7 +530,7 @@ internal partial class VPR : Melee
 
     internal class VPR_AoE_AdvancedMode : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_AoE_AdvancedMode;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.VPR_AoE_AdvancedMode;
 
         protected override uint Invoke(uint actionID)
         {
@@ -533,8 +542,11 @@ internal partial class VPR : Melee
                 return Variant.Cure;
 
             // Variant Rampart
-            if (Variant.CanRampart(CustomComboPreset.VPR_Variant_Rampart, WeaveTypes.Weave))
+            if (Variant.CanRampart(CustomComboPreset.VPR_Variant_Rampart))
                 return Variant.Rampart;
+
+            if (OccultCrescent.ShouldUsePhantomActions())
+                return OccultCrescent.BestPhantomAction();
 
             if (CanWeave() && !HasDoubleWeaved())
             {
@@ -680,7 +692,7 @@ internal partial class VPR : Melee
 
     internal class VPR_VicewinderCoils : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_VicewinderCoils;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.VPR_VicewinderCoils;
 
         protected override uint Invoke(uint actionID)
         {
@@ -719,7 +731,7 @@ internal partial class VPR : Melee
 
     internal class VPR_VicepitDens : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_VicepitDens;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.VPR_VicepitDens;
 
         protected override uint Invoke(uint actionID)
         {
@@ -752,7 +764,7 @@ internal partial class VPR : Melee
 
     internal class VPR_UncoiledTwins : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_UncoiledTwins;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.VPR_UncoiledTwins;
 
         protected override uint Invoke(uint actionID)
         {
@@ -772,7 +784,7 @@ internal partial class VPR : Melee
 
     internal class VPR_ReawakenLegacy : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_ReawakenLegacy;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.VPR_ReawakenLegacy;
 
         protected override uint Invoke(uint actionID)
         {
@@ -802,7 +814,7 @@ internal partial class VPR : Melee
 
     internal class VPR_TwinTails : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_TwinTails;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.VPR_TwinTails;
 
         protected override uint Invoke(uint actionID)
         {
@@ -831,7 +843,7 @@ internal partial class VPR : Melee
 
     internal class VPR_Legacies : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_Legacies;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.VPR_Legacies;
 
         protected override uint Invoke(uint actionID)
         {
@@ -854,7 +866,7 @@ internal partial class VPR : Melee
 
     internal class VPR_SerpentsTail : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.VPR_SerpentsTail;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.VPR_SerpentsTail;
 
         protected override uint Invoke(uint actionID)
         {

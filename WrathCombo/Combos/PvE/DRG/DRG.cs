@@ -7,7 +7,7 @@ internal partial class DRG : Melee
 {
     internal class DRG_BasicCombo : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.DRG_BasicCombo;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.DRG_BasicCombo;
 
         protected override uint Invoke(uint actionID)
         {
@@ -20,7 +20,7 @@ internal partial class DRG : Melee
                     return LevelChecked(Disembowel) &&
                            ((LevelChecked(ChaosThrust) && ChaosDebuff is null &&
                              CanApplyStatus(CurrentTarget, ChaoticList[OriginalHook(ChaosThrust)])) ||
-                             GetStatusEffectRemainingTime(Buffs.PowerSurge) < 15)
+                            GetStatusEffectRemainingTime(Buffs.PowerSurge) < 15)
                         ? OriginalHook(Disembowel)
                         : OriginalHook(VorpalThrust);
 
@@ -46,7 +46,7 @@ internal partial class DRG : Melee
 
     internal class DRG_ST_SimpleMode : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.DRG_ST_SimpleMode;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.DRG_ST_SimpleMode;
 
         protected override uint Invoke(uint actionID)
         {
@@ -56,8 +56,12 @@ internal partial class DRG : Melee
             if (Variant.CanCure(CustomComboPreset.DRG_Variant_Cure, DRG_Variant_Cure))
                 return Variant.Cure;
 
-            if (Variant.CanRampart(CustomComboPreset.DRG_Variant_Rampart) && CanDRGWeave(Variant.Rampart))
+            if (Variant.CanRampart(CustomComboPreset.DRG_Variant_Rampart) &&
+                CanDRGWeave(Variant.Rampart))
                 return Variant.Rampart;
+
+            if (OccultCrescent.ShouldUsePhantomActions())
+                return OccultCrescent.BestPhantomAction();
 
             // Piercing Talon Uptime Option
             if (ActionReady(PiercingTalon) &&
@@ -68,14 +72,12 @@ internal partial class DRG : Melee
             {
                 //Battle Litany Feature
                 if (ActionReady(BattleLitany) &&
-                    CanDRGWeave(BattleLitany) &&
-                    InBossEncounter())
+                    CanDRGWeave(BattleLitany))
                     return BattleLitany;
 
                 //Lance Charge Feature
                 if (ActionReady(LanceCharge) &&
-                    CanDRGWeave(LanceCharge) &&
-                    InBossEncounter())
+                    CanDRGWeave(LanceCharge))
                     return LanceCharge;
 
                 //Life Surge Feature
@@ -86,10 +88,10 @@ internal partial class DRG : Melee
                 if (ActionReady(MirageDive) &&
                     CanDRGWeave(MirageDive) &&
                     HasStatusEffect(Buffs.DiveReady) &&
-                    ((TraitLevelChecked(Traits.LifeOfTheDragon) &&
-                      (GetStatusEffectRemainingTime(Buffs.DiveReady) <= 1.2f &&
-                       GetCooldownRemainingTime(Geirskogul) > 3))) ||
-                    !TraitLevelChecked(Traits.LifeOfTheDragon))
+                    (OriginalHook(Jump) is MirageDive) &&
+                    (LoTDActive ||
+                     (GetStatusEffectRemainingTime(Buffs.DiveReady) <= 1.2f &&
+                      GetCooldownRemainingTime(Geirskogul) > 3)))
                     return MirageDive;
 
                 //Wyrmwind Thrust Feature
@@ -106,14 +108,16 @@ internal partial class DRG : Melee
                     return Geirskogul;
 
                 //(High) Jump Feature   
-                if (ActionReady(OriginalHook(Jump)) &&
-                    CanDRGWeave(OriginalHook(Jump)) &&
-                    !HasStatusEffect(Buffs.DiveReady) &&
-                    (LevelChecked(HighJump) &&
-                     (GetCooldownRemainingTime(Geirskogul) < 13 ||
-                      LoTDActive) ||
-                     !LevelChecked(HighJump)))
-                    return OriginalHook(Jump);
+                if (ActionReady(Jump) && (OriginalHook(Jump) is Jump or HighJump) &&
+                    CanDRGWeave(OriginalHook(Jump)))
+                {
+                    if (!LevelChecked(HighJump))
+                        return Jump;
+
+                    if (LevelChecked(HighJump) &&
+                        (GetCooldownRemainingTime(Geirskogul) < 13 || LoTDActive))
+                        return (HighJump);
+                }
 
                 //Dragonfire Dive Feature
                 if (ActionReady(DragonfireDive) &&
@@ -163,7 +167,7 @@ internal partial class DRG : Melee
                     return LevelChecked(Disembowel) &&
                            ((LevelChecked(ChaosThrust) && ChaosDebuff is null &&
                              CanApplyStatus(CurrentTarget, ChaoticList[OriginalHook(ChaosThrust)])) ||
-                             GetStatusEffectRemainingTime(Buffs.PowerSurge) < 15)
+                            GetStatusEffectRemainingTime(Buffs.PowerSurge) < 15)
                         ? OriginalHook(Disembowel)
                         : OriginalHook(VorpalThrust);
 
@@ -201,7 +205,7 @@ internal partial class DRG : Melee
 
     internal class DRG_ST_AdvancedMode : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.DRG_ST_AdvancedMode;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.DRG_ST_AdvancedMode;
 
         protected override uint Invoke(uint actionID)
         {
@@ -211,8 +215,12 @@ internal partial class DRG : Melee
             if (Variant.CanCure(CustomComboPreset.DRG_Variant_Cure, DRG_Variant_Cure))
                 return Variant.Cure;
 
-            if (Variant.CanRampart(CustomComboPreset.DRG_Variant_Rampart) && CanDRGWeave(Variant.Rampart))
+            if (Variant.CanRampart(CustomComboPreset.DRG_Variant_Rampart) &&
+                CanDRGWeave(Variant.Rampart))
                 return Variant.Rampart;
+
+            if (OccultCrescent.ShouldUsePhantomActions())
+                return OccultCrescent.BestPhantomAction();
 
             // Opener for DRG
             if (IsEnabled(CustomComboPreset.DRG_ST_Opener) &&
@@ -258,11 +266,12 @@ internal partial class DRG : Melee
                         ActionReady(MirageDive) &&
                         CanDRGWeave(MirageDive) &&
                         HasStatusEffect(Buffs.DiveReady) &&
-                        (IsEnabled(CustomComboPreset.DRG_ST_DoubleMirage) &&
-                         ((TraitLevelChecked(Traits.LifeOfTheDragon) && LoTDActive) ||
-                          (GetStatusEffectRemainingTime(Buffs.DiveReady) <= 1.2f &&
-                           GetCooldownRemainingTime(Geirskogul) > 3))) ||
-                        IsNotEnabled(CustomComboPreset.DRG_ST_DoubleMirage))
+                        (OriginalHook(Jump) is MirageDive) &&
+                        ((IsEnabled(CustomComboPreset.DRG_ST_DoubleMirage) &&
+                          (LoTDActive ||
+                           (GetStatusEffectRemainingTime(Buffs.DiveReady) <= 1.2f &&
+                            GetCooldownRemainingTime(Geirskogul) > 3))) ||
+                         IsNotEnabled(CustomComboPreset.DRG_ST_DoubleMirage)))
                         return MirageDive;
 
                     //Wyrmwind Thrust Feature
@@ -282,36 +291,39 @@ internal partial class DRG : Melee
 
                     //(High) Jump Feature   
                     if (IsEnabled(CustomComboPreset.DRG_ST_HighJump) &&
-                        ActionReady(OriginalHook(Jump)) &&
-                        CanDRGWeave(OriginalHook(Jump)) &&
-                        !HasStatusEffect(Buffs.DiveReady) &&
-                        (LevelChecked(HighJump) &&
-                         (IsEnabled(CustomComboPreset.DRG_ST_DoubleMirage) &&
-                          (GetCooldownRemainingTime(Geirskogul) < 13 || LoTDActive) ||
-                          IsNotEnabled(CustomComboPreset.DRG_ST_DoubleMirage)) ||
-                         !LevelChecked(HighJump)) &&
                         (IsNotEnabled(CustomComboPreset.DRG_ST_HighJump_Melee) ||
-                         IsEnabled(CustomComboPreset.DRG_ST_HighJump_Melee) && InMeleeRange()))
-                        return OriginalHook(Jump);
+                         IsEnabled(CustomComboPreset.DRG_ST_HighJump_Melee) && InMeleeRange()) &&
+                        ActionReady(Jump) && (OriginalHook(Jump) is Jump or HighJump) &&
+                        CanDRGWeave(OriginalHook(Jump)))
+                    {
+                        if (!LevelChecked(HighJump))
+                            return Jump;
+
+                        if (LevelChecked(HighJump) &&
+                            ((IsEnabled(CustomComboPreset.DRG_ST_DoubleMirage) &&
+                              (GetCooldownRemainingTime(Geirskogul) < 13 || LoTDActive)) ||
+                             IsNotEnabled(CustomComboPreset.DRG_ST_DoubleMirage)))
+                            return (HighJump);
+                    }
 
                     //Dragonfire Dive Feature
                     if (IsEnabled(CustomComboPreset.DRG_ST_DragonfireDive) &&
+                        (IsNotEnabled(CustomComboPreset.DRG_ST_DragonfireDive_Melee) ||
+                         IsEnabled(CustomComboPreset.DRG_ST_DragonfireDive_Melee) && InMeleeRange()) &&
                         ActionReady(DragonfireDive) &&
                         CanDRGWeave(DragonfireDive) &&
                         !HasStatusEffect(Buffs.DragonsFlight) &&
-                        (LoTDActive || !TraitLevelChecked(Traits.LifeOfTheDragon)) &&
-                        (IsNotEnabled(CustomComboPreset.DRG_ST_DragonfireDive_Melee) ||
-                         IsEnabled(CustomComboPreset.DRG_ST_DragonfireDive_Melee) && InMeleeRange()))
+                        (LoTDActive || !TraitLevelChecked(Traits.LifeOfTheDragon)))
                         return DragonfireDive;
 
                     //StarDiver Feature
                     if (IsEnabled(CustomComboPreset.DRG_ST_Stardiver) &&
+                        (IsNotEnabled(CustomComboPreset.DRG_ST_Stardiver_Melee) ||
+                         IsEnabled(CustomComboPreset.DRG_ST_Stardiver_Melee) && InMeleeRange()) &&
                         ActionReady(Stardiver) &&
                         CanDRGWeave(Stardiver) &&
                         LoTDActive &&
-                        !HasStatusEffect(Buffs.StarcrossReady) &&
-                        (IsNotEnabled(CustomComboPreset.DRG_ST_Stardiver_Melee) ||
-                         IsEnabled(CustomComboPreset.DRG_ST_Stardiver_Melee) && InMeleeRange()))
+                        !HasStatusEffect(Buffs.StarcrossReady))
                         return Stardiver;
 
                     //Starcross Feature
@@ -355,7 +367,7 @@ internal partial class DRG : Melee
                     return LevelChecked(Disembowel) &&
                            ((LevelChecked(ChaosThrust) && ChaosDebuff is null &&
                              CanApplyStatus(CurrentTarget, ChaoticList[OriginalHook(ChaosThrust)])) ||
-                             GetStatusEffectRemainingTime(Buffs.PowerSurge) < 15)
+                            GetStatusEffectRemainingTime(Buffs.PowerSurge) < 15)
                         ? OriginalHook(Disembowel)
                         : OriginalHook(VorpalThrust);
 
@@ -396,7 +408,7 @@ internal partial class DRG : Melee
 
     internal class DRG_AOE_SimpleMode : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.DRG_AOE_SimpleMode;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.DRG_AOE_SimpleMode;
 
         protected override uint Invoke(uint actionID)
         {
@@ -409,6 +421,9 @@ internal partial class DRG : Melee
             if (Variant.CanRampart(CustomComboPreset.DRG_Variant_Rampart) &&
                 CanDRGWeave(Variant.Rampart))
                 return Variant.Rampart;
+
+            if (OccultCrescent.ShouldUsePhantomActions())
+                return OccultCrescent.BestPhantomAction();
 
             // Piercing Talon Uptime Option
             if (LevelChecked(PiercingTalon) &&
@@ -450,10 +465,11 @@ internal partial class DRG : Melee
                     return Geirskogul;
 
                 //(High) Jump Feature   
-                if (ActionReady(OriginalHook(Jump)) &&
-                    CanDRGWeave(OriginalHook(Jump)) &&
-                    !HasStatusEffect(Buffs.DiveReady))
-                    return OriginalHook(Jump);
+                if (ActionReady(Jump) && (OriginalHook(Jump) is Jump or HighJump) &&
+                    CanDRGWeave(OriginalHook(Jump)))
+                    return (LevelChecked(HighJump))
+                        ? HighJump
+                        : Jump;
 
                 //Dragonfire Dive Feature
                 if (ActionReady(DragonfireDive) &&
@@ -481,13 +497,13 @@ internal partial class DRG : Melee
                     HasStatusEffect(Buffs.DragonsFlight))
                     return RiseOfTheDragon;
 
-                //Mirage Feature
                 if (ActionReady(MirageDive) &&
                     CanDRGWeave(MirageDive) &&
                     HasStatusEffect(Buffs.DiveReady) &&
-                    ((TraitLevelChecked(Traits.LifeOfTheDragon) &&
-                      (LoTDActive || GetStatusEffectRemainingTime(Buffs.DiveReady) <= 3)) ||
-                     !TraitLevelChecked(Traits.LifeOfTheDragon)))
+                    (OriginalHook(Jump) is MirageDive) &&
+                    (LoTDActive ||
+                     (GetStatusEffectRemainingTime(Buffs.DiveReady) <= 1.2f &&
+                      GetCooldownRemainingTime(Geirskogul) > 3)))
                     return MirageDive;
 
                 //Nastrond Feature
@@ -533,7 +549,7 @@ internal partial class DRG : Melee
 
     internal class DRG_AOE_AdvancedMode : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.DRG_AOE_AdvancedMode;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.DRG_AOE_AdvancedMode;
 
         protected override uint Invoke(uint actionID)
         {
@@ -546,6 +562,9 @@ internal partial class DRG : Melee
             if (Variant.CanRampart(CustomComboPreset.DRG_Variant_Rampart) &&
                 CanDRGWeave(Variant.Rampart))
                 return Variant.Rampart;
+
+            if (OccultCrescent.ShouldUsePhantomActions())
+                return OccultCrescent.BestPhantomAction();
 
             // Piercing Talon Uptime Option
             if (IsEnabled(CustomComboPreset.DRG_AoE_RangedUptime) &&
@@ -599,31 +618,32 @@ internal partial class DRG : Melee
 
                     //(High) Jump Feature   
                     if (IsEnabled(CustomComboPreset.DRG_AoE_HighJump) &&
-                        ActionReady(OriginalHook(Jump)) &&
-                        CanDRGWeave(OriginalHook(Jump)) &&
-                        !HasStatusEffect(Buffs.DiveReady) &&
                         (IsNotEnabled(CustomComboPreset.DRG_AoE_HighJump_Melee) ||
-                         IsEnabled(CustomComboPreset.DRG_AoE_HighJump_Melee) && InMeleeRange()))
-                        return OriginalHook(Jump);
+                         IsEnabled(CustomComboPreset.DRG_AoE_HighJump_Melee) && InMeleeRange()) &&
+                        ActionReady(Jump) && (OriginalHook(Jump) is Jump or HighJump) &&
+                        CanDRGWeave(OriginalHook(Jump)))
+                        return (LevelChecked(HighJump))
+                            ? HighJump
+                            : Jump;
 
                     //Dragonfire Dive Feature
                     if (IsEnabled(CustomComboPreset.DRG_AoE_DragonfireDive) &&
+                        (IsNotEnabled(CustomComboPreset.DRG_AoE_DragonfireDive_Melee) ||
+                         IsEnabled(CustomComboPreset.DRG_AoE_DragonfireDive_Melee) && InMeleeRange()) &&
                         ActionReady(DragonfireDive) &&
                         CanDRGWeave(DragonfireDive) &&
                         !HasStatusEffect(Buffs.DragonsFlight) &&
-                        (IsNotEnabled(CustomComboPreset.DRG_AoE_DragonfireDive_Melee) ||
-                         IsEnabled(CustomComboPreset.DRG_AoE_DragonfireDive_Melee) && InMeleeRange()) &&
                         (LoTDActive || !TraitLevelChecked(Traits.LifeOfTheDragon)))
                         return DragonfireDive;
 
                     //StarDiver Feature
                     if (IsEnabled(CustomComboPreset.DRG_AoE_Stardiver) &&
+                        (IsNotEnabled(CustomComboPreset.DRG_AoE_Stardiver_Melee) ||
+                         IsEnabled(CustomComboPreset.DRG_AoE_Stardiver_Melee) && InMeleeRange()) &&
                         ActionReady(Stardiver) &&
                         CanDRGWeave(Stardiver) &&
                         LoTDActive &&
-                        !HasStatusEffect(Buffs.StarcrossReady) &&
-                        (IsNotEnabled(CustomComboPreset.DRG_AoE_Stardiver_Melee) ||
-                         IsEnabled(CustomComboPreset.DRG_AoE_Stardiver_Melee) && InMeleeRange()))
+                        !HasStatusEffect(Buffs.StarcrossReady))
                         return Stardiver;
 
                     //Starcross Feature
@@ -645,9 +665,10 @@ internal partial class DRG : Melee
                         ActionReady(MirageDive) &&
                         CanDRGWeave(MirageDive) &&
                         HasStatusEffect(Buffs.DiveReady) &&
-                        ((TraitLevelChecked(Traits.LifeOfTheDragon) &&
-                          (LoTDActive || GetStatusEffectRemainingTime(Buffs.DiveReady) <= 3)) ||
-                         !TraitLevelChecked(Traits.LifeOfTheDragon)))
+                        (OriginalHook(Jump) is MirageDive) &&
+                        (LoTDActive ||
+                         (GetStatusEffectRemainingTime(Buffs.DiveReady) <= 1.2f &&
+                          GetCooldownRemainingTime(Geirskogul) > 3)))
                         return MirageDive;
 
                     //Nastrond Feature
@@ -701,7 +722,7 @@ internal partial class DRG : Melee
 
     internal class DRG_BurstCDFeature : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.DRG_BurstCDFeature;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.DRG_BurstCDFeature;
 
         protected override uint Invoke(uint actionID) =>
             actionID is LanceCharge && IsOnCooldown(LanceCharge) && ActionReady(BattleLitany)

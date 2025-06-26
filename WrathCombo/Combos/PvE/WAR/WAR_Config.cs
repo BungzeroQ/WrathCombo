@@ -99,7 +99,13 @@ internal partial class WAR
             WAR_AoE_Onslaught_Distance = new("WAR_AoE_Ons_Distance", 3.0f),
             WAR_AoE_PrimalRend_Distance = new("WAR_AoE_PR_Distance", 3.0f),
             WAR_FC_Onslaught_Distance = new("WAR_FC_Ons_Distance", 3.0f),
-            WAR_FC_PrimalRend_Distance = new("WAR_FC_PR_Distance", 3.0f);
+            WAR_FC_PrimalRend_Distance = new("WAR_FC_PR_Distance", 3.0f),
+            WAR_ST_Onslaught_TimeStill = new("WAR_ST_Onslaught_TimeStill", 0),
+            WAR_ST_PrimalRend_TimeStill = new("WAR_ST_PrimalRend_TimeStill", 0),
+            WAR_AoE_Onslaught_TimeStill = new("WAR_AoE_Onslaught_TimeStill", 0),
+            WAR_AoE_PrimalRend_TimeStill = new("WAR_AoE_PrimalRend_TimeStill", 0),
+            WAR_FC_Onslaught_TimeStill = new("WAR_FC_Onslaught_TimeStill", 0),
+            WAR_FC_PrimalRend_TimeStill = new("WAR_FC_PrimalRend_TimeStill", 0);
 
         public static UserIntArray
             WAR_Mit_Priorities = new("WAR_Mit_Priorities");
@@ -136,11 +142,18 @@ internal partial class WAR
                     UserConfig.DrawHorizontalRadioButton(WAR_ST_Onslaught_Movement,
                             "Any Movement", "Uses Onslaught regardless of any movement conditions.\nNOTE: This could possibly get you killed", 1);
                     ImGui.Spacing();
+                    if (WAR_ST_Onslaught_Movement == 0)
+                    {
+                        ImGui.SetCursorPosX(48);
+                        UserConfig.DrawSliderFloat(0, 3, WAR_ST_Onslaught_TimeStill,
+                            " Stationary Delay Check (in seconds):", decimals: 1);
+                    }
+                    ImGui.SetCursorPosX(48);
                     UserConfig.DrawSliderInt(0, 2, WAR_ST_Onslaught_Charges,
                         " How many charges to keep ready?\n (0 = Use All)");
                     ImGui.SetCursorPosX(48);
                     UserConfig.DrawSliderFloat(1, 20, WAR_ST_Onslaught_Distance,
-                        " Use when Distance from target is less than or equal to:");
+                        " Use when Distance from target is less than or equal to:", decimals: 1);
                     break;
 
                 case CustomComboPreset.WAR_ST_Infuriate:
@@ -166,9 +179,15 @@ internal partial class WAR
                     UserConfig.DrawHorizontalRadioButton(WAR_ST_PrimalRend_Movement,
                         "Any Movement", "Uses Primal Rend regardless of any movement conditions.\nNOTE: This could possibly get you killed", 1);
                     ImGui.Spacing();
+                    if (WAR_ST_PrimalRend_Movement == 0)
+                    {
+                        ImGui.SetCursorPosX(48);
+                        UserConfig.DrawSliderFloat(0, 3, WAR_ST_PrimalRend_TimeStill,
+                            " Stationary Delay Check (in seconds):", decimals: 1);
+                    }
                     ImGui.SetCursorPosX(48);
                     UserConfig.DrawSliderFloat(1, 20, WAR_ST_PrimalRend_Distance,
-                        " Use when Distance from target is less than or equal to:");
+                        " Use when Distance from target is less than or equal to:", decimals: 1);
                     break;
                 #endregion
 
@@ -197,11 +216,17 @@ internal partial class WAR
                     UserConfig.DrawHorizontalRadioButton(WAR_AoE_Onslaught_Movement,
                             "Any Movement", "Uses Onslaught regardless of any movement conditions.\nNOTE: This could possibly get you killed", 1);
                     ImGui.Spacing();
+                    if (WAR_AoE_Onslaught_Movement == 0) 
+                    {
+                        ImGui.SetCursorPosX(48);
+                        UserConfig.DrawSliderFloat(0, 3, WAR_AoE_Onslaught_TimeStill,
+                            " Stationary Delay Check (in seconds):", decimals: 1);
+                    }
                     UserConfig.DrawSliderInt(0, 2, WAR_AoE_Onslaught_Charges,
                         " How many charges to keep ready?\n (0 = Use All)");
                     ImGui.SetCursorPosX(48);
                     UserConfig.DrawSliderFloat(1, 20, WAR_AoE_Onslaught_Distance,
-                        " Use when Distance from target is less than or equal to:");
+                        " Use when Distance from target is less than or equal to:", decimals: 1);
                     break;
 
                 case CustomComboPreset.WAR_AoE_PrimalRend:
@@ -215,9 +240,15 @@ internal partial class WAR
                     UserConfig.DrawHorizontalRadioButton(WAR_AoE_PrimalRend_Movement,
                         "Any Movement", "Uses Primal Rend regardless of any movement conditions.\nNOTE: This could possibly get you killed", 1);
                     ImGui.Spacing();
+                    if (WAR_AoE_PrimalRend_Movement == 0)
+                    {
+                        ImGui.SetCursorPosX(48);
+                        UserConfig.DrawSliderFloat(0, 3, WAR_AoE_PrimalRend_TimeStill,
+                            " Stationary Delay Check (in seconds):", decimals: 1);
+                    }
                     ImGui.SetCursorPosX(48);
                     UserConfig.DrawSliderFloat(1, 20, WAR_AoE_PrimalRend_Distance,
-                        " Use when Distance from target is less than or equal to:");
+                        " Use when Distance from target is less than or equal to:", decimals: 1);
                     break;
 
                 case CustomComboPreset.WAR_AoE_Orogeny:
@@ -454,11 +485,17 @@ internal partial class WAR
                     UserConfig.DrawHorizontalRadioButton(WAR_FC_Onslaught_Movement,
                         "Any Movement", "Uses Onslaught regardless of any movement conditions.\nNOTE: This could possibly get you killed", 1);
                     ImGui.Spacing();
+                    if (WAR_FC_Onslaught_Movement == 0)
+                    {
+                        ImGui.SetCursorPosX(48);
+                        UserConfig.DrawSliderFloat(0, 3, WAR_FC_Onslaught_TimeStill,
+                            " Stationary Delay Check (in seconds):", decimals: 1);
+                    }
                     UserConfig.DrawSliderInt(0, 2, WAR_FC_Onslaught_Charges,
                         " How many charges to keep ready?\n (0 = Use All)");
                     ImGui.SetCursorPosX(48);
                     UserConfig.DrawSliderFloat(1, 20, WAR_FC_Onslaught_Distance,
-                        " Use when Distance from target is less than or equal to:");
+                        " Use when Distance from target is less than or equal to:", decimals: 1);
                     break;
 
                 case CustomComboPreset.WAR_FC_Infuriate:
@@ -479,9 +516,15 @@ internal partial class WAR
                     UserConfig.DrawHorizontalRadioButton(WAR_FC_PrimalRend_Movement,
                         "Any Movement", "Uses Primal Rend regardless of any movement conditions.\nNOTE: This could possibly get you killed", 1);
                     ImGui.Spacing();
+                    if (WAR_FC_PrimalRend_Movement == 0)
+                    {
+                        ImGui.SetCursorPosX(48);
+                        UserConfig.DrawSliderFloat(0, 3, WAR_FC_PrimalRend_TimeStill,
+                            " Stationary Delay Check (in seconds):", decimals: 1);
+                    }
                     ImGui.SetCursorPosX(48);
                     UserConfig.DrawSliderFloat(1, 20, WAR_FC_PrimalRend_Distance,
-                        " Use when Distance from target is less than or equal to:");
+                        " Use when Distance from target is less than or equal to:", decimals: 1);
                     break;
 
                 case CustomComboPreset.WAR_ST_Simple:
@@ -515,10 +558,11 @@ internal partial class WAR
                         " Player HP% to be less than or equal to:", 200);
                     break;
 
-                case CustomComboPreset.WAR_Bloodwhetting_Targeting_TT:
+                case CustomComboPreset.WAR_RawIntuition_Targeting_TT:
                     ImGui.Indent();
                     ImGuiEx.TextWrapped(ImGuiColors.DalamudGrey,
                         "Note: If you are Off-Tanking, and want to use Bloodwhetting on yourself, the expectation would be that you do so via the One-Button Mitigation Feature or the Mitigation options in your rotation.\n" +
+                        "You could also mouseover yourself in the party to use Bloodwhetting or raw Intuition in this case.\n" +
                         "If you don't, Nascent Flash would replace the combo, and it would go to the main tank.\n" +
                         "If you don't use those Features for your personal mitigation, you may not want to enable this.");
                     ImGui.Unindent();

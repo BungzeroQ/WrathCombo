@@ -7,7 +7,7 @@ internal partial class SAM : Melee
 {
     internal class SAM_ST_GeckoCombo : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SAM_ST_GekkoCombo;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.SAM_ST_GekkoCombo;
 
         protected override uint Invoke(uint actionID)
         {
@@ -36,7 +36,7 @@ internal partial class SAM : Melee
 
     internal class SAM_ST_KashaCombo : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SAM_ST_KashaCombo;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.SAM_ST_KashaCombo;
 
         protected override uint Invoke(uint actionID)
         {
@@ -65,7 +65,7 @@ internal partial class SAM : Melee
 
     internal class SAM_ST_YukikazeCombo : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SAM_ST_YukikazeCombo;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.SAM_ST_YukikazeCombo;
 
         protected override uint Invoke(uint actionID)
         {
@@ -88,7 +88,7 @@ internal partial class SAM : Melee
 
     internal class SAM_ST_SimpleMode : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SAM_ST_SimpleMode;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.SAM_ST_SimpleMode;
 
         protected override uint Invoke(uint actionID)
         {
@@ -103,8 +103,11 @@ internal partial class SAM : Melee
             if (Variant.CanCure(CustomComboPreset.SAM_Variant_Cure, SAM_VariantCure))
                 return Variant.Cure;
 
-            if (Variant.CanRampart(CustomComboPreset.SAM_Variant_Rampart, WeaveTypes.Weave))
+            if (Variant.CanRampart(CustomComboPreset.SAM_Variant_Rampart))
                 return Variant.Rampart;
+
+            if (OccultCrescent.ShouldUsePhantomActions())
+                return OccultCrescent.BestPhantomAction();
 
             if (ActionReady(Enpi) &&
                 !InMeleeRange() &&
@@ -246,7 +249,7 @@ internal partial class SAM : Melee
 
     internal class SAM_ST_AdvancedMode : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SAM_ST_AdvancedMode;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.SAM_ST_AdvancedMode;
 
         protected override uint Invoke(uint actionID)
         {
@@ -272,8 +275,11 @@ internal partial class SAM : Melee
             if (Variant.CanCure(CustomComboPreset.SAM_Variant_Cure, SAM_VariantCure))
                 return Variant.Cure;
 
-            if (Variant.CanRampart(CustomComboPreset.SAM_Variant_Rampart, WeaveTypes.Weave))
+            if (Variant.CanRampart(CustomComboPreset.SAM_Variant_Rampart))
                 return Variant.Rampart;
+
+            if (OccultCrescent.ShouldUsePhantomActions())
+                return OccultCrescent.BestPhantomAction();
 
             if (IsEnabled(CustomComboPreset.SAM_ST_RangedUptime) &&
                 ActionReady(Enpi) && !InMeleeRange() && HasBattleTarget())
@@ -447,7 +453,7 @@ internal partial class SAM : Melee
 
     internal class SAM_AoE_OkaCombo : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SAM_AoE_OkaCombo;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.SAM_AoE_OkaCombo;
 
         protected override uint Invoke(uint actionID)
         {
@@ -470,7 +476,7 @@ internal partial class SAM : Melee
 
     internal class SAM_AoE_MangetsuCombo : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SAM_AoE_MangetsuCombo;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.SAM_AoE_MangetsuCombo;
 
         protected override uint Invoke(uint actionID)
         {
@@ -492,7 +498,7 @@ internal partial class SAM : Melee
 
     internal class SAM_AoE_SimpleMode : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SAM_AoE_SimpleMode;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.SAM_AoE_SimpleMode;
 
         protected override uint Invoke(uint actionID)
         {
@@ -504,6 +510,9 @@ internal partial class SAM : Melee
 
             if (Variant.CanRampart(CustomComboPreset.SAM_Variant_Rampart))
                 return Variant.Rampart;
+
+            if (OccultCrescent.ShouldUsePhantomActions())
+                return OccultCrescent.BestPhantomAction();
 
             //oGCD Features
             if (CanWeave() && !HasDoubleWeaved() && M6SReady)
@@ -597,7 +606,7 @@ internal partial class SAM : Melee
 
     internal class SAM_AoE_AdvancedMode : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SAM_AoE_AdvancedMode;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.SAM_AoE_AdvancedMode;
 
         protected override uint Invoke(uint actionID)
         {
@@ -611,6 +620,9 @@ internal partial class SAM : Melee
 
             if (Variant.CanRampart(CustomComboPreset.SAM_Variant_Rampart))
                 return Variant.Rampart;
+
+            if (OccultCrescent.ShouldUsePhantomActions())
+                return OccultCrescent.BestPhantomAction();
 
             //oGCD Features
             if (CanWeave() && !HasDoubleWeaved() && M6SReady)
@@ -746,7 +758,7 @@ internal partial class SAM : Melee
 
     internal class SAM_Iaijutsu : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SAM_Iaijutsu;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.SAM_Iaijutsu;
 
         protected override uint Invoke(uint actionID)
         {
@@ -783,7 +795,7 @@ internal partial class SAM : Melee
 
     internal class SAM_Shinten : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SAM_Shinten;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.SAM_Shinten;
 
         protected override uint Invoke(uint actionID)
         {
@@ -808,7 +820,7 @@ internal partial class SAM : Melee
 
     internal class SAM_Kyuten : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SAM_Kyuten;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.SAM_Kyuten;
 
         protected override uint Invoke(uint actionID)
         {
@@ -832,7 +844,7 @@ internal partial class SAM : Melee
 
     internal class SAM_Ikishoten : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SAM_Ikishoten;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.SAM_Ikishoten;
 
         protected override uint Invoke(uint actionID)
         {
@@ -855,7 +867,7 @@ internal partial class SAM : Melee
 
     internal class SAM_GyotenYaten : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SAM_GyotenYaten;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.SAM_GyotenYaten;
 
         protected override uint Invoke(uint actionID)
         {
@@ -874,7 +886,7 @@ internal partial class SAM : Melee
 
     internal class SAM_MeikyoShisuiProtection : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SAM_MeikyoShisuiProtection;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.SAM_MeikyoShisuiProtection;
 
         protected override uint Invoke(uint actionID) =>
             actionID is MeikyoShisui &&
@@ -886,7 +898,7 @@ internal partial class SAM : Melee
 
     internal class SAM_SeneiGuren : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.SAM_SeneiGuren;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.SAM_SeneiGuren;
 
         protected override uint Invoke(uint actionID) =>
             actionID is Senei && !LevelChecked(Senei)

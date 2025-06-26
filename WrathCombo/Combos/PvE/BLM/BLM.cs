@@ -8,7 +8,7 @@ internal partial class BLM : Caster
 {
     internal class BLM_ST_SimpleMode : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_ST_SimpleMode;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.BLM_ST_SimpleMode;
 
         protected override uint Invoke(uint actionID)
         {
@@ -20,6 +20,9 @@ internal partial class BLM : Caster
 
             if (Variant.CanRampart(CustomComboPreset.BLM_Variant_Rampart))
                 return Variant.Rampart;
+
+            if (OccultCrescent.ShouldUsePhantomActions())
+                return OccultCrescent.BestPhantomAction();
 
             if (CanSpellWeave() && !HasDoubleWeaved())
             {
@@ -175,7 +178,7 @@ internal partial class BLM : Caster
 
     internal class BLM_ST_AdvancedMode : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_ST_AdvancedMode;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.BLM_ST_AdvancedMode;
 
         protected override uint Invoke(uint actionID)
         {
@@ -187,6 +190,9 @@ internal partial class BLM : Caster
 
             if (Variant.CanRampart(CustomComboPreset.BLM_Variant_Rampart))
                 return Variant.Rampart;
+
+            if (OccultCrescent.ShouldUsePhantomActions())
+                return OccultCrescent.BestPhantomAction();
 
             // Opener
             if (IsEnabled(CustomComboPreset.BLM_ST_Opener) &&
@@ -378,7 +384,7 @@ internal partial class BLM : Caster
 
     internal class BLM_AoE_SimpleMode : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_AoE_SimpleMode;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.BLM_AoE_SimpleMode;
 
         protected override uint Invoke(uint actionID)
         {
@@ -390,6 +396,9 @@ internal partial class BLM : Caster
 
             if (Variant.CanRampart(CustomComboPreset.BLM_Variant_Rampart))
                 return Variant.Rampart;
+
+            if (OccultCrescent.ShouldUsePhantomActions())
+                return OccultCrescent.BestPhantomAction();
 
             if (CanSpellWeave() && !HasDoubleWeaved())
             {
@@ -465,7 +474,7 @@ internal partial class BLM : Caster
 
     internal class BLM_AoE_AdvancedMode : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_AoE_AdvancedMode;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.BLM_AoE_AdvancedMode;
 
         protected override uint Invoke(uint actionID)
         {
@@ -477,6 +486,10 @@ internal partial class BLM : Caster
 
             if (Variant.CanRampart(CustomComboPreset.BLM_Variant_Rampart))
                 return Variant.Rampart;
+
+            if (OccultCrescent.ShouldUsePhantomActions())
+                return OccultCrescent.BestPhantomAction();
+
 
             if (CanSpellWeave() && !HasDoubleWeaved())
             {
@@ -573,7 +586,7 @@ internal partial class BLM : Caster
 
     internal class BLM_Variant_Raise : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_Variant_Raise;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.BLM_Variant_Raise;
 
         protected override uint Invoke(uint actionID) =>
             actionID == Role.Swiftcast && Variant.CanRaise(CustomComboPreset.BLM_Variant_Raise)
@@ -583,7 +596,7 @@ internal partial class BLM : Caster
 
     internal class BLM_ScatheXeno : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_ScatheXeno;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.BLM_ScatheXeno;
 
         protected override uint Invoke(uint actionID) =>
             actionID is Scathe && LevelChecked(Xenoglossy) && HasPolyglotStacks()
@@ -593,7 +606,7 @@ internal partial class BLM : Caster
 
     internal class BLM_Blizzard1to3 : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_Blizzard1to3;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.BLM_Blizzard1to3;
 
         protected override uint Invoke(uint actionID)
         {
@@ -721,7 +734,7 @@ internal partial class BLM : Caster
 
     internal class BLM_AmplifierXeno : CustomCombo
     {
-        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_AmplifierXeno;
+        protected internal override CustomComboPreset Preset => CustomComboPreset.BLM_AmplifierXeno;
         protected override uint Invoke(uint actionID) =>
             actionID is Amplifier && HasMaxPolyglotStacks
                 ? Xenoglossy
