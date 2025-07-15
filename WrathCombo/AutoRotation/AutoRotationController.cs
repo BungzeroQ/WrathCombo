@@ -301,8 +301,8 @@ namespace WrathCombo.AutoRotation
 
             if (Player.Object.CurrentMp >= GetResourceCost(resSpell) && ActionReady(resSpell))
             {
-                var timeSinceLastRez = TimeSpan.FromMilliseconds(TimeSinceLastSuccessfulCast(resSpell));
-                if ((TimeSinceLastSuccessfulCast(resSpell) != -1f && timeSinceLastRez.TotalSeconds < 4) || Player.Object.IsCasting())
+                var timeSinceLastRez = TimeSinceLastSuccessfulCast(resSpell);
+                if ((timeSinceLastRez != -1f && timeSinceLastRez < 4f) || Player.Object.IsCasting())
                     return;
 
                 if (DeadPeople.Where(RezQuery).FindFirst(x => x is not null, out var member))
@@ -513,7 +513,7 @@ namespace WrathCombo.AutoRotation
                 {
 
                     var target = !cfg.DPSSettings.AoEIgnoreManual && cfg.DPSRotationMode == DPSRotationMode.Manual ? Svc.Targets.Target : DPSTargeting.BaseSelection.MaxBy(x => NumberOfEnemiesInRange(OriginalHook(gameAct), x, true));
-                    var numEnemies = NumberOfEnemiesInRange(gameAct, target, true);
+                    var numEnemies = NumberOfEnemiesInRange(OriginalHook(gameAct), target, true);
                     if (!_ninjaLockedAoE)
                     {
                         if (cfg.DPSSettings.DPSAoETargets == null || numEnemies < cfg.DPSSettings.DPSAoETargets)
