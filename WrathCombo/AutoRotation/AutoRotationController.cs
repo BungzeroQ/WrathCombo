@@ -1,4 +1,5 @@
-﻿using Dalamud.Game.ClientState.Objects.Types;
+﻿using Dalamud.Game.ClientState.Conditions;
+using Dalamud.Game.ClientState.Objects.Types;
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
@@ -83,9 +84,51 @@ namespace WrathCombo.AutoRotation
             return !cfg.Enabled
                 || !Player.Available
                 || Player.Object.IsDead
-                || GenericHelpers.IsOccupied()
+                || IsOccupied()
                 || Player.Mounted
                 || !EzThrottler.Throttle("Autorot", cfg.Throttler);
+        }
+
+        private static bool IsOccupied()
+        {
+            //Mirror of Ecommons version without some conditions that hang autorot in combat
+            return Svc.Condition[ConditionFlag.Occupied]
+               || Svc.Condition[ConditionFlag.Occupied30]
+               || Svc.Condition[ConditionFlag.Occupied33]
+               || Svc.Condition[ConditionFlag.Occupied38]
+               || Svc.Condition[ConditionFlag.Occupied39]
+               || Svc.Condition[ConditionFlag.OccupiedInCutSceneEvent]
+               || Svc.Condition[ConditionFlag.OccupiedInEvent]
+               || Svc.Condition[ConditionFlag.OccupiedInQuestEvent]
+               || Svc.Condition[ConditionFlag.OccupiedSummoningBell]
+               || Svc.Condition[ConditionFlag.WatchingCutscene]
+               || Svc.Condition[ConditionFlag.WatchingCutscene78]
+               || Svc.Condition[ConditionFlag.BetweenAreas]
+               || Svc.Condition[ConditionFlag.BetweenAreas51]
+               || Svc.Condition[ConditionFlag.InThatPosition]
+               || Svc.Condition[ConditionFlag.Crafting]
+               || Svc.Condition[ConditionFlag.ExecutingCraftingAction]
+               || Svc.Condition[ConditionFlag.PreparingToCraft]
+               || Svc.Condition[ConditionFlag.InThatPosition]
+               || Svc.Condition[ConditionFlag.Unconscious]
+               || Svc.Condition[ConditionFlag.MeldingMateria]
+               || Svc.Condition[ConditionFlag.Gathering]
+               || Svc.Condition[ConditionFlag.OperatingSiegeMachine]
+               || Svc.Condition[ConditionFlag.CarryingItem]
+               || Svc.Condition[ConditionFlag.CarryingObject]
+               || Svc.Condition[ConditionFlag.BeingMoved]
+               || Svc.Condition[ConditionFlag.Mounted2]
+               || Svc.Condition[ConditionFlag.Mounting]
+               || Svc.Condition[ConditionFlag.Mounting71]
+               || Svc.Condition[ConditionFlag.ParticipatingInCustomMatch]
+               || Svc.Condition[ConditionFlag.PlayingLordOfVerminion]
+               || Svc.Condition[ConditionFlag.ChocoboRacing]
+               || Svc.Condition[ConditionFlag.PlayingMiniGame]
+               || Svc.Condition[ConditionFlag.Performing]
+               || Svc.Condition[ConditionFlag.PreparingToCraft]
+               || Svc.Condition[ConditionFlag.Fishing]
+               || Svc.Condition[ConditionFlag.UsingHousingFunctions]
+               || Svc.ClientState.LocalPlayer?.IsTargetable != true;
         }
 
         internal static void Run()
@@ -355,7 +398,7 @@ namespace WrathCombo.AutoRotation
             if (ActionManager.Instance()->QueuedActionId == RoleActions.Healer.Esuna)
                 ActionManager.Instance()->QueuedActionId = 0;
 
-            if (GetPartyMembers().FindFirst(x => HasCleansableDebuff(x.BattleChara), out var member))
+            if (GetPartyMembers().FindFirst(x => HasCleansableDebuff(x.BattleChara) && x.GameObject.IsFriendly(), out var member))
             {
                 if (InActionRange(RoleActions.Healer.Esuna, member.BattleChara) && IsInLineOfSight(member.BattleChara))
                     ActionManager.Instance()->UseAction(ActionType.Action, RoleActions.Healer.Esuna, member.BattleChara.GameObjectId);
