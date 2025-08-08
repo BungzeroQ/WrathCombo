@@ -462,7 +462,7 @@ internal partial class PLD : Tank
                 // Weavables
                 if (canWeave)
                 {
-                    if (InMeleeRange())
+                    if (LevelChecked(Imperator))
                     {
                         // Requiescat
                         if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_Requiescat) && ActionReady(Requiescat) && cooldownFightOrFlight > 50)
@@ -489,7 +489,38 @@ internal partial class PLD : Tank
                             else if (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave && (ComboAction is RoyalAuthority || afterOpener))
                                 return OriginalHook(FightOrFlight);
                         }
+                    }
+                    else if (InMeleeRange())
+                    {
+                        // Requiescat
+                        if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_Requiescat) && ActionReady(Requiescat) && cooldownFightOrFlight > 50)
+                            return OriginalHook(Requiescat);
 
+                        // Fight or Flight
+                        if (IsEnabled(CustomComboPreset.PLD_ST_AdvancedMode_FoF) && canFightOrFlight && GetTargetHPPercent() >= Config.PLD_ST_FoF_Trigger)
+                        {
+                            if (!LevelChecked(Requiescat))
+                            {
+                                if (!LevelChecked(RageOfHalone))
+                                {
+                                    // Level 2-25
+                                    if (ComboAction is FastBlade)
+                                        return OriginalHook(FightOrFlight);
+                                }
+
+                                // Level 26-67
+                                else if (ComboAction is RiotBlade)
+                                    return OriginalHook(FightOrFlight);
+                            }
+
+                            // Level 68+
+                            else if (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave && (ComboAction is RoyalAuthority || afterOpener))
+                                return OriginalHook(FightOrFlight);
+                        }
+                    }
+
+                    if (InMeleeRange())
+                    {
                         // Variant Ultimatum
                         if (Variant.CanUltimatum(CustomComboPreset.PLD_Variant_Ultimatum))
                             return Variant.Ultimatum;
