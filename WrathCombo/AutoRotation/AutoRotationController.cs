@@ -654,9 +654,6 @@ namespace WrathCombo.AutoRotation
 
                 var canUse = (canUseSelf || canUseTarget || areaTargeted) && outAct.ActionAttackType() is { } type && (type is ActionAttackType.Ability || type is not ActionAttackType.Ability && RemainingGCD == 0);
 
-                if (canUse || cfg.DPSSettings.AlwaysSelectTarget)
-                    Svc.Targets.Target = target;
-
                 var castTime = ActionManager.GetAdjustedCastTime(ActionType.Action, outAct);
                 bool orbwalking = cfg.OrbwalkerIntegration && OrbwalkerIPC.CanOrbwalk;
                 if (TimeMoving.TotalMilliseconds > 0 && castTime > 0 && !orbwalking)
@@ -664,6 +661,7 @@ namespace WrathCombo.AutoRotation
 
                 if (canUse && (inRange || areaTargeted))
                 {
+                    Svc.Targets.Target = target;
                     var ret = ActionManager.Instance()->UseAction(ActionType.Action, Service.ActionReplacer.getActionHook.IsEnabled ? gameAct : outAct, canUseTarget || areaTargeted ? target.GameObjectId : Player.Object.GameObjectId);
                     if (mode is HealerRotationMode && ret)
                         LastHealAt = Environment.TickCount64 + castTime;
@@ -825,7 +823,10 @@ namespace WrathCombo.AutoRotation
             {
                 if (Svc.Targets.Target == null) return null;
                 var t = Svc.Targets.Target;
-                bool goodToHeal = GetTargetHPPercent(t) <= (TargetHasRegen(t) ? cfg.HealerSettings.SingleTargetRegenHPP : cfg.HealerSettings.SingleTargetHPP);
+                bool goodToHeal = GetTargetHPPercent(t) <= 
+                                  (TargetHasExcog(t) ? cfg.HealerSettings.SingleTargetExcogHPP : 
+                                  TargetHasRegen(t) ? cfg.HealerSettings.SingleTargetRegenHPP : 
+                                  cfg.HealerSettings.SingleTargetHPP);
                 if (goodToHeal && !t.IsHostile())
                 {
                     return t;
@@ -839,7 +840,10 @@ namespace WrathCombo.AutoRotation
                     .Where(x => !x.BattleChara.IsDead &&
                         x.BattleChara.IsTargetable &&
                         GetTargetDistance(x.BattleChara) <= QueryRange &&
-                        GetTargetHPPercent(x.BattleChara) <= (TargetHasRegen(x.BattleChara) ? cfg.HealerSettings.SingleTargetRegenHPP : cfg.HealerSettings.SingleTargetHPP) &&
+                        GetTargetHPPercent(x.BattleChara) <= 
+                        (TargetHasExcog(x.BattleChara) ? cfg.HealerSettings.SingleTargetExcogHPP : 
+                        TargetHasRegen(x.BattleChara) ? cfg.HealerSettings.SingleTargetRegenHPP : 
+                        cfg.HealerSettings.SingleTargetHPP) &&
                         IsInLineOfSight(x.BattleChara))
                     .OrderByDescending(x => GetTargetHPPercent(x.BattleChara)).FirstOrDefault();
                 return target?.BattleChara;
@@ -852,7 +856,10 @@ namespace WrathCombo.AutoRotation
                     .Where(x => !x.BattleChara.IsDead &&
                         x.BattleChara.IsTargetable &&
                         GetTargetDistance(x.BattleChara) <= QueryRange &&
-                        GetTargetHPPercent(x.BattleChara) <= (TargetHasRegen(x.BattleChara) ? cfg.HealerSettings.SingleTargetRegenHPP : cfg.HealerSettings.SingleTargetHPP) &&
+                        GetTargetHPPercent(x.BattleChara) <= 
+                        (TargetHasExcog(x.BattleChara) ? cfg.HealerSettings.SingleTargetExcogHPP : 
+                        TargetHasRegen(x.BattleChara) ? cfg.HealerSettings.SingleTargetRegenHPP : 
+                        cfg.HealerSettings.SingleTargetHPP) &&
                         IsInLineOfSight(x.BattleChara))
                     .OrderBy(x => GetTargetHPPercent(x.BattleChara)).FirstOrDefault();
                 return target?.BattleChara;
@@ -868,7 +875,7 @@ namespace WrathCombo.AutoRotation
                             !x.BattleChara.IsDead &&
                             x.BattleChara.IsTargetable &&
                             (outAct == 0
-                                ? GetTargetDistance(x.BattleChara) <= 15f
+                                ? GetTargetDistance(x.BattleChara) <= 20f
                                 : InActionRange(outAct, x.BattleChara)) &&
                             GetTargetHPPercent(x.BattleChara) <= cfg.HealerSettings.AoETargetHPP);
                     memberCount = members.Count();
@@ -888,6 +895,15 @@ namespace WrathCombo.AutoRotation
                 {
                     AST.JobID => HasStatusEffect(AST.Buffs.AspectedBenefic, target, true),
                     WHM.JobID => HasStatusEffect(WHM.Buffs.Regen, target, true),
+                    _ => false,
+                };
+            }
+            private static bool TargetHasExcog(IGameObject? target)
+            {
+                if (target is null) return false;
+                return JobID switch
+                {
+                    SCH.JobID => HasStatusEffect(SCH.Buffs.Excogitation, target, true),
                     _ => false,
                 };
             }

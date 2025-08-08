@@ -92,7 +92,10 @@ namespace WrathCombo.Window.Tabs
                     ImGuiComponents.HelpMarker("For all other targeting modes, AoE will target based on highest number of targets hit. In manual mode, it will only do this if you tick this box.");
                 }
 
-                var input = ImGuiEx.InputInt(100f.Scale(), "Targets Required for AoE Damage Features", ref cfg.DPSSettings.DPSAoETargets);
+                
+                P.UIHelper.ShowIPCControlledIndicatorIfNeeded("DPSAoETargets");
+                var input = P.UIHelper.ShowIPCControlledNumberInputIfNeeded(
+                    "Targets Required for AoE Damage Features", ref cfg.DPSSettings.DPSAoETargets, "DPSAoETargets");
                 if (input)
                 {
                     changed |= input;
@@ -191,6 +194,11 @@ namespace WrathCombo.Window.Tabs
                 changed |= P.UIHelper.ShowIPCControlledSliderIfNeeded(
                     "Single Target HP% Threshold (target has Regen/Aspected Benefic)", ref cfg.HealerSettings.SingleTargetRegenHPP, "SingleTargetRegenHPP");
                 ImGuiComponents.HelpMarker("You typically want to set this lower than the above setting.");
+                
+                P.UIHelper.ShowIPCControlledIndicatorIfNeeded("SingleTargetExcogHPP");
+                changed |= P.UIHelper.ShowIPCControlledSliderIfNeeded(
+                    "Single Target HP% Threshold (target has Excogitation)", ref cfg.HealerSettings.SingleTargetExcogHPP, "SingleTargetExcogHPP");
+                ImGuiComponents.HelpMarker("You typically want to set this lower than the above setting.");
 
                 P.UIHelper.ShowIPCControlledIndicatorIfNeeded("AoETargetHPP");
                 changed |= P.UIHelper.ShowIPCControlledSliderIfNeeded(
@@ -221,7 +229,9 @@ namespace WrathCombo.Window.Tabs
                 if (autoRez)
                 {
                     ImGuiExtensions.Prefix(false);
-                    changed |= ImGui.Checkbox("Apply to Out of Party Members", ref cfg.HealerSettings.AutoRezOutOfParty);
+                    P.UIHelper.ShowIPCControlledIndicatorIfNeeded("AutoRezOutOfParty");
+                    changed |= P.UIHelper.ShowIPCControlledCheckboxIfNeeded(
+                        "Apply to Out of Party Members", ref cfg.HealerSettings.AutoRezOutOfParty, "AutoRezOutOfParty");
 
                     ImGuiExtensions.Prefix(false);
                     changed |= ImGui.Checkbox("Require Swiftcast/Dualcast", ref
@@ -266,9 +276,12 @@ namespace WrathCombo.Window.Tabs
             changed |= ImGui.InputInt("Throttle Delay (ms)", ref cfg.Throttler);
             ImGuiComponents.HelpMarker("Auto-Rotation has a built in throttler to only run every so many milliseconds for performance reasons. If you experience issues with frame rate, try increasing this value. Do note this may have a side-effect of introducing clipping if set too high, so experiment with the value.");
 
-            using (ImRaii.Disabled(!OrbwalkerIPC.IsEnabled))
+            var orbwalker = (bool)P.IPC.GetAutoRotationConfigState(AutoRotationConfigOption.OrbwalkerIntegration)!;
+            using (ImRaii.Disabled(!orbwalker))
             {
-                changed |= ImGui.Checkbox($"Enable Orbwalker Integration", ref cfg.OrbwalkerIntegration);
+                P.UIHelper.ShowIPCControlledIndicatorIfNeeded("OrbwalkerIntegration");
+                changed |= P.UIHelper.ShowIPCControlledCheckboxIfNeeded(
+                    "Enable Orbwalker Integration", ref cfg.OrbwalkerIntegration, "OrbwalkerIntegration");
 
                 ImGuiComponents.HelpMarker($"This will make Auto-Rotation use actions with cast times even whilst moving, as Orbwalker will lock movement during the cast.");
             }

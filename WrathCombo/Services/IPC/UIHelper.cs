@@ -5,15 +5,14 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Colors;
-using Dalamud.Interface.Utility;
-using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.ImGuiMethods;
-using Dalamud.Bindings.ImGui;
 using WrathCombo.AutoRotation;
 using WrathCombo.Combos;
 using WrathCombo.CustomComboNS.Functions;
+
 // ReSharper disable VariableHidesOuterVariable
 
 #endregion
@@ -121,7 +120,8 @@ public class UIHelper(Leasing leasing)
 
     private DateTime? _presetsUpdated;
 
-    private ConcurrentDictionary<string, (string controllers, bool enabled, bool autoMode)>
+    private ConcurrentDictionary<string, (string controllers, bool enabled, bool
+            autoMode)>
         PresetsControlled { get; } = new();
 
     internal (string controllers, bool enabled, bool autoMode)?
@@ -496,7 +496,6 @@ public class UIHelper(Leasing leasing)
 
             if (controlled is null)
             {
-                ImGuiEx.SetNextItemWidthScaled(200);
                 return DefaultUI(label, ref backupVar);
             }
         }
@@ -595,6 +594,54 @@ public class UIHelper(Leasing leasing)
         return false;
     }
 
+    private bool ShowIPCControlledNumberInput
+        (string label, ref int? backupVar, string? forAutoRotationConfig = null)
+    {
+        bool DefaultUI(string label, ref int? backupVar)
+        {
+            return ImGuiEx.InputInt(100f.Scale(), label, ref backupVar);
+        }
+
+        (string controllers, int state)? controlled = null;
+
+        #region Bail if not needed
+
+        try
+        {
+            if (forAutoRotationConfig is not null)
+                controlled = AutoRotationConfigControlled(forAutoRotationConfig);
+
+            if (controlled is null)
+            {
+                return DefaultUI(label, ref backupVar);
+            }
+        }
+        catch (Exception e)
+        {
+            Logging.Error("Error in UIHelper.\n" + e.Message);
+            return DefaultUI(label, ref backupVar);
+        }
+
+        #endregion
+
+        ImGui.BeginGroup();
+        ImGui.PushStyleColor(ImGuiCol.FrameBg, _backgroundColor);
+        ImGui.PushStyleColor(ImGuiCol.TextDisabled, _textColor);
+
+        var _ = controlled?.state;
+        ImGui.BeginDisabled();
+        ImGuiEx.InputInt(100f.Scale(), label, ref _);
+        ImGui.EndDisabled();
+
+        ImGui.PopStyleColor(2);
+        ImGui.EndGroup();
+
+        if (ImGui.IsItemHovered())
+            ImGui.SetTooltip(OptionTooltip);
+
+        return false;
+    }
+
     /// <summary>
     ///     Button click method for Indicator to cancel plugin control.
     /// </summary>
@@ -663,6 +710,11 @@ public class UIHelper(Leasing leasing)
         string? configName = null) =>
         ShowIPCControlledCombo(
             label, useDPSVar, ref dpsVar, ref healVar,
+            forAutoRotationConfig: configName);
+    
+    public bool ShowIPCControlledNumberInputIfNeeded
+    (string label, ref int? backupVar, string configName) =>
+        ShowIPCControlledNumberInput(label, ref backupVar,
             forAutoRotationConfig: configName);
 
     #endregion

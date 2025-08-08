@@ -52,7 +52,7 @@ internal partial class BLM
             : Blizzard;
 
     internal static bool HasMaxUmbralHeartStacks =>
-        !TraitLevelChecked(Traits.UmbralHeart) || UmbralHearts is 3; //Returns true before you can have Umbral Hearts out of design
+        UmbralHearts is 3;
 
     internal static bool HasPolyglotStacks() =>
         PolyglotStacks > 0;
@@ -165,13 +165,10 @@ internal partial class BLM
 
         internal override UserData ContentCheckConfig => Config.BLM_Balance_Content;
 
-        public override List<int> DelayedWeaveSteps { get; set; } =
-        [
-            6
-        ];
+        public override List<int> DelayedWeaveSteps { get; set; } = [6];
 
         public override bool HasCooldowns() =>
-            CurMp == MP.MaxMP &&
+            CurMp is MP.MaxMP &&
             IsOffCooldown(Manafont) &&
             GetRemainingCharges(Triplecast) >= 1 &&
             GetRemainingCharges(LeyLines) >= 1 &&
@@ -221,13 +218,10 @@ internal partial class BLM
 
         internal override UserData ContentCheckConfig => Config.BLM_Balance_Content;
 
-        public override List<int> DelayedWeaveSteps { get; set; } =
-        [
-            6
-        ];
+        public override List<int> DelayedWeaveSteps { get; set; } = [6];
 
         public override bool HasCooldowns() =>
-            CurMp == MP.MaxMP &&
+            CurMp is MP.MaxMP &&
             IsOffCooldown(Manafont) &&
             GetRemainingCharges(Triplecast) >= 1 &&
             GetRemainingCharges(LeyLines) >= 1 &&

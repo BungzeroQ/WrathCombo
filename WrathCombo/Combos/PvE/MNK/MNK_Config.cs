@@ -23,27 +23,26 @@ internal partial class MNK
             MNK_AoE_RiddleOfFire_HP = new("MNK_AoE_RiddleOfFire_HP", 20),
             MNK_AoE_SecondWind_Threshold = new("MNK_AoE_SecondWindThreshold", 40),
             MNK_AoE_Bloodbath_Threshold = new("MNK_AoE_BloodbathThreshold", 30),
-            MNK_VariantCure = new("MNK_Variant_Cure", 50);
+            MNK_VariantCure = new("MNK_Variant_Cure", 50),
+            MNK_BH_RoF = new("MNK_BH_RoF", 0);
 
         #endregion
+
         internal static void Draw(CustomComboPreset preset)
         {
             switch (preset)
             {
-                case CustomComboPreset.MNK_ST_ComboHeals:
-                    DrawSliderInt(0, 100, MNK_ST_SecondWind_Threshold,
-                        $"{Role.SecondWind.ActionName()} HP percentage threshold");
+                case CustomComboPreset.MNK_STUseOpener:
+                    DrawHorizontalRadioButton(MNK_SelectedOpener,
+                        "Double Lunar", "Uses Lunar/Lunar opener",
+                        0);
 
-                    DrawSliderInt(0, 100, MNK_ST_Bloodbath_Threshold,
-                        $"{Role.Bloodbath.ActionName()} HP percentage threshold");
-                    break;
+                    DrawHorizontalRadioButton(MNK_SelectedOpener,
+                        "Solar Lunar", "Uses Solar/Lunar opener",
+                        1);
 
-                case CustomComboPreset.MNK_AoE_ComboHeals:
-                    DrawSliderInt(0, 100, MNK_AoE_SecondWind_Threshold,
-                        $"{Role.SecondWind.ActionName()} HP percentage threshold");
-
-                    DrawSliderInt(0, 100, MNK_AoE_Bloodbath_Threshold,
-                        $"{Role.Bloodbath.ActionName()} HP percentage threshold");
+                    ImGui.NewLine();
+                    DrawBossOnlyChoice(MNK_Balance_Content);
                     break;
 
                 case CustomComboPreset.MNK_STUseBrotherhood:
@@ -70,6 +69,14 @@ internal partial class MNK
                         "Boss encounters Only", $"Only uses {RiddleOfWind.ActionName()} when in Boss encounters.", 1);
                     break;
 
+                case CustomComboPreset.MNK_ST_ComboHeals:
+                    DrawSliderInt(0, 100, MNK_ST_SecondWind_Threshold,
+                        $"{Role.SecondWind.ActionName()} HP percentage threshold");
+
+                    DrawSliderInt(0, 100, MNK_ST_Bloodbath_Threshold,
+                        $"{Role.Bloodbath.ActionName()} HP percentage threshold");
+                    break;
+
                 case CustomComboPreset.MNK_AoEUseBrotherhood:
                     DrawSliderInt(0, 100, MNK_AoE_Brotherhood_HP,
                         $"Stop Using {Brotherhood.ActionName()} When Target HP% is at or Below (Set to 0 to Disable This Check)");
@@ -85,22 +92,25 @@ internal partial class MNK
                         $"Stop Using {RiddleOfWind.ActionName()} When Target HP% is at or Below (Set to 0 to Disable This Check)");
                     break;
 
-                case CustomComboPreset.MNK_STUseOpener:
-                    DrawHorizontalRadioButton(MNK_SelectedOpener,
-                        "Double Lunar", "Uses Lunar/Lunar opener",
-                        0);
+                case CustomComboPreset.MNK_AoE_ComboHeals:
+                    DrawSliderInt(0, 100, MNK_AoE_SecondWind_Threshold,
+                        $"{Role.SecondWind.ActionName()} HP percentage threshold");
 
-                    DrawHorizontalRadioButton(MNK_SelectedOpener,
-                        "Solar Lunar", "Uses Solar/Lunar opener",
-                        1);
-
-                    ImGui.NewLine();
-                    DrawBossOnlyChoice(MNK_Balance_Content);
+                    DrawSliderInt(0, 100, MNK_AoE_Bloodbath_Threshold,
+                        $"{Role.Bloodbath.ActionName()} HP percentage threshold");
                     break;
 
                 case CustomComboPreset.MNK_Variant_Cure:
                     DrawSliderInt(1, 100, MNK_VariantCure,
                         "HP% to be at or under", 200);
+                    break;
+
+                case CustomComboPreset.MNK_Brotherhood_Riddle:
+                    DrawRadioButton(MNK_BH_RoF,
+                        $"Replaces {Brotherhood.ActionName()}", $"Replaces {Brotherhood.ActionName()} with {RiddleOfFire.ActionName()} when {Brotherhood.ActionName()} is on cooldown.", 0);
+
+                    DrawRadioButton(MNK_BH_RoF,
+                        $"Replaces {RiddleOfFire.ActionName()}", $"Replaces {RiddleOfFire.ActionName()} with {Brotherhood.ActionName()}when {RiddleOfFire.ActionName()} is on cooldown.", 1);
                     break;
             }
         }

@@ -152,7 +152,9 @@ namespace WrathCombo.CustomComboNS.Functions
                     if (targetID is 2350) return !HasStatusEffect(398);
 
                     // Allagan Bomb
-                    if (targetID is 2407) return NumberOfObjectsInRange<SelfCircle>(30) > 1;
+                    if (targetID is 2407)
+                        return NumberOfObjectsInRange<SelfCircle>(30,
+                            checkInvincible: false) > 1;
 
                     return false;
                 case 1248:  // Jeuno 1 Ark Angels
@@ -235,6 +237,27 @@ namespace WrathCombo.CustomComboNS.Functions
                 case 821: //Dohn Mheg Final Boss Lyre
                     if (targetID is 3939 && !HasStatusEffect(386))
                         return true; //Unfooled means you can attack the Lyre
+                    return false;
+                
+                case 1292: //Meso Terminal 
+                    // Bloody Headsman = 18576 a
+                    // Pale Headsman = 18577 b
+                    // Ravenous Headsman = 18578 y
+                    // Pestilent Headsman = 18579 d
+                    // Hellmaker = 18642
+                    // Alpha = 4542 Player / 4546 Boss
+                    // Beta = 4543 Player / 4547 Boss
+                    // Gamma = 4544 Player / 4548 Boss
+                    // Delta = 4545 Player / 4549 Boss
+                    
+                    if (targetID is 18576 or 18577 or 18578 or 18579 or 18642)
+                    {
+                        if (HasStatusEffect(3065)) return targetID != 18642; // Hellmaker checking for fire floor debuff
+                        if (HasStatusEffect(4542)) return targetID != 18576; // Alpha
+                        if (HasStatusEffect(4543)) return targetID != 18577; // Beta
+                        if (HasStatusEffect(4544)) return targetID != 18578; // Gamma
+                        if (HasStatusEffect(4545)) return targetID != 18579; // Delta
+                    }
                     return false;
             }
 

@@ -119,9 +119,17 @@ public class DPSSettingsIPCWrapper(DPSSettings settings)
         }
     }
 
-    #region Direct Pass-Throughs (no IPC check)
+    public int? DPSAoETargets
+    {
+        get
+        {
+            var checkControlled =
+                P.UIHelper.AutoRotationConfigControlled("DPSAoETargets");
+            return checkControlled?.state ?? settings.DPSAoETargets;
+        }
+    }
 
-    public int? DPSAoETargets => settings.DPSAoETargets;
+    #region Direct Pass-Throughs (no IPC check)
 
     public bool PreferNonCombat => settings.PreferNonCombat;
 
@@ -144,6 +152,10 @@ public class HealerSettingsIPCWrapper(HealerSettings settings)
         P.UIHelper.AutoRotationConfigControlled("AoETargetHPP")?.state
         ?? settings.AoETargetHPP;
 
+    public int SingleTargetExcogHPP =>
+        P.UIHelper.AutoRotationConfigControlled("SingleTargetExcogHPP")?.state
+        ?? settings.SingleTargetExcogHPP;
+    
     public int SingleTargetRegenHPP =>
         P.UIHelper.AutoRotationConfigControlled("SingleTargetRegenHPP")?.state
         ?? settings.SingleTargetRegenHPP;
