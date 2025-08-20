@@ -138,6 +138,8 @@ public class DPSSettingsIPCWrapper(DPSSettings settings)
     public bool AlwaysSelectTarget => settings.AlwaysSelectTarget;
 
     public bool AoEIgnoreManual => settings.AoEIgnoreManual;
+    
+    public bool UnTargetAndDisableForPenalty => settings.UnTargetAndDisableForPenalty;
 
     #endregion
 }

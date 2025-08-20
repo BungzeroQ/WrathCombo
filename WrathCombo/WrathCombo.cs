@@ -10,6 +10,7 @@ using Dalamud.Utility;
 using ECommons;
 using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
+using ECommons.ExcelServices;
 using ECommons.GameHelpers;
 using ECommons.Logging;
 using Newtonsoft.Json.Linq;
@@ -23,7 +24,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using WrathCombo.Attributes;
 using WrathCombo.AutoRotation;
-using WrathCombo.Combos;
 using WrathCombo.Core;
 using WrathCombo.CustomComboNS;
 using WrathCombo.CustomComboNS.Functions;
@@ -60,40 +60,40 @@ public sealed partial class WrathCombo : IDalamudPlugin
     internal MovementHook MoveHook;
 
     private readonly TextPayload starterMotd = new("[Wrath Message of the Day] ");
-    private static uint? jobID;
+    private static Job? jobID;
     private static bool inInstancedContent;
 
-    public static readonly List<uint> DisabledJobsPVE =
+    public static readonly List<Job> DisabledJobsPVE =
     [
-        //ADV.JobID,
-        //AST.JobID,
-        //BLM.JobID,
-        //BLU.JobID,
-        //BRD.JobID,
-        //DNC.JobID,
-        //DOL.JobID,
-        //DRG.JobID,
-        //DRK.JobID,
-        //GNB.JobID,
-        //MCH.JobID,
-        //MNK.JobID,
-        //NIN.JobID,
-        //PCT.JobID,
-        //PLD.JobID,
-        //RDM.JobID,
-        //RPR.JobID,
-        //SAM.JobID,
-        //SCH.JobID,
-        //SGE.JobID,
-        //SMN.JobID,
-        //VPR.JobID,
-        //WAR.JobID,
-        //WHM.JobID
+        //Job.ADV,
+        //Job.AST,
+        //Job.BLM,
+        //Job.BLU,
+        //Job.BRD,
+        //Job.DNC,
+        //Job.DOL,
+        //Job.DRG,
+        //Job.DRK,
+        //Job.GNB,
+        //Job.MCH,
+        //Job.MNK,
+        //Job.NIN,
+        //Job.PCT,
+        //Job.PLD,
+        //Job.RDM,
+        //Job.RPR,
+        //Job.SAM,
+        //Job.SCH,
+        //Job.SGE,
+        //Job.SMN,
+        //Job.VPR,
+        //Job.WAR,
+        //Job.WHM
     ];
 
-    public static readonly List<uint> DisabledJobsPVP = [];
+    public static readonly List<Job> DisabledJobsPVP = [];
 
-    public static uint? JobID
+    public static Job? JobID
     {
         get => jobID;
         private set
@@ -283,9 +283,9 @@ public sealed partial class WrathCombo : IDalamudPlugin
 
     private void OnFrameworkUpdate(IFramework framework)
     {
-        if (Svc.ClientState.LocalPlayer is not null)
+        if (Player.Object is not null)
         {
-            JobID = Svc.ClientState.LocalPlayer?.ClassJob.RowId;
+            JobID = Player.Job;
             CustomComboFunctions.IsMoving(); //Hacky workaround to ensure it's always running
         }
 
@@ -332,16 +332,10 @@ public sealed partial class WrathCombo : IDalamudPlugin
     {
         // Enumerable.Range is a start and count, not a start and end.
         // Enumerable.Range(Start, Count)
-        Service.Configuration.ResetFeatures("v3.0.17.0_NINRework", Enumerable.Range(10000, 100).ToArray());
-        Service.Configuration.ResetFeatures("v3.0.17.0_DRGCleanup", Enumerable.Range(6100, 400).ToArray());
-        Service.Configuration.ResetFeatures("v3.0.18.0_GNBCleanup", Enumerable.Range(7000, 700).ToArray());
-        Service.Configuration.ResetFeatures("v3.0.18.0_PvPCleanup", Enumerable.Range(80000, 11000).ToArray());
-        Service.Configuration.ResetFeatures("v3.0.18.1_PLDRework", Enumerable.Range(11000, 100).ToArray());
-        Service.Configuration.ResetFeatures("v3.1.0.1_BLMRework", Enumerable.Range(2000, 100).ToArray());
-        Service.Configuration.ResetFeatures("v3.1.1.0_DRGRework", Enumerable.Range(6000, 800).ToArray());
         Service.Configuration.ResetFeatures("1.0.0.6_DNCRework", Enumerable.Range(4000, 150).ToArray());
         Service.Configuration.ResetFeatures("1.0.0.11_DRKRework", Enumerable.Range(5000, 200).ToArray()); 
         Service.Configuration.ResetFeatures("1.0.1.11_RDMRework", Enumerable.Range(13000, 999).ToArray());
+        Service.Configuration.ResetFeatures("1.0.2.3_NINRework", Enumerable.Range(10000, 100).ToArray());
     }
 
     private void DrawUI()

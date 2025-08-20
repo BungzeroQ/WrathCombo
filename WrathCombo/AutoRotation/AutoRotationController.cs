@@ -85,7 +85,8 @@ internal unsafe static class AutoRotationController
                || Player.Object.IsDead
                || IsOccupied()
                || Player.Mounted
-               || !EzThrottler.Throttle("Autorot", cfg.Throttler);
+               || !EzThrottler.Throttle("Autorot", cfg.Throttler)
+               || (cfg.DPSSettings.UnTargetAndDisableForPenalty && PlayerHasActionPenalty());
     }
 
     private static bool IsOccupied()
@@ -606,7 +607,9 @@ internal unsafe static class AutoRotationController
                     Service.ActionReplacer.getActionHook.IsEnabled ? gameAct : outAct,
                     (mustTarget && target != null) || switched ? target.GameObjectId : Player.Object.GameObjectId);
 
-                if (outAct is NIN.Ten or NIN.Chi or NIN.Jin or NIN.TenCombo or NIN.ChiCombo or NIN.JinCombo && ret)
+                if (outAct is NIN.Ten or NIN.Chi or NIN.Jin or NIN.TenCombo or NIN.ChiCombo or NIN.JinCombo 
+                    or NIN.TCJFumaShurikenTen or NIN.TCJFumaShurikenChi or NIN.TCJFumaShurikenJin or NIN.TCJKaton or NIN.TCJRaiton && ret)
+                    
                     _ninjaLockedAoE = true;
                 else
                     _ninjaLockedAoE = false;
@@ -652,6 +655,9 @@ internal unsafe static class AutoRotationController
                     : InActionRange(outAct, target));
 
             var canUse = (canUseSelf || canUseTarget || areaTargeted) && outAct.ActionAttackType() is { } type && (type is ActionAttackType.Ability || type is not ActionAttackType.Ability && RemainingGCD == 0);
+            
+            if (canUse || cfg.DPSSettings.AlwaysSelectTarget)
+                Svc.Targets.Target = target;
 
             var castTime = ActionManager.GetAdjustedCastTime(ActionType.Action, outAct);
             bool orbwalking = cfg.OrbwalkerIntegration && OrbwalkerIPC.CanOrbwalk;
@@ -660,7 +666,6 @@ internal unsafe static class AutoRotationController
 
             if (canUse && (inRange || areaTargeted))
             {
-                Svc.Targets.Target = target;
                 var ret = ActionManager.Instance()->UseAction(ActionType.Action, Service.ActionReplacer.getActionHook.IsEnabled ? gameAct : outAct, canUseTarget || areaTargeted ? target.GameObjectId : Player.Object.GameObjectId);
                 if (mode is HealerRotationMode && ret)
                     LastHealAt = Environment.TickCount64 + castTime;
@@ -892,8 +897,8 @@ internal unsafe static class AutoRotationController
             if (target is null) return false;
             return JobID switch
             {
-                AST.JobID => HasStatusEffect(AST.Buffs.AspectedBenefic, target, true),
-                WHM.JobID => HasStatusEffect(WHM.Buffs.Regen, target, true),
+                Job.AST => HasStatusEffect(AST.Buffs.AspectedBenefic, target, true),
+                Job.WHM => HasStatusEffect(WHM.Buffs.Regen, target, true),
                 _ => false,
             };
         }
@@ -902,7 +907,7 @@ internal unsafe static class AutoRotationController
             if (target is null) return false;
             return JobID switch
             {
-                SCH.JobID => HasStatusEffect(SCH.Buffs.Excogitation, target, true),
+                Job.SCH => HasStatusEffect(SCH.Buffs.Excogitation, target, true),
                 _ => false,
             };
         }

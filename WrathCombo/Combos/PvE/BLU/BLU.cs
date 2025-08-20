@@ -1,11 +1,12 @@
 ﻿using Dalamud.Game.ClientState.Conditions;
+using WrathCombo.Core;
 using WrathCombo.CustomComboNS;
+using WrathCombo.Extensions;
+
 namespace WrathCombo.Combos.PvE;
 
 internal partial class BLU : Caster
 {
-    public const byte JobID = 36;
-
     public const uint
         RoseOfDestruction = 23275,
         ShockStrike = 11429,
@@ -139,7 +140,9 @@ internal partial class BLU : Caster
                 if (IsOffCooldown(RoseOfDestruction) && IsSpellActive(RoseOfDestruction))
                     return RoseOfDestruction;
                 if (IsOffCooldown(FeatherRain) && IsSpellActive(FeatherRain))
-                    return FeatherRain;
+                    return FeatherRain.Retarget(MoonFlute,
+                        SimpleTarget.HardTarget.IfHostile() ??
+                        SimpleTarget.LastHostileHardTarget);
                 if (IsOffCooldown(Eruption) && IsSpellActive(Eruption))
                     return Eruption;
                 if (!HasStatusEffect(Buffs.Bristle) && IsOffCooldown(Role.Swiftcast) && IsSpellActive(Bristle))
@@ -183,7 +186,9 @@ internal partial class BLU : Caster
                     if (IsOffCooldown(RoseOfDestruction) && IsSpellActive(RoseOfDestruction))
                         return RoseOfDestruction;
                     if (IsOffCooldown(FeatherRain) && IsSpellActive(FeatherRain))
-                        return FeatherRain;
+                        return FeatherRain.Retarget(FinalSting,
+                            SimpleTarget.HardTarget.IfHostile() ??
+                            SimpleTarget.LastHostileHardTarget);
                     if (IsOffCooldown(Eruption) && IsSpellActive(Eruption))
                         return Eruption;
                     if (IsOffCooldown(MatraMagic) && IsSpellActive(MatraMagic))
@@ -278,7 +283,9 @@ internal partial class BLU : Caster
 
                     if (IsOffCooldown(FeatherRain) && IsSpellActive(FeatherRain) &&
                         (IsNotEnabled(Preset.BLU_PrimalCombo_Pool) || (IsEnabled(Preset.BLU_PrimalCombo_Pool) && (GetCooldownRemainingTime(Nightbloom) > 30 || IsOffCooldown(Nightbloom)))))
-                        return FeatherRain;
+                        return FeatherRain.Retarget([FeatherRain, Eruption],
+                            SimpleTarget.HardTarget.IfHostile() ??
+                            SimpleTarget.LastHostileHardTarget);
                     if (IsOffCooldown(Eruption) && IsSpellActive(Eruption) &&
                         (IsNotEnabled(Preset.BLU_PrimalCombo_Pool) || (IsEnabled(Preset.BLU_PrimalCombo_Pool) && (GetCooldownRemainingTime(Nightbloom) > 30 || IsOffCooldown(Nightbloom)))))
                         return Eruption;
@@ -428,7 +435,9 @@ internal partial class BLU : Caster
                             return Bristle;
 
                         if (IsSpellActive(FeatherRain) && IsOffCooldown(FeatherRain))
-                            return FeatherRain;
+                            return FeatherRain.Retarget(MoonFlute,
+                                SimpleTarget.HardTarget.IfHostile() ??
+                                SimpleTarget.LastHostileHardTarget);
 
                         if (IsSpellActive(SeaShanty) && IsOffCooldown(SeaShanty))
                             return SeaShanty;
@@ -445,7 +454,9 @@ internal partial class BLU : Caster
                         return WingedReprobation;
 
                     if (IsSpellActive(FeatherRain) && IsOffCooldown(FeatherRain))
-                        return FeatherRain;
+                        return FeatherRain.Retarget(MoonFlute,
+                            SimpleTarget.HardTarget.IfHostile() ??
+                            SimpleTarget.LastHostileHardTarget);
 
                     if (IsSpellActive(SeaShanty) && IsOffCooldown(SeaShanty))
                         return SeaShanty;
