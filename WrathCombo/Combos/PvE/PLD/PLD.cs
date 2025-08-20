@@ -463,7 +463,7 @@ internal partial class PLD : Tank
                 // Weavables
                 if (canWeave)
                 {
-                    if (InMeleeRange())
+                    if (LevelChecked(Imperator) || InMeleeRange())
                     {
                         // Requiescat
                         if (IsEnabled(Preset.PLD_ST_AdvancedMode_Requiescat) && ActionReady(Requiescat) && cooldownFightOrFlight > 50)
@@ -490,7 +490,10 @@ internal partial class PLD : Tank
                             else if (cooldownRequiescat < 0.5f && hasRequiescatMP && canEarlyWeave && (ComboAction is RoyalAuthority || afterOpener))
                                 return OriginalHook(FightOrFlight);
                         }
+                    }
 
+                    if (InMeleeRange())
+                    {
                         // Variant Ultimatum
                         if (Variant.CanUltimatum(Preset.PLD_Variant_Ultimatum))
                             return Variant.Ultimatum;

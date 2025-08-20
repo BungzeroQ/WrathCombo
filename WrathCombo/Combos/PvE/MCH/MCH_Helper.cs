@@ -137,7 +137,6 @@ internal partial class MCH
             if ((IsEnabled(Preset.MCH_ST_SimpleMode) ||
                  IsEnabled(Preset.MCH_ST_Adv_Reassemble) && MCH_ST_Reassembled[3]) &&
                 LevelChecked(Drill) &&
-                (!LevelChecked(AirAnchor) && MCH_ST_Reassembled[2] || !MCH_ST_Reassembled[2]) &&
                 ActionReady(Drill))
                 return true;
         }
