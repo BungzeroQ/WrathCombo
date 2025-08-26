@@ -187,10 +187,10 @@ internal partial class MCH : PhysicalRanged
             if (IsEnabled(Preset.MCH_ST_Adv_Reassemble) &&
                 !HasStatusEffect(Buffs.Reassembled) && ActionReady(Reassemble) &&
                 !InCombat() && HasBattleTarget() &&
-                (ActionReady(Excavator) && MCH_ST_Reassembled[0] ||
-                 ActionReady(Chainsaw) && MCH_ST_Reassembled[1] ||
-                 LevelChecked(AirAnchor) && IsOffCooldown(AirAnchor) && MCH_ST_Reassembled[2] ||
-                 ActionReady(Drill) && MCH_ST_Reassembled[3]))
+                ((ActionReady(Excavator) && MCH_ST_Reassembled[0]) ||
+                 (ActionReady(Chainsaw) && MCH_ST_Reassembled[1]) ||
+                 (LevelChecked(AirAnchor) && IsOffCooldown(AirAnchor) && MCH_ST_Reassembled[2]) ||
+                 (ActionReady(Drill) && MCH_ST_Reassembled[3])))
                 return Reassemble;
 
             // Interrupt

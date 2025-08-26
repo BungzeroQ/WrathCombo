@@ -209,7 +209,7 @@ internal partial class MCH
         if ((IsEnabled(Preset.MCH_ST_SimpleMode) ||
              IsEnabled(Preset.MCH_ST_Adv_Drill) && ReassembledDrillST) &&
             !JustUsed(Drill) &&
-            ActionReady(Drill) && GetCooldownRemainingTime(Wildfire) is >= 20 or <= 10)
+            ActionReady(Drill))
         {
             actionID = Drill;
             return true;
