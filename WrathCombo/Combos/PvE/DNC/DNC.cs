@@ -171,8 +171,8 @@ internal partial class DNC : PhysicalRanged
 
             #endregion
 
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
             #region Weaves
 
@@ -286,6 +286,12 @@ internal partial class DNC : PhysicalRanged
                     if (!LevelChecked(TechnicalStep) && Gauge.Feathers > 0)
                         return FanDance1;
                 }
+                
+                if (ActionReady(ShieldSamba) &&
+                    IsEnabled(Preset.DNC_ST_Adv_ShieldSamba) && RaidWideCasting() && 
+                    NumberOfAlliesInRange(ShieldSamba) >= GetPartyMembers().Count * .75 &&
+                    !HasAnyStatusEffects ([BRD.Buffs.Troubadour, Buffs.ShieldSamba, MCH.Buffs.Tactician], anyOwner: true))
+                    return ShieldSamba;
 
                 // ST Panic Heals
                 if (IsEnabled(Preset.DNC_ST_Adv_PanicHeals))
@@ -506,8 +512,8 @@ internal partial class DNC : PhysicalRanged
 
             #endregion
 
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
             #region Weaves
 
@@ -779,8 +785,8 @@ internal partial class DNC : PhysicalRanged
 
             #endregion
 
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
             #region Weaves
 
@@ -1060,8 +1066,8 @@ internal partial class DNC : PhysicalRanged
 
             #endregion
 
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
             #region Weaves
 

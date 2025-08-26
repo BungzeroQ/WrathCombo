@@ -120,6 +120,11 @@ internal partial class DRG
                         $"{Role.Bloodbath.ActionName()} HP percentage threshold");
                     break;
 
+                case Preset.DRG_HeavensThrust:
+                    DrawAdditionalBoolChoice(DRG_Heavens_Basic,
+                        "Add Chaos Combo", "Adds Chaos combo when applicable.");
+                    break;
+
                 case Preset.DRG_Variant_Cure:
                     DrawSliderInt(1, 100, DRG_Variant_Cure,
                         "HP% to be at or under", 200);
@@ -143,7 +148,8 @@ internal partial class DRG
             DRG_Variant_Cure = new("DRG_Variant_Cure", 50);
 
         public static UserBool
-            DRG_ST_DoubleMirage = new("DRG_ST_DoubleMirage");
+            DRG_ST_DoubleMirage = new("DRG_ST_DoubleMirage"),
+            DRG_Heavens_Basic = new("DRG_Heavens_Basic");
 
         public static UserBoolArray
             DRG_ST_JumpMovingOptions = new("DRG_ST_Jump_Options"),

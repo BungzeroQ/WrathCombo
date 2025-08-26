@@ -1,5 +1,6 @@
 #region
 using System.Linq;
+using ECommons.GameFunctions;
 using WrathCombo.Core;
 using WrathCombo.CustomComboNS;
 using WrathCombo.Data;
@@ -34,8 +35,8 @@ internal partial class WHM : Healer
             if (!actionFound)
                 return actionID;
 
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
             if (!InCombat()) return actionID;
 
@@ -113,8 +114,8 @@ internal partial class WHM : Healer
             if (actionID is not (Holy or Holy3))
                 return actionID;
 
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
             #region Weaves
 
@@ -201,8 +202,8 @@ internal partial class WHM : Healer
 
             #endregion
 
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
             if (!InCombat()) return actionID;
 
@@ -300,8 +301,8 @@ internal partial class WHM : Healer
             if (actionID is not (Holy or Holy3))
                 return actionID;
 
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
 
             #region Swiftcast Opener
@@ -390,6 +391,124 @@ internal partial class WHM : Healer
         }
     }
 
+    #endregion
+    
+    #region Simple Heals
+    internal class WHM_SimpleST_Heals : CustomCombo
+    {
+        protected internal override Preset Preset => Preset.WHM_SimpleSTHeals;
+
+        protected override uint Invoke(uint actionID)
+        {
+            if (actionID is not Cure)
+                return actionID;
+            
+            var healTarget = OptionalTarget ?? SimpleTarget.Stack.AllyToHeal;
+            
+            if (ActionReady(Benediction) && 
+                GetTargetHPPercent(healTarget) <= 20)
+                return Benediction.RetargetIfEnabled(healTarget, Cure);
+            
+            if (ActionReady(Tetragrammaton) && 
+                GetTargetHPPercent(healTarget) <= 50)
+                return Tetragrammaton.RetargetIfEnabled(healTarget, Cure);
+            
+            if (ActionReady(Role.Esuna) && GetTargetHPPercent(healTarget) >= 40 &&
+                HasCleansableDebuff(healTarget))
+                return Role.Esuna.RetargetIfEnabled(healTarget, Cure);
+            
+            if (CanWeave() && Role.CanLucidDream(6500))
+                return Role.LucidDreaming;
+            
+            if (ActionReady(Asylum) && 
+                !InBossEncounter() &&
+                TimeStoodStill >= TS.FromSeconds(5))
+                return Asylum.Retarget(Cure ,SimpleTarget.Self);
+            
+            if (ActionReady(Regen) && 
+                GetStatusEffect(Buffs.Regen, healTarget) == null &&  
+                GetTargetHPPercent(healTarget) >= 40)
+                return Regen.RetargetIfEnabled(healTarget, Cure);
+
+            if (ActionReady(DivineBenison) && 
+                GetStatusEffect(Buffs.DivineBenison, healTarget) == null)
+                return DivineBenison.RetargetIfEnabled(healTarget, Cure);
+
+            if (ActionReady(Aquaveil) && IsOffCooldown(Aquaveil) && (healTarget.IsInParty() && healTarget.GetRole() is CombatRole.Tank || !IsInParty()))
+                return Aquaveil.RetargetIfEnabled(healTarget, Cure);
+
+            if (ActionReady(OriginalHook(Temperance)) && 
+                !InBossEncounter())
+                return OriginalHook(Temperance);
+            
+            if (ActionReady(AfflatusSolace))
+                return AfflatusSolace.RetargetIfEnabled(healTarget, Cure);
+
+            if (ActionReady(ThinAir) && GetRemainingCharges(ThinAir) == 2)
+                return ThinAir;
+            
+            return LevelChecked(Cure2)
+                ? Cure2.RetargetIfEnabled(healTarget, Cure)
+                : Cure.RetargetIfEnabled(healTarget);
+        }
+    }
+    
+    internal class WHM_Simple_AoEHeals : CustomCombo
+    {
+        protected internal override Preset Preset => Preset.WHM_Simple_AoEHeals;
+
+        protected override uint Invoke(uint actionID)
+        {
+            if (actionID is not Medica1)
+                return actionID;
+            
+            var healTarget = OptionalTarget ?? SimpleTarget.Stack.AllyToHeal;
+
+            if (ActionReady(Assize))
+                return Assize;
+            
+            if (ActionReady(Asylum) &&
+                TimeStoodStill >= TS.FromSeconds(5))
+                return Asylum.Retarget(Medica1, SimpleTarget.Self);
+
+            if (CanWeave() && Role.CanLucidDream(WHM_AoEHeals_Lucid))
+                return Role.LucidDreaming;
+            
+            if (ActionReady(OriginalHook(Temperance)) && 
+                (GetPartyAvgHPPercent() <= 70 ||
+                 RaidWideCasting() ||
+                 HasStatusEffect(Buffs.DivineGrace)))
+                return OriginalHook(Temperance);
+            
+            if (LevelChecked(LiturgyOfTheBell) &&
+                IsOffCooldown(LiturgyOfTheBell) &&
+                (GetPartyAvgHPPercent() <= 50 ||
+                 RaidWideCasting()))
+                return LiturgyOfTheBell;
+
+            if (ActionReady(PlenaryIndulgence) &&
+                (GetPartyAvgHPPercent() <= 70 ||
+                 RaidWideCasting()))
+                return PlenaryIndulgence;
+
+            if (ActionReady(AfflatusRapture))
+                return AfflatusRapture;
+            
+            if (ActionReady(ThinAir) && GetRemainingCharges(ThinAir) == 2)
+                return ThinAir;
+
+            if (ActionReady(Cure3) &&
+                NumberOfAlliesInRange(Cure3) >= GetPartyMembers().Count * .75)
+                return Cure3.RetargetIfEnabled(healTarget, Medica1);
+
+            if (ActionReady(OriginalHook(Medica2)) &&
+                !HasStatusEffect(Buffs.Medica2) &&
+                !HasStatusEffect(Buffs.Medica3))
+                return OriginalHook(Medica2);
+
+            return actionID;
+        }
+    }
     #endregion
 
     #region Heals
@@ -527,8 +646,6 @@ internal partial class WHM : Healer
                         ? ThinAir
                         : spell.RetargetIfEnabled(OptionalTarget, Medica1);
             }
-
-
             return actionID;
         }
     }

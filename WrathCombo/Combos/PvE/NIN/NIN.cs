@@ -24,20 +24,19 @@ internal partial class NIN : Melee
             if (OriginalHook(Ninjutsu) is Rabbit or Huton or Suiton or Doton or GokaMekkyaku or HyoshoRanryu)
                 return OriginalHook(Ninjutsu);
             
-            if (InMudra && MudraState.ContinueCurrentMudra(ref actionID))
-                return actionID;
-            
-            if (IsNotEnabled(Preset.NIN_AoE_AdvancedMode_Ninjitsus) || 
-                ActionWatching.TimeSinceLastAction.TotalSeconds >= 5 && !InCombat() ||
+            if (ActionWatching.TimeSinceLastAction.TotalSeconds >= 5 && !InCombat() ||
                 ActionWatching.LastAction == OriginalHook(Ninjutsu))
                 MudraState.CurrentMudra = MudraCasting.MudraState.None;
+            
+            if (InMudra && MudraState.ContinueCurrentMudra(ref actionID))
+                return actionID;
             
             if (HasStatusEffect(Buffs.TenChiJin))
                 return STTenChiJin(actionID);
             
             #region Special Content
-            if (OccultCrescent.ShouldUsePhantomActions() && !MudraPhase)
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction) && !MudraPhase)
+                return contentAction;
             
             if (Variant.CanRampart(Preset.NIN_Variant_Rampart) && !MudraPhase)
                 return Variant.Rampart;
@@ -149,13 +148,12 @@ internal partial class NIN : Melee
             if (OriginalHook(Ninjutsu) is Rabbit or Huton or Suiton or Doton or GokaMekkyaku or HyoshoRanryu)
                 return OriginalHook(Ninjutsu);
             
-            if (InMudra && MudraState.ContinueCurrentMudra(ref actionID))
-                return actionID;
-            
-            if (IsNotEnabled(Preset.NIN_AoE_AdvancedMode_Ninjitsus) || 
-                ActionWatching.TimeSinceLastAction.TotalSeconds >= 5 && !InCombat() ||
+            if (ActionWatching.TimeSinceLastAction.TotalSeconds >= 5 && !InCombat() ||
                 ActionWatching.LastAction == OriginalHook(Ninjutsu))
                 MudraState.CurrentMudra = MudraCasting.MudraState.None;
+            
+            if (InMudra && MudraState.ContinueCurrentMudra(ref actionID))
+                return actionID;
 
             if (HasStatusEffect(Buffs.TenChiJin))
                 return DotonRemaining < 3
@@ -163,8 +161,8 @@ internal partial class NIN : Melee
                     : AoETenChiJinSuiton(actionID);
             
             #region Special Content
-            if (OccultCrescent.ShouldUsePhantomActions() && !MudraPhase)
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction) && !MudraPhase)
+                return contentAction;
             
             if (Variant.CanRampart(Preset.NIN_Variant_Rampart) && !MudraPhase)
                 return Variant.Rampart;
@@ -242,9 +240,9 @@ internal partial class NIN : Melee
             {
                 switch (ComboAction)
                 {
-                    case SpinningEdge when LevelChecked(GustSlash):
+                    case SpinningEdge when LevelChecked(GustSlash) && !LevelChecked(DeathBlossom):
                         return OriginalHook(GustSlash);
-                    case GustSlash when !LevelChecked(ArmorCrush) && LevelChecked(AeolianEdge):
+                    case GustSlash when !LevelChecked(ArmorCrush) && LevelChecked(AeolianEdge) && !LevelChecked(DeathBlossom):
                         return TNAeolianEdge ? Role.TrueNorth : AeolianEdge;
                     case DeathBlossom when LevelChecked(HakkeMujinsatsu):
                         return HakkeMujinsatsu;
@@ -279,21 +277,20 @@ internal partial class NIN : Melee
                 OriginalHook(Ninjutsu) is Rabbit or Huton or Suiton or Doton or GokaMekkyaku or HyoshoRanryu)
                 return OriginalHook(Ninjutsu);
             
-            if (OriginalHook(Ninjutsu) != Ninjutsu && InMudra && MudraState.ContinueCurrentMudra(ref actionID))
-                return actionID;
-            
-            if (IsNotEnabled(Preset.NIN_ST_AdvancedMode_Ninjitsus) || 
-                ActionWatching.TimeSinceLastAction.TotalSeconds >= 5 && !InCombat() ||
+            if (ActionWatching.TimeSinceLastAction.TotalSeconds >= 5 && !InCombat() ||
                 ActionWatching.LastAction == OriginalHook(Ninjutsu))
                 MudraState.CurrentMudra = MudraCasting.MudraState.None;
+            
+            if (IsEnabled(Preset.NIN_ST_AdvancedMode_Ninjitsus) && InMudra && MudraState.ContinueCurrentMudra(ref actionID))
+                return actionID;
             
             if (NIN_ST_AdvancedMode_TenChiJin_Options[0] &&
                 HasStatusEffect(Buffs.TenChiJin))
                 return STTenChiJin(actionID);
             
             #region Special Content
-            if (OccultCrescent.ShouldUsePhantomActions() && !MudraPhase)
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction) && !MudraPhase)
+                return contentAction;
             
             if (Variant.CanRampart(Preset.NIN_Variant_Rampart) && !MudraPhase)
                 return Variant.Rampart;
@@ -339,6 +336,10 @@ internal partial class NIN : Melee
                 if (IsEnabled(Preset.NIN_ST_AdvancedMode_TrickAttack) && CanTrickST && CombatEngageDuration().TotalSeconds > 5 &&
                     GetTargetHPPercent() > STTrickThreshold)
                     return OriginalHook(TrickAttack);
+
+                if (IsEnabled(Preset.NIN_ST_AdvancedMode_StunInterupt) && CanWeave() && !MudraPhase &&
+                    RoleActions.Melee.CanLegSweep() && !TargetIsBoss() && TargetIsCasting())
+                    return Role.LegSweep;
             }
             #endregion
             
@@ -360,7 +361,8 @@ internal partial class NIN : Melee
             #region Selfcare
             if ((!MudraPhase || HasKassatsu && TrickCD > 5) && CanWeave())
             {
-                if (IsEnabled(Preset.NIN_ST_AdvancedMode_Feint) && ActionReady(Role.Feint) &&
+                if (IsEnabled(Preset.NIN_ST_AdvancedMode_Feint) && 
+                    Role.CanFeint() &&
                     RaidWideCasting())
                     return Role.Feint;
 
@@ -430,14 +432,13 @@ internal partial class NIN : Melee
                 OriginalHook(Ninjutsu) is Rabbit or Huton or Suiton or Doton or GokaMekkyaku or HyoshoRanryu)
                 return OriginalHook(Ninjutsu);
             
-            if (OriginalHook(Ninjutsu) != Ninjutsu && InMudra && MudraState.ContinueCurrentMudra(ref actionID))
-                return actionID;
-            
-            if (IsNotEnabled(Preset.NIN_AoE_AdvancedMode_Ninjitsus) || 
-                ActionWatching.TimeSinceLastAction.TotalSeconds >= 5 && !InCombat() ||
+            if (ActionWatching.TimeSinceLastAction.TotalSeconds >= 5 && !InCombat() ||
                 ActionWatching.LastAction == OriginalHook(Ninjutsu))
                 MudraState.CurrentMudra = MudraCasting.MudraState.None;
             
+            if (IsEnabled(Preset.NIN_AoE_AdvancedMode_Ninjitsus) && InMudra && MudraState.ContinueCurrentMudra(ref actionID))
+                return actionID;
+           
             if (NIN_AoE_AdvancedMode_TenChiJin_Options[0] &&
                 HasStatusEffect(Buffs.TenChiJin))
                 return NIN_AoE_AdvancedMode_Ninjitsus_Options[2] && DotonRemaining < 3
@@ -445,8 +446,8 @@ internal partial class NIN : Melee
                 : AoETenChiJinSuiton(actionID);
             
             #region Special Content
-            if (OccultCrescent.ShouldUsePhantomActions() && !MudraPhase)
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction) && !MudraPhase)
+                return contentAction;
             
             if (Variant.CanRampart(Preset.NIN_Variant_Rampart) && !MudraPhase)
                 return Variant.Rampart;
@@ -493,6 +494,10 @@ internal partial class NIN : Melee
                 if (IsEnabled(Preset.NIN_AoE_AdvancedMode_TrickAttack) && CanTrickAoE && CombatEngageDuration().TotalSeconds > 5 &&
                     GetTargetHPPercent() > AoETrickThreshold)
                     return OriginalHook(TrickAttack);
+                
+                if (IsEnabled(Preset.NIN_AoE_AdvancedMode_StunInterupt) && CanWeave() && !MudraPhase &&
+                    RoleActions.Melee.CanLegSweep() && !TargetIsBoss() && TargetIsCasting())
+                    return Role.LegSweep;
             }
             #endregion
             
@@ -542,9 +547,9 @@ internal partial class NIN : Melee
             {
                 switch (ComboAction)
                 {
-                    case SpinningEdge when LevelChecked(GustSlash):
+                    case SpinningEdge when LevelChecked(GustSlash) && !LevelChecked(DeathBlossom):
                         return OriginalHook(GustSlash);
-                    case GustSlash when !LevelChecked(ArmorCrush) && LevelChecked(AeolianEdge):
+                    case GustSlash when !LevelChecked(ArmorCrush) && LevelChecked(AeolianEdge) && !LevelChecked(DeathBlossom):
                         return TNAeolianEdge ? Role.TrueNorth : AeolianEdge;
                     case DeathBlossom when LevelChecked(HakkeMujinsatsu):
                         return HakkeMujinsatsu;
@@ -609,18 +614,20 @@ internal partial class NIN : Melee
             if (actionID is not Hide)
                 return actionID;
             
+            
             if (NIN_HideMug_Toggle && HasStatusEffect(Buffs.Hidden) &&
                 (LevelChecked(Suiton) || !NIN_HideMug_ToggleLevelCheck)) //Check level to get ShadowWalker buff. 
                 StatusManager.ExecuteStatusOff(Buffs.Hidden);
 
             if (NIN_HideMug_Trick && 
-                (!NIN_HideMug_Mug || !NIN_HideMug_TrickAfterMug || IsOnCooldown(OriginalHook(Mug))) && //Check mug if you want mug to have priority
+                (!NIN_HideMug_Mug || !NIN_HideMug_TrickAfterMug || IsOnCooldown(OriginalHook(Mug)) || !InCombat()) && //Check mug if you want mug to have priority
                 (HasStatusEffect(Buffs.Hidden) || HasStatusEffect(Buffs.ShadowWalker))) //Check for ability to use trick
                 return OriginalHook(TrickAttack);
+
+            if (InCombat() && NIN_HideMug_Mug)
+                return OriginalHook(Mug);
             
-            return InCombat() && NIN_HideMug_Mug
-                ? OriginalHook(Mug)
-                : actionID;
+            return InCombat() && NIN_HideMug_Trick ? OriginalHook(TrickAttack) : actionID;
         }
     }
 
@@ -795,6 +802,43 @@ internal partial class NIN : Melee
             }
 
             return actionID;
+        }
+    }
+    
+    internal class NIN_Simple_MudrasAlt : CustomCombo
+    {
+        protected internal override Preset Preset => Preset.NIN_Simple_Mudras_Alt;
+
+        protected override uint Invoke(uint actionID)
+        {
+            if (actionID is not (Ten or Chi or Jin) || !HasStatusEffect(Buffs.Mudra))
+                return actionID;
+            
+            switch (actionID)
+            {
+                case Ten when LevelChecked(HyoshoRanryu) && MudraReady && HasKassatsu:
+                    return UseHyoshoRanryu(actionID);
+                case Ten when LevelChecked(Suiton) && MudraReady && !HasStatusEffect(Buffs.ShadowWalker) && TrickCD <= 20:
+                    return UseSuiton(actionID);
+                case Ten when MudraReady:
+                    return LevelChecked(Raiton)
+                        ? UseRaiton(actionID)
+                        : UseFumaShuriken(actionID);
+                case Chi when LevelChecked(GokaMekkyaku) && MudraReady && HasKassatsu:
+                    return UseGokaMekkyaku(actionID);
+                case Chi when LevelChecked(Huton) && MudraReady && !HasStatusEffect(Buffs.ShadowWalker) && TrickCD <= 20:
+                    return UseHuton(actionID);
+                case Chi when MudraReady:
+                    return LevelChecked(Katon)
+                        ? UseKaton(actionID)
+                        : UseFumaShuriken(actionID);
+                case Jin:
+                    return LevelChecked(Doton)
+                        ? UseDoton(actionID)
+                        : UseFumaShuriken(actionID);
+                default:
+                    return actionID;
+            }
         }
     }
     

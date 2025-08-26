@@ -18,8 +18,10 @@ internal partial class RDM
             RDM_AoE_Acceleration_Charges = new("RDM_AoE_Acceleration_Charges", 0),
             RDM_ST_Corpsacorps_Distance = new("RDM_ST_Corpsacorps_Distance", 25),
             RDM_ST_Corpsacorps_Time = new("RDM_ST_Corpsacorps_Time", 0),
+            RDM_ST_GapCloseCorpsacorps_Time = new("RDM_ST_GapCloseCorpsacorps_Time", 0),
             RDM_AoE_Corpsacorps_Distance = new("RDM_AoE_Corpsacorps_Distance", 25),
             RDM_AoE_Corpsacorps_Time = new("RDM_AoE_Corpsacorps_Time", 0),
+            RDM_AoE_GapCloseCorpsacorps_Time = new("RDM_AoE_GapCloseCorpsacorps_Time", 0),
             RDM_Opener_Selection = new("RDM_Opener_Selection", 0),
             RDM_Riposte_Weaves_Options_EngagementCharges = new ("RDM_Riposte_Weaves_Options_EngagementCharges", 0),
             RDM_Riposte_Weaves_Options_CorpsCharges = new ("RDM_Riposte_Weaves_Options_CorpsCharges", 0),
@@ -75,7 +77,12 @@ internal partial class RDM
                     DrawSliderInt(0, 25, RDM_ST_Corpsacorps_Distance,
                         " Use when Distance from target is less than or equal to:");
                     
-                    DrawSliderInt(0, 3, RDM_ST_Corpsacorps_Time,
+                    DrawSliderInt(0, 5, RDM_ST_Corpsacorps_Time,
+                        " How long you need to be stationary to use. Zero to disable");
+                    break;
+                
+                case Preset.RDM_ST_MeleeCombo_GapCloser:
+                    DrawSliderInt(0, 5, RDM_ST_GapCloseCorpsacorps_Time,
                         " How long you need to be stationary to use. Zero to disable");
                     break;
                 #endregion
@@ -84,7 +91,12 @@ internal partial class RDM
                 case Preset.RDM_AoE_Corpsacorps:
                     DrawSliderInt(0, 25, RDM_AoE_Corpsacorps_Distance,
                         " Use when Distance from target is less than or equal to:");
-                    DrawSliderInt(0, 3, RDM_AoE_Corpsacorps_Time,
+                    DrawSliderInt(0, 5, RDM_AoE_Corpsacorps_Time,
+                        " How long you need to be stationary to use. Zero to disable");
+                    break;
+                
+                case Preset.RDM_AoE_MeleeCombo_GapCloser:
+                    DrawSliderInt(0, 5, RDM_AoE_GapCloseCorpsacorps_Time,
                         " How long you need to be stationary to use. Zero to disable");
                     break;
 

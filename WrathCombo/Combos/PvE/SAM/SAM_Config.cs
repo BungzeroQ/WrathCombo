@@ -110,6 +110,12 @@ internal partial class SAM
                     break;
 
                 case Preset.SAM_ST_YukikazeCombo:
+                    DrawAdditionalBoolChoice(SAM_Yukaze_Gekko,
+                        "Add Gekko Combo", "Adds Gekko combo when applicable.");
+
+                    DrawAdditionalBoolChoice(SAM_Yukaze_Kasha,
+                        "Add Kasha Combo", "Adds Kasha combo when applicable.");
+
                     DrawAdditionalBoolChoice(SAM_Yukaze_KenkiOvercap,
                         "Kenki Overcap Protection", "Spends Kenki when at the set value or above.");
 
@@ -128,6 +134,9 @@ internal partial class SAM
                     break;
 
                 case Preset.SAM_AoE_MangetsuCombo:
+                    DrawAdditionalBoolChoice(SAM_Mangetsu_Oka,
+                        "Add Oka Combo", "Adds Oka combo when applicable.");
+
                     DrawAdditionalBoolChoice(SAM_Mangetsu_KenkiOvercap,
                         "Kenki Overcap Protection", "Spends Kenki when at the set value or above.");
 
@@ -169,6 +178,9 @@ internal partial class SAM
             SAM_Gekko_KenkiOvercap = new("SAM_Gekko_KenkiOvercap"),
             SAM_Kasha_KenkiOvercap = new("SAM_Kasha_KenkiOvercap"),
             SAM_Yukaze_KenkiOvercap = new("SAM_Yukaze_KenkiOvercap"),
+            SAM_Yukaze_Gekko = new("SAM_Yukaze_Gekko"),
+            SAM_Yukaze_Kasha = new("SAM_Yukaze_Kasha"),
+            SAM_Mangetsu_Oka = new("SAM_Mangetsu_Oka"),
             SAM_ST_CDs_Guren = new("SAM_ST_CDs_Guren"),
             SAM_ST_CDs_OgiNamikiri_Movement = new("SAM_ST_CDs_OgiNamikiri_Movement"),
             SAM_Oka_KenkiOvercap = new("SAM_Oka_KenkiOvercap"),

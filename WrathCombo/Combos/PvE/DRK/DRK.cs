@@ -77,8 +77,8 @@ internal partial class DRK : Tank
                 return actionID;
             }
 
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
             // Bail if not in combat
             if (!InCombat())
@@ -154,8 +154,8 @@ internal partial class DRK : Tank
                 HasBattleTarget())
                 return Unmend;
 
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
             // Bail if not in combat
             if (!InCombat())
@@ -199,8 +199,8 @@ internal partial class DRK : Tank
             const Combo comboFlags = Combo.AoE | Combo.Adv;
             var newAction = Unleash;
 
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
             // Bail if not in combat
             if (!InCombat())
@@ -244,8 +244,8 @@ internal partial class DRK : Tank
             const Combo comboFlags = Combo.AoE | Combo.Simple;
             var newAction = Unleash;
 
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
             // Bail if not in combat
             if (!InCombat())

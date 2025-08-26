@@ -617,6 +617,25 @@ public enum Preset
     [CustomComboInfo("Simple DPS Mode - AoE", "Replaces Gravity with a full one-button AoE rotation, including automatic dps card assignment.\nThis is the ideal option for newcomers to the job.", Job.AST)]
     [SimpleCombo]
     AST_AOE_Simple_DPS = 1180,
+    
+    [AutoAction(false, true)]
+    [ReplaceSkill(AST.Benefic)]
+    [ConflictingCombos(AST_ST_Heals)]
+    [CustomComboInfo("Simple Healing Mode - Single Target", "Replaces Benefic with a full one-button single target healing utility." +
+                                                            "\nThis is the ideal option for newcomers to the job. Particularly with autorotation.", Job.AST)]
+    [SimpleCombo]
+    [PossiblyRetargeted]
+    AST_Simple_ST_Heals = 1196,
+    
+    
+    [AutoAction(true, true)]
+    [ReplaceSkill(AST.Helios)]
+    [ConflictingCombos(AST_AoE_Heals)]
+    [CustomComboInfo("Simple Healing Mode - Single Target", "Replaces Helios with a full one-button single target healing utility." +
+                                                            "\nThis is the ideal option for newcomers to the job. Particularly with autorotation.", Job.AST)]
+    [SimpleCombo]
+    [PossiblyRetargeted]
+    AST_Simple_AoE_Heals = 1197,
         
     #endregion
     
@@ -780,8 +799,8 @@ public enum Preset
     #region Healing
 
     [AutoAction(false, true)]
-    [ReplaceSkill(AST.Benefic2)]
-    [CustomComboInfo("Advanced Healing Mode - Single Target", "Replaces Benefic II with a one button healing replacement.",
+    [ReplaceSkill(AST.Benefic)]
+    [CustomComboInfo("Advanced Healing Mode - Single Target", "Replaces Benefic with a one button healing replacement.",
         Job.AST)]
     [PossiblyRetargeted(AST.Benefic2)]
     [HealingCombo]
@@ -1026,7 +1045,7 @@ public enum Preset
 
     [AutoAction(false, false)]
     [ReplaceSkill(BLM.Fire)]
-    [ConflictingCombos(BLM_ST_AdvancedMode, BLM_Fire1to3, BLM_Fire1Despair)]
+    [ConflictingCombos(BLM_ST_AdvancedMode, BLM_Fire1and3)]
     [CustomComboInfo("Simple Mode - Single Target", "Replaces Fire with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.", Job.BLM)]
     [SimpleCombo]
     BLM_ST_SimpleMode = 2001,
@@ -1039,21 +1058,12 @@ public enum Preset
     BLM_AoE_SimpleMode = 2002,
 
     #endregion
-
-    #region Movement
     
-    [ConflictingCombos(BLM_Aetherial_Manipulation)]
-    [CustomComboInfo("Aetherial Manipulation Movement option", "Retargets Aetherial Manipulation to UI/Field Mouseover", Job.BLM)]
-    [Retargeted(BLM.AetherialManipulation)]
-    BLM_Retargetting_Aetherial_Manipulation = 2066,
-
-    #endregion
-
     #region Single Target - Advanced
 
     [AutoAction(false, false)]
     [ReplaceSkill(BLM.Fire)]
-    [ConflictingCombos(BLM_ST_SimpleMode, BLM_Fire1to3, BLM_Fire1Despair)]
+    [ConflictingCombos(BLM_ST_SimpleMode, BLM_Fire1and3)]
     [CustomComboInfo("Advanced Mode - Single Target", "Replaces Fire with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.", Job.BLM)]
     [AdvancedCombo]
     BLM_ST_AdvancedMode = 2100,
@@ -1111,8 +1121,12 @@ public enum Preset
     BLM_ST_UseScathe = 2116,
 
     [ParentCombo(BLM_ST_AdvancedMode)]
-    [CustomComboInfo("Manaward Option", "Adds Manaward to the rotation.", Job.BLM)]
+    [CustomComboInfo("Manaward Option", "Adds Manaward to the rotation when below HP Treshold and when raidwide is casting.", Job.BLM)]
     BLM_ST_Manaward = 2199,
+
+    [ParentCombo(BLM_ST_AdvancedMode)]
+    [CustomComboInfo("Addle Raidwide Option", "Adds Addle when Raidwide is detected casting.", Job.BLM)]
+    BLM_ST_Addle = 2195,
 
     #endregion
 
@@ -1166,6 +1180,15 @@ public enum Preset
     BLM_AoE_Blizzard4Sub = 2211,
 
     #endregion
+    
+    #region Movement
+
+    [ConflictingCombos(BLM_Aetherial_Manipulation)]
+    [CustomComboInfo("Aetherial Manipulation Movement option", "Retargets Aetherial Manipulation to UI/Field Mouseover", Job.BLM)]
+    [Retargeted(BLM.AetherialManipulation)]
+    BLM_Retargetting_Aetherial_Manipulation = 2066,
+
+    #endregion
 
     #region Variant
 
@@ -1192,49 +1215,29 @@ public enum Preset
     BLM_TriplecastProtection = 2056,
     
     [ReplaceSkill(BLM.Fire, BLM.Fire3)]
-    [ConflictingCombos(BLM_ST_AdvancedMode, BLM_ST_SimpleMode, BLM_Fire1Despair)]
-    [CustomComboInfo("Fire I/III Feature", "Replaces Fire I or Fire III.", Job.BLM)]
-    BLM_Fire1to3 = 2054,
-
-    [ReplaceSkill(BLM.Blizzard, BLM.Blizzard3)]
-    [ConflictingCombos(BLM_FreezeBlizzard2, BLM_Blizzard4toDespair)]
-    [CustomComboInfo("Blizzard I/III Feature", "Replaces Blizzard I or Blizzard III.\nReplaces Freeze with Blizzard II when synced below Lv.40.", Job.BLM)]
-    BLM_Blizzard1to3 = 2052,
+    [ConflictingCombos(BLM_ST_AdvancedMode, BLM_ST_SimpleMode)]
+    [CustomComboInfo("Fire I/III Feature", "Replaces Fire I or Fire III with the options below.", Job.BLM)]
+    BLM_Fire1and3 = 2054,
 
     [ReplaceSkill(BLM.Fire4)]
-    [ConflictingCombos(BLM_FireandIce, BLM_FireFlarestar)]
-    [CustomComboInfo("Fire 4 to 3", "Replaces Fire 4 with Fire 3 when not in Astral Fire III or not in combat.", Job.BLM)]
-    BLM_Fire4to3 = 2059,
+    [CustomComboInfo("Fire IV Feature", "Replaces Fire IV with the options below.", Job.BLM)]
+    BLM_Fire4 = 2059,
 
-    [ReplaceSkill(BLM.Fire)]
-    [ConflictingCombos(BLM_ST_AdvancedMode, BLM_ST_SimpleMode, BLM_Fire1to3)]
-    [CustomComboInfo("Fire to Despair", "Replaces Fire with Despair when in Astral Fire and below 2400 MP.", Job.BLM)]
-    BLM_Fire1Despair = 2065,
-
-    [ReplaceSkill(BLM.Blizzard4, BLM.Blizzard3)]
-    [ConflictingCombos(BLM_Blizzard1to3, BLM_FreezeBlizzard2)]
-    [CustomComboInfo("Blizzard 3/4 to Despair", "Replaces Blizzard 3/4 with Despair when in Astral Fire.", Job.BLM)]
-    BLM_Blizzard4toDespair = 2060,
-    
-    [ReplaceSkill(BLM.Fire4, BLM.Flare)]
-    [ConflictingCombos(BLM_Fire4to3, BLM_FireFlarestar)]
-    [CustomComboInfo("Fire & Ice", "Replaces Fire4 with Blizzard4 when in Umbral Ice.\nReplaces Flare with Freeze when in Umbral Ice.", Job.BLM)]
-    BLM_FireandIce = 2057,
+    [ReplaceSkill(BLM.Flare)]
+    [CustomComboInfo("Flare Feature", "Replaces Flare with the options below.", Job.BLM)]
+    BLM_Flare = 2069,
 
     [ReplaceSkill(BLM.Blizzard, BLM.Blizzard3)]
-    [ConflictingCombos(BLM_FreezeParadox, BLM_Blizzard1to3, BLM_Blizzard4toDespair)]
-    [CustomComboInfo("Freeze to Blizzard II", "nReplaces Freeze with Blizzard II when synced below Lv.40.", Job.BLM)]
-    BLM_FreezeBlizzard2 = 2064,
-
-    [ReplaceSkill(BLM.Fire4, BLM.Flare)]
-    [ConflictingCombos(BLM_Fire4to3, BLM_FireandIce)]
-    [CustomComboInfo(" Fire and Flare to Star", "Replaces Fire4 and Flare to Flarestar when on max stacks.", Job.BLM)]
-    BLM_FireFlarestar = 2058,
-
+    [CustomComboInfo("Blizzard I/III Feature", "Replaces Blizzard I or Blizzard III with the options below.", Job.BLM)]
+    BLM_Blizzard1and3 = 2052,
+    
+    [ReplaceSkill(BLM.Blizzard4)]
+    [CustomComboInfo("Blizzard IV to Despair", "Replaces Blizzard IV with Despair when in Astral Fire.", Job.BLM)]
+    BLM_Blizzard4toDespair = 2060,
+    
     [ReplaceSkill(BLM.Freeze)]
-    [ConflictingCombos(BLM_FreezeBlizzard2)]
-    [CustomComboInfo("Freeze to Paradox", "Replaces Freeze with Ice Paradox when you have 3 Umbral Heart stacks.", Job.BLM)]
-    BLM_FreezeParadox = 2062,
+    [CustomComboInfo("Freeze feature", "Replaces Freeze with Ice Paradox when you have 3 Umbral Heart stacks.\nChanges Freeze to Blizzard II when synched down.", Job.BLM)]
+    BLM_Freeze = 2062,
 
     [ReplaceSkill(BLM.FlareStar)]
     [CustomComboInfo("Flarestar to Paradox", "Replaces Flarestar with Fire Paradox when not at max Flarestar stacks.", Job.BLM)]
@@ -1273,7 +1276,7 @@ public enum Preset
 
     // Last value ST = 2117
     //Last Value AoE = 2213
-    //Last Value misc = 2068
+    //Last Value misc = 2069
 
     #endregion
 
@@ -1442,7 +1445,7 @@ public enum Preset
 
     [AutoAction(false, false)]
     [ReplaceSkill(BRD.HeavyShot, BRD.BurstShot)]
-    [ConflictingCombos(BRD_ST_AdvMode, BRD_StraightShotUpgrade)]
+    [ConflictingCombos(BRD_ST_AdvMode)]
     [CustomComboInfo("Simple Mode - Single Target",
         "Replaces Heavy Shot with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.",
         Job.BRD)]
@@ -1450,7 +1453,7 @@ public enum Preset
     BRD_ST_SimpleMode = 3036,
 
     [AutoAction(true, false)]
-    [ConflictingCombos(BRD_AoE_Combo, BRD_AoE_AdvMode)]
+    [ConflictingCombos(BRD_AoE_AdvMode)]
     [ReplaceSkill(BRD.QuickNock, BRD.Ladonsbite)]
     [CustomComboInfo("Simple Mode - AoE",
         "Replaces Quick Nock with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.",
@@ -1464,7 +1467,7 @@ public enum Preset
 
     [AutoAction(false, false)]
     [ReplaceSkill(BRD.HeavyShot, BRD.BurstShot)]
-    [ConflictingCombos(BRD_ST_SimpleMode, BRD_StraightShotUpgrade)]
+    [ConflictingCombos(BRD_ST_SimpleMode)]
     [CustomComboInfo("Advanced Mode - Single Target",
         "Replaces Heavy Shot with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.",
         Job.BRD)]
@@ -1524,9 +1527,17 @@ public enum Preset
     [ParentCombo(BRD_ST_AdvMode)]
     [CustomComboInfo("Self Cleanse Option", "Uses Wardens Paeon when you have a cleansable debuff.", Job.BRD)]
     BRD_ST_Wardens = 3047,
+    
+    [ParentCombo(BRD_ST_AdvMode)]
+    [CustomComboInfo("Troubadour Raidwide Option", "Adds Troubador when Raidwide is detected casting.", Job.BRD)]
+    BRD_Adv_Troubadour = 3069,
+    
+    [ParentCombo(BRD_ST_AdvMode)]
+    [CustomComboInfo("Nature's Minne Raidwide Option", "Adds Nature's Minne when Raidwide is detected casting and you don't already have Troubadour up.", Job.BRD)]
+    BRD_Adv_NaturesMinne = 3070,
 
     [AutoAction(true, false)]
-    [ConflictingCombos(BRD_AoE_Combo, BRD_AoE_SimpleMode)]
+    [ConflictingCombos(BRD_AoE_SimpleMode)]
     [ReplaceSkill(BRD.QuickNock, BRD.Ladonsbite)]
     [CustomComboInfo("Advanced Mode - AoE",
         "Replaces Quick Nock with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.",
@@ -1587,52 +1598,38 @@ public enum Preset
 
     #region Smaller Features
 
-    [ReplaceSkill(BRD.HeavyShot, BRD.BurstShot)]
-    [ConflictingCombos(BRD_ST_AdvMode, BRD_ST_SimpleMode)]
-    [CustomComboInfo("Heavy Shot into Straight Shot Feature",
-        "Replaces Heavy Shot/Burst Shot with Straight Shot/Refulgent Arrow when procced.", Job.BRD)]
+    [ReplaceSkill(BRD.StraightShot, BRD.RefulgentArrow)]
+    [CustomComboInfo("Straight Shot Feature",
+        "Straight Shot/Refulgent Arrow with Heavy Shot when not procced.", Job.BRD)]
     BRD_StraightShotUpgrade = 3001,
+    
+    [ParentCombo(BRD_StraightShotUpgrade)]
+    [CustomComboInfo("OGCDs option", "Will use the following OGCDs to prevent overcap", Job.BRD)]
+    BRD_StraightShotUpgrade_OGCDs = 3002,
 
     [ParentCombo(BRD_StraightShotUpgrade)]
-    [CustomComboInfo("DoT Maintenance Option",
-        "Enabling this option will make Heavy Shot into Straight Shot refresh your DoTs on your current.", Job.BRD
-    )]
-    BRD_DoTMaintainance = 3002,
-
-    [ParentCombo(BRD_StraightShotUpgrade)]
-    [CustomComboInfo("Apex Arrow Option",
-        "Replaces Burst Shot with Apex Arrow when gauge is full and Blast Arrow when you are Blast Arrow ready.",
-        Job.BRD)]
-    BRD_ApexST = 3034,
+    [CustomComboInfo("DoT Option", "Will apply and refresh your dots.", Job.BRD)]
+    BRD_DoTMaintainance = 3067,
 
     [ReplaceSkill(BRD.IronJaws)]
-    [ConflictingCombos(BRD_IronJaws_Alternate)]
     [CustomComboInfo("Iron Jaws Feature",
         "Iron Jaws is replaced with Caustic Bite/Stormbite if one or both are not up.\nAlternates between the two if Iron Jaws isn't available.",
         Job.BRD)]
     BRD_IronJaws = 3003,
 
-    [ParentCombo(BRD_IronJaws)]
-    [CustomComboInfo("Iron Jaws Apex Option", "Adds Apex and Blast Arrow to Iron Jaws when available.", Job.BRD)]
-    BRD_IronJawsApex = 3024,
-
-    [ReplaceSkill(BRD.IronJaws)]
-    [ConflictingCombos(BRD_IronJaws)]
-    [CustomComboInfo("Iron Jaws Alternate Feature",
-        "Iron Jaws is replaced with Caustic Bite/Stormbite if one or both are not up.\nIron Jaws will only show up when debuffs are about to expire.",
-        Job.BRD)]
-    BRD_IronJaws_Alternate = 3004,
-
     [ReplaceSkill(BRD.QuickNock, BRD.Ladonsbite)]
-    [ConflictingCombos(BRD_AoE_AdvMode, BRD_AoE_SimpleMode)]
-    [CustomComboInfo("Quick Nock Feature", "Replaces Quick Nock/Ladonsbite with Shadowbite when ready.", Job.BRD)]
-    BRD_AoE_Combo = 3008,
+    [CustomComboInfo("Wide Volley Feature", "Replaces WideVolley/Shadowbite with Quicknock/LadonsBite when not procced or below level.", Job.BRD)]
+    BRD_WideVolleyUpgrade = 3008,
+    
+    [ParentCombo(BRD_WideVolleyUpgrade)]
+    [CustomComboInfo("OGCDs option", "Will use the following OGCDs to prevent overcap", Job.BRD)]
+    BRD_WideVolleyUpgrade_OGCDs = 3068,
 
-    [ParentCombo(BRD_AoE_Combo)]
+    [ParentCombo(BRD_WideVolleyUpgrade)]
     [CustomComboInfo("Apex Arrow Option",
-        "Replaces Ladonsbite and Quick Nock with Apex Arrow when gauge is full and Blast Arrow when you are Blast Arrow ready.",
+        "Replaces WideVolley/Shadowbite with Apex Arrow when gauge is full and Blast Arrow when you are Blast Arrow ready.",
         Job.BRD)]
-    BRD_Apex = 3005,
+    BRD_WideVolleyUpgrade_Apex = 3005,
 
     [ReplaceSkill(BRD.Bloodletter)]
     [CustomComboInfo("Single Target oGCD Feature", "All oGCD's on Bloodletter/Heartbreakshot", Job.BRD)]
@@ -1676,7 +1673,7 @@ public enum Preset
 
     #endregion
 
-    // Last value = 3066
+    // Last value = 3069
 
     #endregion
 
@@ -1841,9 +1838,13 @@ public enum Preset
         "Includes Curing Waltz and Second Wind in the rotation when available and your HP is below the set percentages.",
         Job.DNC)]
     DNC_ST_Adv_PanicHeals = 4027,
+    
+    [ParentCombo(DNC_ST_AdvancedMode)]
+    [CustomComboInfo("Shield Samba Raidwide Option", "Adds Shield Samba when Raidwide is detected casting.", Job.MCH)]
+    DNC_ST_Adv_ShieldSamba = 4034,
 
     #endregion
-    // Last value = 4033
+    // Last value = 4034
 
     #region Advanced Dancer (AoE)
 
@@ -2684,11 +2685,11 @@ public enum Preset
 
     [AutoAction(true, false)]
     [ReplaceSkill(DRG.DoomSpike)]
-    [ConflictingCombos(DRG_AOE_AdvancedMode)]
+    [ConflictingCombos(DRG_AoE_AdvancedMode)]
     [CustomComboInfo("Simple Mode - AoE",
         "Replaces Doom Spike with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.", Job.DRG)]
     [SimpleCombo]
-    DRG_AOE_SimpleMode = 6200,
+    DRG_AoE_SimpleMode = 6200,
 
     #endregion
 
@@ -2774,6 +2775,10 @@ public enum Preset
     DRG_TrueNorthDynamic = 6199,
 
     [ParentCombo(DRG_ST_AdvancedMode)]
+    [CustomComboInfo("Leg Sweep Option", "Adds Leg Sweep when target non-boss is casting.", Job.DRG)]
+    DRG_ST_StunInterupt = 6196,
+
+    [ParentCombo(DRG_ST_AdvancedMode)]
     [CustomComboInfo("Ranged Uptime Option", "Adds Piercing Talon to the rotation when you are out of melee range.", Job.DRG)]
     DRG_ST_RangedUptime = 6197,
 
@@ -2781,20 +2786,24 @@ public enum Preset
     [CustomComboInfo("Combo Heals Option", "Adds Bloodbath and Second Wind to the rotation.", Job.DRG)]
     DRG_ST_ComboHeals = 6198,
 
+    [ParentCombo(DRG_ST_AdvancedMode)]
+    [CustomComboInfo("Feint Raidwide Option", "Adds Feint when Raidwide is detected casting.", Job.DRG)]
+    DRG_ST_Feint = 6195,
+
     #endregion
 
     #region Advanced AoE Dragoon
 
     [AutoAction(true, false)]
     [ReplaceSkill(DRG.DoomSpike)]
-    [ConflictingCombos(DRG_AOE_SimpleMode)]
+    [ConflictingCombos(DRG_AoE_SimpleMode)]
     [CustomComboInfo("Advanced Mode - AoE", "Replaces Doomspike with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.", Job.DRG)]
     [AdvancedCombo]
-    DRG_AOE_AdvancedMode = 6201,
+    DRG_AoE_AdvancedMode = 6201,
 
     #region Buffs AoE
 
-    [ParentCombo(DRG_AOE_AdvancedMode)]
+    [ParentCombo(DRG_AoE_AdvancedMode)]
     [CustomComboInfo("Buffs AoE Option", "Adds Lance Charge and Battle Litany to the rotation.", Job.DRG)]
     DRG_AoE_Buffs = 6202,
 
@@ -2810,7 +2819,7 @@ public enum Preset
 
     #region cooldowns AoE
 
-    [ParentCombo(DRG_AOE_AdvancedMode)]
+    [ParentCombo(DRG_AoE_AdvancedMode)]
     [CustomComboInfo("Cooldowns Option", "Adds various cooldowns to the rotation.", Job.DRG)]
     DRG_AoE_CDs = 6205,
 
@@ -2856,16 +2865,20 @@ public enum Preset
 
     #endregion
 
-    [ParentCombo(DRG_AOE_AdvancedMode)]
+    [ParentCombo(DRG_AoE_AdvancedMode)]
     [CustomComboInfo("Low Level Disembowel", "Adds Disembowel combo to the rotation when you are or synced below level 62.", Job.DRG)]
     DRG_AoE_Disembowel = 6297,
 
-    [ParentCombo(DRG_AOE_AdvancedMode)]
+    [ParentCombo(DRG_AoE_AdvancedMode)]
+    [CustomComboInfo("Leg Sweep Option", "Adds Leg Sweep when target non-boss is casting.", Job.DRG)]
+    DRG_AoE_StunInterupt = 6296,
+
+    [ParentCombo(DRG_AoE_AdvancedMode)]
     [CustomComboInfo("Ranged Uptime Option", "Adds Piercing Talon to the rotation when you are out of melee range.",
         Job.DRG)]
     DRG_AoE_RangedUptime = 6298,
 
-    [ParentCombo(DRG_AOE_AdvancedMode)]
+    [ParentCombo(DRG_AoE_AdvancedMode)]
     [CustomComboInfo("Combo Heals Option", "Adds Bloodbath and Second Wind to the rotation.", Job.DRG)]
     DRG_AoE_ComboHeals = 6299,
 
@@ -2874,7 +2887,7 @@ public enum Preset
     #region Basic Combo
 
     [ReplaceSkill(DRG.FullThrust, DRG.HeavensThrust)]
-    [CustomComboInfo("Full / Heavens Thrust Combo", "Replace Full Thrust/Heavens' Thrust with the basic combo chain.", Job.DRG)]
+    [CustomComboInfo("Full / Heavens Thrust Combo", "Replace Full Thrust/Heavens' Thrust with the basic combo chain.\nEnabling Chaos combo option makes this a one button basic combo.", Job.DRG)]
     [BasicCombo]
     DRG_HeavensThrust = 6304,
 
@@ -2888,12 +2901,12 @@ public enum Preset
     #region Variant
 
     [Variant]
-    [VariantParent(DRG_ST_AdvancedMode, DRG_AOE_AdvancedMode)]
+    [VariantParent(DRG_ST_AdvancedMode, DRG_AoE_AdvancedMode)]
     [CustomComboInfo("Cure Option", "Use Variant Cure when HP is below set threshold.", Job.DRG)]
     DRG_Variant_Cure = 6302,
 
     [Variant]
-    [VariantParent(DRG_ST_AdvancedMode, DRG_AOE_AdvancedMode)]
+    [VariantParent(DRG_ST_AdvancedMode, DRG_AoE_AdvancedMode)]
     [CustomComboInfo("Rampart Option", "Use Variant Rampart on cooldown.", Job.DRG)]
     DRG_Variant_Rampart = 6303,
 
@@ -3620,6 +3633,10 @@ public enum Preset
     [ParentCombo(MCH_ST_AdvancedMode)]
     [CustomComboInfo("Excavator Option", "Adds Excavator to the rotation.", Job.MCH)]
     MCH_ST_Adv_Excavator = 8116,
+    
+    [ParentCombo(MCH_ST_AdvancedMode)]
+    [CustomComboInfo("Tactician Raidwide Option", "Adds Tactician when Raidwide is detected casting.", Job.MCH)]
+    MCH_ST_Adv_Tactician = 8118,
 
     [ParentCombo(MCH_ST_AdvancedMode)]
     [CustomComboInfo("Head Graze Option", "Uses Head Graze to interrupt during the rotation, where applicable.", Job.MCH)]
@@ -3628,6 +3645,10 @@ public enum Preset
     [ParentCombo(MCH_ST_AdvancedMode)]
     [CustomComboInfo("Second Wind Option", "Use Second Wind when below the set HP percentage.", Job.MCH)]
     MCH_ST_Adv_SecondWind = 8114,
+
+    [ParentCombo(MCH_ST_AdvancedMode)]
+    [CustomComboInfo("Dismantle Raidwide Option", "Adds Dismantle when Raidwide is detected casting.", Job.MCH)]
+    MCH_ST_Dismantle = 8195,
 
     #endregion
 
@@ -3773,7 +3794,7 @@ public enum Preset
 
     [ReplaceSkill(MCH.HotShot)]
     [CustomComboInfo("Big Hitter Feature", "Replace Hot Shot, Drill, Air Anchor, Chainsaw and Excavator depending on which is on cooldown.", Job.MCH)]
-    MCH_HotShotDrillChainsawExcavator = 8004,
+    MCH_BigHitter = 8004,
 
     [ReplaceSkill(MCH.GaussRound, MCH.Ricochet, MCH.CheckMate, MCH.DoubleCheck)]
     [CustomComboInfo("Gauss Round / Ricochet \nDouble Check / Checkmate Feature", "Replace Gauss Round and Ricochet or Double Check and Checkmate with one or the other depending on which has more charges.", Job.MCH)]
@@ -3805,14 +3826,6 @@ public enum Preset
 
     #endregion
     
-    #region Movement
-
-    [CustomComboInfo("Thunderclap Movement Option", "Retargets Thunderclap to UI/Field Mouseover", Job.MNK)]
-    [Retargeted(MNK.Thunderclap)]
-    MNK_Retarget_Thunderclap = 9043,
-    
-    #endregion
-
     #region Monk Advanced ST
 
     [AutoAction(false, false)]
@@ -3873,10 +3886,18 @@ public enum Preset
     [ParentCombo(MNK_ST_AdvancedMode)]
     [CustomComboInfo("True North Option", "Adds True North dynamically, when not in positional, to the rotation", Job.MNK)]
     MNK_STUseTrueNorth = 9014,
-
+    
+    [ParentCombo(MNK_ST_AdvancedMode)]
+    [CustomComboInfo("Leg Sweep Option", "Adds Leg Sweep when target non-boss is casting.", Job.MNK)]
+    MNK_ST_StunInterupt = 9044,
+    
     [ParentCombo(MNK_ST_AdvancedMode)]
     [CustomComboInfo("Combo Heals Option", "Adds Bloodbath and Second Wind to the rotation.", Job.MNK)]
     MNK_ST_ComboHeals = 9018,
+
+    [ParentCombo(MNK_ST_AdvancedMode)]
+    [CustomComboInfo("Feint Raidwide Option", "Adds Feint when Raidwide is detected casting.", Job.MNK)]
+    MNK_ST_Feint = 9095,
 
     #endregion
     
@@ -3934,6 +3955,10 @@ public enum Preset
     MNK_AoEUseMasterfulBlitz = 9040,
 
     [ParentCombo(MNK_AOE_AdvancedMode)]
+    [CustomComboInfo("Leg Sweep Option", "Adds Leg Sweep when target non-boss is casting.", Job.MNK)]
+    MNK_AoE_StunInterupt = 9045,
+
+    [ParentCombo(MNK_AOE_AdvancedMode)]
     [CustomComboInfo("Combo Heals Option", "Adds Bloodbath and Second Wind to the rotation.", Job.MNK)]
     MNK_AoE_ComboHeals = 9037,
 
@@ -3945,6 +3970,14 @@ public enum Preset
     [CustomComboInfo("Beast Chakra Handlers", "Merge single target GCDs which share the same beast chakra", Job.MNK)]
     MNK_ST_BeastChakras = 9019,
     
+    #endregion
+
+    #region Movement
+
+    [CustomComboInfo("Thunderclap Movement Option", "Retargets Thunderclap to UI Mouseover", Job.MNK)]
+    [Retargeted(MNK.Thunderclap)]
+    MNK_Retarget_Thunderclap = 9043,
+
     #endregion
     
     #region Misc
@@ -3992,7 +4025,7 @@ public enum Preset
 
     #endregion
 
-    // Last value = 9043
+    // Last value = 9045
 
     #endregion
 
@@ -4072,6 +4105,10 @@ public enum Preset
     [ParentCombo(NIN_ST_AdvancedMode)]
     [CustomComboInfo("Meisui Option", "Adds Meisui to Advanced Mode.", Job.NIN)]
     NIN_ST_AdvancedMode_Meisui = 10013,
+    
+    [ParentCombo(NIN_ST_AdvancedMode)]
+    [CustomComboInfo("Leg Sweep Option", "Adds Leg Sweep when target non-boss is casting.", Job.NIN)]
+    NIN_ST_AdvancedMode_StunInterupt =10045,
 
     [ParentCombo(NIN_ST_AdvancedMode)]
     [CustomComboInfo("Phantom Kamaitachi Option", "Adds Phantom Kamaitachi to Advanced Mode.", Job.NIN)]
@@ -4154,6 +4191,10 @@ public enum Preset
     NIN_AoE_AdvancedMode_Meisui = 10029,
     
     [ParentCombo(NIN_AoE_AdvancedMode)]
+    [CustomComboInfo("Leg Sweep Option", "Adds Leg Sweep when target non-boss is casting.", Job.NIN)]
+    NIN_AoE_AdvancedMode_StunInterupt =10044,
+    
+    [ParentCombo(NIN_AoE_AdvancedMode)]
     [CustomComboInfo("Phantom Kamaitachi Option", "Adds Phantom Kamaitachi to Advanced Mode.", Job.NIN)]
     NIN_AoE_AdvancedMode_PhantomKamaitachi = 10030,
     
@@ -4214,8 +4255,15 @@ public enum Preset
     NIN_HideMug = 10038,
 
     [ReplaceSkill(NIN.Ten, NIN.Chi, NIN.Jin)]
+    [ConflictingCombos(Preset.NIN_Simple_Mudras_Alt)]
     [CustomComboInfo("Simple Mudras Feature", "Simplify the mudra casting to avoid failing.", Job.NIN)]
     NIN_Simple_Mudras = 10039,
+    
+    [ReplaceSkill(NIN.Ten, NIN.Chi, NIN.Jin)]
+    [ConflictingCombos(Preset.NIN_Simple_Mudras)]
+    [CustomComboInfo("Simpler Mudras Alternate Feature", "Puts mudras on to a single button following basic logic and finishes them with Ninjutsu." +
+                                                        "\nTen = Hyosho Ranryu > Suiton if trick cd less than 20s > Raiton. \nChi = Goka Mekkyaku > Huton if trick cd less than 20s > Katon. \nJin = Doton ", Job.NIN)]
+    NIN_Simple_Mudras_Alt = 10043,
 
     [ReplaceSkill(NIN.TenChiJin)]
     [ParentCombo(NIN_TCJMeisui)]
@@ -4236,7 +4284,7 @@ public enum Preset
     NIN_Variant_Rampart = 10070,
     #endregion
 
-    // Last value = 10042
+    // Last value = 10045
 
     #endregion
 
@@ -4377,6 +4425,14 @@ public enum Preset
     [ParentCombo(PCT_ST_AdvancedMode_MovementFeature)]
     [CustomComboInfo("Swiftcast Option ", "Adds Swiftcast to the combo while moving.", Job.PCT)]
     PCT_ST_AdvancedMode_SwitfcastOption = 20032,
+    
+    [ParentCombo(PCT_ST_AdvancedMode)]
+    [CustomComboInfo("Addle Raidwide Option", "Adds Addle when Raidwide is detected casting.", Job.PCT)]
+    PCT_ST_AdvancedMode_Addle = 20070,
+    
+    [ParentCombo(PCT_ST_AdvancedMode)]
+    [CustomComboInfo("Tempura Raidwide Option", "Adds Tempura Coat when Raidwide is detected casting. \nSpreads it with Tempura Grassa if enough party members are in range. More than 75%", Job.PCT)]
+    PCT_ST_AdvancedMode_Tempura = 20071,
 
     #endregion
 
@@ -4521,6 +4577,8 @@ public enum Preset
     PCT_Variant_Rampart = 20101,
 
     #endregion
+    
+    // Last used 20071
 
     #endregion
 
@@ -5019,6 +5077,10 @@ public enum Preset
     [ParentCombo(RPR_ST_AdvancedMode)]
     [CustomComboInfo("Dynamic True North Feature", "Adds True North before Gibbet/Gallows when you are not in the correct position.", Job.RPR)]
     RPR_ST_TrueNorthDynamic = 12098,
+
+    [ParentCombo(RPR_ST_AdvancedMode)]
+    [CustomComboInfo("Leg Sweep Option", "Adds Leg Sweep when target non-boss is casting.", Job.RPR)]
+    RPR_ST_StunInterupt = 12096,
     
     [ParentCombo(RPR_ST_AdvancedMode)]
     [CustomComboInfo("Ranged Filler Option", "Replaces the combo chain with Harpe when outside of melee range. Will not override Communio.", Job.RPR)]
@@ -5027,6 +5089,10 @@ public enum Preset
     [ParentCombo(RPR_ST_AdvancedMode)]
     [CustomComboInfo("Combo Heals Option", "Adds Bloodbath and Second Wind to the combo, using them when below the HP Percentage threshold.", Job.RPR)]
     RPR_ST_ComboHeals = 12097,
+
+    [ParentCombo(RPR_ST_AdvancedMode)]
+    [CustomComboInfo("Feint Raidwide Option", "Adds Feint when Raidwide is detected casting.", Job.RPR)]
+    RPR_ST_Feint = 12095,
 
     //last value = 12021
 
@@ -5098,10 +5164,14 @@ public enum Preset
     RPR_AoE_Perfectio = 12114,
 
     [ParentCombo(RPR_AoE_AdvancedMode)]
+    [CustomComboInfo("Leg Sweep Option", "Adds Leg Sweep when target non-boss is casting.", Job.RPR)]
+    RPR_AoE_StunInterupt = 12118,
+
+    [ParentCombo(RPR_AoE_AdvancedMode)]
     [CustomComboInfo("Combo Heals Option", "Adds Bloodbath and Second Wind to the combo, using them when below the HP Percentage threshold.", Job.RPR)]
     RPR_AoE_ComboHeals = 12116,
 
-    // Last value = 12117
+    // Last value = 12118
 
     #endregion
     
@@ -5332,8 +5402,16 @@ public enum Preset
     [CustomComboInfo("Lucid Dreaming Option", "Weaves Lucid Dreaming when your MP drops below the specified value.",
         Job.RDM)]
     RDM_ST_Lucid = 13023,
+    
+    [ParentCombo(RDM_ST_DPS)]
+    [CustomComboInfo("Addle Raidwide Option", "Adds Addle when Raidwide is detected casting.", Job.RDM)]
+    RDM_ST_Addle = 13024,
+    
+    [ParentCombo(RDM_ST_DPS)]
+    [CustomComboInfo("Magick Barrier Raidwide Option", "Adds Magick Barrier when Raidwide is detected casting.", Job.RDM)]
+    RDM_ST_MagickBarrier = 13025,
 
-    //Last Used 13024
+    //Last Used 13025
     #endregion
 
     #region AoE DPS
@@ -5576,6 +5654,25 @@ public enum Preset
         Job.SGE)]
     [SimpleCombo]
     SGE_AoE_Simple_DPS = 14085,
+    
+    [AutoAction(false, true)]
+    [ReplaceSkill(SGE.Diagnosis)]
+    [ConflictingCombos(SGE_ST_Heal)]
+    [CustomComboInfo("Simple Healing Mode - Single Target", "Replaces Diagnosis with a full one-button single target healing utility." +
+                                                            "\nThis is the ideal option for newcomers to the job. Particularly with autorotation.", Job.SGE)]
+    [SimpleCombo]
+    [PossiblyRetargeted]
+    SGE_Simple_ST_Heal = 14087,
+    
+    
+    [AutoAction(true, true)]
+    [ReplaceSkill(SGE.Prognosis)]
+    [ConflictingCombos(SGE_AoE_Heal)]
+    [CustomComboInfo("Simple Healing Mode - Single Target", "Replaces Prognosis with a full one-button single target healing utility." +
+                                                            "\nThis is the ideal option for newcomers to the job. Particularly with autorotation.", Job.SGE)]
+    [SimpleCombo]
+    [PossiblyRetargeted]
+    SGE_Simple_AoE_Heal = 14086,
 
     #endregion
 
@@ -5934,7 +6031,7 @@ public enum Preset
     SGE_Retarget_Kardia = 14078,
     
     [ParentCombo(SGE_Retarget)]
-    [CustomComboInfo("Icarus Movement Option", "Retargets Icarus to UI/Field Mouseover", Job.SGE)]
+    [CustomComboInfo("Icarus Movement Option", "Retargets Icarus to UI Mouseover", Job.SGE)]
     [Retargeted(SGE.Icarus)]
     SGE_Retarget_Icarus = 14083,
     
@@ -5972,7 +6069,7 @@ public enum Preset
 
     #endregion
 
-    // Last used number = 140835
+    // Last used number = 14087
 
     #endregion
 
@@ -6078,12 +6175,20 @@ public enum Preset
     SAM_ST_TrueNorth = 15099,
 
     [ParentCombo(SAM_ST_AdvancedMode)]
+    [CustomComboInfo("Leg Sweep Option", "Adds Leg Sweep when target non-boss is casting.", Job.SAM)]
+    SAM_ST_StunInterupt = 15096,
+
+    [ParentCombo(SAM_ST_AdvancedMode)]
     [CustomComboInfo("Ranged Uptime Feature", "Adds Enpi to the rotation when you are out of range.", Job.SAM)]
     SAM_ST_RangedUptime = 15097,
 
     [ParentCombo(SAM_ST_AdvancedMode)]
     [CustomComboInfo("Combo Heals Option", "Adds Bloodbath and Second Wind to the combo, using them when below the HP Percentage threshold.", Job.SAM)]
     SAM_ST_ComboHeals = 15098,
+
+    [ParentCombo(SAM_ST_AdvancedMode)]
+    [CustomComboInfo("Feint Raidwide Option", "Adds Feint when Raidwide is detected casting.", Job.SAM)]
+    SAM_ST_Feint = 15095,
 
     #endregion
 
@@ -6153,6 +6258,10 @@ public enum Preset
     SAM_AoE_Kyuten = 15105,
 
     [ParentCombo(SAM_AoE_AdvancedMode)]
+    [CustomComboInfo("Leg Sweep Option", "Adds Leg Sweep when target non-boss is casting.", Job.SAM)]
+    SAM_AoE_StunInterupt = 15196,
+
+    [ParentCombo(SAM_AoE_AdvancedMode)]
     [CustomComboInfo("Combo Heals Option", "Adds Bloodbath and Second Wind to the combo, using them when below the HP Percentage threshold.", Job.SAM)]
     SAM_AoE_ComboHeals = 15199,
 
@@ -6161,7 +6270,7 @@ public enum Preset
     #region Basic Combo
 
     [ReplaceSkill(SAM.Yukikaze)]
-    [CustomComboInfo("Yukikaze Combo", "Replace Yukikaze with its combo chain.", Job.SAM)]
+    [CustomComboInfo("Yukikaze Combo", "Replace Yukikaze with its combo chain.\nEnabling Gekko and Kasha combo options makes this a one button basic combo.", Job.SAM)]
     SAM_ST_YukikazeCombo = 15000,
 
     [ReplaceSkill(SAM.Kasha)]
@@ -6177,7 +6286,7 @@ public enum Preset
     SAM_AoE_OkaCombo = 15100,
 
     [ReplaceSkill(SAM.Mangetsu)]
-    [CustomComboInfo("Mangetsu Combo", "Replace Mangetsu with its combo chain.", Job.SAM)]
+    [CustomComboInfo("Mangetsu Combo", "Replace Mangetsu with its combo chain.\nEnabling Oka combo options makes this a one button basic combo.", Job.SAM)]
     SAM_AoE_MangetsuCombo = 15101,
 
     #endregion
@@ -6336,6 +6445,25 @@ public enum Preset
     [ConflictingCombos(SCH_AoE_ADV_DPS)]
     [CustomComboInfo("Simple DPS Mode - AoE", "Replaces Art of War with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.", Job.SCH)]
     SCH_AoE_Simple_DPS = 16071,
+    
+    [AutoAction(false, true)]
+    [ReplaceSkill(SCH.Physick)]
+    [ConflictingCombos(SCH_ST_Heal)]
+    [CustomComboInfo("Simple Healing Mode - Single Target", "Replaces Physick with a full one-button single target healing utility." +
+                                                            "\nThis is the ideal option for newcomers to the job. Particularly with autorotation.", Job.SCH)]
+    [SimpleCombo]
+    [PossiblyRetargeted]
+    SCH_Simple_ST_Heal = 16085,
+    
+    
+    [AutoAction(true, true)]
+    [ReplaceSkill(SCH.Succor)]
+    [ConflictingCombos(SCH_AoE_Heal)]
+    [CustomComboInfo("Simple Healing Mode - Single Target", "Replaces Succor with a full one-button single target healing utility." +
+                                                            "\nThis is the ideal option for newcomers to the job. Particularly with autorotation.", Job.SCH)]
+    [SimpleCombo]
+    [PossiblyRetargeted]
+    SCH_Simple_AoE_Heal = 16084,
     
     #endregion
     
@@ -6847,6 +6975,10 @@ public enum Preset
     [CustomComboInfo("Lucid Dreaming Option",
        "Adds Lucid Dreaming to the single target combo when MP falls below the set value.", Job.SMN)]
     SMN_ST_Advanced_Combo_Lucid = 17031,
+    
+    [ParentCombo(SMN_ST_Advanced_Combo)]
+    [CustomComboInfo("Addle Raidwide Option", "Adds Addle when Raidwide is detected casting.", Job.SMN)]
+    SMN_ST_Advanced_Combo_Addle = 17082,
 
     #endregion
 
@@ -7022,7 +7154,7 @@ public enum Preset
 
     #endregion
 
-    // Last Used 17078
+    // Last Used 17080
 
     #endregion
 
@@ -7046,14 +7178,6 @@ public enum Preset
 
     #endregion
     
-    #region Movement
-    
-    [CustomComboInfo("Slither Movement option", "Retargets Slither to UI/Field Mouseover", Job.VPR)]
-    [Retargeted(VPR.Slither)]
-    VPR_Retarget_Slither = 30211,
-    
-    #endregion
-
     #region Advanced ST Viper
 
     [AutoAction(false, false)]
@@ -7112,12 +7236,20 @@ public enum Preset
     VPR_TrueNorthDynamic = 30098,
 
     [ParentCombo(VPR_ST_AdvancedMode)]
+    [CustomComboInfo("Leg Sweep Option", "Adds Leg Sweep when target non-boss is casting.", Job.VPR)]
+    VPR_ST_StunInterupt = 30096,
+
+    [ParentCombo(VPR_ST_AdvancedMode)]
     [CustomComboInfo("Ranged Uptime Option", "Adds Writhing Snap to the rotation when you are out of melee range.", Job.VPR)]
     VPR_ST_RangedUptime = 30095,
     
     [ParentCombo(VPR_ST_AdvancedMode)]
     [CustomComboInfo("Combo Heals Option", "Adds Bloodbath and Second Wind to the rotation.", Job.VPR)]
     VPR_ST_ComboHeals = 30097,
+
+    [ParentCombo(VPR_ST_AdvancedMode)]
+    [CustomComboInfo("Feint Raidwide Option", "Adds Feint when Raidwide is detected casting.", Job.VPR)]
+    VPR_ST_Feint = 30094,
 
     #endregion
 
@@ -7167,6 +7299,10 @@ public enum Preset
     VPR_AoE_ReawakenCombo = 30112,
 
     [ParentCombo(VPR_AoE_AdvancedMode)]
+    [CustomComboInfo("Leg Sweep Option", "Adds Leg Sweep when target non-boss is casting.", Job.VPR)]
+    VPR_AoE_StunInterupt = 30196,
+
+    [ParentCombo(VPR_AoE_AdvancedMode)]
     [CustomComboInfo("Combo Heals Option", "Adds Bloodbath and Second Wind to the rotation.", Job.VPR)]
     VPR_AoE_ComboHeals = 30199,
 
@@ -7179,6 +7315,14 @@ public enum Preset
     [CustomComboInfo("Basic Combo", "Replace Reaving Fangs with its combo chain.", Job.VPR)]
     [BasicCombo]
     VPR_ST_BasicCombo = 30015,
+
+    #endregion
+
+    #region Movement
+
+    [CustomComboInfo("Slither Movement option", "Retargets Slither to UI Mouseover", Job.VPR)]
+    [Retargeted(VPR.Slither)]
+    VPR_Retarget_Slither = 30211,
 
     #endregion
 
@@ -7827,6 +7971,25 @@ public enum Preset
         Job.WHM)]
     [SimpleCombo]
     WHM_AoE_Simple_DPS = 19051,
+    
+    [AutoAction(false, true)]
+    [ReplaceSkill(WHM.Cure)]
+    [ConflictingCombos(WHM_STHeals)]
+    [CustomComboInfo("Simple Healing Mode - Single Target", "Replaces Cure with a full one-button single target healing utility." +
+                                                            "\nThis is the ideal option for newcomers to the job. Particularly with autorotation.", Job.WHM)]
+    [SimpleCombo]
+    [PossiblyRetargeted]
+    WHM_SimpleSTHeals = 19052,
+    
+    
+    [AutoAction(true, true)]
+    [ReplaceSkill(WHM.Medica1)]
+    [ConflictingCombos(WHM_AoEHeals)]
+    [CustomComboInfo("Simple Healing Mode - Single Target", "Replaces Medica with a full one-button single target healing utility." +
+                                                            "\nThis is the ideal option for newcomers to the job. Particularly with autorotation.", Job.WHM)]
+    [SimpleCombo]
+    [PossiblyRetargeted]
+    WHM_Simple_AoEHeals = 19054,
 
     #endregion
 
@@ -8375,11 +8538,6 @@ public enum Preset
     ASTPvP_Burst_PlayCard = 111003,
 
     [PvPCustomCombo]
-    [ReplaceSkill(ASTPvP.AspectedBenefic)]
-    [CustomComboInfo("Double Cast Heal Feature", "Adds Double Cast to Aspected Benefic.", Job.AST)]
-    ASTPvP_Heal = 111004,
-
-    [PvPCustomCombo]
     [ParentCombo(ASTPvP_Burst)]
     [CustomComboInfo("Double Malefic Cast Option", "Adds Double Malefic Cast to Burst Mode.", Job.AST)]
     ASTPvP_Burst_DoubleMalefic = 111005,
@@ -8407,11 +8565,23 @@ public enum Preset
         "Adds Role Action Diabrosis to Burst Mode below selected health",
         Job.AST)]
     ASTPvP_Diabrosis = 111010,
+    
+    [PvPCustomCombo]
+    [ParentCombo(ASTPvP_Burst)]
+    [CustomComboInfo("Aspected Benefic Option", "Adds Aspected Benefic when target is below set health", Job.AST)]
+    [PossiblyRetargeted]
+    ASTPvP_Burst_Heal = 111011,
 
     [PvPCustomCombo]
     [ReplaceSkill(ASTPvP.Epicycle)]
     [CustomComboInfo("Epicycle Burst Feature", "Turns Epicycle into burst combo.", Job.AST)]
     ASTPvP_Epicycle = 111008,
+    
+    [PvPCustomCombo]
+    [ReplaceSkill(ASTPvP.AspectedBenefic)]
+    [CustomComboInfo("Aspected Benefic Heal Feature", "Adds options to Aspected Benefic", Job.AST)]
+    [PossiblyRetargeted]
+    ASTPvP_Heal = 111004,
 
     // Last value = 111010
 
@@ -9240,7 +9410,7 @@ public enum Preset
 
     [PvPCustomCombo]
     [ParentCombo(SGEPvP_BurstMode)]
-    [CustomComboInfo("Kardia Reminder Option", "Adds Kardia to Burst Mode.", Job.SGE)]
+    [CustomComboInfo("Kardia Reminder Option", "Adds Kardia Reminder to Burst Mode if buff is missing", Job.SGE)]
     SGEPvP_BurstMode_KardiaReminder = 124007,
 
     [PvPCustomCombo]
@@ -9249,8 +9419,14 @@ public enum Preset
        "Adds Role Action Diabrosis to Burst Mode below selected health",
        Job.SGE)]
     SGEPvP_Diabrosis = 124008,
+    
+    [PvPCustomCombo]
+    [ReplaceSkill(SGEPvP.Kardia)]
+    [CustomComboInfo("Kardia Retarget", "Retargets Kardia to the heal stack (In Wrath Settings) outside of the Burst Feature", Job.SGE)]
+    [Retargeted]
+    SGEPvP_RetargetKardia = 124009,
 
-    // Last value = 124008
+    // Last value = 124009
 
     #endregion
 
@@ -9344,10 +9520,15 @@ public enum Preset
 
     [PvPCustomCombo]
     [ParentCombo(SCHPvP_Burst)]
-    [CustomComboInfo("Self Adlo Option",
-       "Adds Adloquium to self when at or beneath selected heath threshold. \n Will Not Overwrite Catalyze",
-       Job.SCH)]
-    SCHPvP_Selfcare = 126006,
+    [CustomComboInfo("Adlo Option", "Adds Adloquium when target is below set health", Job.SCH)]
+    [PossiblyRetargeted]
+    SCHPvP_Adlo = 126006,
+    
+    [PvPCustomCombo]
+    [ReplaceSkill(SCHPvP.Adloquilum)]
+    [CustomComboInfo("Adlo Retarget", "Retargets Adlo to the heal stack (In Wrath Settings) outside of the Burst Feature", Job.SCH)]
+    [Retargeted]
+    SCHPvP_RetargetAdlo = 126007,
 
     // Last value = 126006
 
@@ -9555,12 +9736,14 @@ public enum Preset
 
     [PvPCustomCombo]
     [ParentCombo(WHMPvP_Burst)]
-    [CustomComboInfo("Cure 3 Waste Prevention", "Adds Cure 3 to Burst combo when the Cure 3 Ready buff is under 6 seconds", Job.WHM)]
-    WHMPvP_NoWasteCure = 129010,
+    [CustomComboInfo("Heals in the Burst Mode", "Adds Cure 2/3 and Aquaveil to Burst combo below all damage options.", Job.WHM)]
+    [Retargeted]
+    WHMPvP_Burst_Heals = 129010,
 
     [PvPCustomCombo]
     [ReplaceSkill(WHMPvP.Cure2)]
     [CustomComboInfo("Heal Feature", "Adds the below options onto Cure II.", Job.WHM)]
+    [Retargeted]
     WHMPvP_Heals = 129004,
 
     [PvPCustomCombo]

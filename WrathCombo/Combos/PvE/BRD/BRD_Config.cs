@@ -11,7 +11,9 @@ internal partial class BRD
 
         public static UserBool
             BRD_AoE_Wardens_Auto = new("BRD_AoE_Wardens_Auto"),
-            BRD_ST_Wardens_Auto = new("BRD_ST_Wardens_Auto");
+            BRD_ST_Wardens_Auto = new("BRD_ST_Wardens_Auto"),
+            BRD_IronJaws_Apex = new("BRD_IronJaws_Apex"),
+            BRD_IronJaws_Alternate = new("BRD_IronJaws_Alternate");
 
         public static UserInt
             BRD_RagingJawsRenewTime = new("ragingJawsRenewTime", 5),
@@ -31,7 +33,9 @@ internal partial class BRD
         public static UserBoolArray
             BRD_AoE_Adv_Buffs_Options = new("BRD_AoE_Adv_Buffs_Options"),
             BRD_Adv_Buffs_Options = new("BRD_Adv_Buffs_Options"),
-            BRD_Adv_DoT_Options = new("BRD_Adv_DoT_Options");
+            BRD_Adv_DoT_Options = new("BRD_Adv_DoT_Options"),
+            BRD_StraightShotUpgrade_OGCDs_Options = new("BRD_StraightShotUpgrade_OGCDs_Options"),
+            BRD_WideVolleyUpgrade_OGCDs_Options = new("BRD_WideVolleyUpgrade_OGCDs_Options");
         #endregion
         
         internal static void Draw(Preset preset)
@@ -130,6 +134,26 @@ internal partial class BRD
                 case Preset.BRD_Variant_Cure:
                     DrawSliderInt(1, 100, BRD_VariantCure, "HP% to be at or under", 200);
                     break;
+                
+                case Preset.BRD_StraightShotUpgrade_OGCDs:
+                    DrawHorizontalMultiChoice(BRD_StraightShotUpgrade_OGCDs_Options, "Empyreal Arrow", "Adds Empyreal Arrow", 4, 0);
+                    DrawHorizontalMultiChoice(BRD_StraightShotUpgrade_OGCDs_Options, "Pitch Perfect", "Adds Pitch Perfect", 4, 1);
+                    DrawHorizontalMultiChoice(BRD_StraightShotUpgrade_OGCDs_Options, "Bloodletter", "Adds Bloodletter when at max charges", 4, 2);
+                    DrawHorizontalMultiChoice(BRD_StraightShotUpgrade_OGCDs_Options, "Sidewinder", "Adds Sidewinder", 4, 3);
+                    break;
+                
+                case Preset.BRD_WideVolleyUpgrade_OGCDs:
+                    DrawHorizontalMultiChoice(BRD_WideVolleyUpgrade_OGCDs_Options, "Empyreal Arrow", "Adds Empyreal Arrow", 4, 0);
+                    DrawHorizontalMultiChoice(BRD_WideVolleyUpgrade_OGCDs_Options, "Pitch Perfect", "Adds Pitch Perfect", 4, 1);
+                    DrawHorizontalMultiChoice(BRD_WideVolleyUpgrade_OGCDs_Options, "Rain Of Death", "Adds Rain of Death when at max charges, or bloodletter below level.", 4, 2);
+                    DrawHorizontalMultiChoice(BRD_WideVolleyUpgrade_OGCDs_Options, "Sidewinder", "Adds Sidewinder", 4, 3);
+                    break;
+                
+                case Preset.BRD_IronJaws:
+                    DrawAdditionalBoolChoice(BRD_IronJaws_Alternate, "Iron Jaws Alternate", "Iron Jaws will only show up when debuffs are about to expire.", 0);
+                    DrawAdditionalBoolChoice(BRD_IronJaws_Apex, "Apex Option", "Adds Apex and Blast Arrow to Iron Jaws when available.", 0);
+                    break;
+                
                 #endregion
             }
         }

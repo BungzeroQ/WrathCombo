@@ -88,8 +88,8 @@ internal partial class PLD : Tank
             if (Variant.CanCure(Preset.PLD_Variant_Cure, PLD_VariantCure))
                 return Variant.Cure;
 
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
             #region Mitigations
 
@@ -287,8 +287,8 @@ internal partial class PLD : Tank
             if (Variant.CanCure(Preset.PLD_Variant_Cure, PLD_VariantCure))
                 return Variant.Cure;
 
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
             if (PLD_AoE_MitsOptions != 1)
             {
@@ -455,8 +455,8 @@ internal partial class PLD : Tank
             if (Variant.CanCure(Preset.PLD_Variant_Cure, PLD_VariantCure))
                 return Variant.Cure;
             
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
             if (HasBattleTarget())
             {
@@ -663,8 +663,8 @@ internal partial class PLD : Tank
             if (Variant.CanCure(Preset.PLD_Variant_Cure, PLD_VariantCure))
                 return Variant.Cure;
 
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
             if (HasBattleTarget())
             {

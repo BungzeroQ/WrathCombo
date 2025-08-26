@@ -181,8 +181,8 @@ internal partial class SMN : Caster
             if (Variant.CanRampart(Preset.SMN_Variant_Rampart, WeaveTypes.Weave))
                 return Variant.Rampart;
             
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
             #endregion
 
             #region OGCD
@@ -357,8 +357,8 @@ internal partial class SMN : Caster
             if (Variant.CanRampart(Preset.SMN_Variant_Rampart, WeaveTypes.Weave))
                 return Variant.Rampart;
             
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
             #endregion
 
             #region OGCD
@@ -549,8 +549,8 @@ internal partial class SMN : Caster
                 return Variant.Cure;
             if (Variant.CanRampart(Preset.SMN_Variant_Rampart, WeaveTypes.Weave))
                 return Variant.Rampart;
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
             #endregion
 
             #region OGCD
@@ -644,6 +644,11 @@ internal partial class SMN : Caster
                 // Lucid Dreaming
                 if (IsEnabled(Preset.SMN_ST_Advanced_Combo_Lucid) && Role.CanLucidDream(lucidThreshold))
                     return Role.LucidDreaming;
+                
+                if (IsEnabled(Preset.SMN_ST_Advanced_Combo_Addle) && 
+                    Role.CanAddle()  &&
+                    RaidWideCasting())
+                    return Role.Addle;
             }
             #endregion
 
@@ -764,8 +769,8 @@ internal partial class SMN : Caster
             if (Variant.CanRampart(Preset.SMN_Variant_Rampart, WeaveTypes.Weave))
                 return Variant.Rampart;
             
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
             #endregion
 
             #region OGCD

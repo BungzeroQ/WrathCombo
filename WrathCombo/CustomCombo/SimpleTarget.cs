@@ -113,6 +113,14 @@ internal static class SimpleTarget
         /// </summary>
         public static IGameObject? AllyToRaise =>
             GetStack(StackOption.RaiseStack);
+        
+        /// <summary>
+        ///     The <see cref="AllyToHeal">Heal Stack</see>, but filtered to
+        ///     those in Line of Sight.
+        /// </summary>
+        public static IGameObject? AllyToHealPVP =>
+            GetStack(logicForEachEntryInStack:
+                target => target.IfWithinLineOfSight());
 
         #region Custom Stack Resolving
 

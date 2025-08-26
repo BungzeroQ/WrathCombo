@@ -17,8 +17,8 @@ internal partial class RDM : Caster
                 return actionID;
             
             #region Special Content
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
                 
             if (Variant.CanCure(Preset.RDM_Variant_Cure, RDM_VariantCure))
                 return Variant.Cure;
@@ -31,10 +31,6 @@ internal partial class RDM : Caster
             #region OGCDs
             if (CanWeave())
             {
-                //Gap Closer
-                if (ActionReady(Corpsacorps) && (HasEnoughManaToStart || CanMagickedSwordplay) && !InMeleeRange()) 
-                    return Corpsacorps;
-                 
                 if (ActionReady(Manafication) && (EmboldenCD <= 5 || HasEmbolden) && !CanPrefulgence) 
                     return Manafication;
                 
@@ -119,8 +115,8 @@ internal partial class RDM : Caster
                 return actionID;
             
             #region Special Content
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
                 
             if (Variant.CanCure(Preset.RDM_Variant_Cure, RDM_VariantCure))
                 return Variant.Cure;
@@ -132,10 +128,6 @@ internal partial class RDM : Caster
             #region OGCDs
             if (CanWeave())
             {
-                //Gap Closer Option
-                if (ActionReady(Corpsacorps) && (HasEnoughManaToStart || CanMagickedSwordplay) && !InMeleeRange()) 
-                    return Corpsacorps;
-                 
                 if (ActionReady(Manafication) && (EmboldenCD <= 5 || HasEmbolden) && !CanPrefulgence) 
                     return Manafication;
                 
@@ -226,8 +218,8 @@ internal partial class RDM : Caster
             #endregion
             
             #region Special Content
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
                 
             if (Variant.CanCure(Preset.RDM_Variant_Cure, RDM_VariantCure))
                 return Variant.Cure;
@@ -239,8 +231,9 @@ internal partial class RDM : Caster
             #region OGCDs
             if (CanWeave())
             {
-                if (IsEnabled(Preset.RDM_ST_MeleeCombo_GapCloser) && 
-                    ActionReady(Corpsacorps) && (HasEnoughManaToStart || CanMagickedSwordplay) && !InMeleeRange()) 
+                if (IsEnabled(Preset.RDM_ST_MeleeCombo_GapCloser) && !InMeleeRange() &&
+                    ActionReady(Corpsacorps) && TimeStoodStill >= TimeSpan.FromSeconds(RDM_ST_GapCloseCorpsacorps_Time) &&
+                    (HasEnoughManaToStart || CanMagickedSwordplay)) 
                     return Corpsacorps;
                  
                 if (IsEnabled(Preset.RDM_ST_Manafication) && ActionReady(Manafication) && (EmboldenCD <= 5 || HasEmbolden) && !CanPrefulgence) 
@@ -280,6 +273,18 @@ internal partial class RDM : Caster
                 if (IsEnabled(Preset.RDM_ST_Swiftcast) && 
                     (!IsEnabled(Preset.RDM_ST_SwiftcastMovement) && CanSwiftcast || CanSwiftcastMovement))
                     return Role.Swiftcast;
+                
+                if (IsEnabled(Preset.RDM_ST_Addle) && 
+                    Role.CanAddle() &&
+                    RaidWideCasting())
+                    return Role.Addle;
+                
+                if (IsEnabled(Preset.RDM_ST_MagickBarrier) && 
+                    NumberOfAlliesInRange(MagickBarrier) >= GetPartyMembers().Count * .75 &&
+                    !HasStatusEffect(Buffs.MagickBarrier, anyOwner:true) &&
+                    !JustUsed(Role.Addle, 6) &&
+                    ActionReady(MagickBarrier) && RaidWideCasting())
+                    return MagickBarrier;
             }
             #endregion
             
@@ -337,8 +342,8 @@ internal partial class RDM : Caster
                 return actionID;
 
             #region Special Content
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
                 
             if (Variant.CanCure(Preset.RDM_Variant_Cure, RDM_VariantCure))
                 return Variant.Cure;
@@ -350,8 +355,9 @@ internal partial class RDM : Caster
             #region OGCDs
             if (CanWeave())
             {
-                if (IsEnabled(Preset.RDM_AoE_MeleeCombo_GapCloser) && 
-                    ActionReady(Corpsacorps) && (HasEnoughManaToStart || CanMagickedSwordplay) && !InMeleeRange()) 
+                if (IsEnabled(Preset.RDM_AoE_MeleeCombo_GapCloser) && !InMeleeRange() &&
+                    ActionReady(Corpsacorps) && TimeStoodStill >= TimeSpan.FromSeconds(RDM_AoE_GapCloseCorpsacorps_Time) &&
+                    (HasEnoughManaToStart || CanMagickedSwordplay)) 
                     return Corpsacorps;
                  
                 if (IsEnabled(Preset.RDM_AoE_Manafication) && ActionReady(Manafication) && (EmboldenCD <= 5 || HasEmbolden) && !CanPrefulgence) 

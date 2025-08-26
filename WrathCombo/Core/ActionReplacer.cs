@@ -9,6 +9,7 @@ using ECommons.GameHelpers;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
+using Lumina.Excel.Sheets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -104,6 +105,10 @@ internal sealed class ActionReplacer : IDisposable
             if (!EzThrottler.Throttle("Actions" + actionID,
                     Service.Configuration.Throttle))
                 return LastActionInvokeFor[actionID];
+
+            //This is for the low level Archer quest(s) where you have to use Heavy Shot on an action. Best to just not run any combos here so things can run as planned.
+            if (actionID == BRD.HeavyShot && Svc.Objects.Any(x => x.Name.TextValue.Equals(Svc.Data.GetExcelSheet<EObjName>()[2000925].Singular.ToString(), StringComparison.InvariantCultureIgnoreCase) && x.IsTargetable))
+                return LastActionInvokeFor[BRD.HeavyShot] = BRD.HeavyShot;
 
             // Actually get the action
             LastActionInvokeFor[actionID] = GetAdjustedAction(actionID);

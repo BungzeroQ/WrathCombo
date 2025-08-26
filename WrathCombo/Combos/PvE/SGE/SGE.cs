@@ -1,5 +1,7 @@
 using Dalamud.Game.ClientState.Objects.Types;
 using System.Linq;
+using ECommons.GameFunctions;
+using WrathCombo.Extensions;
 using WrathCombo.Core;
 using WrathCombo.CustomComboNS;
 using static WrathCombo.Combos.PvE.SGE.Config;
@@ -9,7 +11,7 @@ namespace WrathCombo.Combos.PvE;
 
 internal partial class SGE : Healer
 {
-    #region Simple Mode
+    #region Simple DPS Mode
 
     internal class SGE_ST_Simple_DPS : CustomCombo
     {
@@ -34,8 +36,8 @@ internal partial class SGE : Healer
                 return Variant.Rampart;
 
             //Occult skills
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
             if (CanWeave() && !HasStatusEffect(Buffs.Eukrasia))
             {
@@ -130,8 +132,8 @@ internal partial class SGE : Healer
                 return Variant.Rampart;
 
             //Occult skills
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
             if (ActionReady(Kerachole) && HasAddersgall() &&
                 CanWeave() && RaidWideCasting())
@@ -210,7 +212,7 @@ internal partial class SGE : Healer
 
     #endregion
     
-    #region Advanced ST
+    #region Advanced DPS Mode
 
     internal class SGE_ST_DPS_AdvancedMode : CustomCombo
     {
@@ -243,8 +245,8 @@ internal partial class SGE : Healer
                 return Variant.Rampart;
 
             //Occult skills
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
             #region Raidwide Feature
 
@@ -345,10 +347,6 @@ internal partial class SGE : Healer
         }
     }
 
-    #endregion
-
-    #region Advanced AoE DPS
-
     internal class SGE_AoE_DPS_AdvancedMode : CustomCombo
     {
         protected internal override Preset Preset => Preset.SGE_AoE_DPS;
@@ -364,8 +362,8 @@ internal partial class SGE : Healer
                 return Variant.Rampart;
 
             //Occult skills
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
 
             #region Raidwide Feature
 
@@ -455,8 +453,143 @@ internal partial class SGE : Healer
     }
 
     #endregion
+    
+    #region Simple Healing
+    internal class SGE_Simple_ST_Heal : CustomCombo
+    {
+        protected internal override Preset Preset => Preset.SGE_Simple_ST_Heal;
 
-    #region ST Healing
+        protected override uint Invoke(uint actionID)
+        {
+            IGameObject? healTarget = OptionalTarget ?? SimpleTarget.Stack.AllyToHeal;
+
+            if (actionID is not Diagnosis)
+                return actionID;
+            
+            if (LevelChecked(Kardia) && 
+                !HasStatusEffect(Buffs.Kardia))
+                return Kardia.Retarget(Diagnosis, SimpleTarget.AnyLivingTank);
+
+            if (ActionReady(Role.Esuna) && 
+                GetTargetHPPercent(healTarget) >= 40 &&
+                HasCleansableDebuff(healTarget))
+                return Role.Esuna.RetargetIfEnabled(healTarget, Diagnosis);
+            
+            if (Role.CanLucidDream(6500))
+                return Role.LucidDreaming;
+            
+            if (ActionReady(Rhizomata) && !HasAddersgall() && 
+                CanWeave())
+                return Rhizomata;
+
+            if (ActionReady(Soteria) && HasStatusEffect(Buffs.Kardia) && 
+                CanWeave())
+                return Soteria;
+
+            if (ActionReady(OriginalHook(Physis)) && 
+                !InBossEncounter())
+                return OriginalHook(Physis);
+
+            if (ActionReady(Kerachole) && 
+                TraitLevelChecked(Traits.EnhancedKerachole) && 
+                HasAddersgall() &&
+                !InBossEncounter())
+                return Kerachole;
+
+            if (healTarget.IsInParty() && healTarget.GetRole() is CombatRole.Tank || !IsInParty())
+            {
+                if (ActionReady(Krasis))
+                    return Krasis.RetargetIfEnabled(healTarget, Diagnosis);
+                if (ActionReady(Taurochole) && HasAddersgall())
+                    return Taurochole.RetargetIfEnabled(healTarget, Diagnosis);
+                if (ActionReady(Haima) && !HasStatusEffect(Buffs.Panhaima, healTarget))
+                    return Haima.RetargetIfEnabled(healTarget, Diagnosis);
+            }
+            
+            if (ActionReady(Druochole) && HasAddersgall())
+                return Druochole.RetargetIfEnabled(healTarget, Diagnosis);
+            
+            if (!InBossEncounter())
+            {
+                if (ActionReady(Holos))
+                    return Holos;
+
+                if (ActionReady(Panhaima) && !HasStatusEffect(Buffs.Haima, healTarget))
+                    return Panhaima;
+            }
+
+            if (ActionReady(Pepsis) &&
+                HasStatusEffect(Buffs.EukrasianDiagnosis, healTarget))
+                return Pepsis;
+
+            if (ActionReady(Eukrasia) && !HasStatusEffect(Buffs.EukrasianDiagnosis, healTarget))
+                return HasStatusEffect(Buffs.Eukrasia)
+                    ? EukrasianDiagnosis
+                    : Eukrasia;
+
+            return actionID.RetargetIfEnabled(healTarget, Diagnosis);
+        }
+    }
+
+    internal class SGE_Simple_AoE_Heal : CustomCombo
+    {
+        protected internal override Preset Preset => Preset.SGE_Simple_AoE_Heal;
+
+        protected override uint Invoke(uint actionID)
+        {
+            if (actionID is not Prognosis)
+                return actionID;
+
+            if (Role.CanLucidDream(6500))
+                return Role.LucidDreaming;
+            
+            if (ActionReady(Rhizomata) && !HasAddersgall() && 
+                CanWeave())
+                return Rhizomata;
+           
+            if (ActionReady(OriginalHook(Physis)))
+                return OriginalHook(Physis);
+
+            if (ActionReady(Kerachole) && 
+                TraitLevelChecked(Traits.EnhancedKerachole) && 
+                HasAddersgall())
+                return Kerachole;
+            
+            if (ActionReady(Holos))
+                return Holos;
+            
+            if (ActionReady(Ixochole) && HasAddersgall())
+                return Ixochole;
+            
+            if (ActionReady(Philosophia) && !HasStatusEffect(Buffs.Panhaima))
+                return Philosophia;
+            
+            if (ActionReady(Panhaima) && !HasStatusEffect(Buffs.Eudaimonia))
+                return Panhaima;
+
+            if (ActionReady(Zoe))
+                return ActionReady(Pneuma) && !HasStatusEffect(Buffs.Zoe) || !LevelChecked(Pneuma)
+                    ? Zoe
+                    : Pneuma;
+            
+            if (ActionReady(Pepsis) &&
+                HasStatusEffect(Buffs.EukrasianPrognosis))
+                return Pepsis;
+
+            if (ActionReady(Eukrasia) && 
+                (GetPartyBuffPercent(Buffs.EukrasianPrognosis) <= 50 || 
+                 GetPartyBuffPercent(SCH.Buffs.Galvanize) <= 50))
+                return HasStatusEffect(Buffs.Eukrasia)
+                    ? EukrasianPrognosis
+                    : Eukrasia;
+
+            return actionID;
+        }
+    }
+    
+    #endregion
+
+    #region Advanced Healing
 
     internal class SGE_ST_Heal_AdvancedMode : CustomCombo
     {
@@ -527,10 +660,6 @@ internal partial class SGE : Healer
                 .RetargetIfEnabled(OptionalTarget, Diagnosis);
         }
     }
-
-    #endregion
-
-    #region AoE Healing
 
     internal class SGE_AoE_Heal_AdvancedMode : CustomCombo
     {

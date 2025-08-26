@@ -53,6 +53,9 @@ internal partial class NIN
             NIN_AoE_AdvancedMode_Ninjitsus_Options = new("NIN_AoE_AdvancedMode_Ninjitsus_Options"),
             NIN_AoE_AdvancedMode_Katon_Options = new("NIN_AoE_AdvancedMode_Katon_Options"),
             NIN_AoE_AdvancedMode_TenChiJin_Options = new("NIN_AoE_AdvancedMode_TenChiJin_Options");
+        
+        internal static UserFloat
+            NIN_AoE_AdvancedMode_Doton_TimeStill = new("NIN_AoE_AdvancedMode_Doton_TimeStill");
         #endregion
         
         internal static void Draw(Preset preset)
@@ -180,6 +183,9 @@ internal partial class NIN
                     {
                         DrawSliderInt(0, 100, NIN_AoE_AdvancedMode_Doton_Threshold,
                             "Sets the max remaining HP percentage of the current target to cast Doton.");
+                        ImGui.Indent(); DrawSliderFloat(0, 3, NIN_AoE_AdvancedMode_Doton_TimeStill,"How Long Standing still before using Doton (in seconds):", decimals: 1);
+                        
+                        ImGui.Unindent();
                     }
                     break;
                 

@@ -1,4 +1,6 @@
 using Dalamud.Game.ClientState.Objects.Types;
+using ECommons.GameFunctions;
+using ECommons.Logging;
 using WrathCombo.Core;
 using WrathCombo.CustomComboNS;
 using WrathCombo.Data;
@@ -10,7 +12,7 @@ namespace WrathCombo.Combos.PvE;
 
 internal partial class SCH : Healer
 {
-    #region Simple ST DPS
+    #region Simple DPS
     internal class SCH_ST_Simple_DPS : CustomCombo
     {
         protected internal override Preset Preset => Preset.SCH_ST_Simple_DPS;
@@ -30,8 +32,8 @@ internal partial class SCH : Healer
             if (Variant.CanSpiritDart(Preset.SCH_DPS_Variant_SpiritDart))
                 return Variant.SpiritDart;
 
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
             #endregion
             
             #region Dissolve Union
@@ -68,9 +70,7 @@ internal partial class SCH : Healer
             return actionID;
         }
     }
-    #endregion
     
-    #region Simple AoE DPS
     internal class SCH_AoE_Simple_DPS : CustomCombo
     {
         protected internal override Preset Preset => Preset.SCH_AoE_Simple_DPS;
@@ -90,8 +90,8 @@ internal partial class SCH : Healer
             if (Variant.CanSpiritDart(Preset.SCH_DPS_Variant_SpiritDart))
                 return Variant.SpiritDart;
 
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
             #endregion
             
             #region Dissolve Union
@@ -129,7 +129,148 @@ internal partial class SCH : Healer
 
     #endregion
     
-    #region Advanced ST DPS
+    #region Simple Heals
+    internal class SCH_Simple_ST_Heal : CustomCombo
+    {
+        protected internal override Preset Preset => Preset.SCH_Simple_ST_Heal;
+
+        protected override uint Invoke(uint actionID)
+        {
+            if (actionID is not Physick)
+                return actionID;
+            
+            #region Variables
+            var healTarget = OptionalTarget ?? SimpleTarget.Stack.AllyToHeal;
+            #endregion
+            
+            if (EndAetherpact)
+                return DissolveUnion;
+            
+            if (ActionReady(Role.Esuna) && HasCleansableDebuff(healTarget) &&
+                GetTargetHPPercent(healTarget) >= 40)
+                return Role.Esuna.RetargetIfEnabled(healTarget, Physick);
+            
+            if (ActionReady(Aetherflow) && !HasAetherflow &&
+                InCombat())
+                return Aetherflow;
+            
+            if (ActionReady(Dissipation) && !HasAetherflow &&
+                InCombat() && !FairyBusy)
+                return Dissipation;
+            
+            if (Role.CanLucidDream(6500) && CanWeave()) 
+                return Role.LucidDreaming;
+            
+            if (Gauge.SeraphTimer > 0 && !FairyBusy && ActionReady(Consolation))
+                return Consolation;
+            
+            if (ActionReady(Excogitation) &&
+                GetTargetHPPercent(healTarget) <= 50)
+                return Excogitation.RetargetIfEnabled(healTarget, Physick);
+            
+            if (ActionReady(Lustrate) &&
+                GetTargetHPPercent(healTarget) <= 50)
+                return Lustrate.RetargetIfEnabled(healTarget, Physick);
+            
+            if (ActionReady(SacredSoil) && !InBossEncounter() &&
+                TimeStoodStill >= TS.FromSeconds(5))
+                return SacredSoil.Retarget(Physick, SimpleTarget.Self);
+            
+            if (ActionReady(Protraction) && (healTarget.IsInParty() && healTarget.GetRole() is CombatRole.Tank || !IsInParty())) 
+                return Protraction.RetargetIfEnabled(healTarget, Physick);
+            
+            if (Gauge.FairyGauge >= 50 && IsOriginal(Aetherpact) && !FairyBusy)
+                return Aetherpact.RetargetIfEnabled(healTarget, Physick);
+
+            if (!InBossEncounter() && HasPetPresent() && !FairyBusy)
+            {
+                if (ActionReady(WhisperingDawn))
+                    return WhisperingDawn;
+                
+                if (ActionReady(FeyIllumination))
+                    return FeyIllumination;
+                
+                if (ActionReady(FeyBlessing))
+                    return FeyBlessing;
+                
+                if (ActionReady(OriginalHook(SummonSeraph)))
+                    return OriginalHook(SummonSeraph);
+                
+                if (ActionReady(Seraphism))
+                    return Seraphism;
+            }
+
+            if (ActionReady(Expedient) && !InBossEncounter())
+                return Expedient;
+            
+            if (ActionReady(OriginalHook(Adloquium)))
+                return ActionReady(OriginalHook(EmergencyTactics)) && (HasStatusEffect(Buffs.Galvanize, healTarget, true) || !HasStatusEffect(Buffs.EmergencyTactics))
+                    ? OriginalHook(EmergencyTactics)
+                    : OriginalHook(Adloquium).RetargetIfEnabled(healTarget, Physick);
+            
+            return actionID.RetargetIfEnabled(healTarget);
+        }
+    }
+    
+    internal class SCH_Simple_AoE_Heal : CustomCombo
+    {
+        protected internal override Preset Preset => Preset.SCH_Simple_AoE_Heal;
+
+        protected override uint Invoke(uint actionID)
+        {
+            if (actionID is not (Succor or Concitation))
+                return actionID;
+            
+            if (EndAetherpact)
+                return DissolveUnion;
+            
+            if (ActionReady(Expedient) && RaidWideCasting())
+                return Expedient;
+            
+            if (ActionReady(SacredSoil) && RaidWideCasting())
+                return SacredSoil.Retarget([Succor, Concitation], SimpleTarget.Self);
+            
+            if (ActionReady(Aetherflow) && !HasAetherflow &&
+                InCombat())
+                return Aetherflow;
+            
+            if (Role.CanLucidDream(6500) && CanWeave()) 
+                return Role.LucidDreaming;
+
+            if (Gauge.SeraphTimer > 0 && !FairyBusy && ActionReady(Consolation))
+                return Consolation;
+
+            if (InCombat() && IsOffCooldown(Indomitability) && LevelChecked(Indomitability))
+                return !HasAetherflow && ActionReady(Recitation)
+                    ? Recitation
+                    : Indomitability;
+
+            if (HasPetPresent() && !FairyBusy)
+            {
+                if (ActionReady(WhisperingDawn))
+                    return WhisperingDawn;
+                
+                if (ActionReady(FeyIllumination))
+                    return FeyIllumination;
+                
+                if (ActionReady(FeyBlessing))
+                    return FeyBlessing;
+                
+                if (ActionReady(OriginalHook(SummonSeraph)))
+                    return OriginalHook(SummonSeraph);
+                
+                if (ActionReady(Seraphism))
+                    return Seraphism;
+            }
+            
+            return ActionReady(OriginalHook(EmergencyTactics)) && (GetPartyBuffPercent(Buffs.Galvanize) >= 50 || GetPartyBuffPercent(SGE.Buffs.EukrasianPrognosis) >= 50)
+                ? OriginalHook(EmergencyTactics)
+                : actionID;
+        }
+    }
+    #endregion
+    
+    #region Advanced DPS
     internal class SCH_ST_ADV_DPS : CustomCombo
     {
         protected internal override Preset Preset => Preset.SCH_ST_ADV_DPS;
@@ -163,8 +304,8 @@ internal partial class SCH : Healer
             if (Variant.CanSpiritDart(Preset.SCH_DPS_Variant_SpiritDart))
                 return Variant.SpiritDart;
 
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
             #endregion
             
             #region Healing Helpers
@@ -212,9 +353,7 @@ internal partial class SCH : Healer
             return actionID;
         }
     }
-    #endregion
     
-    #region Advanced AoE DPS
     internal class SCH_AoE_ADV_DPS : CustomCombo
     {
         protected internal override Preset Preset => Preset.SCH_AoE_ADV_DPS;
@@ -239,8 +378,8 @@ internal partial class SCH : Healer
             if (Variant.CanSpiritDart(Preset.SCH_DPS_Variant_SpiritDart))
                 return Variant.SpiritDart;
 
-            if (OccultCrescent.ShouldUsePhantomActions())
-                return OccultCrescent.BestPhantomAction();
+            if (ContentSpecificActions.TryGet(out var contentAction))
+                return contentAction;
             #endregion
             
             #region Healing Helpers
@@ -292,7 +431,7 @@ internal partial class SCH : Healer
 
     #endregion
     
-    #region ST Heal
+    #region Advanced Heals
     internal class SCH_ST_Heal : CustomCombo
     {
         protected internal override Preset Preset => Preset.SCH_ST_Heal;
@@ -369,9 +508,7 @@ internal partial class SCH : Healer
                 .RetargetIfEnabled(OptionalTarget, Physick);
         }
     }
-    #endregion
     
-    #region Aoe Heal 
     internal class SCH_AoE_Heal : CustomCombo
     {
         protected internal override Preset Preset => Preset.SCH_AoE_Heal;
