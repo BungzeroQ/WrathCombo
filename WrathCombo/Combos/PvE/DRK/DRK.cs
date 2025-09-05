@@ -95,9 +95,6 @@ internal partial class DRK : Tank
                 HasBattleTarget())
                 return Unmend;
 
-            if (TryGetAction<VariantAction>(comboFlags, ref newAction))
-                return newAction;
-
             var inMitigationContent =
                 ContentCheck.IsInConfiguredContent(
                     DRK_ST_MitDifficulty,
@@ -165,9 +162,6 @@ internal partial class DRK : Tank
                 return HardSlash;
             }
 
-            if (TryGetAction<VariantAction>(comboFlags, ref newAction))
-                return newAction;
-
             if (TryGetAction<Mitigation>(comboFlags, ref newAction))
                 return newAction;
 
@@ -210,9 +204,6 @@ internal partial class DRK : Tank
                 return Unleash;
             }
 
-            if (TryGetAction<VariantAction>(comboFlags, ref newAction))
-                return newAction;
-
             if (IsEnabled(Preset.DRK_AoE_CDs) &&
                 TryGetAction<Cooldown>(comboFlags, ref newAction))
                 return newAction;
@@ -254,9 +245,6 @@ internal partial class DRK : Tank
                     return newAction;
                 return Unleash;
             }
-
-            if (TryGetAction<VariantAction>(comboFlags, ref newAction))
-                return newAction;
 
             if (TryGetAction<Cooldown>(comboFlags, ref newAction))
                 return newAction;

@@ -26,7 +26,10 @@ public static class ContentSpecificActions
 
         if (OccultCrescent.TryGetPhantomAction(ref actionID))
             return true;
-        // Variant actions next
+
+        if (Variant.TryGetVariantAction(ref actionID))
+            return true;
+
         // Bozja actions next
         // Deep dungeons next?
         

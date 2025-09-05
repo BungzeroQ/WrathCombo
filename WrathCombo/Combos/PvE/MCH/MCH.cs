@@ -24,12 +24,6 @@ internal partial class MCH : PhysicalRanged
                  ActionReady(Drill)))
                 return Reassemble;
 
-            if (Variant.CanCure(Preset.MCH_Variant_Cure, MCH_VariantCure))
-                return Variant.Cure;
-
-            if (Variant.CanRampart(Preset.MCH_Variant_Rampart))
-                return Variant.Rampart;
-
             if (ContentSpecificActions.TryGet(out uint contentAction))
                 return contentAction;
 
@@ -161,12 +155,6 @@ internal partial class MCH : PhysicalRanged
             if (Role.CanHeadGraze(Preset.MCH_AoE_SimpleMode, WeaveTypes.DelayWeave))
                 return Role.HeadGraze;
 
-            if (Variant.CanCure(Preset.MCH_Variant_Cure, MCH_VariantCure))
-                return Variant.Cure;
-
-            if (Variant.CanRampart(Preset.MCH_Variant_Rampart))
-                return Variant.Rampart;
-
             if (ContentSpecificActions.TryGet(out uint contentAction))
                 return contentAction;
 
@@ -285,12 +273,6 @@ internal partial class MCH : PhysicalRanged
                  ActionReady(Drill) && MCH_ST_Reassembled[3]))
                 return Reassemble;
 
-            if (Variant.CanCure(Preset.MCH_Variant_Cure, MCH_VariantCure))
-                return Variant.Cure;
-
-            if (Variant.CanRampart(Preset.MCH_Variant_Rampart))
-                return Variant.Rampart;
-
             if (ContentSpecificActions.TryGet(out uint contentAction))
                 return contentAction;
 
@@ -299,7 +281,7 @@ internal partial class MCH : PhysicalRanged
             {
                 if (IsEnabled(Preset.MCH_ST_Adv_QueenOverdrive) &&
                     RobotActive && ActionReady(RookOverdrive) &&
-                    GetTargetHPPercent() <= MCH_ST_QueenOverDrive)
+                    GetTargetHPPercent() <= MCH_ST_QueenOverDriveHPThreshold)
                     return OriginalHook(RookOverdrive);
 
                 // Wildfire
@@ -321,7 +303,8 @@ internal partial class MCH : PhysicalRanged
                     // Hypercharge
                     if (IsEnabled(Preset.MCH_ST_Adv_Hypercharge) &&
                         (Heat >= 50 || HasStatusEffect(Buffs.Hypercharged)) &&
-                        !IsComboExpiring(6) && ActionReady(Hypercharge))
+                        !IsComboExpiring(6) && ActionReady(Hypercharge) &&
+                        GetTargetHPPercent() > MCH_ST_HyperchargeHPThreshold)
                     {
                         // Ensures Hypercharge is double weaved with WF
                         if (LevelChecked(FullMetalField) && JustUsed(FullMetalField) &&
@@ -477,12 +460,6 @@ internal partial class MCH : PhysicalRanged
             if (HasStatusEffect(Buffs.Flamethrower) || JustUsed(Flamethrower, GCD))
                 return All.SavageBlade;
 
-            if (Variant.CanCure(Preset.MCH_Variant_Cure, MCH_VariantCure))
-                return Variant.Cure;
-
-            if (Variant.CanRampart(Preset.MCH_Variant_Rampart))
-                return Variant.Rampart;
-
             if (ContentSpecificActions.TryGet(out uint contentAction))
                 return contentAction;
 
@@ -493,22 +470,24 @@ internal partial class MCH : PhysicalRanged
                 {
                     if (IsEnabled(Preset.MCH_AoE_Adv_QueenOverdrive) &&
                         Gauge.IsRobotActive && ActionReady(RookOverdrive) &&
-                        GetTargetHPPercent() <= MCH_AoE_QueenOverDrive)
+                        GetTargetHPPercent() <= MCH_AoE_QueenOverDriveHPThreshold)
                         return OriginalHook(RookOverdrive);
 
                     // BarrelStabilizer
                     if (IsEnabled(Preset.MCH_AoE_Adv_Stabilizer) &&
-                        ActionReady(BarrelStabilizer) && !HasStatusEffect(Buffs.FullMetalMachinist))
+                        ActionReady(BarrelStabilizer) && !HasStatusEffect(Buffs.FullMetalMachinist) &&
+                        GetTargetHPPercent() >= MCH_ST_BarrelStabilizerHPThreshold)
                         return BarrelStabilizer;
 
                     if (IsEnabled(Preset.MCH_AoE_Adv_Queen) &&
-                        Battery >= MCH_AoE_TurretUsage)
+                        Battery >= MCH_AoE_TurretBatteryUsage)
                         return OriginalHook(RookAutoturret);
 
                     // Hypercharge
                     if (IsEnabled(Preset.MCH_AoE_Adv_Hypercharge) &&
                         (Heat >= 50 || HasStatusEffect(Buffs.Hypercharged)) && LevelChecked(Hypercharge) &&
                         LevelChecked(AutoCrossbow) &&
+                        GetTargetHPPercent() >= MCH_AoE_HyperchargeHPThreshold &&
                         (LevelChecked(BioBlaster) && GetCooldownRemainingTime(BioBlaster) > 10 ||
                          !LevelChecked(BioBlaster) || IsNotEnabled(Preset.MCH_AoE_Adv_Bioblaster)) &&
                         (LevelChecked(Flamethrower) && GetCooldownRemainingTime(Flamethrower) > 10 ||
@@ -516,6 +495,7 @@ internal partial class MCH : PhysicalRanged
                         return Hypercharge;
 
                     if (IsEnabled(Preset.MCH_AoE_Adv_Reassemble) &&
+                        GetTargetHPPercent() >= MCH_AoE_ReassembleHPThreshold &&
                         ActionReady(Reassemble) && !HasStatusEffect(Buffs.Wildfire) &&
                         !HasStatusEffect(Buffs.Reassembled) && !JustUsed(Flamethrower, 10f) &&
                         GetRemainingCharges(Reassemble) > MCH_AoE_ReassemblePool &&
@@ -566,7 +546,8 @@ internal partial class MCH : PhysicalRanged
             {
                 //Full Metal Field
                 if (IsEnabled(Preset.MCH_AoE_Adv_Stabilizer_FullMetalField) &&
-                    HasStatusEffect(Buffs.FullMetalMachinist) && LevelChecked(FullMetalField))
+                    HasStatusEffect(Buffs.FullMetalMachinist) && LevelChecked(FullMetalField) &&
+                    GetTargetHPPercent() >= MCH_AoE_FullMetalFieldHPThreshold)
                     return FullMetalField;
 
                 if (IsEnabled(Preset.MCH_AoE_Adv_Bioblaster) &&
@@ -585,16 +566,19 @@ internal partial class MCH : PhysicalRanged
 
                 if (IsEnabled(Preset.MCH_AoE_Adv_Excavator) &&
                     reassembledExcavatorAoE &&
+                    GetTargetHPPercent() >= MCH_AoE_ExcavatorHPThreshold &&
                     LevelChecked(Excavator) && HasStatusEffect(Buffs.ExcavatorReady))
                     return Excavator;
 
                 if (IsEnabled(Preset.MCH_AoE_Adv_Chainsaw) &&
                     reassembledChainsawAoE &&
+                    GetTargetHPPercent() >= MCH_AoE_ChainsawHPThreshold &&
                     ActionReady(Chainsaw) && !HasStatusEffect(Buffs.ExcavatorReady))
                     return Chainsaw;
 
                 if (IsEnabled(Preset.MCH_AoE_Adv_AirAnchor) &&
                     reassembledAirAnchorAoE &&
+                    GetTargetHPPercent() >= MCH_AoE_AirAnchorHPThreshold &&
                     LevelChecked(AirAnchor) && IsOffCooldown(AirAnchor))
                     return AirAnchor;
 

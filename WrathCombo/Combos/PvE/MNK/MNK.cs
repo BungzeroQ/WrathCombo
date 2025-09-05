@@ -31,14 +31,6 @@ internal partial class MNK : Melee
                 !HasStatusEffect(Buffs.CoeurlForm))
                 return FormShift;
 
-            //Variant Cure
-            if (Variant.CanCure(Preset.MNK_Variant_Cure, MNK_VariantCure))
-                return Variant.Cure;
-
-            //Variant Rampart
-            if (Variant.CanRampart(Preset.MNK_Variant_Rampart))
-                return Variant.Rampart;
-
             if (ContentSpecificActions.TryGet(out uint contentAction))
                 return contentAction;
 
@@ -130,14 +122,6 @@ internal partial class MNK : Melee
                 !HasStatusEffect(Buffs.RaptorForm) &&
                 !HasStatusEffect(Buffs.CoeurlForm))
                 return FormShift;
-
-            //Variant Cure
-            if (Variant.CanCure(Preset.MNK_Variant_Cure, MNK_VariantCure))
-                return Variant.Cure;
-
-            //Variant Rampart
-            if (Variant.CanRampart(Preset.MNK_Variant_Rampart))
-                return Variant.Rampart;
 
             if (ContentSpecificActions.TryGet(out uint contentAction))
                 return contentAction;
@@ -249,14 +233,6 @@ internal partial class MNK : Melee
                 !HasStatusEffect(Buffs.RaptorForm) &&
                 !HasStatusEffect(Buffs.CoeurlForm))
                 return FormShift;
-
-            //Variant Cure
-            if (Variant.CanCure(Preset.MNK_Variant_Cure, MNK_VariantCure))
-                return Variant.Cure;
-
-            //Variant Rampart
-            if (Variant.CanRampart(Preset.MNK_Variant_Rampart))
-                return Variant.Rampart;
 
             if (ContentSpecificActions.TryGet(out uint contentAction))
                 return contentAction;
@@ -383,18 +359,10 @@ internal partial class MNK : Melee
                 !HasStatusEffect(Buffs.CoeurlForm))
                 return FormShift;
 
-            //Variant Cure
-            if (Variant.CanCure(Preset.MNK_Variant_Cure, MNK_VariantCure))
-                return Variant.Cure;
-
-            //Variant Rampart
-            if (Variant.CanRampart(Preset.MNK_Variant_Rampart))
-                return Variant.Rampart;
-
             if (ContentSpecificActions.TryGet(out uint contentAction))
                 return contentAction;
 
-            // OGCD's 
+            // OGCD's
             if (CanWeave() && M6SReady)
             {
                 if (IsEnabled(Preset.MNK_AoEUsePerfectBalance) &&

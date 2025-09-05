@@ -92,7 +92,7 @@ internal partial class SCH
     {
         var dotAction = OriginalHook(Bio);
         var hpThreshold = IsNotEnabled(Preset.SCH_ST_Simple_DPS) &&
-            (SCH_DPS_BioSubOption == 1 || !InBossEncounter())? SCH_DPS_BioSubOption : 0;
+            (SCH_DPS_BioSubOption == 1 || !InBossEncounter())? SCH_DPS_BioOption : 0;
         BioList.TryGetValue(dotAction, out var dotDebuffID);
         var dotRefresh = IsNotEnabled(Preset.SCH_ST_Simple_DPS) ? SCH_DPS_BioUptime_Threshold : 2.5;
         var dotRemaining = GetStatusEffectRemainingTime(dotDebuffID, CurrentTarget);

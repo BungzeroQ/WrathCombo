@@ -98,7 +98,7 @@ internal static class VPRPvP
                 // Slither
                 case Preset.VPRPvP_Slither:
                     DrawSliderInt(0, 1, VPRPvP_Slither_Charges, "Charges to Keep");
-                    DrawSliderInt(6, 10, VPRPvP_Slither_Range, "Maximum Range");
+                    DrawSliderInt(6, 20, VPRPvP_Slither_Range, "Maximum Range");
                     break;
 
                 // Smite
@@ -109,7 +109,7 @@ internal static class VPRPvP
             }
         }
     }
-        #endregion     
+    #endregion     
 
     internal class VPRPvP_Burst : CustomCombo
     {
@@ -117,7 +117,8 @@ internal static class VPRPvP
 
         protected override uint Invoke(uint actionID)
         {
-            if (actionID is not (SteelFangs or HuntersSting or BarbarousSlice or PiercingFangs or SwiftskinsSting or RavenousBite)) 
+            if (actionID is not (SteelFangs or HuntersSting or BarbarousSlice or PiercingFangs or SwiftskinsSting or 
+                RavenousBite or FirstGeneration or SecondGeneration or ThirdGeneration or FourthGeneration)) 
                 return actionID;
 
             #region Variables

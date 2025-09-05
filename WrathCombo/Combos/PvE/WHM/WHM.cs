@@ -44,9 +44,6 @@ internal partial class WHM : Healer
 
             if (CanWeave())
             {
-                if (Variant.CanRampart(Preset.WHM_DPS_Variant_Rampart))
-                    return Variant.Rampart;
-
                 if (ActionReady(PresenceOfMind) &&
                     ActionWatching.NumberOfGcdsUsed >= 3 &&
                     !HasStatusEffect(Buffs.SacredSight))
@@ -57,10 +54,6 @@ internal partial class WHM : Healer
 
                 if (Role.CanLucidDream(7500))
                     return Role.LucidDreaming;
-
-                if (Variant.CanSpiritDart(
-                        Preset.WHM_DPS_Variant_SpiritDart))
-                    return Variant.SpiritDart;
             }
 
             #endregion
@@ -70,20 +63,20 @@ internal partial class WHM : Healer
             // DoTs
             if (NeedsDoT())
                 return OriginalHook(Aero);
+            
+            // Blood Lily Spend
+            if (BloodLilyReady && (AlmostFullLily || HasStatusEffect(Buffs.PresenceOfMind)))
+                return AfflatusMisery;
 
             // Glare IV
             if (HasStatusEffect(Buffs.SacredSight))
                 return Glare4;
-            
-            // Blood Lily Spend
-            if (BloodLilyReady)
-                return AfflatusMisery;
 
             // Lily Heal Overcap
             if (ActionReady(AfflatusRapture) &&
                 (FullLily || AlmostFullLily))
                 return AfflatusRapture;
-            
+
             #region Movement Options
 
             if (IsMoving())
@@ -131,26 +124,18 @@ internal partial class WHM : Healer
 
                 if (Role.CanLucidDream(7500))
                     return Role.LucidDreaming;
-
-                if (Variant.CanRampart(Preset.WHM_DPS_Variant_Rampart))
-                    return Variant.Rampart;
-
-                if (Variant.CanSpiritDart(Preset
-                        .WHM_DPS_Variant_SpiritDart))
-                    return Variant.SpiritDart;
             }
 
             #endregion
 
             #region GCDS and Casts
-
-            // Glare IV
+            
+            if (HasBattleTarget() && BloodLilyReady && 
+                (AlmostFullLily || HasStatusEffect(Buffs.PresenceOfMind)))
+                return AfflatusMisery;
+          
             if (HasStatusEffect(Buffs.SacredSight))
                 return OriginalHook(Glare4);
-            
-            if (BloodLilyReady &&
-                HasBattleTarget())
-                return AfflatusMisery;
 
             if (ActionReady(AfflatusRapture) &&
                 (FullLily || AlmostFullLily))
@@ -181,7 +166,7 @@ internal partial class WHM : Healer
         protected override uint Invoke(uint actionID)
         {
             #region Button Selection
-            
+
             var replacedAction = (int)WHM_ST_MainCombo_Actions switch
             {
                 1 => AeroList.Keys.ToArray(),
@@ -222,9 +207,6 @@ internal partial class WHM : Healer
 
             if (CanWeave())
             {
-                if (Variant.CanRampart(Preset.WHM_DPS_Variant_Rampart))
-                    return Variant.Rampart;
-
                 if (IsEnabled(Preset.WHM_ST_MainCombo_PresenceOfMind) &&
                     ActionReady(PresenceOfMind) &&
                     ActionWatching.NumberOfGcdsUsed >= 3 &&
@@ -238,10 +220,6 @@ internal partial class WHM : Healer
                 if (IsEnabled(Preset.WHM_ST_MainCombo_Lucid) &&
                     Role.CanLucidDream(WHM_STDPS_Lucid))
                     return Role.LucidDreaming;
-
-                if (Variant.CanSpiritDart(
-                        Preset.WHM_DPS_Variant_SpiritDart))
-                    return Variant.SpiritDart;
             }
 
             #endregion
@@ -251,23 +229,23 @@ internal partial class WHM : Healer
             // DoTs
             if (IsEnabled(Preset.WHM_ST_MainCombo_DoT) && NeedsDoT())
                 return OriginalHook(Aero);
+            
+            // Blood Lily Spend
+            if (IsEnabled(Preset.WHM_ST_MainCombo_Misery_oGCD) &&
+                BloodLilyReady && (AlmostFullLily || HasStatusEffect(Buffs.PresenceOfMind)))
+                return AfflatusMisery;
 
             // Glare IV
             if (IsEnabled(Preset.WHM_ST_MainCombo_GlareIV) &&
                 HasStatusEffect(Buffs.SacredSight))
                 return Glare4;
 
-            // Blood Lily Spend
-            if (IsEnabled(Preset.WHM_ST_MainCombo_Misery_oGCD) &&
-                BloodLilyReady)
-                return AfflatusMisery;
-            
             // Lily Heal Overcap
             if (IsEnabled(Preset.WHM_ST_MainCombo_LilyOvercap) &&
                 ActionReady(AfflatusRapture) &&
                 (FullLily || AlmostFullLily))
                 return AfflatusRapture;
-            
+
             #region Movement Options
 
             if (IsMoving())
@@ -342,32 +320,19 @@ internal partial class WHM : Healer
                     ActionWatching.NumberOfGcdsUsed >= 4 &&
                     !HasStatusEffect(Buffs.SacredSight))
                     return PresenceOfMind;
-
-                if (IsEnabled(Preset.WHM_AoE_DPS_Lucid) &&
-                    Role.CanLucidDream(WHM_AoEDPS_Lucid))
-                    return Role.LucidDreaming;
-
-                if (Variant.CanRampart(Preset.WHM_DPS_Variant_Rampart))
-                    return Variant.Rampart;
-
-                if (Variant.CanSpiritDart(Preset
-                        .WHM_DPS_Variant_SpiritDart))
-                    return Variant.SpiritDart;
             }
 
             #endregion
 
             #region GCDS and Casts
 
-            // Glare IV
+            if (IsEnabled(Preset.WHM_AoE_DPS_Misery) && HasBattleTarget() &&
+                BloodLilyReady && (AlmostFullLily || HasStatusEffect(Buffs.PresenceOfMind)))
+                return AfflatusMisery;
+            
             if (IsEnabled(Preset.WHM_AoE_DPS_GlareIV) &&
                 HasStatusEffect(Buffs.SacredSight))
                 return OriginalHook(Glare4);
-            
-            if (IsEnabled(Preset.WHM_AoE_DPS_Misery) &&
-                BloodLilyReady &&
-                HasBattleTarget())
-                return AfflatusMisery;
 
             if (IsEnabled(Preset.WHM_AoE_DPS_LilyOvercap) &&
                 ActionReady(AfflatusRapture) &&
@@ -442,7 +407,9 @@ internal partial class WHM : Healer
                 return OriginalHook(Temperance);
             
             if (ActionReady(AfflatusSolace))
-                return AfflatusSolace.RetargetIfEnabled(healTarget, Cure);
+                return BloodLilyReady
+                    ? AfflatusMisery
+                    : AfflatusSolace.RetargetIfEnabled(healTarget, Cure);
 
             if (ActionReady(ThinAir) && GetRemainingCharges(ThinAir) == 2)
                 return ThinAir;
@@ -490,9 +457,11 @@ internal partial class WHM : Healer
                 (GetPartyAvgHPPercent() <= 70 ||
                  RaidWideCasting()))
                 return PlenaryIndulgence;
-
+            
             if (ActionReady(AfflatusRapture))
-                return AfflatusRapture;
+                return BloodLilyReady
+                    ? AfflatusMisery
+                    : AfflatusRapture;
             
             if (ActionReady(ThinAir) && GetRemainingCharges(ThinAir) == 2)
                 return ThinAir;
@@ -574,6 +543,9 @@ internal partial class WHM : Healer
                 var index = WHM_ST_Heals_Priority.IndexOf(i + 1);
                 var config = GetMatchingConfigST(index, OptionalTarget,
                     out var spell, out var enabled);
+                
+                if (IsEnabled(Preset.WHM_AoEHeals_Misery) && BloodLilyReady && spell is AfflatusSolace)
+                    return AfflatusMisery;
 
                 if (enabled)
                 {
@@ -627,17 +599,16 @@ internal partial class WHM : Healer
                 Role.CanLucidDream(WHM_AoEHeals_Lucid))
                 return Role.LucidDreaming;
 
-            // Blood Overcap
-            if (IsEnabled(Preset.WHM_AoEHeals_Misery) &&
-                BloodLilyReady)
-                return AfflatusMisery;
-
             //Priority List
             for (var i = 0; i < WHM_AoE_Heals_Priority.Count; i++)
             {
                 var index = WHM_AoE_Heals_Priority.IndexOf(i + 1);
                 var config = GetMatchingConfigAoE(index, OptionalTarget,
                     out var spell, out var enabled);
+                
+                // Blood Overcap
+                if (IsEnabled(Preset.WHM_AoEHeals_Misery) && BloodLilyReady && spell is AfflatusRapture)
+                    return AfflatusMisery;
 
                 if (enabled && GetPartyAvgHPPercent() <= config &&
                     ActionReady(spell))
@@ -802,7 +773,7 @@ internal partial class WHM : Healer
         protected override uint Invoke(uint actionID)
         {
             var healStack = SimpleTarget.Stack.AllyToHeal;
-            
+
             if (!EZ.Throttle("WHMRetargetingFeature", TS.FromSeconds(.1)))
                 return actionID;
 
@@ -843,7 +814,7 @@ internal partial class WHM : Healer
                     SimpleTarget.Self;
                 LiturgyOfTheBell.Retarget(bellTarget, dontCull: true);
             }
-            
+
             if (IsEnabled(Preset.WHM_Re_Cure3))
                 Cure3.Retarget(healStack, dontCull: true);
 

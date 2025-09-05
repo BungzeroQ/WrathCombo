@@ -173,11 +173,6 @@ internal partial class BLM
                     break;
 
 
-                case Preset.BLM_Variant_Cure:
-                    DrawSliderInt(1, 100, BLM_VariantCure,
-                        "HP% to be at or under", 200);
-                    break;
-
                 case Preset.BLM_Fire1and3:
                     DrawRadioButton(BLM_F1to3,
                         $"Replaces {Fire.ActionName()}", $"Replaces {Fire.ActionName()} with {Fire3.ActionName()} when out of Astral Fire III or not in combat.", 0);
@@ -255,7 +250,6 @@ internal partial class BLM
             BLM_AoE_LeyLinesMovement = new("BLM_AoE_LeyLinesMovement", 0),
             BLM_AoE_LeyLinesOption = new("BLM_AoE_LeyLinesOption", 40),
             BLM_AoE_ThunderHP = new("BLM_AoE_ThunderHP", 20),
-            BLM_VariantCure = new("BLM_VariantCure", 50),
             BLM_B1to3 = new("BLM_B1to3", 0),
             BLM_B4toDespair = new("BLM_B4toDespair", 0),
             BLM_F1to3 = new("BLM_F1to3", 0),

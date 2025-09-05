@@ -771,6 +771,7 @@ internal partial class NIN
         DeathBlossom = 2254,
         AeolianEdge = 2255,
         TrickAttack = 2258,
+        Shukuchi = 2262,
         Kassatsu = 2264,
         ArmorCrush = 3563,
         DreamWithinADream = 3566,

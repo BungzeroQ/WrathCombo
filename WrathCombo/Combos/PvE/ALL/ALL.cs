@@ -1,5 +1,4 @@
-﻿using ECommons.DalamudServices;
-using ECommons.ExcelServices;
+﻿using ECommons.ExcelServices;
 using ECommons.GameHelpers;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,16 +55,21 @@ internal partial class All
 
         protected override uint Invoke(uint actionID)
         {
+            if (actionID is not (RoleActions.Tank.Interject or RoleActions.Tank.LowBlow or PLD.ShieldBash))
+                return actionID;
+
             var tar = IsEnabled(Preset.ALL_Tank_Interrupt_Retarget) ? SimpleTarget.InterruptableEnemy : CurrentTarget;
             switch (actionID)
             {
                 case RoleActions.Tank.LowBlow or PLD.ShieldBash when CanInterruptEnemy(null, tar) && ActionReady(RoleActions.Tank.Interject):
                     return RoleActions.Tank.Interject.Retarget(actionID, tar);
 
-                case RoleActions.Tank.LowBlow or PLD.ShieldBash when TargetIsCasting() && ActionReady(RoleActions.Tank.LowBlow) && !TargetIsBoss():
+                case RoleActions.Tank.LowBlow or PLD.ShieldBash when TargetIsCasting() && ActionReady(RoleActions.Tank.LowBlow) && !TargetIsBoss() && !JustUsed(RoleActions.Tank.Interject):
                     return RoleActions.Tank.LowBlow.Retarget(actionID, tar);
 
-                case PLD.ShieldBash when IsOnCooldown(RoleActions.Tank.LowBlow):
+                case PLD.ShieldBash when IsOnCooldown(RoleActions.Tank.LowBlow) && !JustUsed(RoleActions.Tank.Interject) && !JustUsed(PLD.ShieldBash, 7):
+                    return PLD.ShieldBash.Retarget(actionID, tar);
+
                 default:
                     return actionID;
             }

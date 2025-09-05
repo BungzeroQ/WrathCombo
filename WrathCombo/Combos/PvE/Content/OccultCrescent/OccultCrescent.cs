@@ -10,7 +10,6 @@ namespace WrathCombo.Combos.PvE;
 
 internal partial class OccultCrescent
 {
-    public const byte JobID = 100;
     public static string ContentName => Svc.Data.GetExcelSheet<BannerBg>().GetRow(312).Name.ToString();
 
     /// In Occult Crescent (in the field or a field raid).
