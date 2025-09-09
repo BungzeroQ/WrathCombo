@@ -1,3 +1,4 @@
+using ECommons.GameHelpers;
 using WrathCombo.Core;
 using WrathCombo.CustomComboNS;
 using static WrathCombo.Combos.PvE.VPR.Config;
@@ -319,7 +320,7 @@ internal partial class VPR : Melee
             if (CanWeave())
             {
                 //Serpents Ire
-                if (IsEnabled(Preset.VPR_ST_SerpentsIre) && InCombat() &&
+                if (IsEnabled(Preset.VPR_ST_SerpentsIre) && InCombat() && (Player.Level != 100 || !HasStatusEffect(Buffs.Reawakened)) &&
                     !CappedOnCoils() && ActionReady(SerpentsIre) &&
                     (VPR_ST_SerpentsIre_SubOption == 0 || InBossEncounter()))
                     return SerpentsIre;
